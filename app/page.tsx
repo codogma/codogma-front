@@ -5,9 +5,6 @@ import Button from '@mui/material/Button';
 
 export default function BasicButtons() {
     return (
-        <>
-            <Form/>
-            <Button variant="contained">Submit</Button>
-        </>
+        <Form/>
     );
 }
