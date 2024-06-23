@@ -5,7 +5,7 @@ import InputLabel from '@mui/material/InputLabel';
 import Stack from '@mui/material/Stack';
 import Button from "@mui/material/Button";
 
-export default function Form() {
+export default function LoginPage() {
     return (
         <Stack
             component="form"
@@ -17,11 +17,7 @@ export default function Form() {
             autoComplete="off"
         >
             <FormControl variant="standard">
-                <InputLabel htmlFor="component-simple">Username</InputLabel>
-                <Input id="component-simple"/>
-            </FormControl>
-            <FormControl variant="standard">
-                <InputLabel htmlFor="component-simple">Email</InputLabel>
+                <InputLabel htmlFor="component-simple">Username or Email</InputLabel>
                 <Input id="component-simple"/>
             </FormControl>
             <FormControl variant="standard">
@@ -32,3 +28,4 @@ export default function Form() {
         </Stack>
     );
 }
+
