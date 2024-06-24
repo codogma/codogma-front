@@ -1,9 +1,14 @@
+"use client"
 import * as React from 'react';
-import FormControl from '@mui/material/FormControl';
-import Input from '@mui/material/Input';
-import InputLabel from '@mui/material/InputLabel';
-import Stack from '@mui/material/Stack';
-import Button from "@mui/material/Button";
+import {FormEvent} from 'react';
+import {Box, TextField, Button} from "@mui/material";
+import {register} from "@/src/helpers/auth-api";
+
+type User = {
+    username: string
+    email: string
+    password: string
+}
 
 export default function LoginPage() {
     return (

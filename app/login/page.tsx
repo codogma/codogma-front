@@ -1,31 +1,36 @@
+"use client"
 import * as React from 'react';
-import FormControl from '@mui/material/FormControl';
-import Input from '@mui/material/Input';
-import InputLabel from '@mui/material/InputLabel';
-import Stack from '@mui/material/Stack';
-import Button from "@mui/material/Button";
+import {Box, TextField, Button} from "@mui/material";
+import {FormEvent} from "react";
+import {login} from "@/src/helpers/auth-api";
+
+type User = {
+    username: string
+    email: string
+    password: string
+}
 
 export default function LoginPage() {
+const onSubmit = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const formData = new FormData(e.currentTarget);
+    const user: User = Object.fromEntries(formData.entries()) as User
+    login(user)
+    console.log(user);
+}
     return (
-        <Stack
+        <>
+        <Box
             component="form"
-            sx={{
-                width: '25ch',
-            }}
-            spacing={2}
             noValidate
             autoComplete="off"
+            onSubmit={onSubmit}
         >
-            <FormControl variant="standard">
-                <InputLabel htmlFor="component-simple">Username or Email</InputLabel>
-                <Input id="component-simple"/>
-            </FormControl>
-            <FormControl variant="standard">
-                <InputLabel htmlFor="component-simple">Password</InputLabel>
-                <Input id="component-simple"/>
-            </FormControl>
-            <Button variant="contained">Submit</Button>
-        </Stack>
+            <TextField id="username" name="username" label="Username or Email" variant="standard" />
+            <TextField id="password" name="password" label="Password" variant="standard" />
+            <Button type="submit">Sign in</Button>
+        </Box>
+      </>
     );
 }
 
