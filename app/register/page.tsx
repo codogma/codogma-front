@@ -10,31 +10,28 @@ type User = {
     password: string
 }
 
-export default function LoginPage() {
+export default function RegisterPage() {
+    const onSubmit = (e: FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        const formData = new FormData(e.currentTarget);
+        const user: User = Object.fromEntries(formData.entries()) as User
+        register(user)
+        console.log(user);
+    }
     return (
-        <Stack
-            component="form"
-            sx={{
-                width: '25ch',
-            }}
-            spacing={2}
-            noValidate
-            autoComplete="off"
-        >
-            <FormControl variant="standard">
-                <InputLabel htmlFor="component-simple">Username</InputLabel>
-                <Input id="component-simple"/>
-            </FormControl>
-            <FormControl variant="standard">
-                <InputLabel htmlFor="component-simple">Email</InputLabel>
-                <Input id="component-simple"/>
-            </FormControl>
-            <FormControl variant="standard">
-                <InputLabel htmlFor="component-simple">Password</InputLabel>
-                <Input id="component-simple"/>
-            </FormControl>
-            <Button variant="contained">Submit</Button>
-        </Stack>
+        <>
+            <Box
+                component="form"
+                noValidate
+                autoComplete="off"
+                onSubmit={onSubmit}
+            >
+                <TextField id="username" name="username" label="Username" variant="standard" />
+                <TextField id="email" name="email" label="Email" variant="standard" />
+                <TextField id="password" name="password" label="Password" variant="standard" />
+                <Button type="submit">Register</Button>
+            </Box>
+        </>
     );
 }
 
