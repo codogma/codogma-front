@@ -8,8 +8,8 @@ export const register = (requestData: { username: string, email: string, passwor
         });
 }
 
-export const login = (requestData: { username: string, password: string }) => {
-    axiosInstance.post("/auth/signin", requestData)
+export const login = (requestData: { usernameOrEmail: string, password: string }) => {
+    axiosInstance.post("/auth/login", requestData)
         .then(() => console.log("User logged in successfully"))
         .catch((error: any) => {
             console.error("Error logging in user: " + error.message);

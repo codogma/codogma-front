@@ -26,7 +26,7 @@ const onSubmit = (e: FormEvent<HTMLFormElement>) => {
             autoComplete="off"
             onSubmit={onSubmit}
         >
-            <TextField id="username" name="username" label="Username or Email" variant="standard" />
+            <TextField id="usernameOrEmail" name="usernameOrEmail" label="Username or Email" variant="standard" />
             <TextField id="password" name="password" label="Password" variant="standard" />
             <Button type="submit">Sign in</Button>
         </Box>
