@@ -1,36 +1,42 @@
 "use client"
 import * as React from 'react';
-import {Box, TextField, Button} from "@mui/material";
-import {FormEvent} from "react";
+import {FormEvent} from 'react';
+import {Box, Button, TextField} from "@mui/material";
 import {login} from "@/src/helpers/auth-api";
+import {useRouter} from "next/navigation";
+
 
 type User = {
     username: string
-    email: string
     password: string
 }
 
 export default function LoginPage() {
-const onSubmit = (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const formData = new FormData(e.currentTarget);
-    const user: User = Object.fromEntries(formData.entries()) as User
-    login(user)
-    console.log(user);
-}
+    const router = useRouter();
+    const onSubmit = (e: FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        const formData = new FormData(e.currentTarget);
+        const user: User = Object.fromEntries(formData.entries()) as User
+        login(user)
+        router.push("/");
+        console.log(user);
+    }
     return (
         <>
-        <Box
-            component="form"
-            noValidate
-            autoComplete="off"
-            onSubmit={onSubmit}
-        >
-            <TextField id="usernameOrEmail" name="usernameOrEmail" label="Username or Email" variant="standard" />
-            <TextField id="password" name="password" label="Password" variant="standard" />
-            <Button type="submit">Sign in</Button>
-        </Box>
-      </>
+            <Box
+                component="form"
+                noValidate
+                sx={{
+                    m: 1, width: '25ch',
+                }}
+                autoComplete="off"
+                onSubmit={onSubmit}
+            >
+                <TextField id="usernameOrEmail" name="usernameOrEmail" label="Username or Email" variant="standard"/>
+                <TextField id="password" name="password" label="Password" variant="standard" type="password"/>
+                <Button type="submit">Sign in</Button>
+            </Box>
+        </>
     );
 }
 

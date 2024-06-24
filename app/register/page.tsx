@@ -3,6 +3,7 @@ import * as React from 'react';
 import {FormEvent} from 'react';
 import {Box, TextField, Button} from "@mui/material";
 import {register} from "@/src/helpers/auth-api";
+import {useRouter} from "next/navigation";
 
 type User = {
     username: string
@@ -11,11 +12,13 @@ type User = {
 }
 
 export default function RegisterPage() {
+    const router = useRouter();
     const onSubmit = (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         const formData = new FormData(e.currentTarget);
         const user: User = Object.fromEntries(formData.entries()) as User
         register(user)
+        router.push("/login")
         console.log(user);
     }
     return (
@@ -23,12 +26,15 @@ export default function RegisterPage() {
             <Box
                 component="form"
                 noValidate
+                sx={{
+                    m: 1, width: '25ch',
+                }}
                 autoComplete="off"
                 onSubmit={onSubmit}
             >
                 <TextField id="username" name="username" label="Username" variant="standard" />
                 <TextField id="email" name="email" label="Email" variant="standard" />
-                <TextField id="password" name="password" label="Password" variant="standard" />
+                <TextField id="password" name="password" label="Password" variant="standard" type="password"/>
                 <Button type="submit">Register</Button>
             </Box>
         </>
