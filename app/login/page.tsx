@@ -7,7 +7,7 @@ import {useRouter} from "next/navigation";
 
 
 type User = {
-    username: string
+    usernameOrEmail: string
     password: string
 }
 
