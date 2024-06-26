@@ -19,3 +19,7 @@ export const login = (requestData: { usernameOrEmail: string, password: string }
             console.error("Error logging in user: " + error.message);
         });
 }
+
+export const logout = () => {
+    localStorage.removeItem("token")
+}
