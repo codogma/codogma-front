@@ -1,4 +1,4 @@
-import {axiosInstance} from "@/src/helpers/axios";
+import {axiosInstance} from "@/helpers/axios";
 
 export const register = (requestData: { username: string, email: string, password: string }) => {
     axiosInstance.post("/auth/signup", requestData)
@@ -10,7 +10,11 @@ export const register = (requestData: { username: string, email: string, passwor
 
 export const login = (requestData: { usernameOrEmail: string, password: string }) => {
     axiosInstance.post("/auth/login", requestData)
-        .then(() => console.log("User logged in successfully"))
+        .then((response) => {
+            console.log("User logged in successfully")
+            const token = response.data.token
+            localStorage.setItem("token", token)
+        })
         .catch((error: any) => {
             console.error("Error logging in user: " + error.message);
         });

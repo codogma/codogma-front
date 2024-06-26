@@ -1,84 +1,51 @@
 import {axiosInstance} from "@/helpers/axios";
-import {Book} from "@/types";
-import {toast} from "sonner";
+import {Post} from "@/types";
 
-export const createBook = (requestData: {
+export const createPost = (requestData: {
     title: string,
-    description: string,
-    authorIds: number[],
-    genreIds: number[],
-    ISBN: string
+    content: string
 }) => {
-    axiosInstance.post("/books/add", requestData)
-        .then(() => toast("Book created successfully", {
-            action: {
-                label: "Close",
-                onClick: () => console.log("Closed")
-            }
-        }))
-        .catch((error) => {
-            toast.error("Error creating book: " + error.message, {
-                action: {
-                    label: "Close",
-                    onClick: () => console.log("Closed")
-                }
-            });
-            console.error(error);
+    axiosInstance.post("/posts", requestData)
+        .then(() => console.log("Post created successfully"))
+        .catch((error: any) => {
+            console.error("Error creating book: " + error.message);
         });
 }
 
-export const updateBook = (id: number, requestData: {
+
+export const updatePost = (id: number, requestData: {
     title?: string,
-    description?: string,
-    authorIds?: number[],
-    genreIds?: number[],
-    ISBN?: string
+    content?: string
 }) => {
-    axiosInstance.put(`/books/edit/${id}`, requestData)
-        .then(() => toast("Book updated successfully", {
-            action: {
-                label: "Close",
-                onClick: () => console.log("Closed")
-            }
-        }))
-        .catch((error) => {
-            toast.error("Error updating book: " + error.message, {
-                action: {
-                    label: "Close",
-                    onClick: () => console.log("Closed")
-                }
-            });
-            console.error(error);
-        })
+    axiosInstance.put(`/posts/${id}`, requestData)
+        .then(() => console.log("Post updated successfully"))
+        .catch((error: any) => {
+            console.error("Error updating post: " + error.message);
+        });
 }
 
-export const getBooks = async (): Promise<Book[]> => {
+export const getPosts = async (): Promise<Post[]> => {
     try {
-        const response = await axiosInstance.get('/books');
+        const response = await axiosInstance.get('/posts');
         return response.data;
     } catch (error) {
-        console.error('Error fetching books:', error);
+        console.error('Error fetching posts:', error);
         throw error;
     }
 }
 
-export const getBookById = async (id: number): Promise<Book> => {
+export const getPostById = async (id: number): Promise<Post> => {
     try {
-        const response = await axiosInstance.get(`/books/book/${id}`);
+        const response = await axiosInstance.get(`/posts/${id}`);
         return response.data;
     } catch (error) {
-        console.error('Error fetching book:', error);
+        console.error('Error fetching post:', error);
         throw error;
     }
 };
 
-export const deleteBook = (id: number) => {
-    axiosInstance.delete(`/books/delete/${id}`)
-        .then(() => toast("Book deleted successfully", {
-            action: {
-                label: "Close",
-                onClick: () => console.log("Closed")
-            }
-        }))
+export const deletePost = (id: number) => {
+    axiosInstance.delete(`/posts/${id}`)
+        .then(() => console.log("Post deleted successfully"))
         .catch((error) => console.error(error))
 }
