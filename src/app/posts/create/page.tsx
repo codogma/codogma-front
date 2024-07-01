@@ -1,40 +1,38 @@
 "use client";
-import "../../globals.css"
-import {z} from "zod"
+import "../../globals.css";
+import {z} from "zod";
 import {zodResolver} from "@hookform/resolvers/zod";
-import { useForm, SubmitHandler, FormProvider } from 'react-hook-form';
+import {Controller, FormProvider, SubmitHandler, useForm} from "react-hook-form";
 import React, {useEffect, useState} from "react";
-// import {DropdownCombobox, ListItem} from "@/components/dropdown-combobox";
-import {Category, User} from "@/types";
+import {Category} from "@/types";
 import {createPost} from "@/helpers/post-api";
-import {Box, Button} from "@mui/material";
+import {Box, Button, TextField} from "@mui/material";
 import FormInput from "@/components/form-input";
-import Autocomplete from '@mui/material/Autocomplete';
+import Autocomplete from "@mui/material/Autocomplete";
 import {getCategories} from "@/helpers/category-api";
 
 const PostScheme = z.object({
     categories: z.array(z.object({name: z.string()})),
     title: z.string().min(2, "Название поста не может содержать менее 2 символов.").max(50, "Название поста не может содержать более 50 символов."),
     content: z.string()
-})
+});
 
 export default function Posts() {
     const [categories, setCategories] = useState<Category[]>([]);
-    const [selectedCategories, setSelectedCategories] = useState<Category[]>([]);
 
     useEffect(() => {
         async function fetchData() {
             try {
                 const allCategories = await getCategories();
-                console.log(allCategories)
-                setCategories(allCategories)
+                console.log(allCategories);
+                setCategories(allCategories);
             } catch (error) {
-                console.error('Error fetching data:', error)
+                console.error('Error fetching data:', error);
             }
         }
 
-        fetchData()
-    }, [])
+        fetchData();
+    }, []);
 
     const zodForm = useForm<z.infer<typeof PostScheme>>({
         resolver: zodResolver(PostScheme),
@@ -43,39 +41,26 @@ export default function Posts() {
             title: "",
             content: ""
         }
-    })
+    });
 
     const {
         reset,
         handleSubmit,
-        register,
+        control,
         formState: {isSubmitSuccessful, errors}
-    } = zodForm
-
-    // const handleAddGenre = (item: ListItem) => {
-    //     setSelectedGenres([...selectedGenres, {id: item.id, name: item.value, books: []}]);
-    // };
-    //
-    // const handleRemoveGenre = (genreId: number) => {
-    //     setSelectedGenres(selectedGenres.filter((genre) => genre.id !== genreId));
-    // };
-    //
-    // const handleRemoveAllGenres = (): void => {
-    //     setSelectedGenres([]);
-    // };
-
+    } = zodForm;
 
     useEffect(() => {
-        if(isSubmitSuccessful) {
+        if (isSubmitSuccessful) {
             reset();
         }
-    }, [isSubmitSuccessful, reset])
+    }, [isSubmitSuccessful, reset]);
 
     const onSubmit: SubmitHandler<z.infer<typeof PostScheme>> = (formData) => {
-        const requestData = {...formData}
-        console.log(requestData)
-        createPost(requestData)
-    }
+        const requestData = {...formData};
+        console.log(requestData);
+        createPost(requestData);
+    };
 
     return (
         <main className="flex min-h-screen max-w-3xl flex-col items-left justify-self-auto p-24">
@@ -83,25 +68,31 @@ export default function Posts() {
                 <Box
                     component="form"
                     noValidate
-                    sx={{
-                        m: 1, width: '25ch',
-                    }}
+                    sx={{m: 1, width: '25ch'}}
                     autoComplete="off"
                     onSubmit={handleSubmit(onSubmit)}
                 >
-                    <Autocomplete
-                        multiple
-                        id="categories"
-                        options={categories}
-                        getOptionLabel={(category) => category?.name}
-                        defaultValue={[categories[0]]}
-                        filterSelectedOptions
-                        renderInput={(params) => (
-                            <FormInput {...params} name="categories" label="Categories" variant="standard" />
+                    <Controller
+                        name="categories"
+                        control={control}
+                        render={({field}) => (
+                            <Autocomplete
+                                multiple
+                                id="categories"
+                                options={categories}
+                                getOptionLabel={(category) => category?.name}
+                                filterSelectedOptions
+                                value={field.value}
+                                isOptionEqualToValue={(option, value) => option.name === value.name}
+                                onChange={(_, newValue) => field.onChange(newValue)}
+                                renderInput={(params) => (
+                                    <TextField {...params} label="Categories" variant="standard"/>
+                                )}
+                            />
                         )}
                     />
-                    <FormInput name="title" label="Title" variant="standard" />
-                    <FormInput name="content" label="Content" variant="standard" />
+                    <FormInput name="title" label="Title" variant="standard"/>
+                    <FormInput name="content" label="Content" variant="standard"/>
                     <Button type="submit">Create</Button>
                 </Box>
             </FormProvider>
