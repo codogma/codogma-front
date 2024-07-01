@@ -4,10 +4,10 @@ export type User = {
     posts: Post[] | [];
 }
 
-export type Genre = {
+export type Category = {
     id: number,
     name: string;
-    books: Post[] | [];
+    posts: Post[] | [];
 }
 
 export type Post = {

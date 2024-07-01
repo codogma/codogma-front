@@ -31,8 +31,8 @@ export default function Page() {
         <main className="flex min-h-screen flex-col items-left justify-self-auto p-24">
             {users?.map((user) => (
                 <ul key={user.id}>
-                    <li>Имя автора: <Link href={`/users/${user.id}`}>{user.username}</Link></li>
-                    <li>Книги автора:</li>
+                    <li>Имя пользователя: <Link href={`/users/${user.id}`}>{user.username}</Link></li>
+                    <li>Посты пользователя:</li>
                     {user.posts?.map((post) => (
                         <ul key={`/posts/${post.id}`}>
                             <li><Link href={`/posts/${post.id}`}>{post.title}</Link></li>
@@ -42,7 +42,7 @@ export default function Page() {
                         <Button>Обновить данные</Button>
                     </Link>
                     <Link href={`/users`}>
-                        <Button id={user.id.toString()} onClick={handleDelete}>Удалить автора</Button>
+                        <Button id={user.id.toString()} onClick={handleDelete}>Удалить пользователя</Button>
                     </Link>
                 </ul>
             ))}

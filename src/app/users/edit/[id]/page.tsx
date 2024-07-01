@@ -10,7 +10,7 @@ import {Box, Button} from "@mui/material";
 import {getUserById, updateUser} from "@/helpers/user-api";
 
 const UserScheme = z.object({
-    username: z.optional(z.string().min(2, "Название автора не может содержать менее 2 символов.").max(50, "Название автора не может содержать более 50 символов."))
+    username: z.optional(z.string().min(2, "Имя пользователя не может содержать менее 2 символов.").max(50, "Имя пользователя не может содержать более 50 символов."))
 })
 
 type PageParams = {

@@ -5,40 +5,41 @@ import {zodResolver} from "@hookform/resolvers/zod";
 import { useForm, SubmitHandler, FormProvider } from 'react-hook-form';
 import React, {useEffect, useState} from "react";
 // import {DropdownCombobox, ListItem} from "@/components/dropdown-combobox";
-import {User} from "@/types";
+import {Category, User} from "@/types";
 import {createPost} from "@/helpers/post-api";
 import {Box, Button} from "@mui/material";
 import FormInput from "@/components/form-input";
-// import {getAuthors} from "@/helpers/user-api";
-// import {getGenres} from "@/helpers/genre-api";
+import Autocomplete from '@mui/material/Autocomplete';
+import {getCategories} from "@/helpers/category-api";
 
 const PostScheme = z.object({
+    categories: z.array(z.object({name: z.string()})),
     title: z.string().min(2, "Название поста не может содержать менее 2 символов.").max(50, "Название поста не может содержать более 50 символов."),
     content: z.string()
 })
 
 export default function Posts() {
-    // const [genres, setGenres] = useState<Genre[]>([]);
-    // const [selectedGenres, setSelectedGenres] = useState<Genre[]>([]);
+    const [categories, setCategories] = useState<Category[]>([]);
+    const [selectedCategories, setSelectedCategories] = useState<Category[]>([]);
 
-    // useEffect(() => {
-    //     async function fetchData() {
-    //         try {
-    //             const allAuthors = await getAuthors();
-    //             // const allGenres = await getGenres();
-    //             setUsers(allAuthors);
-    //             // setGenres(allGenres)
-    //         } catch (error) {
-    //             console.error('Error fetching data:', error)
-    //         }
-    //     }
-    //
-    //     fetchData()
-    // }, [])
+    useEffect(() => {
+        async function fetchData() {
+            try {
+                const allCategories = await getCategories();
+                console.log(allCategories)
+                setCategories(allCategories)
+            } catch (error) {
+                console.error('Error fetching data:', error)
+            }
+        }
+
+        fetchData()
+    }, [])
 
     const zodForm = useForm<z.infer<typeof PostScheme>>({
         resolver: zodResolver(PostScheme),
         defaultValues: {
+            categories: [],
             title: "",
             content: ""
         }
@@ -88,6 +89,17 @@ export default function Posts() {
                     autoComplete="off"
                     onSubmit={handleSubmit(onSubmit)}
                 >
+                    <Autocomplete
+                        multiple
+                        id="categories"
+                        options={categories}
+                        getOptionLabel={(category) => category?.name}
+                        defaultValue={[categories[0]]}
+                        filterSelectedOptions
+                        renderInput={(params) => (
+                            <FormInput {...params} name="categories" label="Categories" variant="standard" />
+                        )}
+                    />
                     <FormInput name="title" label="Title" variant="standard" />
                     <FormInput name="content" label="Content" variant="standard" />
                     <Button type="submit">Create</Button>

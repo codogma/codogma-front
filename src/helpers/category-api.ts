@@ -1,70 +1,42 @@
 import {axiosInstance} from "@/helpers/axios";
-import {toast} from "sonner";
-import {Genre} from "@/types";
+import {Category} from "@/types";
 
-export const createGenre = (requestData: { name: string, bookIds: number[] }) => {
-    axiosInstance.post("/genres/add", requestData)
-        .then(() => toast("Genre created successfully", {
-            action: {
-                label: "Close",
-                onClick: () => console.log("Closed")
-            }
-        }))
+export const createCategory = (requestData: { name: string }) => {
+    axiosInstance.post("/categories", requestData)
+        .then(() => console.log("Category created successfully"))
         .catch((error) => {
-            toast.error("Error creating genre: " + error.message, {
-                action: {
-                    label: "Close",
-                    onClick: () => console.log("Closed")
-                }
-            });
-            console.error(error);
+            console.error("Error creating categories: " + error.message);
         });
 }
 
-export const updateGenre = (id: number, requestData: { name?: string, bookIds?: number[] }) => {
-    axiosInstance.put(`/genres/edit/${id}`, requestData)
-        .then(() => toast("Genre updated successfully", {
-            action: {
-                label: "Close",
-                onClick: () => console.log("Closed")
-            }
-        }))
+export const updateCategory = (id: number, requestData: { name?: string }) => {
+    axiosInstance.put(`/categories/${id}`, requestData)
+        .then(() => console.log("Category updated successfully"))
         .catch((error) => console.error(error))
 }
 
-export const getGenres = async (): Promise<Genre[]> => {
+export const getCategories = async (): Promise<Category[]> => {
     try {
-        const response = await axiosInstance.get('/genres');
+        const response = await axiosInstance.get('/categories');
         return response.data;
     } catch (error) {
-        // console.error('Error fetching genres:', error);
-        toast.error("Error fetching data: " + error, {
-            action: {
-                label: "Close",
-                onClick: () => console.log("Closed")
-            }
-        });
+        console.error('Error fetching categories:', error)
         throw error;
     }
 };
 
-export const getGenreById = async (id: number): Promise<Genre> => {
+export const getCategoryById = async (id: number): Promise<Category> => {
     try {
-        const response = await axiosInstance.get(`/genres/genre/${id}`);
+        const response = await axiosInstance.get(`/categories/${id}`);
         return response.data;
     } catch (error) {
-        console.error('Error fetching genre:', error);
+        console.error('Error fetching category:', error);
         throw error;
     }
 }
 
-export const deleteGenre = (id: number) => {
-    axiosInstance.delete(`/genres/delete/${id}`)
-        .then(() => toast("Genre deleted successfully", {
-            action: {
-                label: "Close",
-                onClick: () => console.log("Closed")
-            }
-        }))
+export const deleteCategory = (id: number) => {
+    axiosInstance.delete(`/categories/${id}`)
+        .then(() => console.log("Category deleted successfully"))
         .catch((error) => console.error(error))
 }
