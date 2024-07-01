@@ -14,10 +14,9 @@ export default function Page() {
     }
 
     useEffect(() => {
-        if(localStorage.getItem("token")) {
+        if (localStorage.getItem("token")) {
             setIsAuthenticated(true)
-        }
-        else {
+        } else {
             setIsAuthenticated(false)
         }
     }, [isAuthenticated])

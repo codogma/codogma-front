@@ -65,7 +65,6 @@ export default function Posts({params}: PageProps) {
     }, [postId, zodForm])
 
 
-
     // const handleAddGenre = (item: ListItem) => {
     //     const genre = genres.find(genre => genre.id === item.id);
     //     if (genre) {

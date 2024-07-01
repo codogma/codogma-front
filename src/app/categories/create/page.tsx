@@ -28,7 +28,7 @@ export default function Categoties() {
     } = zodForm
 
     useEffect(() => {
-        if(isSubmitSuccessful) {
+        if (isSubmitSuccessful) {
             reset();
         }
     }, [isSubmitSuccessful, reset])
@@ -52,7 +52,7 @@ export default function Categoties() {
                     autoComplete="off"
                     onSubmit={handleSubmit(onSubmit)}
                 >
-                    <FormInput name="name" label="Name" variant="standard" />
+                    <FormInput name="name" label="Name" variant="standard"/>
                     <Button type="submit">Create</Button>
                 </Box>
             </FormProvider>

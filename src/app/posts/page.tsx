@@ -38,7 +38,7 @@ export default function Page() {
                         <Button>Обновить данные</Button>
                     </Link>
                     <Link href={"/posts"}>
-                    <Button id={post.id.toString()} onClick={handleDelete}>Удалить пост</Button>
+                        <Button id={post.id.toString()} onClick={handleDelete}>Удалить пост</Button>
                     </Link>
                 </ul>
             ))}

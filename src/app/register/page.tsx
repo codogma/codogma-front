@@ -1,7 +1,7 @@
 "use client"
 import * as React from 'react';
 import {FormEvent} from 'react';
-import {Box, TextField, Button} from "@mui/material";
+import {Box, Button, TextField} from "@mui/material";
 import {register} from "@/helpers/auth-api";
 import {useRouter} from "next/navigation";
 
@@ -32,8 +32,8 @@ export default function RegisterPage() {
                 autoComplete="off"
                 onSubmit={onSubmit}
             >
-                <TextField id="username" name="username" label="Username" variant="standard" />
-                <TextField id="email" name="email" label="Email" variant="standard" />
+                <TextField id="username" name="username" label="Username" variant="standard"/>
+                <TextField id="email" name="email" label="Email" variant="standard"/>
                 <TextField id="password" name="password" label="Password" variant="standard" type="password"/>
                 <Button type="submit">Register</Button>
             </Box>
