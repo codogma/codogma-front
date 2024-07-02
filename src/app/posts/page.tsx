@@ -4,6 +4,7 @@ import {deletePost, getPosts} from "@/helpers/post-api";
 import {Post} from "@/types";
 import {Button} from "@mui/material";
 import Link from "next/link";
+import DOMPurify from "dompurify";
 
 export default function Page() {
     const [posts, setPosts] = useState<Post[]>([]);
@@ -12,6 +13,7 @@ export default function Page() {
         async function fetchData() {
             try {
                 const allPosts = await getPosts();
+                allPosts.map((post) => post.content = DOMPurify.sanitize(post.content));
                 setPosts(allPosts);
             } catch (error) {
                 console.error('Error fetching data:', error);
@@ -33,6 +35,7 @@ export default function Page() {
             {posts?.map((post) => (
                 <ul key={post.title}>
                     <li>Название поста: <Link href={`/posts/${post.id}`}>{post.title}</Link></li>
+                    <div dangerouslySetInnerHTML={{__html: post.content}}/>
                     <li>Автор поста: {post.userId}</li>
                     <Link href={`/posts/edit/${post.id}`}>
                         <Button>Обновить данные</Button>

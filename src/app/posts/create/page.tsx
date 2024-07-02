@@ -13,7 +13,7 @@ import {getCategories} from "@/helpers/category-api";
 import {TinyMCEEditor} from "@/components/TinyMCEEditor";
 
 const PostScheme = z.object({
-    categories: z.array(z.object({name: z.string()})),
+    categoryIds: z.array(z.number()),
     title: z.string().min(2, "Название поста не может содержать менее 2 символов.").max(50, "Название поста не может содержать более 50 символов."),
     content: z.string()
 });
@@ -38,7 +38,7 @@ export default function Posts() {
     const zodForm = useForm<z.infer<typeof PostScheme>>({
         resolver: zodResolver(PostScheme),
         defaultValues: {
-            categories: [],
+            categoryIds: [],
             title: "",
             content: ""
         }
@@ -74,7 +74,7 @@ export default function Posts() {
                     onSubmit={handleSubmit(onSubmit)}
                 >
                     <Controller
-                        name="categories"
+                        name="categoryIds"
                         control={control}
                         render={({field}) => (
                             <Autocomplete
@@ -83,9 +83,9 @@ export default function Posts() {
                                 options={categories}
                                 getOptionLabel={(category) => category?.name}
                                 filterSelectedOptions
-                                value={field.value}
-                                isOptionEqualToValue={(option, value) => option.name === value.name}
-                                onChange={(_, newValue) => field.onChange(newValue)}
+                                value={categories.filter(category => field.value.includes(category.id))}
+                                isOptionEqualToValue={(option, value) => option.id === value.id}
+                                onChange={(_, newValue) => field.onChange(newValue.map(category => category.id))}
                                 renderInput={(params) => (
                                     <TextField {...params} label="Categories" variant="standard"
                                                placeholder="Select categories"/>

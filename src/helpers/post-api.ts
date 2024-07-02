@@ -2,13 +2,14 @@ import {axiosInstance} from "@/helpers/axios";
 import {Post} from "@/types";
 
 export const createPost = (requestData: {
+    categoryIds: number[],
     title: string,
     content: string
 }) => {
     axiosInstance.post("/posts", requestData)
         .then(() => console.log("Post created successfully"))
         .catch((error: any) => {
-            console.error("Error creating book: " + error.message);
+            console.error("Error creating post: " + error.message);
         });
 }
 
