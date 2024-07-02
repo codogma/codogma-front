@@ -10,6 +10,7 @@ import {Box, Button, TextField} from "@mui/material";
 import FormInput from "@/components/form-input";
 import Autocomplete from "@mui/material/Autocomplete";
 import {getCategories} from "@/helpers/category-api";
+import {TinyMCEEditor} from "@/components/TinyMCEEditor";
 
 const PostScheme = z.object({
     categories: z.array(z.object({name: z.string()})),
@@ -68,7 +69,7 @@ export default function Posts() {
                 <Box
                     component="form"
                     noValidate
-                    sx={{m: 1, width: '25ch'}}
+                    sx={{m: 1, ml: '20ch', mr: '20ch'}}
                     autoComplete="off"
                     onSubmit={handleSubmit(onSubmit)}
                 >
@@ -86,13 +87,23 @@ export default function Posts() {
                                 isOptionEqualToValue={(option, value) => option.name === value.name}
                                 onChange={(_, newValue) => field.onChange(newValue)}
                                 renderInput={(params) => (
-                                    <TextField {...params} label="Categories" variant="standard"/>
+                                    <TextField {...params} label="Categories" variant="standard"
+                                               placeholder="Select categories"/>
                                 )}
                             />
                         )}
                     />
                     <FormInput name="title" label="Title" variant="standard"/>
-                    <FormInput name="content" label="Content" variant="standard"/>
+                    <Controller
+                        name="content"
+                        control={control}
+                        render={({field}) => (
+                            <TinyMCEEditor
+                                value={field.value}
+                                onChange={field.onChange}
+                            />
+                        )}
+                    />
                     <Button type="submit">Create</Button>
                 </Box>
             </FormProvider>
