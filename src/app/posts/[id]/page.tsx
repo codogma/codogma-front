@@ -5,7 +5,7 @@ import {getPostById} from "@/helpers/post-api";
 import Link from "next/link";
 import DOMPurify from "dompurify";
 import {getUserById} from "@/helpers/user-api";
-import TimeAgo from "@/components/TimeAgo";
+import {TimeAgo} from "@/components/TimeAgo";
 
 type PageParams = {
     id: number

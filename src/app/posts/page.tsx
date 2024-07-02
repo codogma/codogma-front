@@ -5,6 +5,7 @@ import {Post} from "@/types";
 import {Button} from "@mui/material";
 import Link from "next/link";
 import DOMPurify from "dompurify";
+import {TimeAgo} from "@/components/TimeAgo";
 
 export default function Page() {
     const [posts, setPosts] = useState<Post[]>([]);
@@ -34,9 +35,10 @@ export default function Page() {
         <main className="flex min-h-screen flex-col items-left justify-between p-24">
             {posts?.map((post) => (
                 <ul key={post.title}>
+                    <li>Автор поста: {post.userId}</li>
+                    <TimeAgo datetime={post.createdAt}/>
                     <li>Название поста: <Link href={`/posts/${post.id}`}>{post.title}</Link></li>
                     <div dangerouslySetInnerHTML={{__html: post.content}}/>
-                    <li>Автор поста: {post.userId}</li>
                     <Link href={`/posts/edit/${post.id}`}>
                         <Button>Обновить данные</Button>
                     </Link>
