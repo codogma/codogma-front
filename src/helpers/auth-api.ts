@@ -2,7 +2,7 @@ import {axiosInstance} from "@/helpers/axios";
 
 export const register = (requestData: { username: string, email: string, password: string }) => {
     axiosInstance.post("/auth/signup", requestData)
-        .then(() => console.log("User registered successfully"))
+        .then((response) => console.log(response.data))
         .catch((error: any) => {
             console.error("Error registering user: " + error.message);
         });

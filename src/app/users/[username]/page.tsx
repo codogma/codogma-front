@@ -1,11 +1,11 @@
 "use client";
 import {useEffect, useState} from "react";
 import {User} from "@/types";
-import {getUserById} from "@/helpers/user-api";
+import {getUserByUsername} from "@/helpers/user-api";
 import Link from "next/link";
 
 type PageParams = {
-    id: number
+    username: string
 }
 
 type PageProps = {
@@ -13,13 +13,13 @@ type PageProps = {
 }
 
 export default function Page({params}: PageProps) {
-    const userId: number = params.id;
+    const username: string = params.username;
     const [user, setUser] = useState<User>();
 
     useEffect(() => {
         async function fetchData() {
             try {
-                const userData = await getUserById(userId);
+                const userData = await getUserByUsername(username);
                 setUser(userData);
             } catch (error) {
                 console.error('Error fetching data:', error);
@@ -27,7 +27,7 @@ export default function Page({params}: PageProps) {
         }
 
         fetchData();
-    }, [userId])
+    }, [username])
 
     return (
         <main className="flex min-h-screen flex-col items-left justify-between p-24">

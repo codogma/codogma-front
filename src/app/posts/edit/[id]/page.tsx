@@ -1,15 +1,19 @@
 "use client";
 import "../../../globals.css"
 import {z} from "zod"
-import {FormProvider, SubmitHandler, useForm} from "react-hook-form";
+import {Controller, FormProvider, SubmitHandler, useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
 import React, {useEffect, useState} from "react";
-import {Post} from "@/types";
+import {Category, Post} from "@/types";
 import FormInput from "@/components/form-input";
-import {Box, Button} from "@mui/material";
+import {Box, Button, TextField} from "@mui/material";
 import {getPostById, updatePost} from "@/helpers/post-api";
+import {getCategories} from "@/helpers/category-api";
+import Autocomplete from "@mui/material/Autocomplete";
+import {TinyMCEEditor} from "@/components/TinyMCEEditor";
 
 const PostScheme = z.object({
+    categoryIds: z.array(z.number()),
     title: z.optional(z.string().min(2, "Название поста не может содержать менее 2 символов.").max(50, "Название поста не может содержать более 50 символов.")),
     content: z.optional(z.string())
 })
@@ -26,22 +30,16 @@ type PageProps = {
 export default function Posts({params}: PageProps) {
     const postId: number = params.id;
     const [post, setPost] = useState<Post>();
-    // const [genres, setGenres] = useState<Genre[]>([]);
-    // const [selectedGenres, setSelectedGenres] = useState<Genre[]>([]);
+    const [categories, setCategories] = useState<Category[]>([]);
+
     const zodForm = useForm<z.infer<typeof PostScheme>>({
         resolver: zodResolver(PostScheme),
         defaultValues: {
+            categoryIds: [],
             title: "",
             content: ""
         }
     })
-
-    const {
-        reset,
-        handleSubmit,
-        register,
-        formState: {isSubmitSuccessful, errors}
-    } = zodForm
 
     useEffect(() => {
         async function fetchData() {
@@ -49,10 +47,12 @@ export default function Posts({params}: PageProps) {
                 const postData = await getPostById(postId);
                 setPost(postData);
 
-                // const allGenres = await getGenres();
-                // setGenres(allGenres);
+                const allCategories = await getCategories();
+                console.log(allCategories);
+                setCategories(allCategories);
 
                 zodForm.reset({
+                    categoryIds: postData.categories.map((category) => category.id),
                     title: postData.title,
                     content: postData.content
                 });
@@ -64,31 +64,12 @@ export default function Posts({params}: PageProps) {
         fetchData()
     }, [postId, zodForm])
 
-
-    // const handleAddGenre = (item: ListItem) => {
-    //     const genre = genres.find(genre => genre.id === item.id);
-    //     if (genre) {
-    //         setSelectedGenres(prev => [...prev, genre]);
-    //     }
-    // };
-    //
-    // const handleRemoveGenre = (genreId: number) => {
-    //     setSelectedGenres(prev => prev.filter((genre) => genre.id !== genreId));
-    // };
-    //
-    // const handleRemoveAllGenres = (): void => {
-    //     setSelectedGenres([]);
-    // };
-
-    // useEffect(() => {
-    //     const userIds = selectedUsers.map((user) => user.id);
-    //     zodForm.setValue("userIds", userIds)
-    // }, [selectedUsers, zodForm])
-    //
-    // const onSubmit = (formData: z.infer<typeof PostScheme>) => {
-    //     // console.log(formData)
-    //     updatePost(postId, formData)
-    // }
+    const {
+        reset,
+        handleSubmit,
+        control,
+        formState: {isSubmitSuccessful, errors}
+    } = zodForm;
 
     useEffect(() => {
         if (isSubmitSuccessful) {
@@ -109,15 +90,44 @@ export default function Posts({params}: PageProps) {
                 <Box
                     component="form"
                     noValidate
-                    sx={{
-                        m: 1, width: '25ch',
-                    }}
+                    sx={{m: 1, ml: '20ch', mr: '20ch'}}
                     autoComplete="off"
                     onSubmit={handleSubmit(onSubmit)}
                 >
-                    <FormInput name="title" label="Title" variant="standard" defaultValue={post?.title}/>
-                    <FormInput name="content" label="Content" variant="standard" defaultValue={post?.content}/>
-                    <Button type="submit">Update</Button>
+                    <Controller
+                        name="categoryIds"
+                        control={control}
+                        render={({field}) => (
+                            <Autocomplete
+                                multiple
+                                id="categories"
+                                options={categories}
+                                defaultValue={post?.categories}
+                                getOptionLabel={(category) => category?.name}
+                                filterSelectedOptions
+                                value={categories.filter(category => field.value.includes(category.id))}
+                                isOptionEqualToValue={(option, value) => option.id === value.id}
+                                onChange={(_, newValue) => field.onChange(newValue.map(category => category.id))}
+                                renderInput={(params) => (
+                                    <TextField {...params} label="Categories" variant="standard"
+                                               placeholder="Select categories"/>
+                                )}
+                            />
+                        )}
+                    />
+                    <FormInput name="title" label="Title" variant="standard"/>
+                    <Controller
+                        name="content"
+                        control={control}
+                        render={({field}) => (
+                            <TinyMCEEditor
+                                defaultValue={post?.content}
+                                value={field.value}
+                                onChange={field.onChange}
+                            />
+                        )}
+                    />
+                    <Button type="submit">Create</Button>
                 </Box>
             </FormProvider>
         </main>

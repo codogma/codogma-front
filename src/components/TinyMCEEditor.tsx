@@ -6,13 +6,15 @@ const BundledEditor = dynamic(() => import('@/components/BundledEditor'), {
 });
 
 interface TinyMCEEditorProps {
-    value: string;
+    defaultValue?: string
+    value?: string;
     onChange: (content: string) => void;
 }
 
-export const TinyMCEEditor: React.FC<TinyMCEEditorProps> = ({ value, onChange }) => {
+export const TinyMCEEditor: React.FC<TinyMCEEditorProps> = ({ defaultValue, value, onChange }) => {
     return (
         <BundledEditor
+            defaultValue={defaultValue}
             value={value}
             init={{
                 height: 500,

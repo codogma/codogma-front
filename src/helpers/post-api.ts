@@ -17,6 +17,7 @@ export const createPost = (requestData: {
 export const updatePost = (id: number, requestData: {
     title?: string,
     content?: string
+    categoryIds: number[]
 }) => {
     axiosInstance.put(`/posts/${id}`, requestData)
         .then(() => console.log("Post updated successfully"))

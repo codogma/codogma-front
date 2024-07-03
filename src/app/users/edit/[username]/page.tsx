@@ -7,14 +7,14 @@ import React, {useEffect, useState} from "react";
 import {User} from "@/types"
 import FormInput from "@/components/form-input";
 import {Box, Button} from "@mui/material";
-import {getUserById, updateUser} from "@/helpers/user-api";
+import {getUserByUsername, updateUser} from "@/helpers/user-api";
 
 const UserScheme = z.object({
     username: z.optional(z.string().min(2, "Имя пользователя не может содержать менее 2 символов.").max(50, "Имя пользователя не может содержать более 50 символов."))
 })
 
 type PageParams = {
-    id: number
+    username: string
 }
 
 type PageProps = {
@@ -22,7 +22,7 @@ type PageProps = {
 }
 
 export default function Users({params}: PageProps) {
-    const userId: number = params.id
+    const username: string = params.username
     const [user, setUser] = useState<User>();
 
     const zodForm = useForm<z.infer<typeof UserScheme>>({
@@ -42,7 +42,7 @@ export default function Users({params}: PageProps) {
     useEffect(() => {
         async function fetchData() {
             try {
-                const userData = await getUserById(userId);
+                const userData = await getUserByUsername(username);
                 setUser(userData);
 
                 zodForm.reset({
@@ -54,7 +54,7 @@ export default function Users({params}: PageProps) {
         }
 
         fetchData();
-    }, [userId, zodForm]);
+    }, [username, zodForm]);
 
 
     if (!user) {
@@ -63,7 +63,7 @@ export default function Users({params}: PageProps) {
 
     const onSubmit: SubmitHandler<z.infer<typeof UserScheme>> = (formData) => {
         console.log(formData)
-        updateUser(userId, formData)
+        updateUser(username, formData)
     }
 
     return (
