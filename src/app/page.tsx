@@ -1,8 +1,5 @@
 "use client"
-import React, {useEffect, useState} from "react";
-import {Button} from "@mui/material";
-import Link from "next/link";
-import {logout} from "@/helpers/auth-api";
+import React from "react";
 
 
 export default function Page() {

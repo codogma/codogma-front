@@ -11,7 +11,7 @@ interface TinyMCEEditorProps {
     onChange: (content: string) => void;
 }
 
-export const TinyMCEEditor: React.FC<TinyMCEEditorProps> = ({ defaultValue, value, onChange }) => {
+export const TinyMCEEditor: React.FC<TinyMCEEditorProps> = ({defaultValue, value, onChange}) => {
     return (
         <BundledEditor
             defaultValue={defaultValue}

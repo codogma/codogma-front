@@ -1,16 +1,16 @@
-import React, { useEffect, useState } from 'react';
-import { formatDistanceToNow, format } from 'date-fns';
+import React, {useEffect, useState} from 'react';
+import {format, formatDistanceToNow} from 'date-fns';
 
 interface TimeAgoProps {
     datetime: Date;
 }
 
-export const TimeAgo: React.FC<TimeAgoProps> = ({ datetime }) => {
+export const TimeAgo: React.FC<TimeAgoProps> = ({datetime}) => {
     const [timeAgo, setTimeAgo] = useState<string>('');
 
     useEffect(() => {
         const updateTime = () => {
-            setTimeAgo(formatDistanceToNow(datetime, { addSuffix: true }));
+            setTimeAgo(formatDistanceToNow(datetime, {addSuffix: true}));
         };
         updateTime();
         const interval = setInterval(updateTime, 60000);
