@@ -14,6 +14,7 @@
     "@emotion/server": "^11.11.0",
     "@emotion/styled": "^11.11.5",
     "@hookform/resolvers": "^3.6.0",
+    "@mui/icons-material": "^5.15.21",
     "@mui/material": "^5.15.20",
     "@mui/material-nextjs": "^5.15.11",
     "@tinymce/tinymce-react": "^5.1.1",
