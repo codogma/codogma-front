@@ -7,7 +7,7 @@ import React, {useEffect, useState} from "react";
 import {Category} from "@/types";
 import {getCategoryById, updateCategory} from "@/helpers/category-api";
 import {Box, Button} from "@mui/material";
-import FormInput from "@/components/form-input";
+import FormInput from "@/components/FormInput";
 
 const CategoryScheme = z.object({
     name: z.optional(z.string().min(2, "Название категории не может содержать менее 2 символов.").max(50, "Название категории не может содержать более 50 символов."))

@@ -7,7 +7,7 @@ export const createPost = (requestData: {
     content: string
 }) => {
     axiosInstance.post("/posts", requestData)
-        .then(() => console.log("Post created successfully"))
+        .then((response) => console.log(response.data))
         .catch((error: any) => {
             console.error("Error creating post: " + error.message);
         });

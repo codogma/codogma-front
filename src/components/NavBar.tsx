@@ -19,7 +19,12 @@ import PreviewIcon from '@mui/icons-material/Preview';
 import {logout} from "@/helpers/auth-api";
 import Link from "next/link";
 
-const pages = ['Products', 'Pricing', 'Blog'];
+type PageLink = {
+    url: string
+    name: string
+}
+
+const pages: PageLink[] = [{url: '/posts', name: 'Posts'}, {url: '/categories', name: 'Categories'}];
 
 export const NavBar = () => {
     const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
@@ -62,7 +67,7 @@ export const NavBar = () => {
                         variant="h6"
                         noWrap
                         component="a"
-                        href="#app-bar-with-responsive-menu"
+                        href="/"
                         sx={{
                             mr: 2,
                             display: {xs: 'none', md: 'flex'},
@@ -75,7 +80,6 @@ export const NavBar = () => {
                     >
                         IT BLOG
                     </Typography>
-
                     <Box sx={{flexGrow: 1, display: {xs: 'flex', md: 'none'}}}>
                         <IconButton
                             size="large"
@@ -106,18 +110,19 @@ export const NavBar = () => {
                             }}
                         >
                             {pages.map((page) => (
-                                <MenuItem key={page} onClick={handleCloseNavMenu}>
-                                    <Typography textAlign="center">{page}</Typography>
-                                </MenuItem>
+                                <Link key={page.name} href={page.url}>
+                                    <MenuItem onClick={handleCloseNavMenu}>
+                                        <Typography textAlign="center">{page.name}</Typography>
+                                    </MenuItem>
+                                </Link>
                             ))}
                         </Menu>
                     </Box>
-                    <PreviewIcon sx={{display: {xs: 'flex', md: 'none'}, mr: 1}}/>
                     <Typography
                         variant="h5"
                         noWrap
                         component="a"
-                        href="#app-bar-with-responsive-menu"
+                        href="/"
                         sx={{
                             mr: 2,
                             display: {xs: 'flex', md: 'none'},
@@ -129,21 +134,24 @@ export const NavBar = () => {
                             textDecoration: 'none',
                         }}
                     >
-                        LOGO
+                        IT BLOG
                     </Typography>
+                    <SearchIcon sx={{display: {xs: 'flex', md: 'none'}, mr: 1}}/>
+                    <Link href={`/posts/create`}><CreateIcon sx={{display: {xs: 'flex', md: 'none'}, mr: 1}}/></Link>
+                    <PreviewIcon sx={{display: {xs: 'flex', md: 'none'}, mr: 1}}/>
                     <Box sx={{flexGrow: 1, display: {xs: 'none', md: 'flex'}}}>
                         {pages.map((page) => (
                             <Button
-                                key={page}
+                                key={page.name} href={page.url}
                                 onClick={handleCloseNavMenu}
                                 sx={{my: 2, color: 'white', display: 'block'}}
                             >
-                                {page}
+                                {page.name}
                             </Button>
                         ))}
                     </Box>
                     <SearchIcon sx={{display: {xs: 'none', md: 'flex'}, mr: 1}}/>
-                    <CreateIcon sx={{display: {xs: 'none', md: 'flex'}, mr: 1}}/>
+                    <Link href={`/posts/create`}><CreateIcon sx={{display: {xs: 'none', md: 'flex'}, mr: 1}}/></Link>
                     <PreviewIcon sx={{display: {xs: 'none', md: 'flex'}, mr: 1}}/>
                     <Box sx={{flexGrow: 0}}>
                         {!isAuthenticated && (
@@ -153,11 +161,12 @@ export const NavBar = () => {
                             </>
                         )}
                         {isAuthenticated &&
-                            (<><Tooltip title="Open settings">
-                                <IconButton onClick={handleOpenUserMenu} sx={{p: 0}}>
-                                    <AccountCircle/>
-                                </IconButton>
-                            </Tooltip>
+                            (<>
+                                <Tooltip title="Open settings">
+                                    <IconButton onClick={handleOpenUserMenu} sx={{p: 0}}>
+                                        <AccountCircle/>
+                                    </IconButton>
+                                </Tooltip>
                                 <Menu
                                     sx={{mt: '45px'}}
                                     id="menu-appbar"
@@ -177,7 +186,8 @@ export const NavBar = () => {
                                     <MenuItem onClick={onClick}>
                                         <Typography textAlign="center">Log out</Typography>
                                     </MenuItem>
-                                </Menu></>)}
+                                </Menu>
+                            </>)}
                     </Box>
                 </Toolbar>
             </Container>

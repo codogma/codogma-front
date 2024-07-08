@@ -5,7 +5,7 @@ import {FormProvider, SubmitHandler, useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
 import React, {useEffect, useState} from "react";
 import {User} from "@/types"
-import FormInput from "@/components/form-input";
+import FormInput from "@/components/FormInput";
 import {Box, Button} from "@mui/material";
 import {getUserByUsername, updateUser} from "@/helpers/user-api";
 
