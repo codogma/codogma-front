@@ -1,11 +1,14 @@
 "use client"
-import React from "react";
+import {useEffect} from "react";
+import {useRouter} from "next/navigation";
 
 
 export default function Page() {
-    return (
-        <>
-            Main page
-        </>
-    );
+    const router = useRouter();
+    useEffect(() => {
+        // Перенаправление на страницу "Posts" по умолчанию
+        router.replace("/posts");
+    }, [router]);
+
+    return null;
 }

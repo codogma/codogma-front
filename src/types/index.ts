@@ -15,5 +15,5 @@ export type Post = {
     content: string;
     username: string;
     createdAt: Date;
-    categories: Category[]
+    categories: {id: number, name: string}[]
 };

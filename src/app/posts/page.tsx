@@ -38,11 +38,11 @@ export default function Page() {
                     <li>Автор поста: <Link href={`/users/${post.username}`}>{post.username}</Link></li>
                     <TimeAgo datetime={post.createdAt}/>
                     <li>Название поста: <Link href={`/posts/${post.id}`}>{post.title}</Link></li>
-                    {/*<div>{post.categories.map((category) => (*/}
-                    {/*    <span className="category-item" key={category.id}>*/}
-                    {/*        {category.name}*/}
-                    {/*    </span>*/}
-                    {/*))}</div>*/}
+                    <div>{post.categories.map((category) => (
+                        <span className="category-item" key={category.id}>
+                            {category.name}
+                        </span>
+                    ))}</div>
                     <div dangerouslySetInnerHTML={{__html: post.content}}/>
                     <Link href={`/posts/edit/${post.id}`}>
                         <Button>Обновить данные</Button>

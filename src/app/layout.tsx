@@ -5,6 +5,7 @@ import {Inter} from "next/font/google";
 import theme from '../theme';
 import "./globals.css";
 import {NavBar} from "@/components/NavBar";
+import NavTabs from "@/components/NavTabs";
 
 const inter = Inter({subsets: ["latin"]});
 
@@ -24,6 +25,7 @@ export default function RootLayout({
         <AppRouterCacheProvider>
             <ThemeProvider theme={theme}>
                 <NavBar/>
+                <NavTabs/>
                 {children}
             </ThemeProvider>
         </AppRouterCacheProvider>

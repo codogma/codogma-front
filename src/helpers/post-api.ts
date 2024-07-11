@@ -26,9 +26,9 @@ export const updatePost = (id: number, requestData: {
         });
 }
 
-export const getPosts = async (): Promise<Post[]> => {
+export const getPosts = async (category?: number): Promise<Post[]> => {
     try {
-        const response = await axiosInstance.get('/posts');
+        const response = await axiosInstance.get('/posts', {params: {category: category}});
         return response.data;
     } catch (error) {
         console.error('Error fetching posts:', error);
