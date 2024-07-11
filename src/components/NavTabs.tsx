@@ -11,7 +11,7 @@ function samePageLinkNavigation(
 ) {
     if (
         event.defaultPrevented ||
-        event.button !== 0 || // ignore everything but left-click
+        event.button !== 0 ||
         event.metaKey ||
         event.ctrlKey ||
         event.altKey ||
@@ -33,7 +33,6 @@ function LinkTab(props: LinkTabProps) {
         <Tab
             component="a"
             onClick={(event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
-                // Routing libraries handle this, you can remove the onClick handle when using them.
                 if (samePageLinkNavigation(event)) {
                     event.preventDefault();
                 }
@@ -72,6 +71,10 @@ const NavTabs: React.FC = () => {
             router.push(href);
         }
     };
+
+    const shouldShowNavTabs = ["/posts", "/categories", "/users"].some(path => pathname.endsWith(path));
+
+    if (!shouldShowNavTabs) return null;
 
     return (
         <Box sx={{ width: '100%' }}>

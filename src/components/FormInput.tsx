@@ -1,6 +1,6 @@
 import {TextField, TextFieldProps} from '@mui/material';
 import {FC} from 'react';
-import {Controller, useFormContext} from 'react-hook-form';
+import {Controller, FieldError, useFormContext} from 'react-hook-form';
 
 type IFormInputProps = {
     name: string;
@@ -18,7 +18,7 @@ const FormInput: FC<IFormInputProps> = ({name, ...otherProps}) => {
                 {...otherProps}
                 {...field}
                 error={!!errors[name]}
-                helperText={errors[name] ? errors[name].message : ''}
+                helperText={errors[name] ? (errors[name] as FieldError).message || '' : ''}
             />
         )}
         />

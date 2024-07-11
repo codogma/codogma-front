@@ -57,7 +57,7 @@ export const NavBar = () => {
                         variant="h5"
                         noWrap
                         component="a"
-                        href="/"
+                        href="/posts"
                         sx={{
                             mr: 2,
                             display: {xs: 'flex', md: 'flex'},
