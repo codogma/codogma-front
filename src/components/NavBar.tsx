@@ -19,24 +19,25 @@ import CategoryIcon from '@mui/icons-material/Category';
 import {logout} from "@/helpers/authApi";
 import Link from "next/link";
 import Cookies from "js-cookie";
+import {useAuth} from "@/components/AuthProvider";
 
 export const NavBar = () => {
-    const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
-    const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
+    const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
+    const {state, dispatch} = useAuth();
 
-    const onClick = () => {
+    // useEffect(() => {
+    //     const token = Cookies.get('auth-token');
+    //     if (token) {
+    //         dispatch({type: 'LOGIN'});
+    //     } else {
+    //         dispatch({type: 'LOGOUT'});
+    //     }
+    // }, [dispatch]);
+
+    const handleLogout = () => {
         logout()
-        setIsAuthenticated(false)
-    }
-
-    useEffect(() => {
-        const token = Cookies.get('auth-token')
-        if (token) {
-            setIsAuthenticated(true)
-        } else {
-            setIsAuthenticated(false)
-        }
-    }, [isAuthenticated])
+        handleCloseUserMenu();
+    };
 
     const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
         setAnchorElUser(event.currentTarget);
@@ -73,13 +74,13 @@ export const NavBar = () => {
                     <Link href={`/categories/create`}><CategoryIcon sx={{display: {xs: 'flex'}, mr: 1}}/></Link>
                     <PreviewIcon sx={{display: {xs: 'flex'}, mr: 1}}/>
                     <Box sx={{flexGrow: 0}}>
-                        {!isAuthenticated && (
+                        {!state.isAuthenticated && (
                             <>
                                 <Link href={`/register`}><Button color="inherit">Register</Button></Link>
                                 <Link href={`/login`}><Button color="inherit">Log in</Button></Link>
                             </>
                         )}
-                        {isAuthenticated &&
+                        {state.isAuthenticated &&
                             (<>
                                 <Tooltip title="Open settings">
                                     <IconButton onClick={handleOpenUserMenu} sx={{p: 0}}>
@@ -102,7 +103,7 @@ export const NavBar = () => {
                                     open={Boolean(anchorElUser)}
                                     onClose={handleCloseUserMenu}
                                 >
-                                    <MenuItem onClick={onClick}>
+                                    <MenuItem onClick={handleLogout}>
                                         <Typography textAlign="center">Log out</Typography>
                                     </MenuItem>
                                 </Menu>

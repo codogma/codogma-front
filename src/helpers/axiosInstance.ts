@@ -7,20 +7,21 @@ export const axiosInstance = axios.create({
     headers: {
         'Content-Type': 'application/json',
     },
-})
+    withCredentials: true,
+});
 
 axiosInstance.interceptors.request.use(
     (config) => {
-        const token = Cookies.get("/auth/auth-check")
+        const token = Cookies.get("auth-token");
         if (token) {
-            config.headers["Authorization"] = `Bearer ${token}`
+            config.headers["Authorization"] = `Bearer ${token}`;
         }
-        return config
+        return config;
     },
     (error) => {
-        return Promise.reject(error)
+        return Promise.reject(error);
     }
-)
+);
 
 axiosInstance.interceptors.response.use(
     (response) => {
@@ -33,7 +34,7 @@ axiosInstance.interceptors.response.use(
                 return axiosInstance(error.config);
             } catch (refreshError) {
                 if (typeof window !== "undefined") {
-                    Cookies.remove("token");
+                    Cookies.remove("auth-token");
                     window.location.href = "/login";
                 }
             }

@@ -28,7 +28,7 @@ type PageProps = {
 }
 
 
-function Posts({params}: PageProps) {
+export default function Posts({params}: PageProps) {
     const postId: number = params.id;
     const [post, setPost] = useState<Post>();
     const [categories, setCategories] = useState<Category[]>([]);

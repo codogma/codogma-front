@@ -6,6 +6,7 @@ import theme from '../theme';
 import "./globals.css";
 import {NavBar} from "@/components/NavBar";
 import NavTabs from "@/components/NavTabs";
+import {AuthProvider} from "@/components/AuthProvider";
 
 const inter = Inter({subsets: ["latin"]});
 
@@ -24,9 +25,11 @@ export default function RootLayout({
         <body className={inter.className}>
         <AppRouterCacheProvider>
             <ThemeProvider theme={theme}>
-                <NavBar/>
-                <NavTabs/>
-                {children}
+                <AuthProvider>
+                    <NavBar/>
+                    <NavTabs/>
+                    {children}
+                </AuthProvider>
             </ThemeProvider>
         </AppRouterCacheProvider>
         </body>

@@ -14,7 +14,8 @@ export const login = (requestData: { usernameOrEmail: string, password: string }
         .then((response) => {
             console.log("User logged in successfully")
             const token = response.data.token
-            Cookies.set("auth-token", token, {expires: 1})
+            Cookies.set("auth-token", token, {expires: 1});
+            window.dispatchEvent(new Event("storage"));
         })
         .catch((error: any) => {
             console.error("Error logging in user: " + error.message);
@@ -22,5 +23,6 @@ export const login = (requestData: { usernameOrEmail: string, password: string }
 }
 
 export const logout = () => {
-    Cookies.remove("auth-token")
+    Cookies.remove("auth-token");
+    window.dispatchEvent(new Event("storage"));
 }

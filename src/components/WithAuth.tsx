@@ -1,6 +1,8 @@
+"use client";
 import {FC, useEffect, useState} from 'react';
-import { useRouter } from 'next/navigation';
-import {axiosInstance} from "@/helpers/axiosInstance";
+import {useRouter} from 'next/navigation';
+import {axiosInstance} from '@/helpers/axiosInstance';
+import Cookies from "js-cookie";
 
 export const WithAuth = (WrappedComponent: FC) => {
     const Wrapper: FC<any> = (props) => {
@@ -11,10 +13,16 @@ export const WithAuth = (WrappedComponent: FC) => {
         useEffect(() => {
             const checkAuth = async () => {
                 try {
-                    await axiosInstance.get('/auth/auth-check');
-                    setIsAuthenticated(true);
+                    const token = Cookies.get("auth-token");
+                    console.log(token)
+                    if (!token) {
+                        router.push('/login');
+                    } else {
+                        await axiosInstance.get('/auth/auth-check');
+                        setIsAuthenticated(true);
+                    }
                 } catch (error) {
-                    router.replace('/login');
+                    router.push('/login');
                 } finally {
                     setIsLoading(false);
                 }
@@ -33,6 +41,5 @@ export const WithAuth = (WrappedComponent: FC) => {
 
         return <WrappedComponent {...props} />;
     };
-
     return Wrapper;
 };

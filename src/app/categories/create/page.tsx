@@ -7,12 +7,13 @@ import React, {useEffect} from "react";
 import {createCategory} from "@/helpers/categoryApi";
 import {Box, Button} from "@mui/material";
 import FormInput from "@/components/FormInput";
+import {WithAuth} from "@/components/WithAuth";
 
 const CategoryScheme = z.object({
     name: z.string().min(2, "Название категории не может содержать менее 2 символов.").max(50, "Название категории не может содержать более 50 символов."),
 })
 
-export default function Categoties() {
+function Categoties() {
     const zodForm = useForm<z.infer<typeof CategoryScheme>>({
         resolver: zodResolver(CategoryScheme),
         defaultValues: {
@@ -59,3 +60,5 @@ export default function Categoties() {
         </main>
     );
 }
+
+export default WithAuth(Categoties)
