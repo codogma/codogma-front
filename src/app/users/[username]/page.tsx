@@ -1,7 +1,7 @@
 "use client";
 import {useEffect, useState} from "react";
 import {User} from "@/types";
-import {getUserByUsername} from "@/helpers/user-api";
+import {getUserByUsername} from "@/helpers/userApi";
 import Link from "next/link";
 
 type PageParams = {

@@ -1,4 +1,4 @@
-import {axiosInstance} from "@/helpers/axios";
+import {axiosInstance} from "@/helpers/axiosInstance";
 import {Category} from "@/types";
 
 export const createCategory = (requestData: { name: string }) => {

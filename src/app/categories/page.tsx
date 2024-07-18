@@ -1,7 +1,7 @@
 "use client";
 import React, {MouseEvent, useEffect, useState} from "react";
 import {Category} from "@/types";
-import {deleteCategory, getCategories} from "@/helpers/category-api";
+import {deleteCategory, getCategories} from "@/helpers/categoryApi";
 import Link from "next/link";
 import {Button} from "@mui/material";
 

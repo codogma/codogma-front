@@ -1,7 +1,7 @@
 "use client";
 import {useEffect, useState} from "react";
 import {Category} from "@/types";
-import {getCategoryById} from "@/helpers/category-api";
+import {getCategoryById} from "@/helpers/categoryApi";
 import Link from "next/link";
 
 type PageParams = {

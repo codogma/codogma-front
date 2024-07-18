@@ -1,4 +1,4 @@
-import {axiosInstance} from "@/helpers/axios";
+import {axiosInstance} from "@/helpers/axiosInstance";
 
 export const register = (requestData: { username: string, email: string, password: string }) => {
     axiosInstance.post("/auth/signup", requestData)

@@ -7,7 +7,7 @@ import React, {useEffect, useState} from "react";
 import {User} from "@/types"
 import FormInput from "@/components/FormInput";
 import {Box, Button} from "@mui/material";
-import {getUserByUsername, updateUser} from "@/helpers/user-api";
+import {getUserByUsername, updateUser} from "@/helpers/userApi";
 
 const UserScheme = z.object({
     username: z.optional(z.string().min(2, "Имя пользователя не может содержать менее 2 символов.").max(50, "Имя пользователя не может содержать более 50 символов."))

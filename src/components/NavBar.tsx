@@ -15,7 +15,7 @@ import AccountCircle from '@mui/icons-material/AccountCircle';
 import SearchIcon from '@mui/icons-material/Search';
 import CreateIcon from '@mui/icons-material/Create';
 import PreviewIcon from '@mui/icons-material/Preview';
-import {logout} from "@/helpers/auth-api";
+import {logout} from "@/helpers/authApi";
 import Link from "next/link";
 
 type PageLink = {

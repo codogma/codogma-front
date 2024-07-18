@@ -1,4 +1,4 @@
-import {axiosInstance} from "@/helpers/axios";
+import {axiosInstance} from "@/helpers/axiosInstance";
 import {User} from "@/types";
 
 export const updateUser = (username: string, requestData: { username?: string }) => {

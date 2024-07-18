@@ -1,7 +1,7 @@
 "use client";
 import React, {MouseEvent, useEffect, useState} from "react";
 import {User} from "@/types";
-import {deleteUser, getUsers} from "@/helpers/user-api";
+import {deleteUser, getUsers} from "@/helpers/userApi";
 import Link from "next/link";
 import {Button} from "@mui/material";
 

@@ -1,4 +1,4 @@
-import {axiosInstance} from "@/helpers/axios";
+import {axiosInstance} from "@/helpers/axiosInstance";
 import {Post} from "@/types";
 
 export const createPost = (requestData: {

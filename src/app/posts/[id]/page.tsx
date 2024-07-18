@@ -1,7 +1,7 @@
 "use client";
 import React, {useEffect, useState} from "react";
 import {Post} from "@/types";
-import {getPostById} from "@/helpers/post-api";
+import {getPostById} from "@/helpers/postApi";
 import Link from "next/link";
 import DOMPurify from "dompurify";
 import {TimeAgo} from "@/components/TimeAgo";

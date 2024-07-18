@@ -1,6 +1,6 @@
 "use client";
 import React, {MouseEvent, useEffect, useState} from "react";
-import {deletePost, getPosts} from "@/helpers/post-api";
+import {deletePost, getPosts} from "@/helpers/postApi";
 import {Post} from "@/types";
 import {Button} from "@mui/material";
 import Link from "next/link";

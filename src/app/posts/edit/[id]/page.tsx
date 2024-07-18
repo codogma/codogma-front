@@ -7,8 +7,8 @@ import React, {useEffect, useState} from "react";
 import {Category, Post} from "@/types";
 import FormInput from "@/components/FormInput";
 import {Box, Button, TextField} from "@mui/material";
-import {getPostById, updatePost} from "@/helpers/post-api";
-import {getCategories} from "@/helpers/category-api";
+import {getPostById, updatePost} from "@/helpers/postApi";
+import {getCategories} from "@/helpers/categoryApi";
 import Autocomplete from "@mui/material/Autocomplete";
 import {TinyMCEEditor} from "@/components/TinyMCEEditor";
 

@@ -5,11 +5,11 @@ import {zodResolver} from "@hookform/resolvers/zod";
 import {Controller, FormProvider, SubmitHandler, useForm} from "react-hook-form";
 import React, {useEffect, useState} from "react";
 import {Category} from "@/types";
-import {createPost} from "@/helpers/post-api";
+import {createPost} from "@/helpers/postApi";
 import {Box, Button, TextField} from "@mui/material";
 import FormInput from "@/components/FormInput";
 import Autocomplete from "@mui/material/Autocomplete";
-import {getCategories} from "@/helpers/category-api";
+import {getCategories} from "@/helpers/categoryApi";
 import {TinyMCEEditor} from "@/components/TinyMCEEditor";
 
 const PostScheme = z.object({

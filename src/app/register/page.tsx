@@ -2,7 +2,7 @@
 import * as React from 'react';
 import {FormEvent} from 'react';
 import {Box, Button, TextField} from "@mui/material";
-import {register} from "@/helpers/auth-api";
+import {register} from "@/helpers/authApi";
 import {useRouter} from "next/navigation";
 
 type User = {

@@ -4,7 +4,7 @@ import {z} from "zod"
 import {FormProvider, useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
 import React, {useEffect} from "react";
-import {createCategory} from "@/helpers/category-api";
+import {createCategory} from "@/helpers/categoryApi";
 import {Box, Button} from "@mui/material";
 import FormInput from "@/components/FormInput";
 
