@@ -15,6 +15,7 @@ import AccountCircle from '@mui/icons-material/AccountCircle';
 import SearchIcon from '@mui/icons-material/Search';
 import CreateIcon from '@mui/icons-material/Create';
 import PreviewIcon from '@mui/icons-material/Preview';
+import CategoryIcon from '@mui/icons-material/Category';
 import {logout} from "@/helpers/authApi";
 import Link from "next/link";
 import Cookies from "js-cookie";
@@ -69,6 +70,7 @@ export const NavBar = () => {
                     </Typography>
                     <SearchIcon sx={{display: {xs: 'flex'}, mr: 1}}/>
                     <Link href={`/posts/create`}><CreateIcon sx={{display: {xs: 'flex'}, mr: 1}}/></Link>
+                    <Link href={`/categories/create`}><CategoryIcon sx={{display: {xs: 'flex'}, mr: 1}}/></Link>
                     <PreviewIcon sx={{display: {xs: 'flex'}, mr: 1}}/>
                     <Box sx={{flexGrow: 0}}>
                         {!isAuthenticated && (
