@@ -17,14 +17,9 @@ import CreateIcon from '@mui/icons-material/Create';
 import PreviewIcon from '@mui/icons-material/Preview';
 import {logout} from "@/helpers/authApi";
 import Link from "next/link";
-
-type PageLink = {
-    url: string
-    name: string
-}
+import Cookies from "js-cookie";
 
 export const NavBar = () => {
-    const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
     const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
     const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
 
@@ -34,7 +29,8 @@ export const NavBar = () => {
     }
 
     useEffect(() => {
-        if (localStorage.getItem("token")) {
+        const token = Cookies.get('auth-token')
+        if (token) {
             setIsAuthenticated(true)
         } else {
             setIsAuthenticated(false)

@@ -1,4 +1,5 @@
 import {axiosInstance} from "@/helpers/axiosInstance";
+import Cookies from "js-cookie";
 
 export const register = (requestData: { username: string, email: string, password: string }) => {
     axiosInstance.post("/auth/signup", requestData)
@@ -13,7 +14,7 @@ export const login = (requestData: { usernameOrEmail: string, password: string }
         .then((response) => {
             console.log("User logged in successfully")
             const token = response.data.token
-            localStorage.setItem("token", token)
+            Cookies.set("auth-token", token, {expires: 1})
         })
         .catch((error: any) => {
             console.error("Error logging in user: " + error.message);
@@ -21,5 +22,5 @@ export const login = (requestData: { usernameOrEmail: string, password: string }
 }
 
 export const logout = () => {
-    localStorage.removeItem("token")
+    Cookies.remove("auth-token")
 }

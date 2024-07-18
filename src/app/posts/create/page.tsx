@@ -11,6 +11,7 @@ import FormInput from "@/components/FormInput";
 import Autocomplete from "@mui/material/Autocomplete";
 import {getCategories} from "@/helpers/categoryApi";
 import {TinyMCEEditor} from "@/components/TinyMCEEditor";
+import {WithAuth} from "@/components/WithAuth";
 
 const PostScheme = z.object({
     categoryIds: z.array(z.number()),
@@ -18,7 +19,7 @@ const PostScheme = z.object({
     content: z.string()
 });
 
-export default function Posts() {
+function Posts() {
     const [categories, setCategories] = useState<Category[]>([]);
 
     useEffect(() => {
@@ -110,3 +111,5 @@ export default function Posts() {
         </main>
     );
 }
+
+export default WithAuth(Posts)

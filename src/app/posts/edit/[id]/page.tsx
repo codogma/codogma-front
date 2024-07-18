@@ -11,6 +11,7 @@ import {getPostById, updatePost} from "@/helpers/postApi";
 import {getCategories} from "@/helpers/categoryApi";
 import Autocomplete from "@mui/material/Autocomplete";
 import {TinyMCEEditor} from "@/components/TinyMCEEditor";
+import {WithAuth} from "@/components/WithAuth";
 
 const PostScheme = z.object({
     categoryIds: z.array(z.number()),
@@ -27,7 +28,7 @@ type PageProps = {
 }
 
 
-export default function Posts({params}: PageProps) {
+function Posts({params}: PageProps) {
     const postId: number = params.id;
     const [post, setPost] = useState<Post>();
     const [categories, setCategories] = useState<Category[]>([]);
@@ -84,7 +85,7 @@ export default function Posts({params}: PageProps) {
     }
 
 
-    return (
+    return WithAuth(() =>
         <main className="flex min-h-screen max-w-3xl flex-col items-left justify-self-auto p-24">
             <FormProvider {...zodForm}>
                 <Box
