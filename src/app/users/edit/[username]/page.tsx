@@ -8,6 +8,7 @@ import {User} from "@/types"
 import FormInput from "@/components/FormInput";
 import {Box, Button} from "@mui/material";
 import {getUserByUsername, updateUser} from "@/helpers/userApi";
+import {WithAuth} from "@/components/WithAuth";
 
 const UserScheme = z.object({
     username: z.optional(z.string().min(2, "Имя пользователя не может содержать менее 2 символов.").max(50, "Имя пользователя не может содержать более 50 символов."))
@@ -21,7 +22,7 @@ type PageProps = {
     params: PageParams
 }
 
-export default function Users({params}: PageProps) {
+function Users({params}: PageProps) {
     const username: string = params.username
     const [user, setUser] = useState<User>();
 
@@ -66,7 +67,7 @@ export default function Users({params}: PageProps) {
         updateUser(username, formData)
     }
 
-    return (
+    return WithAuth(() =>
         <main className="flex min-h-screen max-w-3xl flex-col items-left justify-self-auto p-24">
             <FormProvider {...zodForm}>
                 <Box

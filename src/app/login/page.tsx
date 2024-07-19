@@ -4,6 +4,7 @@ import {FormEvent} from 'react';
 import {Box, Button, TextField} from "@mui/material";
 import {login} from "@/helpers/authApi";
 import {useRouter} from "next/navigation";
+import {WithAuth} from "@/components/WithAuth";
 
 
 type User = {
@@ -11,7 +12,7 @@ type User = {
     password: string
 }
 
-export default function LoginPage() {
+function LoginPage() {
     const router = useRouter();
     const onSubmit = (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -39,4 +40,6 @@ export default function LoginPage() {
         </>
     );
 }
+
+export default WithAuth(LoginPage)
 

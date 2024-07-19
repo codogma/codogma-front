@@ -6,8 +6,9 @@ import {Button} from "@mui/material";
 import Link from "next/link";
 import DOMPurify from "dompurify";
 import {TimeAgo} from "@/components/TimeAgo";
+import {WithAuth} from "@/components/WithAuth";
 
-export default function Page() {
+function Page() {
     const [posts, setPosts] = useState<Post[]>([]);
 
     useEffect(() => {
@@ -55,3 +56,5 @@ export default function Page() {
         </main>
     );
 }
+
+export default WithAuth(Page)

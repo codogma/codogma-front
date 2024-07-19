@@ -4,8 +4,9 @@ import {Category} from "@/types";
 import {deleteCategory, getCategories} from "@/helpers/categoryApi";
 import Link from "next/link";
 import {Button} from "@mui/material";
+import {WithAuth} from "@/components/WithAuth";
 
-export default function Page() {
+function Page() {
     const [categories, setCategories] = useState<Category[]>([])
 
     useEffect(() => {
@@ -49,3 +50,5 @@ export default function Page() {
         </main>
     );
 }
+
+export default WithAuth(Page)

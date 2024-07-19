@@ -8,6 +8,7 @@ import {Category} from "@/types";
 import {getCategoryById, updateCategory} from "@/helpers/categoryApi";
 import {Box, Button} from "@mui/material";
 import FormInput from "@/components/FormInput";
+import {WithAuth} from "@/components/WithAuth";
 
 const CategoryScheme = z.object({
     name: z.optional(z.string().min(2, "Название категории не может содержать менее 2 символов.").max(50, "Название категории не может содержать более 50 символов."))
@@ -21,7 +22,7 @@ type PageProps = {
     params: PageParams
 }
 
-export default function Categories({params}: PageProps) {
+function Categories({params}: PageProps) {
     const categoryId: number = params.id
     const [category, setCategory] = useState<Category>();
 
@@ -70,7 +71,7 @@ export default function Categories({params}: PageProps) {
     }
 
 
-    return (
+    return WithAuth(() =>
         <main className="flex min-h-screen max-w-3xl flex-col items-left justify-self-auto p-24">
             <FormProvider {...zodForm}>
                 <Box
@@ -89,3 +90,6 @@ export default function Categories({params}: PageProps) {
         </main>
     );
 }
+
+
+
