@@ -5,7 +5,6 @@ import {getPostById} from "@/helpers/postApi";
 import Link from "next/link";
 import DOMPurify from "dompurify";
 import {TimeAgo} from "@/components/TimeAgo";
-import {WithAuth} from "@/components/WithAuth";
 
 type PageParams = {
     id: number
@@ -15,7 +14,7 @@ type PageProps = {
     params: PageParams
 }
 
-function Page({params}: PageProps) {
+export default function Page({params}: PageProps) {
     const postId: number = params.id;
     const [post, setPost] = useState<Post>({
         id: 0,
@@ -40,7 +39,7 @@ function Page({params}: PageProps) {
         fetchData();
     }, [postId])
 
-    return WithAuth(() =>
+    return (
         <main className="flex min-h-screen flex-col items-left justify-between p-24">
             <Link className="decoration-0" href={`/users/edit/${post.username}`}>
                 {post.username}

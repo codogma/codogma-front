@@ -1,10 +1,10 @@
 "use client";
 import * as React from 'react';
-import { useEffect } from 'react';
+import {useEffect} from 'react';
 import Box from '@mui/material/Box';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
-import { usePathname, useRouter } from "next/navigation";
+import {usePathname, useRouter} from "next/navigation";
 
 function samePageLinkNavigation(
     event: React.MouseEvent<HTMLAnchorElement, MouseEvent>,
@@ -77,16 +77,16 @@ const NavTabs: React.FC = () => {
     if (!shouldShowNavTabs) return null;
 
     return (
-        <Box sx={{ width: '100%' }}>
+        <Box sx={{width: '100%'}}>
             <Tabs
                 value={value}
                 onChange={handleChange}
                 aria-label="nav tabs example"
                 role="navigation"
             >
-                <LinkTab label="Posts" href="/posts" />
-                <LinkTab label="Categories" href="/categories" />
-                <LinkTab label="Users" href="/users" />
+                <LinkTab label="Posts" href="/posts"/>
+                <LinkTab label="Categories" href="/categories"/>
+                <LinkTab label="Users" href="/users"/>
             </Tabs>
         </Box>
     );

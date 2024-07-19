@@ -1,5 +1,5 @@
-import {AppRouterCacheProvider} from '@mui/material-nextjs/v14-appRouter';
-import {ThemeProvider} from '@mui/material/styles';
+import {AppRouterCacheProvider} from '@mui/material-nextjs/v13-appRouter';
+import {CssBaseline, StyledEngineProvider, ThemeProvider} from '@mui/material';
 import type {Metadata} from "next";
 import {Inter} from "next/font/google";
 import theme from '../theme';
@@ -23,14 +23,19 @@ export default function RootLayout({
     return (
         <html lang="en">
         <body className={inter.className}>
-        <AppRouterCacheProvider>
-            <ThemeProvider theme={theme}>
-                <AuthProvider>
-                    <NavBar/>
-                    <NavTabs/>
-                    {children}
-                </AuthProvider>
-            </ThemeProvider>
+        <AppRouterCacheProvider options={{enableCssLayer: true}}>
+            <StyledEngineProvider injectFirst>
+                <ThemeProvider theme={theme}>
+                    <div id="root">
+                        <CssBaseline/>
+                        <AuthProvider>
+                            <NavBar/>
+                            <NavTabs/>
+                            {children}
+                        </AuthProvider>
+                    </div>
+                </ThemeProvider>
+            </StyledEngineProvider>
         </AppRouterCacheProvider>
         </body>
         </html>

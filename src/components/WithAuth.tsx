@@ -4,8 +4,8 @@ import {useRouter} from 'next/navigation';
 import {axiosInstance} from '@/helpers/axiosInstance';
 import Cookies from "js-cookie";
 
-export const WithAuth = (WrappedComponent: FC) => {
-    const Wrapper: FC<any> = (props) => {
+export const WithAuth = <P extends object>(WrappedComponent: FC<P>) => {
+    const Wrapper: FC<P> = (props) => {
         const router = useRouter();
         const [isLoading, setIsLoading] = useState(true);
         const [isAuthenticated, setIsAuthenticated] = useState(false);

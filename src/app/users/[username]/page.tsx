@@ -3,7 +3,6 @@ import {useEffect, useState} from "react";
 import {User} from "@/types";
 import {getUserByUsername} from "@/helpers/userApi";
 import Link from "next/link";
-import {WithAuth} from "@/components/WithAuth";
 
 type PageParams = {
     username: string
@@ -30,7 +29,7 @@ function Page({params}: PageProps) {
         fetchData();
     }, [username])
 
-    return WithAuth(() =>
+    return (
         <main className="flex min-h-screen flex-col items-left justify-between p-24">
             <div>{user?.username}</div>
             {user?.posts?.map((post) => (

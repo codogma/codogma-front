@@ -71,7 +71,7 @@ function Categories({params}: PageProps) {
     }
 
 
-    return WithAuth(() =>
+    return (
         <main className="flex min-h-screen max-w-3xl flex-col items-left justify-self-auto p-24">
             <FormProvider {...zodForm}>
                 <Box
@@ -91,5 +91,6 @@ function Categories({params}: PageProps) {
     );
 }
 
+export default WithAuth(Categories)
 
 

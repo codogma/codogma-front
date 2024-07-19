@@ -3,7 +3,6 @@ import {useEffect, useState} from "react";
 import {Category} from "@/types";
 import {getCategoryById} from "@/helpers/categoryApi";
 import Link from "next/link";
-import {WithAuth} from "@/components/WithAuth";
 
 type PageParams = {
     id: number
@@ -13,7 +12,7 @@ type PageProps = {
     params: PageParams
 }
 
-function Page({params}: PageProps) {
+export default function Page({params}: PageProps) {
     const categoryId: number = params.id;
     const [category, setCategory] = useState<Category>();
 
@@ -30,7 +29,7 @@ function Page({params}: PageProps) {
         fetchData();
     }, [categoryId])
 
-    return WithAuth(() =>
+    return (
         <main className="flex min-h-screen flex-col items-left justify-between p-24">
             <div>{category?.name}</div>
             {category?.posts?.map((post) => (

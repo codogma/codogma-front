@@ -1,14 +1,13 @@
 "use client";
-import React, {MouseEvent, useEffect, useState} from "react";
-import {deletePost, getPosts} from "@/helpers/postApi";
+import React, {useEffect, useState} from "react";
+import {getPosts} from "@/helpers/postApi";
 import {Post} from "@/types";
 import {Button} from "@mui/material";
 import Link from "next/link";
 import DOMPurify from "dompurify";
 import {TimeAgo} from "@/components/TimeAgo";
-import {WithAuth} from "@/components/WithAuth";
 
-function Page() {
+export default function Page() {
     const [posts, setPosts] = useState<Post[]>([]);
 
     useEffect(() => {
@@ -24,13 +23,6 @@ function Page() {
 
         fetchData().then()
     }, [])
-
-    const handleDelete = (event: MouseEvent<HTMLElement>) => {
-        const postId = Number(event.currentTarget.id)
-        setPosts(posts.filter((post) => post.id !== postId))
-        deletePost(postId)
-    }
-
 
     return (
         <main className="flex min-h-screen flex-col items-left justify-between p-24">
@@ -48,13 +40,8 @@ function Page() {
                     <Link href={`/posts/edit/${post.id}`}>
                         <Button>Обновить данные</Button>
                     </Link>
-                    <Link href={"/posts"}>
-                        <Button id={post.id.toString()} onClick={handleDelete}>Удалить пост</Button>
-                    </Link>
                 </ul>
             ))}
         </main>
     );
 }
-
-export default WithAuth(Page)

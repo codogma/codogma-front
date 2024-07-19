@@ -1,6 +1,6 @@
 "use client"
 import * as React from 'react';
-import {useEffect, useState} from 'react';
+import {useState} from 'react';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
@@ -18,7 +18,6 @@ import PreviewIcon from '@mui/icons-material/Preview';
 import CategoryIcon from '@mui/icons-material/Category';
 import {logout} from "@/helpers/authApi";
 import Link from "next/link";
-import Cookies from "js-cookie";
 import {useAuth} from "@/components/AuthProvider";
 
 export const NavBar = () => {

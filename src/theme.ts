@@ -8,10 +8,24 @@ const roboto = Roboto({
     display: 'swap',
 });
 
+const rootElement = document.getElementById('root');
+
 const theme = createTheme({
     typography: {
         fontFamily: roboto.style.fontFamily,
-    }
+    },
+    components: {
+        MuiPopover: {
+            defaultProps: {
+                container: rootElement,
+            },
+        },
+        MuiPopper: {
+            defaultProps: {
+                container: rootElement,
+            },
+        },
+    },
 });
 
 export default theme;

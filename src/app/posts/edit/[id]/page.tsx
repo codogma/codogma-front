@@ -3,15 +3,16 @@ import "../../../globals.css"
 import {z} from "zod"
 import {Controller, FormProvider, SubmitHandler, useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
-import React, {useEffect, useState} from "react";
+import React, {MouseEvent, useEffect, useState} from "react";
 import {Category, Post} from "@/types";
 import FormInput from "@/components/FormInput";
 import {Box, Button, TextField} from "@mui/material";
-import {getPostById, updatePost} from "@/helpers/postApi";
+import {deletePost, getPostById, updatePost} from "@/helpers/postApi";
 import {getCategories} from "@/helpers/categoryApi";
 import Autocomplete from "@mui/material/Autocomplete";
 import {TinyMCEEditor} from "@/components/TinyMCEEditor";
 import {WithAuth} from "@/components/WithAuth";
+import {useRouter} from "next/navigation";
 
 const PostScheme = z.object({
     categoryIds: z.array(z.number()),
@@ -29,6 +30,7 @@ type PageProps = {
 
 
 function Posts({params}: PageProps) {
+    const router = useRouter();
     const postId: number = params.id;
     const [post, setPost] = useState<Post>();
     const [categories, setCategories] = useState<Category[]>([]);
@@ -84,8 +86,13 @@ function Posts({params}: PageProps) {
         updatePost(postId, requestData)
     }
 
+    const handleDelete = (event: MouseEvent<HTMLElement>) => {
+        const postId = Number(event.currentTarget.id)
+        deletePost(postId)
+        router.push("/posts")
+    }
 
-    return WithAuth(() =>
+    return (
         <main className="flex min-h-screen max-w-3xl flex-col items-left justify-self-auto p-24">
             <FormProvider {...zodForm}>
                 <Box
@@ -128,9 +135,14 @@ function Posts({params}: PageProps) {
                             />
                         )}
                     />
-                    <Button type="submit">Create</Button>
+                    <div className="flex justify-between w-full">
+                        <Button type="submit">Create</Button>
+                        <Button id={postId.toString()} style={{color: "red"}} onClick={handleDelete}>Delete</Button>
+                    </div>
                 </Box>
             </FormProvider>
         </main>
     );
 }
+
+export default WithAuth(Posts)

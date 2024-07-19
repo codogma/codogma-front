@@ -4,7 +4,6 @@ import {FormEvent} from 'react';
 import {Box, Button, TextField} from "@mui/material";
 import {login} from "@/helpers/authApi";
 import {useRouter} from "next/navigation";
-import {WithAuth} from "@/components/WithAuth";
 
 
 type User = {
@@ -41,5 +40,4 @@ function LoginPage() {
     );
 }
 
-export default WithAuth(LoginPage)
-
+export default LoginPage

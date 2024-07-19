@@ -4,7 +4,6 @@ import {User} from "@/types";
 import {deleteUser, getUsers} from "@/helpers/userApi";
 import Link from "next/link";
 import {Button} from "@mui/material";
-import {WithAuth} from "@/components/WithAuth";
 
 function Page() {
     const [users, setUsers] = useState<User[]>([])
@@ -52,4 +51,4 @@ function Page() {
     );
 }
 
-export default WithAuth(Page)
+export default Page
