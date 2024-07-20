@@ -40,7 +40,7 @@ export default function Page({params}: PageProps) {
     }, [postId])
 
     return (
-        <main className="flex min-h-screen flex-col items-left justify-between p-24">
+        <main className="flex min-h-screen m-1 ml-20 mr-20 flex-col items-left justify-self-auto p-24">
             <Link className="decoration-0" href={`/users/edit/${post.username}`}>
                 {post.username}
             </Link>

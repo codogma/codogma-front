@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import * as React from 'react';
 import {useState} from 'react';
 import AppBar from '@mui/material/AppBar';
@@ -22,19 +22,10 @@ import {useAuth} from "@/components/AuthProvider";
 
 export const NavBar = () => {
     const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
-    const {state, dispatch} = useAuth();
-
-    // useEffect(() => {
-    //     const token = Cookies.get('auth-token');
-    //     if (token) {
-    //         dispatch({type: 'LOGIN'});
-    //     } else {
-    //         dispatch({type: 'LOGOUT'});
-    //     }
-    // }, [dispatch]);
+    const {state} = useAuth();
 
     const handleLogout = () => {
-        logout()
+        // logout();
         handleCloseUserMenu();
     };
 

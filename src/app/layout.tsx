@@ -26,14 +26,12 @@ export default function RootLayout({
         <AppRouterCacheProvider options={{enableCssLayer: true}}>
             <StyledEngineProvider injectFirst>
                 <ThemeProvider theme={theme}>
-                    <div id="root">
                         <CssBaseline/>
                         <AuthProvider>
                             <NavBar/>
                             <NavTabs/>
                             {children}
                         </AuthProvider>
-                    </div>
                 </ThemeProvider>
             </StyledEngineProvider>
         </AppRouterCacheProvider>

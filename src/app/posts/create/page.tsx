@@ -65,12 +65,12 @@ function Posts() {
     };
 
     return (
-        <main className="flex min-h-screen max-w-3xl flex-col items-left justify-self-auto p-24">
+        <main className="flex min-h-screen m-1 ml-20 mr-20 flex-col items-left justify-self-auto p-24">
             <FormProvider {...zodForm}>
                 <Box
                     component="form"
                     noValidate
-                    sx={{m: 1, ml: '20ch', mr: '20ch'}}
+                    // sx={{m: 1, ml: '20ch', mr: '20ch'}}
                     autoComplete="off"
                     onSubmit={handleSubmit(onSubmit)}
                 >

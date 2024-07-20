@@ -25,12 +25,12 @@ export default function Page() {
     }, [])
 
     return (
-        <main className="flex min-h-screen flex-col items-left justify-between p-24">
+        <main className="flex min-h-screen m-1 ml-20 mr-20 flex-col items-left justify-self-auto p-24">
             {posts?.map((post) => (
-                <ul key={post.title}>
-                    <li>Автор поста: <Link href={`/users/${post.username}`}>{post.username}</Link></li>
+                <article key={post.title} className="p-0">
+                    <Link href={`/users/${post.username}`}>{post.username}</Link>
                     <TimeAgo datetime={post.createdAt}/>
-                    <li>Название поста: <Link href={`/posts/${post.id}`}>{post.title}</Link></li>
+                    <Link href={`/posts/${post.id}`}>{post.title}</Link>
                     <div>{post.categories.map((category) => (
                         <span className="category-item" key={category.id}>
                             {category.name}
@@ -40,7 +40,7 @@ export default function Page() {
                     <Link href={`/posts/edit/${post.id}`}>
                         <Button>Обновить данные</Button>
                     </Link>
-                </ul>
+                </article>
             ))}
         </main>
     );
