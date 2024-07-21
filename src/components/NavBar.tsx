@@ -1,6 +1,6 @@
 "use client";
 import * as React from 'react';
-import {useState} from 'react';
+import {memo, useState} from 'react';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
@@ -16,11 +16,12 @@ import SearchIcon from '@mui/icons-material/Search';
 import CreateIcon from '@mui/icons-material/Create';
 import PreviewIcon from '@mui/icons-material/Preview';
 import CategoryIcon from '@mui/icons-material/Category';
-import {logout} from "@/helpers/authApi";
 import Link from "next/link";
 import {useAuth} from "@/components/AuthProvider";
+import {ThemeToggleButton} from "@/components/ThemeContext";
+import {ButtonGroup} from "@mui/material";
 
-export const NavBar = () => {
+const NavBar = () => {
     const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
     const {state} = useAuth();
 
@@ -38,8 +39,8 @@ export const NavBar = () => {
     };
 
     return (
-        <AppBar position="static">
-            <Container maxWidth="xl">
+        <AppBar position="sticky">
+            <Container maxWidth="lg">
                 <Toolbar disableGutters>
                     <Typography
                         variant="h5"
@@ -59,10 +60,25 @@ export const NavBar = () => {
                     >
                         IT BLOG
                     </Typography>
-                    <SearchIcon sx={{display: {xs: 'flex'}, mr: 1}}/>
-                    <Link href={`/posts/create`}><CreateIcon sx={{display: {xs: 'flex'}, mr: 1}}/></Link>
-                    <Link href={`/categories/create`}><CategoryIcon sx={{display: {xs: 'flex'}, mr: 1}}/></Link>
-                    <PreviewIcon sx={{display: {xs: 'flex'}, mr: 1}}/>
+                    <ButtonGroup variant="text" sx={{display: {xs: 'flex'}, mr: 1, color: "inherit"}}>
+                        <IconButton color="inherit">
+                            <SearchIcon/>
+                        </IconButton>
+                        <Link href={`/posts/create`}>
+                            <IconButton color="inherit">
+                                <CreateIcon/>
+                            </IconButton>
+                        </Link>
+                        <Link href={`/categories/create`}>
+                            <IconButton color="inherit">
+                                <CategoryIcon/>
+                            </IconButton>
+                        </Link>
+                        <IconButton color="inherit">
+                            <PreviewIcon/>
+                        </IconButton>
+                        <ThemeToggleButton sx={{color: "inherit"}}/>
+                    </ButtonGroup>
                     <Box sx={{flexGrow: 0}}>
                         {!state.isAuthenticated && (
                             <>
@@ -70,10 +86,10 @@ export const NavBar = () => {
                                 <Link href={`/login`}><Button color="inherit">Log in</Button></Link>
                             </>
                         )}
-                        {state.isAuthenticated &&
-                            (<>
+                        {state.isAuthenticated && (
+                            <>
                                 <Tooltip title="Open settings">
-                                    <IconButton onClick={handleOpenUserMenu} sx={{p: 0}}>
+                                    <IconButton onClick={handleOpenUserMenu} color="inherit" sx={{p: 0}}>
                                         <AccountCircle/>
                                     </IconButton>
                                 </Tooltip>
@@ -97,10 +113,13 @@ export const NavBar = () => {
                                         <Typography textAlign="center">Log out</Typography>
                                     </MenuItem>
                                 </Menu>
-                            </>)}
+                            </>
+                        )}
                     </Box>
                 </Toolbar>
             </Container>
         </AppBar>
     );
 }
+
+export default memo(NavBar);

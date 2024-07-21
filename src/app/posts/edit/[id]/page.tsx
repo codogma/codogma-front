@@ -93,7 +93,7 @@ function Posts({params}: PageProps) {
     }
 
     return (
-        <main className="flex min-h-screen m-1 ml-20 mr-20 flex-col items-left justify-self-auto p-24">
+        <main className="mt-10 mb-10">
             <FormProvider {...zodForm}>
                 <Box
                     component="form"

@@ -1,6 +1,6 @@
 "use client";
-import { createContext, ReactNode, useContext, useEffect, useReducer } from 'react';
-import { checkAuth } from "@/helpers/authApi";
+import {createContext, ReactNode, useContext, useEffect, useReducer, useState} from 'react';
+import {checkAuth} from "@/helpers/authApi";
 
 interface AuthState {
     isAuthenticated: boolean;
@@ -15,9 +15,9 @@ const initialState: AuthState = {
 const authReducer = (state: AuthState, action: AuthAction): AuthState => {
     switch (action.type) {
         case 'LOGIN':
-            return { isAuthenticated: true };
+            return {isAuthenticated: true};
         case 'LOGOUT':
-            return { isAuthenticated: false };
+            return {isAuthenticated: false};
         default:
             return state;
     }
@@ -26,24 +26,28 @@ const authReducer = (state: AuthState, action: AuthAction): AuthState => {
 const AuthContext = createContext<{
     state: AuthState;
     dispatch: React.Dispatch<AuthAction>;
-}>({ state: initialState, dispatch: () => null });
+}>({state: initialState, dispatch: () => null});
 
 interface AuthProviderProps {
     children: ReactNode;
 }
 
-export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
+export const AuthProvider: React.FC<AuthProviderProps> = ({children}) => {
     const [state, dispatch] = useReducer(authReducer, initialState);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         const handleStorageChange = () => {
             checkAuth()
                 .then((isAuthenticated) => {
-                    dispatch({ type: isAuthenticated ? 'LOGIN' : 'LOGOUT' });
+                    dispatch({type: isAuthenticated ? 'LOGIN' : 'LOGOUT'});
                 })
                 .catch((error) => {
                     console.error('Error checking authentication:', error);
-                    dispatch({ type: 'LOGOUT' }); // Считаем пользователя неавторизованным в случае ошибки
+                    dispatch({type: 'LOGOUT'});
+                })
+                .finally(() => {
+                    setLoading(false);
                 });
         };
 
@@ -53,10 +57,14 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         return () => {
             window.removeEventListener('storage', handleStorageChange);
         };
-    }, []); // Пустой массив зависимостей, чтобы `useEffect` сработал только при монтировании
+    }, []);
+
+    if (loading) {
+        return <div>Loading...</div>; // Можете заменить на компонент загрузки
+    }
 
     return (
-        <AuthContext.Provider value={{ state, dispatch }}>
+        <AuthContext.Provider value={{state, dispatch}}>
             {children}
         </AuthContext.Provider>
     );

@@ -1,12 +1,13 @@
-import {AppRouterCacheProvider} from '@mui/material-nextjs/v13-appRouter';
-import {CssBaseline, StyledEngineProvider, ThemeProvider} from '@mui/material';
+import {AppRouterCacheProvider} from '@mui/material-nextjs/v14-appRouter';
+import {CssBaseline, StyledEngineProvider} from '@mui/material';
 import type {Metadata} from "next";
 import {Inter} from "next/font/google";
-import theme from '../theme';
 import "./globals.css";
-import {NavBar} from "@/components/NavBar";
+import NavBar from "@/components/NavBar";
 import NavTabs from "@/components/NavTabs";
 import {AuthProvider} from "@/components/AuthProvider";
+import {ColorModeProvider} from "@/components/ThemeContext";
+import Container from "@mui/material/Container";
 
 const inter = Inter({subsets: ["latin"]});
 
@@ -23,16 +24,18 @@ export default function RootLayout({
     return (
         <html lang="en">
         <body className={inter.className}>
-        <AppRouterCacheProvider options={{enableCssLayer: true}}>
+        <AppRouterCacheProvider>
             <StyledEngineProvider injectFirst>
-                <ThemeProvider theme={theme}>
+                <ColorModeProvider>
+                    <AuthProvider>
                         <CssBaseline/>
-                        <AuthProvider>
-                            <NavBar/>
+                        <NavBar/>
+                        <Container maxWidth="lg">
                             <NavTabs/>
                             {children}
-                        </AuthProvider>
-                </ThemeProvider>
+                        </Container>
+                    </AuthProvider>
+                </ColorModeProvider>
             </StyledEngineProvider>
         </AppRouterCacheProvider>
         </body>

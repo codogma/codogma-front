@@ -25,9 +25,9 @@ export default function Page() {
     }, [])
 
     return (
-        <main className="flex min-h-screen m-1 ml-20 mr-20 flex-col items-left justify-self-auto p-24">
+        <main className="pt-4 pb-4 pl-5 pr-5">
             {posts?.map((post) => (
-                <article key={post.title} className="p-0">
+                <article key={post.title} className="">
                     <Link href={`/users/${post.username}`}>{post.username}</Link>
                     <TimeAgo datetime={post.createdAt}/>
                     <Link href={`/posts/${post.id}`}>{post.title}</Link>
