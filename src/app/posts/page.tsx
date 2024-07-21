@@ -25,11 +25,13 @@ export default function Page() {
     }, [])
 
     return (
-        <main className="pt-4 pb-4 pl-5 pr-5">
+        <>
             {posts?.map((post) => (
-                <article key={post.title} className="">
-                    <Link href={`/users/${post.username}`}>{post.username}</Link>
-                    <TimeAgo datetime={post.createdAt}/>
+                <article key={post.title} className="pt-4 pb-4 pl-5 pr-5 mb-4 bg-gray-200">
+                    <div className="flex align-center flex-nowrap mb-2 gap-1">
+                        <Link href={`/users/${post.username}`}>{post.username}</Link>
+                        <TimeAgo datetime={post.createdAt}/>
+                    </div>
                     <Link href={`/posts/${post.id}`}>{post.title}</Link>
                     <div>{post.categories.map((category) => (
                         <span className="category-item" key={category.id}>
@@ -42,6 +44,6 @@ export default function Page() {
                     </Link>
                 </article>
             ))}
-        </main>
+        </>
     );
 }
