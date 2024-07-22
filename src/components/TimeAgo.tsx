@@ -3,9 +3,10 @@ import {format, formatDistanceToNow} from 'date-fns';
 
 interface TimeAgoProps {
     datetime: Date;
+    className?: string | undefined;
 }
 
-export const TimeAgo: React.FC<TimeAgoProps> = ({datetime}) => {
+export const TimeAgo: React.FC<TimeAgoProps> = ({datetime, className}) => {
     const [timeAgo, setTimeAgo] = useState<string>('');
 
     useEffect(() => {
@@ -20,7 +21,7 @@ export const TimeAgo: React.FC<TimeAgoProps> = ({datetime}) => {
     const formattedDate = format(datetime, "yyyy-MM-dd, HH:mm");
 
     return (
-        <time dateTime={datetime.toString()} title={formattedDate}>
+        <time dateTime={datetime.toString()} title={formattedDate} className={className}>
             {timeAgo}
         </time>
     );

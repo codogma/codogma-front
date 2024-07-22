@@ -11,28 +11,40 @@ const ColorModeContext = React.createContext({
 });
 
 export const ColorModeProvider = ({children}: { children: React.ReactNode }) => {
-    const [mode, setMode] = React.useState<'light' | 'dark'>('light');
+    const [mode, setMode] = React.useState<'light' | 'dark'>(() => {
+        if (typeof window !== 'undefined') {
+            return localStorage.getItem('theme-mode') === 'dark' ? 'dark' : 'light';
+        }
+        return 'light';
+    });
 
     React.useEffect(() => {
         const savedMode = localStorage.getItem('theme-mode');
         if (savedMode === 'dark') {
             setMode('dark');
+            document.documentElement.classList.add('dark');
         } else {
             setMode('light');
+            document.documentElement.classList.remove('dark');
         }
     }, []);
+
+    React.useEffect(() => {
+        if (mode === 'dark') {
+            document.documentElement.classList.add('dark');
+        } else {
+            document.documentElement.classList.remove('dark');
+        }
+        localStorage.setItem('theme-mode', mode);
+    }, [mode]);
 
     const colorMode = React.useMemo(
         () => ({
             toggleColorMode: () => {
-                setMode((prevMode) => {
-                    const newMode = prevMode === 'light' ? 'dark' : 'light';
-                    localStorage.setItem('theme-mode', newMode);
-                    return newMode;
-                });
+                setMode((prevMode) => (prevMode === 'light' ? 'dark' : 'light'));
             },
         }),
-        [],
+        []
     );
 
     const theme = React.useMemo(
@@ -42,14 +54,12 @@ export const ColorModeProvider = ({children}: { children: React.ReactNode }) => 
                     mode,
                 },
             }),
-        [mode],
+        [mode]
     );
 
     return (
         <ColorModeContext.Provider value={colorMode}>
-            <ThemeProvider theme={theme}>
-                {children}
-            </ThemeProvider>
+            <ThemeProvider theme={theme}>{children}</ThemeProvider>
         </ColorModeContext.Provider>
     );
 };

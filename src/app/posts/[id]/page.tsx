@@ -41,20 +41,43 @@ export default function Page({params}: PageProps) {
 
     return (
         <main className="mt-10 mb-10">
-            <Link className="decoration-0" href={`/users/edit/${post.username}`}>
-                {post.username}
-            </Link>
-            <br/>
-            <TimeAgo datetime={post.createdAt}/>
-            <h1>{post.title}</h1>
-            <div dangerouslySetInnerHTML={{__html: post.content}}/>
-            <div>Категории: {post.categories.map((category) => (
-                <span className="category-item" key={category.id}>
-                    <Link href={`/categories/${category.id}`}>
-                    {category.name}
+            <article className="itb-article">
+                <div className="article-meta-container">
+                    <Link className="article-user-name" href={`/users/edit/${post.username}`}>
+                        {post.username}
                     </Link>
-                </span>
-            ))}</div>
+                    <TimeAgo datetime={post.createdAt} className="article-datetime"/>
+                </div>
+                <h1 className="article-title-h1">{post.title}</h1>
+                <div className="article-category">{post.categories.map((category) => (
+                    <span className="category-item" key={category.id}>
+                            <Link className="category-link" href={`/categories/${category.id}`}>
+                            {category.name}
+                            </Link>
+                    </span>
+                ))}
+                </div>
+                <div className="article-content" dangerouslySetInnerHTML={{__html: post.content}}/>
+                <div className="article-presenter-meta">
+                    {/*TODO после добавления тегов раскомментировать и подправить*/}
+                    {/*<div className="article-category-pm">Теги: {post.categories.map((category) => (*/}
+                    {/*    <span className="category-item" key={category.id}>*/}
+                    {/*        <Link className="category-link" href={`/categories/${category.id}`}>*/}
+                    {/*        {category.name}*/}
+                    {/*        </Link>*/}
+                    {/*    </span>*/}
+                    {/*))}*/}
+                    {/*</div>*/}
+                    <div className="article-category-pm">Категории: {post.categories.map((category) => (
+                        <span className="category-item" key={category.id}>
+                            <Link className="category-link" href={`/categories/${category.id}`}>
+                            {category.name}
+                            </Link>
+                        </span>
+                    ))}
+                    </div>
+                </div>
+            </article>
         </main>
     );
 }

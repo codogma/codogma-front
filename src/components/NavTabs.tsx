@@ -77,19 +77,19 @@ const NavTabs: React.FC = () => {
     if (!shouldShowNavTabs) return null;
 
     return (
-        <Box className="mb-5">
+        <div className="nav-tabs">
             <Tabs
                 value={value}
                 onChange={handleChange}
                 aria-label="nav tabs example"
                 role="navigation"
-                className="pl-5 pr-5"
+                className="tabs"
             >
                 <LinkTab label="Posts" href="/posts"/>
                 <LinkTab label="Categories" href="/categories"/>
                 <LinkTab label="Users" href="/users"/>
             </Tabs>
-        </Box>
+        </div>
     );
 }
 
