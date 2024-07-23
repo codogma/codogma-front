@@ -78,12 +78,12 @@ export default function Page({params}: PageProps) {
                         </span>
                     ))}
                     </div>
-                    <Link href={`/posts/edit/${post.id}`}>
-                        <Button className="article-btn" variant="outlined" startIcon={<EditOutlinedIcon/>}>
-                            Edit
-                        </Button>
-                    </Link>
                 </div>
+                <Link href={`/posts/edit/${post.id}`}>
+                    <Button className="article-btn" variant="outlined" startIcon={<EditOutlinedIcon/>}>
+                        Edit
+                    </Button>
+                </Link>
             </article>
         </main>
     );
