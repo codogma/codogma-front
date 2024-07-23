@@ -12,6 +12,7 @@ import Autocomplete from "@mui/material/Autocomplete";
 import {getCategories} from "@/helpers/categoryApi";
 import {TinyMCEEditor} from "@/components/TinyMCEEditor";
 import {WithAuth} from "@/components/WithAuth";
+import {useRouter} from "next/navigation";
 
 const PostScheme = z.object({
     categoryIds: z.array(z.number()),
@@ -20,6 +21,7 @@ const PostScheme = z.object({
 });
 
 function Posts() {
+    const route = useRouter();
     const [categories, setCategories] = useState<Category[]>([]);
 
     useEffect(() => {
@@ -61,7 +63,7 @@ function Posts() {
     const onSubmit: SubmitHandler<z.infer<typeof PostScheme>> = (formData) => {
         const requestData = {...formData};
         console.log(requestData);
-        createPost(requestData);
+        createPost(requestData).then(post => route.push(`/posts/${post.id}`));
     };
 
     return (

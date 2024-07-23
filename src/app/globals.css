@@ -29,7 +29,7 @@
         }
 
         .article-user-avatar {
-            /*@apply no-underline;*/
+            @apply rounded-[3px] h-6 w-6 !important;
         }
 
         .article-user-name {

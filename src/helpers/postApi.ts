@@ -1,16 +1,18 @@
 import {axiosInstance} from "@/helpers/axiosInstance";
 import {Post} from "@/types";
 
-export const createPost = (requestData: {
+export const createPost = async (requestData: {
     categoryIds: number[],
     title: string,
     content: string
-}) => {
-    axiosInstance.post("/posts", requestData)
-        .then((response) => console.log(response.data))
-        .catch((error: any) => {
-            console.error("Error creating post: " + error.message);
-        });
+}): Promise<Post> => {
+    try {
+        const response = await axiosInstance.post("/posts", requestData);
+        return response.data;
+    } catch (error: any) {
+        console.error("Error creating post: " + error.message);
+        throw error;
+    }
 }
 
 

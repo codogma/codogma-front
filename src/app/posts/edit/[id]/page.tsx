@@ -84,6 +84,7 @@ function Posts({params}: PageProps) {
         const requestData = {...formData}
         console.log(requestData)
         updatePost(postId, requestData)
+        router.push(`/posts/${postId}`)
     }
 
     const handleDelete = (event: MouseEvent<HTMLElement>) => {
@@ -136,7 +137,7 @@ function Posts({params}: PageProps) {
                         )}
                     />
                     <div className="flex justify-between w-full">
-                        <Button type="submit">Create</Button>
+                        <Button type="submit">Update</Button>
                         <Button id={postId.toString()} style={{color: "red"}} onClick={handleDelete}>Delete</Button>
                     </div>
                 </Box>
