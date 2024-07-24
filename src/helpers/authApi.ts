@@ -1,4 +1,5 @@
 import {axiosInstance} from "@/helpers/axiosInstance";
+import {User} from "@/types";
 
 export const register = (requestData: { username: string, email: string, password: string }) => {
     axiosInstance.post("/auth/signup", requestData)
@@ -8,32 +9,33 @@ export const register = (requestData: { username: string, email: string, passwor
         });
 }
 
-export const login = (requestData: { usernameOrEmail: string, password: string }) => {
-    axiosInstance.post("/auth/login", requestData)
-        .then((response) => {
-            console.log("User logged in successfully")
-            window.dispatchEvent(new Event("storage"));
-        })
-        .catch((error: any) => {
-            console.error("Error logging in user: " + error.message);
-        });
+export const login = async (requestData: { usernameOrEmail: string, password: string }): Promise<User> => {
+    try {
+        await axiosInstance.post("/auth/login", requestData);
+        window.dispatchEvent(new Event("storage"));
+        return await currentUser();
+    } catch (error: any) {
+        console.error("Error logging in user: " + error.message);
+        throw new Error("Error logging in user");
+    }
 }
 
 export const logout = () => {
-    //TODO реализовать этот метод на бэкенде
     axiosInstance.post("/auth/logout")
-        .then((response) => console.log(response.data))
+        .then(() => {
+            console.log("User logged out successfully");
+            window.dispatchEvent(new Event("storage"));
+        })
         .catch((error: any) => {
             console.error("Error logging out user: " + error.message);
         });
-    window.dispatchEvent(new Event("storage"));
-}
+};
 
-export const checkAuth = async (): Promise<boolean> => {
+export const currentUser = async (): Promise<User> => {
     try {
-        await axiosInstance.get("/auth/auth-check");
-        return true;
+        const response = await axiosInstance.get("/auth/current-user");
+        return response.data;
     } catch {
-        return false;
+        throw new Error('Error fetching current user');
     }
 };

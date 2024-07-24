@@ -20,13 +20,15 @@ import Link from "next/link";
 import {useAuth} from "@/components/AuthProvider";
 import {ThemeToggleButton} from "@/components/ThemeContext";
 import {ButtonGroup} from "@mui/material";
+import {logout} from "@/helpers/authApi";
 
 const NavBar = () => {
     const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
     const {state} = useAuth();
+    console.log(state)
 
     const handleLogout = () => {
-        // logout();
+        logout();
         handleCloseUserMenu();
     };
 

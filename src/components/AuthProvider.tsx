@@ -1,23 +1,26 @@
 "use client";
 import {createContext, ReactNode, useContext, useEffect, useReducer, useState} from 'react';
-import {checkAuth} from "@/helpers/authApi";
+import {currentUser} from "@/helpers/authApi";
+import {User} from "@/types";
 
 interface AuthState {
     isAuthenticated: boolean;
+    user: User | null;
 }
 
-type AuthAction = { type: 'LOGIN' } | { type: 'LOGOUT' };
+type AuthAction = { type: 'LOGIN', user: User } | { type: 'LOGOUT' };
 
 const initialState: AuthState = {
     isAuthenticated: false,
+    user: null,
 };
 
 const authReducer = (state: AuthState, action: AuthAction): AuthState => {
     switch (action.type) {
         case 'LOGIN':
-            return {isAuthenticated: true};
+            return {isAuthenticated: true, user: action.user};
         case 'LOGOUT':
-            return {isAuthenticated: false};
+            return {isAuthenticated: false, user: null};
         default:
             return state;
     }
@@ -26,7 +29,11 @@ const authReducer = (state: AuthState, action: AuthAction): AuthState => {
 const AuthContext = createContext<{
     state: AuthState;
     dispatch: React.Dispatch<AuthAction>;
-}>({state: initialState, dispatch: () => null});
+    setHasLoggedIn: React.Dispatch<React.SetStateAction<boolean>>;
+}>({
+    state: initialState, dispatch: () => null, setHasLoggedIn: () => {
+    }
+});
 
 interface AuthProviderProps {
     children: ReactNode;
@@ -35,15 +42,24 @@ interface AuthProviderProps {
 export const AuthProvider: React.FC<AuthProviderProps> = ({children}) => {
     const [state, dispatch] = useReducer(authReducer, initialState);
     const [loading, setLoading] = useState(true);
+    const [hasLoggedIn, setHasLoggedIn] = useState(false);
 
     useEffect(() => {
+        if (!hasLoggedIn) {
+            setLoading(false);
+            return;
+        }
+
         const handleStorageChange = () => {
-            checkAuth()
-                .then((isAuthenticated) => {
-                    dispatch({type: isAuthenticated ? 'LOGIN' : 'LOGOUT'});
+            currentUser()
+                .then((user) => {
+                    if (user) {
+                        dispatch({type: 'LOGIN', user});
+                    } else {
+                        dispatch({type: 'LOGOUT'});
+                    }
                 })
-                .catch((error) => {
-                    console.error('Error checking authentication:', error);
+                .catch(() => {
                     dispatch({type: 'LOGOUT'});
                 })
                 .finally(() => {
@@ -51,20 +67,20 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({children}) => {
                 });
         };
 
-        handleStorageChange(); // Проверяем состояние при первом монтировании
+        handleStorageChange();
 
         window.addEventListener('storage', handleStorageChange);
         return () => {
             window.removeEventListener('storage', handleStorageChange);
         };
-    }, []);
+    }, [hasLoggedIn]);
 
     if (loading) {
-        return <div>Loading...</div>; // Можете заменить на компонент загрузки
+        return <div>Loading...</div>; // Можно заменить на компонент загрузки
     }
 
     return (
-        <AuthContext.Provider value={{state, dispatch}}>
+        <AuthContext.Provider value={{state, dispatch, setHasLoggedIn}}>
             {children}
         </AuthContext.Provider>
     );

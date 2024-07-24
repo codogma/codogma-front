@@ -4,7 +4,7 @@ import {FormEvent} from 'react';
 import {Box, Button, TextField} from "@mui/material";
 import {login} from "@/helpers/authApi";
 import {useRouter} from "next/navigation";
-
+import {useAuth} from "@/components/AuthProvider";
 
 type User = {
     usernameOrEmail: string
@@ -13,14 +13,23 @@ type User = {
 
 function LoginPage() {
     const router = useRouter();
-    const onSubmit = (e: FormEvent<HTMLFormElement>) => {
+    const {dispatch, setHasLoggedIn} = useAuth();
+
+    const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         const formData = new FormData(e.currentTarget);
-        const user: User = Object.fromEntries(formData.entries()) as User
-        login(user)
-        router.push("/");
-        console.log(user);
-    }
+        const user: User = Object.fromEntries(formData.entries()) as User;
+
+        try {
+            const loggedInUser = await login(user);
+            dispatch({type: 'LOGIN', user: loggedInUser});
+            setHasLoggedIn(true);
+            router.push("/");
+        } catch (error) {
+            console.error("Login failed", error);
+        }
+    };
+
     return (
         <>
             <Box
