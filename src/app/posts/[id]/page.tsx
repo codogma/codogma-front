@@ -1,12 +1,13 @@
 "use client";
 import React, {useEffect, useState} from "react";
-import {Post} from "@/types";
+import {Post, UserRole} from "@/types";
 import {getPostById} from "@/helpers/postApi";
 import Link from "next/link";
 import DOMPurify from "dompurify";
 import {TimeAgo} from "@/components/TimeAgo";
 import {Button} from "@mui/material";
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
+import {useAuth} from "@/components/AuthProvider";
 
 type PageParams = {
     id: number
@@ -18,6 +19,7 @@ type PageProps = {
 
 export default function Page({params}: PageProps) {
     const postId: number = params.id;
+    const {state} = useAuth();
     const [post, setPost] = useState<Post>({
         id: 0,
         title: "",
@@ -79,11 +81,13 @@ export default function Page({params}: PageProps) {
                     ))}
                     </div>
                 </div>
+                {state.user?.username === post.username && state.user.role === UserRole.ROLE_AUTHOR && (
                 <Link href={`/posts/edit/${post.id}`}>
                     <Button className="article-btn" variant="outlined" startIcon={<EditOutlinedIcon/>}>
                         Edit
                     </Button>
                 </Link>
+                )}
             </article>
         </main>
     );
