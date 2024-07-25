@@ -2,6 +2,7 @@
 import {createContext, ReactNode, useContext, useEffect, useReducer, useState} from 'react';
 import {currentUser} from "@/helpers/authApi";
 import {User} from "@/types";
+import Cookies from 'js-cookie';
 
 interface AuthState {
     isAuthenticated: boolean;
@@ -29,11 +30,7 @@ const authReducer = (state: AuthState, action: AuthAction): AuthState => {
 const AuthContext = createContext<{
     state: AuthState;
     dispatch: React.Dispatch<AuthAction>;
-    setHasLoggedIn: React.Dispatch<React.SetStateAction<boolean>>;
-}>({
-    state: initialState, dispatch: () => null, setHasLoggedIn: () => {
-    }
-});
+}>({state: initialState, dispatch: () => null});
 
 interface AuthProviderProps {
     children: ReactNode;
@@ -42,45 +39,54 @@ interface AuthProviderProps {
 export const AuthProvider: React.FC<AuthProviderProps> = ({children}) => {
     const [state, dispatch] = useReducer(authReducer, initialState);
     const [loading, setLoading] = useState(true);
-    const [hasLoggedIn, setHasLoggedIn] = useState(false);
 
     useEffect(() => {
-        if (!hasLoggedIn) {
+        const savedUser = Cookies.get('user');
+        if (savedUser) {
+            const user = JSON.parse(savedUser);
+            dispatch({type: 'LOGIN', user});
             setLoading(false);
-            return;
+        } else {
+            setLoading(false);
         }
+    }, []);
 
+    useEffect(() => {
         const handleStorageChange = () => {
-            currentUser()
-                .then((user) => {
-                    if (user) {
-                        dispatch({type: 'LOGIN', user});
-                    } else {
+            const savedUser = Cookies.get('user');
+            if (savedUser) {
+                currentUser()
+                    .then((user) => {
+                        if (user) {
+                            dispatch({type: 'LOGIN', user});
+                            Cookies.set('user', JSON.stringify(user), {secure: true, sameSite: 'strict'});
+                        } else {
+                            dispatch({type: 'LOGOUT'});
+                            Cookies.remove('user');
+                        }
+                    })
+                    .catch(() => {
                         dispatch({type: 'LOGOUT'});
-                    }
-                })
-                .catch(() => {
-                    dispatch({type: 'LOGOUT'});
-                })
-                .finally(() => {
-                    setLoading(false);
-                });
+                        Cookies.remove('user');
+                    });
+            } else {
+                dispatch({type: 'LOGOUT'});
+            }
         };
 
         handleStorageChange();
-
         window.addEventListener('storage', handleStorageChange);
         return () => {
             window.removeEventListener('storage', handleStorageChange);
         };
-    }, [hasLoggedIn]);
+    }, []);
 
     if (loading) {
         return <div>Loading...</div>; // Можно заменить на компонент загрузки
     }
 
     return (
-        <AuthContext.Provider value={{state, dispatch, setHasLoggedIn}}>
+        <AuthContext.Provider value={{state, dispatch}}>
             {children}
         </AuthContext.Provider>
     );

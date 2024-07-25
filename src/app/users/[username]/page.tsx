@@ -12,7 +12,7 @@ type PageProps = {
     params: PageParams
 }
 
-function Page({params}: PageProps) {
+export default function Page({params}: PageProps) {
     const username: string = params.username;
     const [user, setUser] = useState<User>();
 

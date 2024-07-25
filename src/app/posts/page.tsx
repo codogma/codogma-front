@@ -8,6 +8,11 @@ import DOMPurify from "dompurify";
 import {TimeAgo} from "@/components/TimeAgo";
 import {Avatar, Button} from "@mui/material";
 import Stack from '@mui/material/Stack';
+import Card from '@mui/material/Card';
+import CardContent from '@mui/material/CardContent';
+import CardActions from '@mui/material/CardActions';
+import {useAuth} from "@/components/AuthProvider";
+import {UserRole} from "@/types";
 
 function stringToColor(string: string) {
     let hash = 0;
@@ -40,6 +45,7 @@ function stringAvatar(name: string) {
 
 export default function Page() {
     const [posts, setPosts] = useState<Post[]>([]);
+    const {state} = useAuth();
 
     useEffect(() => {
         async function fetchData() {
@@ -58,33 +64,39 @@ export default function Page() {
     return (
         <>
             {posts?.map((post) => (
-                <article key={post.title} className="itb-article">
-                    <div className="article-meta-container">
-                        <Avatar className="article-user-avatar" {...stringAvatar(post.username)} variant="rounded"/>
-                        <Link href={`/users/${post.username}`}
-                              className="article-user-name">{post.username}</Link>
-                        <TimeAgo datetime={post.createdAt} className="article-datetime"/>
-                    </div>
-                    <Link href={`/posts/${post.id}`} className="article-title">{post.title}</Link>
-                    <div className="article-category">{post.categories.map((category) => (
-                        <span className="category-item" key={category.id}>
+                <Card key={post.title} className="itb-article">
+                    <CardContent>
+                        <div className="article-meta-container">
+                            <Avatar className="article-user-avatar" {...stringAvatar(post.username)} variant="rounded"/>
+                            <Link href={`/users/${post.username}`}
+                                  className="article-user-name">{post.username}</Link>
+                            <TimeAgo datetime={post.createdAt} className="article-datetime"/>
+                        </div>
+                        <Link href={`/posts/${post.id}`} className="article-title">{post.title}</Link>
+                        <div className="article-category">{post.categories.map((category) => (
+                            <span className="category-item" key={category.id}>
                             <Link className="category-link" href={`/categories/${category.id}`}>
                             {category.name}
                             </Link>
                         </span>
-                    ))}</div>
-                    <div className="article-content" dangerouslySetInnerHTML={{__html: post.content}}/>
-                    <Stack direction="row" spacing={2}>
-                        <Link href={`/posts/${post.id}`}>
-                            <Button className="article-btn" variant="outlined">Read More</Button>
-                        </Link>
-                        <Link href={`/posts/edit/${post.id}`}>
-                            <Button className="article-btn" variant="outlined" startIcon={<EditOutlinedIcon/>}>
-                                Edit
-                            </Button>
-                        </Link>
-                    </Stack>
-                </article>
+                        ))}</div>
+                        <div className="article-content" dangerouslySetInnerHTML={{__html: post.content}}/>
+                    </CardContent>
+                    <CardActions>
+                        <Stack direction="row" spacing={2}>
+                            <Link href={`/posts/${post.id}`}>
+                                <Button className="article-btn" variant="outlined">Read More</Button>
+                            </Link>
+                            {state.user?.username === post.username && state.user.role === UserRole.ROLE_AUTHOR && (
+                                <Link href={`/posts/edit/${post.id}`}>
+                                    <Button className="article-btn" variant="outlined" startIcon={<EditOutlinedIcon/>}>
+                                        Edit
+                                    </Button>
+                                </Link>
+                            )}
+                        </Stack>
+                    </CardActions>
+                </Card>
             ))}
         </>
     );

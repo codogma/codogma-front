@@ -21,14 +21,22 @@ import {useAuth} from "@/components/AuthProvider";
 import {ThemeToggleButton} from "@/components/ThemeContext";
 import {ButtonGroup} from "@mui/material";
 import {logout} from "@/helpers/authApi";
+import {UserRole} from "@/types";
+import {useRouter} from "next/navigation";
 
 const NavBar = () => {
     const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
+    const router = useRouter();
     const {state} = useAuth();
     console.log(state)
 
     const handleLogout = () => {
-        logout();
+        logout().then(() => router.push('/posts'));
+        handleCloseUserMenu();
+    };
+
+    const handleProfile = () => {
+        router.push(`/users/${state.user?.username}`);
         handleCloseUserMenu();
     };
 
@@ -66,16 +74,20 @@ const NavBar = () => {
                         <IconButton color="inherit">
                             <SearchIcon/>
                         </IconButton>
-                        <Link href={`/posts/create`}>
-                            <IconButton color="inherit">
-                                <CreateIcon/>
-                            </IconButton>
-                        </Link>
-                        <Link href={`/categories/create`}>
-                            <IconButton color="inherit">
-                                <CategoryIcon/>
-                            </IconButton>
-                        </Link>
+                        {state.user?.role === UserRole.ROLE_AUTHOR && (
+                            <Link href={`/posts/create`}>
+                                <IconButton color="inherit">
+                                    <CreateIcon/>
+                                </IconButton>
+                            </Link>
+                        )}
+                        {state.user?.role === UserRole.ROLE_ADMIN && (
+                            <Link href={`/categories/create`}>
+                                <IconButton color="inherit">
+                                    <CategoryIcon/>
+                                </IconButton>
+                            </Link>
+                        )}
                         <IconButton color="inherit">
                             <PreviewIcon/>
                         </IconButton>
@@ -111,6 +123,9 @@ const NavBar = () => {
                                     open={Boolean(anchorElUser)}
                                     onClose={handleCloseUserMenu}
                                 >
+                                    <MenuItem onClick={handleProfile}>
+                                        <Typography textAlign="center">Profile</Typography>
+                                    </MenuItem>
                                     <MenuItem onClick={handleLogout}>
                                         <Typography textAlign="center">Log out</Typography>
                                     </MenuItem>

@@ -96,4 +96,20 @@
             }
         }
     }
+
+    .itb-category {
+        @apply text-mine-shaft pt-4 pb-4 pl-5 pr-5 mb-4 bg-white dark:bg-bunker;
+
+        .category-name {
+            @apply text-mine-shaft text-[0.9375rem] font-medium leading-4 no-underline mb-2;
+        }
+
+        .category-name:visited {
+            @apply text-horizon;
+        }
+
+        .category-name:hover {
+            @apply text-horizon !important;
+        }
+    }
 }

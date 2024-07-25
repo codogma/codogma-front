@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import * as React from 'react';
 import {FormEvent} from 'react';
 import {Box, Button, TextField} from "@mui/material";
@@ -7,23 +7,21 @@ import {useRouter} from "next/navigation";
 import {useAuth} from "@/components/AuthProvider";
 
 type User = {
-    usernameOrEmail: string
-    password: string
-}
+    usernameOrEmail: string;
+    password: string;
+};
 
 function LoginPage() {
     const router = useRouter();
-    const {dispatch, setHasLoggedIn} = useAuth();
+    const {dispatch} = useAuth();
 
     const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         const formData = new FormData(e.currentTarget);
         const user: User = Object.fromEntries(formData.entries()) as User;
-
         try {
             const loggedInUser = await login(user);
             dispatch({type: 'LOGIN', user: loggedInUser});
-            setHasLoggedIn(true);
             router.push("/");
         } catch (error) {
             console.error("Login failed", error);

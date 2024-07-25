@@ -48,24 +48,18 @@ export default function Page() {
     }
 
     return (
-        <main className="flex min-h-screen flex-col items-left justify-self-auto p-24">
+        <>
             {categories.map((category) => (
-                <ul key={category.id}>
-                    <li>Название категории: <Link href={`/categories/${category.id}`}>{category.name}</Link></li>
-                    <li>Посты категории:</li>
-                    {category.posts?.map((post) => (
-                        <ul key={`/posts/${post.id}`}>
-                            <li className="itb-article"><Link href={`/posts/${post.id}`}>{post.title}</Link></li>
-                        </ul>
-                    ))}
+                <section key={category.id} className="itb-category">
+                    <Link href={`/categories/${category.id}`} className="category-name">{category.name}</Link>
                     <Link href={`/categories/edit/${category.id}`}>
                         <Button>Обновить данные</Button>
                     </Link>
                     <Link href={"/categories"}>
                         <Button id={category.id.toString()} onClick={handleDelete}>Удалить категорию</Button>
                     </Link>
-                </ul>
+                </section>
             ))}
-        </main>
+        </>
     );
 }
