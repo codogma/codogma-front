@@ -1,29 +1,14 @@
 "use client";
 import React, {MouseEvent, useEffect, useState} from "react";
-import {Category} from "@/types";
-import {deleteCategory, getCategories} from "@/helpers/categoryApi";
+import {Category, UserRole} from "@/types";
+import {getCategories} from "@/helpers/categoryApi";
 import Link from "next/link";
 import {Button} from "@mui/material";
-
-function stringToColor(string: string) {
-    let hash = 0;
-    let i;
-
-    /* eslint-disable no-bitwise */
-    for (i = 0; i < string.length; i += 1) {
-        hash = string.charCodeAt(i) + ((hash << 5) - hash);
-    }
-
-    let color = '#';
-
-    for (i = 0; i < 3; i += 1) {
-        const value = (hash >> (i * 8)) & 0xff;
-        color += `00${value.toString(16)}`.slice(-2);
-    }
-    /* eslint-enable no-bitwise */
-
-    return color;
-}
+import Card from "@mui/material/Card";
+import CardContent from "@mui/material/CardContent";
+import Stack from "@mui/material/Stack";
+import CardActions from "@mui/material/CardActions";
+import {state} from "sucrase/dist/types/parser/traverser/base";
 
 export default function Page() {
     const [categories, setCategories] = useState<Category[]>([])
@@ -41,24 +26,21 @@ export default function Page() {
         fetchData()
     }, [])
 
-    const handleDelete = (event: MouseEvent<HTMLElement>) => {
-        const categoryId = Number(event.currentTarget.id)
-        setCategories(categories.filter((category) => category.id !== categoryId))
-        deleteCategory(categoryId)
-    }
-
     return (
         <>
             {categories.map((category) => (
-                <section key={category.id} className="itb-category">
-                    <Link href={`/categories/${category.id}`} className="category-name">{category.name}</Link>
-                    <Link href={`/categories/edit/${category.id}`}>
-                        <Button>Обновить данные</Button>
-                    </Link>
-                    <Link href={"/categories"}>
-                        <Button id={category.id.toString()} onClick={handleDelete}>Удалить категорию</Button>
-                    </Link>
-                </section>
+                <Card key={category.id} className="itb-category">
+                    <CardContent>
+                        <Link href={`/categories/${category.id}`} className="category-name">{category.name}</Link>
+                        <CardActions>
+                            <Stack direction="row" spacing={2}>
+                                <Link href={`/categories/edit/${category.id}`}>
+                                    <Button className="article-btn" variant="outlined">Update</Button>
+                                </Link>
+                            </Stack>
+                        </CardActions>
+                    </CardContent>
+                </Card>
             ))}
         </>
     );
