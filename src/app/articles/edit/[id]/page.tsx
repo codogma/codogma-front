@@ -4,19 +4,19 @@ import {z} from "zod"
 import {Controller, FormProvider, SubmitHandler, useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
 import React, {MouseEvent, useEffect, useState} from "react";
-import {Category, Post} from "@/types";
+import {Category, Article} from "@/types";
 import FormInput from "@/components/FormInput";
 import {Box, Button, TextField} from "@mui/material";
-import {deletePost, getPostById, updatePost} from "@/helpers/postApi";
+import {deleteArticle, getArticleById, updateArticle} from "@/helpers/articleApi";
 import {getCategories} from "@/helpers/categoryApi";
 import Autocomplete from "@mui/material/Autocomplete";
 import {TinyMCEEditor} from "@/components/TinyMCEEditor";
 import {WithAuth} from "@/components/WithAuth";
 import {useRouter} from "next/navigation";
 
-const PostScheme = z.object({
+const ArticleScheme = z.object({
     categoryIds: z.array(z.number()),
-    title: z.optional(z.string().min(2, "Название поста не может содержать менее 2 символов.").max(50, "Название поста не может содержать более 50 символов.")),
+    title: z.optional(z.string().min(2, "Название статьи не может содержать менее 2 символов.").max(50, "Название статьи не может содержать более 50 символов.")),
     content: z.optional(z.string())
 })
 
@@ -29,14 +29,14 @@ type PageProps = {
 }
 
 
-function Posts({params}: PageProps) {
+function Articles({params}: PageProps) {
     const router = useRouter();
-    const postId: number = params.id;
-    const [post, setPost] = useState<Post>();
+    const articleId: number = params.id;
+    const [article, setArticle] = useState<Article>();
     const [categories, setCategories] = useState<Category[]>([]);
 
-    const zodForm = useForm<z.infer<typeof PostScheme>>({
-        resolver: zodResolver(PostScheme),
+    const zodForm = useForm<z.infer<typeof ArticleScheme>>({
+        resolver: zodResolver(ArticleScheme),
         defaultValues: {
             categoryIds: [],
             title: "",
@@ -47,17 +47,17 @@ function Posts({params}: PageProps) {
     useEffect(() => {
         async function fetchData() {
             try {
-                const postData = await getPostById(postId);
-                setPost(postData);
+                const articleData = await getArticleById(articleId);
+                setArticle(articleData);
 
                 const allCategories = await getCategories();
                 console.log(allCategories);
                 setCategories(allCategories);
 
                 zodForm.reset({
-                    categoryIds: postData.categories.map((category) => category.id),
-                    title: postData.title,
-                    content: postData.content
+                    categoryIds: articleData.categories.map((category) => category.id),
+                    title: articleData.title,
+                    content: articleData.content
                 });
             } catch (error) {
                 console.error('Error fetching data:', error)
@@ -65,7 +65,7 @@ function Posts({params}: PageProps) {
         }
 
         fetchData()
-    }, [postId, zodForm])
+    }, [articleId, zodForm])
 
     const {
         reset,
@@ -80,17 +80,17 @@ function Posts({params}: PageProps) {
         }
     }, [isSubmitSuccessful, reset])
 
-    const onSubmit: SubmitHandler<z.infer<typeof PostScheme>> = (formData) => {
+    const onSubmit: SubmitHandler<z.infer<typeof ArticleScheme>> = (formData) => {
         const requestData = {...formData}
         console.log(requestData)
-        updatePost(postId, requestData)
-        router.push(`/posts/${postId}`)
+        updateArticle(articleId, requestData)
+        router.push(`/articles/${articleId}`)
     }
 
     const handleDelete = (event: MouseEvent<HTMLElement>) => {
-        const postId = Number(event.currentTarget.id)
-        deletePost(postId)
-        router.push("/posts")
+        const articleId = Number(event.currentTarget.id)
+        deleteArticle(articleId)
+        router.push("/articles")
     }
 
     return (
@@ -111,7 +111,7 @@ function Posts({params}: PageProps) {
                                 multiple
                                 id="categories"
                                 options={categories}
-                                defaultValue={post?.categories}
+                                defaultValue={article?.categories}
                                 getOptionLabel={(category) => category?.name}
                                 filterSelectedOptions
                                 value={categories.filter(category => field.value.includes(category.id))}
@@ -130,7 +130,7 @@ function Posts({params}: PageProps) {
                         control={control}
                         render={({field}) => (
                             <TinyMCEEditor
-                                defaultValue={post?.content}
+                                defaultValue={article?.content}
                                 value={field.value}
                                 onChange={field.onChange}
                             />
@@ -138,7 +138,7 @@ function Posts({params}: PageProps) {
                     />
                     <div className="flex justify-between w-full">
                         <Button type="submit">Update</Button>
-                        <Button id={postId.toString()} style={{color: "red"}} onClick={handleDelete}>Delete</Button>
+                        <Button id={articleId.toString()} style={{color: "red"}} onClick={handleDelete}>Delete</Button>
                     </div>
                 </Box>
             </FormProvider>
@@ -146,4 +146,4 @@ function Posts({params}: PageProps) {
     );
 }
 
-export default WithAuth(Posts)
+export default WithAuth(Articles)

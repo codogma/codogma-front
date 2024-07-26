@@ -1,7 +1,7 @@
 "use client";
 import React, {useEffect, useState} from "react";
-import {getPosts} from "@/helpers/postApi";
-import {Post} from "@/types";
+import {getArticles} from "@/helpers/articleApi";
+import {Article} from "@/types";
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import Link from "next/link";
 import DOMPurify from "dompurify";
@@ -44,15 +44,15 @@ function stringAvatar(name: string) {
 }
 
 export default function Page() {
-    const [posts, setPosts] = useState<Post[]>([]);
+    const [articles, setArticles] = useState<Article[]>([]);
     const {state} = useAuth();
 
     useEffect(() => {
         async function fetchData() {
             try {
-                const allPosts = await getPosts();
-                allPosts.map((post) => post.content = DOMPurify.sanitize(post.content));
-                setPosts(allPosts);
+                const allArticles = await getArticles();
+                allArticles.map((article) => article.content = DOMPurify.sanitize(article.content));
+                setArticles(allArticles);
             } catch (error) {
                 console.error('Error fetching data:', error);
             }
@@ -63,32 +63,32 @@ export default function Page() {
 
     return (
         <>
-            {posts?.map((post) => (
-                <Card key={post.title} className="itb-article">
+            {articles?.map((article) => (
+                <Card key={article.title} className="itb-article">
                     <CardContent>
                         <div className="article-meta-container">
-                            <Avatar className="article-user-avatar" {...stringAvatar(post.username)} variant="rounded"/>
-                            <Link href={`/users/${post.username}`}
-                                  className="article-user-name">{post.username}</Link>
-                            <TimeAgo datetime={post.createdAt} className="article-datetime"/>
+                            <Avatar className="article-user-avatar" {...stringAvatar(article.username)} variant="rounded"/>
+                            <Link href={`/users/${article.username}`}
+                                  className="article-user-name">{article.username}</Link>
+                            <TimeAgo datetime={article.createdAt} className="article-datetime"/>
                         </div>
-                        <Link href={`/posts/${post.id}`} className="article-title">{post.title}</Link>
-                        <div className="article-category">{post.categories.map((category) => (
+                        <Link href={`/articles/${article.id}`} className="article-title">{article.title}</Link>
+                        <div className="article-category">{article.categories.map((category) => (
                             <span className="category-item" key={category.id}>
                             <Link className="category-link" href={`/categories/${category.id}`}>
                             {category.name}
                             </Link>
                         </span>
                         ))}</div>
-                        <div className="article-content" dangerouslySetInnerHTML={{__html: post.content}}/>
+                        <div className="article-content" dangerouslySetInnerHTML={{__html: article.content}}/>
                     </CardContent>
                     <CardActions>
                         <Stack direction="row" spacing={2}>
-                            <Link href={`/posts/${post.id}`}>
+                            <Link href={`/articles/${article.id}`}>
                                 <Button className="article-btn" variant="outlined">Read More</Button>
                             </Link>
-                            {state.user?.username === post.username && state.user.role === UserRole.ROLE_AUTHOR && (
-                                <Link href={`/posts/edit/${post.id}`}>
+                            {state.user?.username === article.username && state.user.role === UserRole.ROLE_AUTHOR && (
+                                <Link href={`/articles/edit/${article.id}`}>
                                     <Button className="article-btn" variant="outlined" startIcon={<EditOutlinedIcon/>}>
                                         Edit
                                     </Button>

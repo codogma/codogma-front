@@ -49,7 +49,7 @@ const NavTabs: React.FC = () => {
 
     useEffect(() => {
         switch (pathname) {
-            case "/posts":
+            case "/articles":
                 setValue(0);
                 break;
             case "/categories":
@@ -71,7 +71,7 @@ const NavTabs: React.FC = () => {
         }
     };
 
-    const shouldShowNavTabs = ["/posts", "/categories", "/users"].some(path => pathname.endsWith(path));
+    const shouldShowNavTabs = ["/articles", "/categories", "/users"].some(path => pathname.endsWith(path));
 
     if (!shouldShowNavTabs) return null;
 
@@ -84,7 +84,7 @@ const NavTabs: React.FC = () => {
                 role="navigation"
                 className="tabs"
             >
-                <LinkTab label="Posts" href="/posts"/>
+                <LinkTab label="Articles" href="/articles"/>
                 <LinkTab label="Categories" href="/categories"/>
                 <LinkTab label="Users" href="/users"/>
             </Tabs>

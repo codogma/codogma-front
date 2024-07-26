@@ -53,9 +53,9 @@ export default function Page({params}: PageProps) {
     return (
         <main className="flex min-h-screen flex-col items-left justify-between p-24">
             <div>{category?.name}</div>
-            {category?.posts?.map((post) => (
-                <ul key={post.id}>
-                    <Link href={`/posts/${post.id}`}>{post.title}</Link>
+            {category?.articles?.map((article) => (
+                <ul key={article.id}>
+                    <Link href={`/articles/${article.id}`}>{article.title}</Link>
                 </ul>
             ))}
             <Link href={"/categories"}>

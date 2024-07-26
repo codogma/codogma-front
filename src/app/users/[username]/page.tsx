@@ -32,10 +32,10 @@ export default function Page({params}: PageProps) {
     return (
         <main className="flex min-h-screen flex-col items-left justify-between p-24">
             <div>{user?.username}</div>
-            {user?.posts?.map((post) => (
-                <ul key={post.id}>
-                    <Link href={`/posts/${post.id}`}>{post.title}</Link>
-                    <li>{post.content}</li>
+            {user?.articles?.map((article) => (
+                <ul key={article.id}>
+                    <Link href={`/articles/${article.id}`}>{article.title}</Link>
+                    <li>{article.content}</li>
                 </ul>
             ))}
         </main>

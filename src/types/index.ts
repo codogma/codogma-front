@@ -10,16 +10,16 @@ export type User = {
     firstName: string;
     lastName: string;
     role: UserRole;
-    posts: Post[] | [];
+    articles: Article[] | [];
 }
 
 export type Category = {
     id: number,
     name: string;
-    posts: Post[] | [];
+    articles: Article[] | [];
 }
 
-export type Post = {
+export type Article = {
     id: number;
     title: string;
     content: string;

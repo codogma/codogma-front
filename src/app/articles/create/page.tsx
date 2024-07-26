@@ -5,7 +5,7 @@ import {zodResolver} from "@hookform/resolvers/zod";
 import {Controller, FormProvider, SubmitHandler, useForm} from "react-hook-form";
 import React, {useEffect, useState} from "react";
 import {Category} from "@/types";
-import {createPost} from "@/helpers/postApi";
+import {createArticle} from "@/helpers/articleApi";
 import {Box, Button, TextField} from "@mui/material";
 import FormInput from "@/components/FormInput";
 import Autocomplete from "@mui/material/Autocomplete";
@@ -14,13 +14,13 @@ import {TinyMCEEditor} from "@/components/TinyMCEEditor";
 import {WithAuth} from "@/components/WithAuth";
 import {useRouter} from "next/navigation";
 
-const PostScheme = z.object({
+const ArticleScheme = z.object({
     categoryIds: z.array(z.number()),
-    title: z.string().min(2, "Название поста не может содержать менее 2 символов.").max(50, "Название поста не может содержать более 50 символов."),
+    title: z.string().min(2, "Название статьи не может содержать менее 2 символов.").max(50, "Название статьи не может содержать более 50 символов."),
     content: z.string()
 });
 
-function Posts() {
+function Articles() {
     const route = useRouter();
     const [categories, setCategories] = useState<Category[]>([]);
 
@@ -38,8 +38,8 @@ function Posts() {
         fetchData();
     }, []);
 
-    const zodForm = useForm<z.infer<typeof PostScheme>>({
-        resolver: zodResolver(PostScheme),
+    const zodForm = useForm<z.infer<typeof ArticleScheme>>({
+        resolver: zodResolver(ArticleScheme),
         defaultValues: {
             categoryIds: [],
             title: "",
@@ -60,10 +60,10 @@ function Posts() {
         }
     }, [isSubmitSuccessful, reset]);
 
-    const onSubmit: SubmitHandler<z.infer<typeof PostScheme>> = (formData) => {
+    const onSubmit: SubmitHandler<z.infer<typeof ArticleScheme>> = (formData) => {
         const requestData = {...formData};
         console.log(requestData);
-        createPost(requestData).then(post => route.push(`/posts/${post.id}`));
+        createArticle(requestData).then(article => route.push(`/articles/${article.id}`));
     };
 
     return (
@@ -114,4 +114,4 @@ function Posts() {
     );
 }
 
-export default WithAuth(Posts)
+export default WithAuth(Articles)

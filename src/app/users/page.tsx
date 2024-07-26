@@ -33,10 +33,10 @@ function Page() {
             {users && users?.map((user) => (
                 <ul key={user.username}>
                     <li>Имя пользователя: <Link href={`/users/${user.username}`}>{user.username}</Link></li>
-                    <li>Посты пользователя:</li>
-                    {user.posts?.map((post) => (
-                        <ul key={`/posts/${post.id}`}>
-                            <li><Link href={`/posts/${post.id}`}>{post.title}</Link></li>
+                    <li>Статьи пользователя:</li>
+                    {user.articles?.map((article) => (
+                        <ul key={`/articles/${article.id}`}>
+                            <li><Link href={`/articles/${article.id}`}>{article.title}</Link></li>
                         </ul>
                     ))}
                     <Link href={`/users/edit/${user.username}`}>

@@ -31,7 +31,7 @@ const NavBar = () => {
     console.log(state)
 
     const handleLogout = () => {
-        logout().then(() => router.push('/posts'));
+        logout().then(() => router.push('/articles'));
         handleCloseUserMenu();
     };
 
@@ -56,7 +56,7 @@ const NavBar = () => {
                         variant="h5"
                         noWrap
                         component="a"
-                        href="/posts"
+                        href="/articles"
                         sx={{
                             mr: 2,
                             display: {xs: 'flex', md: 'flex'},
@@ -75,7 +75,7 @@ const NavBar = () => {
                             <SearchIcon/>
                         </IconButton>
                         {state.user?.role === UserRole.ROLE_AUTHOR && (
-                            <Link href={`/posts/create`}>
+                            <Link href={`/articles/create`}>
                                 <IconButton color="inherit">
                                     <CreateIcon/>
                                 </IconButton>
