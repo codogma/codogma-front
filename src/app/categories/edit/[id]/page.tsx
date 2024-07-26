@@ -3,9 +3,9 @@ import "../../../globals.css"
 import {z} from "zod"
 import {FormProvider, useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
-import React, {useEffect, useState} from "react";
+import React, {MouseEvent, useEffect, useState} from "react";
 import {Category} from "@/types";
-import {getCategoryById, updateCategory} from "@/helpers/categoryApi";
+import {deleteCategory, getCategoryById, updateCategory} from "@/helpers/categoryApi";
 import {Box, Button} from "@mui/material";
 import FormInput from "@/components/FormInput";
 import {WithAuth} from "@/components/WithAuth";
@@ -70,6 +70,11 @@ function Categories({params}: PageProps) {
         updateCategory(categoryId, formData)
     }
 
+    const handleDelete = (event: MouseEvent<HTMLElement>) => {
+        const categoryId = Number(event.currentTarget.id)
+        deleteCategory(categoryId)
+    }
+
 
     return (
         <main className="flex min-h-screen max-w-3xl flex-col items-left justify-self-auto p-24">
@@ -85,6 +90,7 @@ function Categories({params}: PageProps) {
                 >
                     <FormInput name="name" label="Name" variant="standard" defaultValue={category?.name}/>
                     <Button type="submit">Update</Button>
+                    <Button id={category?.id?.toString()} className="article-btn" variant="outlined" onClick={handleDelete}>Delete category</Button>
                 </Box>
             </FormProvider>
         </main>
