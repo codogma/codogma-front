@@ -19,7 +19,7 @@ import CategoryIcon from '@mui/icons-material/Category';
 import Link from "next/link";
 import {useAuth} from "@/components/AuthProvider";
 import {ThemeToggleButton} from "@/components/ThemeContext";
-import {ButtonGroup} from "@mui/material";
+import {Avatar, ButtonGroup} from "@mui/material";
 import {logout} from "@/helpers/authApi";
 import {UserRole} from "@/types";
 import {useRouter} from "next/navigation";
@@ -104,7 +104,8 @@ const NavBar = () => {
                             <>
                                 <Tooltip title="Open settings">
                                     <IconButton onClick={handleOpenUserMenu} color="inherit" sx={{p: 0}}>
-                                        <AccountCircle/>
+                                        {state.user?.avatarUrl && <Avatar variant="rounded" src={state.user?.avatarUrl}/> }
+                                        {!state.user?.avatarUrl && <AccountCircle/>}
                                     </IconButton>
                                 </Tooltip>
                                 <Menu

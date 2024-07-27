@@ -70,8 +70,7 @@ function Categories({params}: PageProps) {
         updateCategory(categoryId, formData)
     }
 
-    const handleDelete = (event: MouseEvent<HTMLElement>) => {
-        const categoryId = Number(event.currentTarget.id)
+    const handleDelete = () => {
         deleteCategory(categoryId)
     }
 
@@ -90,7 +89,7 @@ function Categories({params}: PageProps) {
                 >
                     <FormInput name="name" label="Name" variant="standard" defaultValue={category?.name}/>
                     <Button type="submit">Update</Button>
-                    <Button id={category?.id?.toString()} className="article-btn" variant="outlined" onClick={handleDelete}>Delete category</Button>
+                    <Button className="article-btn" variant="outlined" onClick={handleDelete}>Delete category</Button>
                 </Box>
             </FormProvider>
         </main>

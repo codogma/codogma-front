@@ -2,8 +2,12 @@ import {axiosInstance} from "@/helpers/axiosInstance";
 import {User} from "@/types";
 import Cookies from 'js-cookie';
 
-export const register = (requestData: { username: string, email: string, password: string }) => {
-    axiosInstance.post("/auth/signup", requestData)
+export const register = (requestData: { username: string, email: string, password: string, avatar: File }) => {
+    axiosInstance.post("/auth/signup", requestData, {
+        headers: {
+            "Content-Type": "multipart/form-data"
+        }
+    })
         .then((response) => console.log(response.data))
         .catch((error: any) => {
             console.error("Error registering user: " + error.message);
@@ -37,7 +41,10 @@ export const logout = async () => {
 export const currentUser = async (): Promise<User> => {
     try {
         const response = await axiosInstance.get("/auth/current-user");
-        return response.data;
+        return {
+            ...response.data,
+            avatarUrl: `${process.env.NEXT_PUBLIC_BASE_URL}${response.data.avatarUrl}`
+        };
     } catch {
         throw new Error('Error fetching current user');
     }

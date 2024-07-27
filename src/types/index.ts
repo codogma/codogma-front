@@ -10,6 +10,7 @@ export type User = {
     firstName: string;
     lastName: string;
     role: UserRole;
+    avatarUrl: string;
     articles: Article[] | [];
 }
 
