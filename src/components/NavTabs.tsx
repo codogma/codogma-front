@@ -55,7 +55,7 @@ const NavTabs: React.FC = () => {
             case "/categories":
                 setValue(1);
                 break;
-            case "/users":
+            case "/authors":
                 setValue(2);
                 break;
             default:
@@ -71,7 +71,7 @@ const NavTabs: React.FC = () => {
         }
     };
 
-    const shouldShowNavTabs = ["/articles", "/categories", "/users"].some(path => pathname.endsWith(path));
+    const shouldShowNavTabs = ["/articles", "/categories", "/authors"].some(path => pathname.endsWith(path));
 
     if (!shouldShowNavTabs) return null;
 
@@ -86,7 +86,7 @@ const NavTabs: React.FC = () => {
             >
                 <LinkTab label="Articles" href="/articles"/>
                 <LinkTab label="Categories" href="/categories"/>
-                <LinkTab label="Users" href="/users"/>
+                <LinkTab label="Authors" href="/authors"/>
             </Tabs>
         </div>
     );

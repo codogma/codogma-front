@@ -25,6 +25,7 @@ export type Article = {
     title: string;
     content: string;
     username: string;
+    authorAvatarUrl: string;
     createdAt: Date;
     categories: { id: number, name: string }[]
 };

@@ -1,7 +1,7 @@
 "use client";
 import React, {useEffect, useState} from "react";
 import {getArticles} from "@/helpers/articleApi";
-import {Article} from "@/types";
+import {Article, UserRole} from "@/types";
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import Link from "next/link";
 import DOMPurify from "dompurify";
@@ -12,7 +12,6 @@ import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import CardActions from '@mui/material/CardActions';
 import {useAuth} from "@/components/AuthProvider";
-import {UserRole} from "@/types";
 
 function stringToColor(string: string) {
     let hash = 0;
@@ -67,7 +66,12 @@ export default function Page() {
                 <Card key={article.title} className="itb-article">
                     <CardContent>
                         <div className="article-meta-container">
-                            <Avatar className="article-user-avatar" {...stringAvatar(article.username)} variant="rounded"/>
+                            <Avatar
+                                className="article-user-avatar"
+                                src={article.authorAvatarUrl}
+                                {...(article.authorAvatarUrl.length !== 0 ? stringAvatar(article.username) : {})}
+                                variant="rounded"
+                            />
                             <Link href={`/users/${article.username}`}
                                   className="article-user-name">{article.username}</Link>
                             <TimeAgo datetime={article.createdAt} className="article-datetime"/>

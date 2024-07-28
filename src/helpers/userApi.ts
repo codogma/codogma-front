@@ -19,6 +19,18 @@ export const getUsers = async (): Promise<User[]> => {
 };
 
 
+export const getAuthors = async (): Promise<User[]> => {
+    try {
+        const response = await axiosInstance.get('/users/authors');
+        console.log(response)
+        return response.data;
+    } catch (error) {
+        console.error('Error fetching users:', error);
+        throw error;
+    }
+};
+
+
 export const getUserByUsername = async (username: string): Promise<User> => {
     try {
         const response = await axiosInstance.get(`/users/${username}`);

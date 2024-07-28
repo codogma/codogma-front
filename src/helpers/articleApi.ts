@@ -31,7 +31,12 @@ export const updateArticle = (id: number, requestData: {
 export const getArticles = async (category?: number): Promise<Article[]> => {
     try {
         const response = await axiosInstance.get('/articles', {params: {category: category}});
-        return response.data;
+        return [
+            ...response.data.map((article: Article) => ({
+                ...article,
+                authorAvatarUrl: `${process.env.NEXT_PUBLIC_BASE_URL}${article.authorAvatarUrl}`
+            }))
+        ];
     } catch (error) {
         console.error('Error fetching articles:', error);
         throw error;
