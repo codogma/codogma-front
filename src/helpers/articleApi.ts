@@ -46,7 +46,10 @@ export const getArticles = async (category?: number): Promise<Article[]> => {
 export const getArticleById = async (id: number): Promise<Article> => {
     try {
         const response = await axiosInstance.get(`/articles/${id}`);
-        return response.data;
+        return {
+            ...response.data,
+            authorAvatarUrl: `${process.env.NEXT_PUBLIC_BASE_URL}${response.data.authorAvatarUrl}`
+        };
     } catch (error) {
         console.error('Error fetching article:', error);
         throw error;

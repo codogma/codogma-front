@@ -5,7 +5,7 @@ import {getArticleById} from "@/helpers/articleApi";
 import Link from "next/link";
 import DOMPurify from "dompurify";
 import {TimeAgo} from "@/components/TimeAgo";
-import {Button} from "@mui/material";
+import {Avatar, Button} from "@mui/material";
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 import {useAuth} from "@/components/AuthProvider";
 import Card from "@mui/material/Card";
@@ -19,6 +19,35 @@ type PageProps = {
     params: PageParams
 }
 
+function stringToColor(string: string) {
+    let hash = 0;
+    let i;
+
+    /* eslint-disable no-bitwise */
+    for (i = 0; i < string.length; i += 1) {
+        hash = string.charCodeAt(i) + ((hash << 5) - hash);
+    }
+
+    let color = '#';
+
+    for (i = 0; i < 3; i += 1) {
+        const value = (hash >> (i * 8)) & 0xff;
+        color += `00${value.toString(16)}`.slice(-2);
+    }
+    /* eslint-enable no-bitwise */
+
+    return color;
+}
+
+function stringAvatar(name: string) {
+    return {
+        sx: {
+            bgcolor: stringToColor(name),
+        },
+        children: `${name.split(' ')[0][0]}`,
+    };
+}
+
 export default function Page({params}: PageProps) {
     const articleId: number = params.id;
     const {state} = useAuth();
@@ -27,6 +56,7 @@ export default function Page({params}: PageProps) {
         title: "",
         content: "",
         username: "",
+        authorAvatarUrl: "",
         createdAt: new Date(),
         categories: []
     });
@@ -50,6 +80,12 @@ export default function Page({params}: PageProps) {
             <Card className="itb-article">
                 <CardContent>
                     <div className="article-meta-container">
+                        <Avatar
+                            className="article-user-avatar"
+                            src={article.authorAvatarUrl}
+                            {...(article.authorAvatarUrl.length !== 0 ? stringAvatar(article.username) : {})}
+                            variant="rounded"
+                        />
                         <Link className="article-user-name" href={`/users/edit/${article.username}`}>
                             {article.username}
                         </Link>
