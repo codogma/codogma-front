@@ -86,7 +86,7 @@ const NavTabs: React.FC = () => {
             >
                 <LinkTab label="Articles" href="/articles"/>
                 <LinkTab label="Categories" href="/categories"/>
-                <LinkTab label="Users" href="/users"/>
+                <LinkTab label="Authors" href="/users"/>
             </Tabs>
         </div>
     );
