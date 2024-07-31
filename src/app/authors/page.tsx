@@ -1,7 +1,7 @@
 "use client";
 import React, {MouseEvent, useEffect, useState} from "react";
 import {User} from "@/types";
-import {deleteUser, getAuthors, getUsers} from "@/helpers/userApi";
+import {deleteUser, getUsers} from "@/helpers/userApi";
 import Link from "next/link";
 import {Button} from "@mui/material";
 
@@ -11,7 +11,7 @@ function Page() {
     useEffect(() => {
         async function fetchData() {
             try {
-                const allUsers = await getAuthors();
+                const allUsers = await getUsers();
                 console.log(allUsers)
                 setUsers(allUsers);
             } catch (error) {
