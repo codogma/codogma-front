@@ -9,6 +9,7 @@ export type User = {
     email: string;
     firstName: string;
     lastName: string;
+    bio: string;
     role: UserRole;
     avatarUrl: string;
     articles: Article[] | [];

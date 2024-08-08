@@ -19,17 +19,6 @@ export const ColorModeProvider = ({children}: { children: React.ReactNode }) => 
     });
 
     React.useEffect(() => {
-        const savedMode = localStorage.getItem('theme-mode');
-        if (savedMode === 'dark') {
-            setMode('dark');
-            document.documentElement.classList.add('dark');
-        } else {
-            setMode('light');
-            document.documentElement.classList.remove('dark');
-        }
-    }, []);
-
-    React.useEffect(() => {
         if (mode === 'dark') {
             document.documentElement.classList.add('dark');
         } else {

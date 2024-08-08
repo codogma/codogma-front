@@ -1,8 +1,23 @@
 import {axiosInstance} from "@/helpers/axiosInstance";
 import {User} from "@/types";
 
-export const updateUser = (username: string, requestData: { username?: string }) => {
-    axiosInstance.put(`/users/${username}`, requestData)
+export type UserUpdate = {
+    username?: string,
+    firstName?: string,
+    lastName?: string,
+    bio?: string,
+    newEmail?: string,
+    currentPassword?: string,
+    newPassword?: string,
+    avatar?: File
+}
+
+export const updateUser = (requestData: UserUpdate) => {
+    axiosInstance.put(`/users`, requestData, {
+        headers: {
+            "Content-Type": "multipart/form-data"
+        }
+    })
         .then(() => console.log("User updated successfully"))
         .catch((error) => console.error(error))
 }
@@ -34,7 +49,10 @@ export const getAuthors = async (): Promise<User[]> => {
 export const getUserByUsername = async (username: string): Promise<User> => {
     try {
         const response = await axiosInstance.get(`/users/${username}`);
-        return response.data;
+        return {
+            ...response.data,
+            avatarUrl: `${process.env.NEXT_PUBLIC_BASE_URL}${response.data.avatarUrl}`
+        };
     } catch (error) {
         console.error('Error fetching users:', error);
         throw error;
