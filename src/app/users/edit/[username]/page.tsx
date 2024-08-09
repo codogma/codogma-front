@@ -1,6 +1,6 @@
 "use client";
 import React, {useEffect, useState} from "react";
-import {z, ZodObject} from "zod";
+import {z} from "zod";
 import {FormProvider, SubmitHandler, useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
 import {User} from "@/types";
@@ -136,7 +136,7 @@ export default function Users({params}: PageProps) {
                         anchorOrigin={{vertical: "bottom", horizontal: "right"}}
                         badgeContent={
                             <IconButton component="label" color="inherit" sx={{p: 0}}>
-                                {user?.avatarUrl && <ModeEditOutlineOutlined/>}
+                                {user?.avatarUrl && <ModeEditOutlineOutlined color="primary"/>}
                                 <VisuallyHiddenInput
                                     id="avatar"
                                     name="avatar"
@@ -149,7 +149,8 @@ export default function Users({params}: PageProps) {
                         <Avatar variant="rounded" src={user?.avatarUrl} sx={{width: 112, height: 112}}/>
                     </Badge>
                     <FormInput name="username" label="Username" variant="standard" defaultValue={user?.username}/>
-                    <FormInput name="newEmail" label="Email" type="email" variant="standard" defaultValue={user?.email}/>
+                    <FormInput name="newEmail" label="Email" type="email" variant="standard"
+                               defaultValue={user?.email}/>
                     <FormInput name="firstName" label="First name" variant="standard" defaultValue={user?.firstName}/>
                     <FormInput name="lastName" label="Last name" variant="standard" defaultValue={user?.lastName}/>
                     <FormInput name="bio" label="Bio" variant="standard" defaultValue={user?.bio}/>

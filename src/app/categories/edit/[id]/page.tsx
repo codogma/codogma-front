@@ -9,6 +9,7 @@ import {deleteCategory, getCategoryById, updateCategory} from "@/helpers/categor
 import {Box, Button} from "@mui/material";
 import FormInput from "@/components/FormInput";
 import {WithAuth} from "@/components/WithAuth";
+import Snackbar, { SnackbarCloseReason } from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
 
 const CategoryScheme = z.object({
@@ -25,10 +26,8 @@ type PageProps = {
 
 function Categories({params}: PageProps) {
     const categoryId: number = params.id
-    const [alertClose, setAlertClose] = useState<boolean>(true);
-    const [alertText, setAlertText] = useState<string>("");
-    const [alertSeverity, setAlertSeverity] = useState<"success" | "error" | "warning" | "info">("info");
     const [category, setCategory] = useState<Category>();
+    const [open, setOpen] = React.useState(false);
 
     const zodForm = useForm<z.infer<typeof CategoryScheme>>({
         resolver: zodResolver(CategoryScheme),
@@ -71,25 +70,27 @@ function Categories({params}: PageProps) {
     const onSubmit = (formData: z.infer<typeof CategoryScheme>) => {
         const requestData = {...formData}
         console.log(formData)
-        updateCategory(categoryId, formData).then((response) => {
-            setAlertSeverity("success")
-            setAlertText(response)
-            setAlertClose(false)
-        }).catch((error) => {
-            setAlertSeverity("error")
-            setAlertText(error)
-            setAlertClose(false)
-        })
-        setTimeout(() => setAlertClose(true), 10000)
+        updateCategory(categoryId, formData)
     }
 
     const handleDelete = () => {
         deleteCategory(categoryId)
     }
 
-    const handleAlertClose = () => {
-        setAlertClose(true)
-    }
+    const handleClick = () => {
+        setOpen(true);
+    };
+
+    const handleClose = (
+        event?: React.SyntheticEvent | Event,
+        reason?: SnackbarCloseReason,
+    ) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+
+        setOpen(false);
+    };
 
     return (
         <main className="flex min-h-screen max-w-3xl flex-col items-left justify-self-auto p-24">
@@ -104,13 +105,20 @@ function Categories({params}: PageProps) {
                     onSubmit={handleSubmit(onSubmit)}
                 >
                     <FormInput name="name" label="Name" variant="standard" defaultValue={category?.name}/>
-                    <Button type="submit">Update</Button>
                     <Button className="article-btn" variant="outlined" onClick={handleDelete}>Delete category</Button>
                 </Box>
             </FormProvider>
-            {!alertClose && <Alert variant="filled" severity={alertSeverity} onClose={handleAlertClose}>
-                {alertText}
-            </Alert>}
+            <Button onClick={handleClick}>Update</Button>
+            <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
+                <Alert
+                    onClose={handleClose}
+                    severity="success"
+                    variant="filled"
+                    sx={{ width: '100%' }}
+                >
+                    Success
+                </Alert>
+            </Snackbar>
         </main>
     );
 }
