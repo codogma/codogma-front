@@ -7,6 +7,7 @@ import Link from "next/link";
 import DOMPurify from "dompurify";
 import {TimeAgo} from "@/components/TimeAgo";
 import {Avatar, Button} from "@mui/material";
+import Pagination from '@mui/material/Pagination';
 import Stack from '@mui/material/Stack';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
@@ -44,26 +45,33 @@ function stringAvatar(name: string) {
 
 export default function Page() {
     const [articles, setArticles] = useState<Article[]>([]);
+    const [totalPages, setTotalPages] = useState<number>(0);
+    const [currentPage, setCurrentPage] = useState<number>(0);
     const {state} = useAuth();
 
     useEffect(() => {
-        async function fetchData() {
+        async function fetchData(page: number) {
             try {
-                const allArticles = await getArticles();
-                allArticles.map((article) => article.content = DOMPurify.sanitize(article.content));
-                setArticles(allArticles);
+                const {content, totalPages} = await getArticles(undefined, page);
+                content.map((article) => article.content = DOMPurify.sanitize(article.content));
+                setArticles(content);
+                setTotalPages(totalPages);
             } catch (error) {
                 console.error('Error fetching data:', error);
             }
         }
 
-        fetchData().then()
-    }, [])
+        fetchData(currentPage).then()
+    }, [currentPage])
+
+    const handlePageChange = (event: React.ChangeEvent<unknown>, value: number) => {
+        setCurrentPage(value - 1);
+    };
 
     return (
         <>
             {articles?.map((article) => (
-                <Card key={article.title} className="itb-article">
+                <Card key={article.id} className="itb-article">
                     <CardContent>
                         <div className="article-meta-container">
                             <Avatar
@@ -102,6 +110,10 @@ export default function Page() {
                     </CardActions>
                 </Card>
             ))}
+            <Stack spacing={2}>
+                <Pagination count={totalPages} page={currentPage + 1} onChange={handlePageChange} variant="outlined"
+                            shape="rounded"/>
+            </Stack>
         </>
     );
 }

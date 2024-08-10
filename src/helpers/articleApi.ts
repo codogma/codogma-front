@@ -28,15 +28,19 @@ export const updateArticle = (id: number, requestData: {
         });
 }
 
-export const getArticles = async (category?: number): Promise<Article[]> => {
+export const getArticles = async (category?: number, page: number = 0, size: number = 10): Promise<{
+    totalPages: number,
+    content: Article[]
+}> => {
     try {
-        const response = await axiosInstance.get('/articles', {params: {category: category}});
-        return [
-            ...response.data.map((article: Article) => ({
+        const response = await axiosInstance.get('/articles', {params: {category: category, page, size}});
+        return {
+            totalPages: response.data.totalPages,
+            content: response.data.content.map((article: Article) => ({
                 ...article,
                 authorAvatarUrl: `${process.env.NEXT_PUBLIC_BASE_URL}${article.authorAvatarUrl}`
             }))
-        ];
+        };
     } catch (error) {
         console.error('Error fetching articles:', error);
         throw error;

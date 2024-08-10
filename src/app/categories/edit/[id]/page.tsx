@@ -4,13 +4,16 @@ import {z} from "zod"
 import {FormProvider, useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
 import React, {useEffect, useState} from "react";
-import {Category} from "@/types";
+import {Category, UserRole} from "@/types";
 import {deleteCategory, getCategoryById, updateCategory} from "@/helpers/categoryApi";
 import {Box, Button} from "@mui/material";
 import FormInput from "@/components/FormInput";
 import {WithAuth} from "@/components/WithAuth";
-import Snackbar, { SnackbarCloseReason } from '@mui/material/Snackbar';
+import Snackbar, {SnackbarCloseReason} from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
+import Link from "next/link";
+import {useAuth} from "@/components/AuthProvider";
+import {useRouter} from "next/navigation";
 
 const CategoryScheme = z.object({
     name: z.optional(z.string().min(2, "Название категории не может содержать менее 2 символов.").max(50, "Название категории не может содержать более 50 символов."))
@@ -26,8 +29,12 @@ type PageProps = {
 
 function Categories({params}: PageProps) {
     const categoryId: number = params.id
+    const router = useRouter();
+    const [open, setOpen] = useState<boolean>(false);
+    const [alertText, setAlertText] = useState<string>("");
+    const [alertSeverity, setAlertSeverity] = useState<"success" | "error" | "warning" | "info">("info");
     const [category, setCategory] = useState<Category>();
-    const [open, setOpen] = React.useState(false);
+    const {state} = useAuth();
 
     const zodForm = useForm<z.infer<typeof CategoryScheme>>({
         resolver: zodResolver(CategoryScheme),
@@ -63,23 +70,25 @@ function Categories({params}: PageProps) {
 
     useEffect(() => {
         if (isSubmitSuccessful) {
-            reset();
+            reset(zodForm.getValues());
         }
-    }, [isSubmitSuccessful, reset])
+    }, [isSubmitSuccessful, reset, zodForm]);
 
     const onSubmit = (formData: z.infer<typeof CategoryScheme>) => {
-        const requestData = {...formData}
-        console.log(formData)
-        updateCategory(categoryId, formData)
+        updateCategory(categoryId, formData).then((response) => {
+            setAlertSeverity("success")
+            setAlertText(response)
+            setOpen(true)
+        }).catch((error) => {
+            setAlertSeverity("error")
+            setAlertText(error)
+            setOpen(true)
+        })
     }
 
     const handleDelete = () => {
         deleteCategory(categoryId)
     }
-
-    const handleClick = () => {
-        setOpen(true);
-    };
 
     const handleClose = (
         event?: React.SyntheticEvent | Event,
@@ -88,39 +97,46 @@ function Categories({params}: PageProps) {
         if (reason === 'clickaway') {
             return;
         }
-
         setOpen(false);
     };
 
-    return (
-        <main className="flex min-h-screen max-w-3xl flex-col items-left justify-self-auto p-24">
-            <FormProvider {...zodForm}>
-                <Box
-                    component="form"
-                    noValidate
-                    sx={{
-                        m: 1, width: '25ch',
-                    }}
-                    autoComplete="off"
-                    onSubmit={handleSubmit(onSubmit)}
-                >
-                    <FormInput name="name" label="Name" variant="standard" defaultValue={category?.name}/>
-                    <Button className="article-btn" variant="outlined" onClick={handleDelete}>Delete category</Button>
-                </Box>
-            </FormProvider>
-            <Button onClick={handleClick}>Update</Button>
-            <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
-                <Alert
-                    onClose={handleClose}
-                    severity="success"
-                    variant="filled"
-                    sx={{ width: '100%' }}
-                >
-                    Category updated successfully
-                </Alert>
-            </Snackbar>
-        </main>
-    );
+    if (state.user?.role === UserRole.ROLE_ADMIN) {
+        return (
+            <main className="flex min-h-screen max-w-3xl flex-col items-left justify-self-auto p-24">
+                <Link href={`/categories/${categoryId}`}>
+                    <Button className="article-btn" variant="outlined">Back to category</Button>
+                </Link>
+                <FormProvider {...zodForm}>
+                    <Box
+                        component="form"
+                        noValidate
+                        sx={{
+                            m: 1, width: '25ch',
+                        }}
+                        autoComplete="off"
+                        onSubmit={handleSubmit(onSubmit)}
+                    >
+                        <FormInput name="name" label="Name" variant="standard" defaultValue={category?.name}/>
+                        <Button type="submit">Update</Button>
+                        <Button className="article-btn" variant="outlined" onClick={handleDelete}>Delete
+                            category</Button>
+                    </Box>
+                </FormProvider>
+                <Snackbar open={open} autoHideDuration={10000} onClose={handleClose}>
+                    <Alert
+                        onClose={handleClose}
+                        severity={alertSeverity}
+                        variant="filled"
+                        sx={{width: '100%'}}
+                    >
+                        {alertText}
+                    </Alert>
+                </Snackbar>
+            </main>
+        );
+    } else {
+        router.push("/not-found");
+    }
 }
 
 export default WithAuth(Categories)

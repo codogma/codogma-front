@@ -1,6 +1,6 @@
 "use client";
 import React, {useEffect, useState} from "react";
-import {User, UserRole} from "@/types";
+import {User} from "@/types";
 import {getUserByUsername, updateUser, UserUpdate} from "@/helpers/userApi";
 import {Avatar, Box, Button} from "@mui/material";
 import {FormProvider, SubmitHandler, useForm} from "react-hook-form";
@@ -127,7 +127,7 @@ function Page({params}: PageProps) {
                     <p className="article-title">{user?.firstName}</p>
                     <p className="article-title">{user?.lastName}</p>
                     <p className="article-title">{user?.bio}</p>
-                    {state.user?.username && state.user.role === UserRole.ROLE_AUTHOR && (
+                    {state.user?.username === username && (
                         <Link href={`/users/edit/${user?.username}`}><Button type="submit">Update</Button></Link>
                     )}
                 </Box>
