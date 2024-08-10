@@ -9,13 +9,10 @@ export const createCategory = (requestData: { name: string }) => {
         });
 }
 
-export const updateCategory = (id: number, requestData: { name?: string }): Promise<string> => {
-    return axiosInstance.put(`/categories/${id}`, requestData)
-        .then((response) => response.data)
-        .catch((error: Error) => {
-            console.error(error)
-            throw error.message
-        })
+export const updateCategory = (id: number, requestData: { name?: string }) => {
+    axiosInstance.put(`/categories/${id}`, requestData)
+        .then(() => console.log("Category updated successfully"))
+        .catch((error) => console.error(error))
 }
 
 export const getCategories = async (): Promise<Category[]> => {

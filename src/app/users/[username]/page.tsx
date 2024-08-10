@@ -1,12 +1,14 @@
 "use client";
 import React, {useEffect, useState} from "react";
-import {User} from "@/types";
+import {User, UserRole} from "@/types";
 import {getUserByUsername, updateUser, UserUpdate} from "@/helpers/userApi";
 import {Avatar, Box, Button} from "@mui/material";
 import {FormProvider, SubmitHandler, useForm} from "react-hook-form";
 import {z} from "zod";
 import {zodResolver} from "@hookform/resolvers/zod";
 import Link from "next/link";
+import {WithAuth} from "@/components/WithAuth";
+import {useAuth} from "@/components/AuthProvider";
 
 type PageParams = {
     username: string
@@ -30,10 +32,11 @@ const UserScheme = z.object({
     newPassword: z.optional(z.string())
 });
 
-export default function Page({params}: PageProps) {
+function Page({params}: PageProps) {
     const username: string = params.username;
     const [user, setUser] = useState<User>();
     const [avatarFile, setAvatarFile] = useState<File>();
+    const {state} = useAuth();
 
     useEffect(() => {
         async function fetchData() {
@@ -124,9 +127,13 @@ export default function Page({params}: PageProps) {
                     <p className="article-title">{user?.firstName}</p>
                     <p className="article-title">{user?.lastName}</p>
                     <p className="article-title">{user?.bio}</p>
-                    <Link href={`/users/edit/${user?.username}`}><Button type="submit">Update</Button></Link>
+                    {state.user?.username && state.user.role === UserRole.ROLE_AUTHOR && (
+                        <Link href={`/users/edit/${user?.username}`}><Button type="submit">Update</Button></Link>
+                    )}
                 </Box>
             </FormProvider>
         </main>
     );
 }
+
+export default WithAuth(Page)

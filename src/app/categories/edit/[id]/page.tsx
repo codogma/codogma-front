@@ -116,7 +116,7 @@ function Categories({params}: PageProps) {
                     variant="filled"
                     sx={{ width: '100%' }}
                 >
-                    Success
+                    Category updated successfully
                 </Alert>
             </Snackbar>
         </main>

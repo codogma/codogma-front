@@ -10,6 +10,7 @@ import {ModeEditOutlineOutlined} from "@mui/icons-material";
 import {styled} from "@mui/material/styles";
 import FormInput from "@/components/FormInput";
 import IconButton from "@mui/material/IconButton";
+import {WithAuth} from "@/components/WithAuth";
 
 type UserData = {
     username: string
@@ -52,7 +53,7 @@ const VisuallyHiddenInput = styled("input")({
     width: 1,
 });
 
-export default function Users({params}: PageProps) {
+function Users({params}: PageProps) {
     const username: string = params.username;
     const [user, setUser] = useState<User>();
     const [formData, setFormData] = useState<UserData>();
@@ -162,3 +163,5 @@ export default function Users({params}: PageProps) {
         </main>
     );
 }
+
+export default WithAuth(Users)
