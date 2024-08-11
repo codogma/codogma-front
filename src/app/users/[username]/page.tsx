@@ -1,5 +1,5 @@
 "use client";
-import React, {useEffect, useState} from "react";
+import React, {MouseEvent, useEffect, useState} from "react";
 import {User} from "@/types";
 import {getUserByUsername, updateUser, UserUpdate} from "@/helpers/userApi";
 import {Avatar, Box, Button} from "@mui/material";
@@ -107,7 +107,8 @@ function Page({params}: PageProps) {
         };
         console.log(updatedUserData);
         updateUser(updatedUserData);
-    };
+    }
+
 
     return (
         <main className="flex min-h-screen max-w-3xl flex-col items-left justify-self-auto p-24">
@@ -129,11 +130,12 @@ function Page({params}: PageProps) {
                     <p className="article-title">{user?.bio}</p>
                     {state.user?.username === username && (
                         <Link href={`/users/edit/${user?.username}`}><Button type="submit">Update</Button></Link>
-                    )}
-                </Box>
-            </FormProvider>
-        </main>
-    );
+                )}
+            </Box>
+        </FormProvider>
+</main>
+)
+    ;
 }
 
 export default WithAuth(Page)

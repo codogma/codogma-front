@@ -1,16 +1,17 @@
 "use client";
-import React, {useEffect, useState} from "react";
+import React, {MouseEvent, useEffect, useState} from "react";
 import {z} from "zod";
 import {FormProvider, SubmitHandler, useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
 import {User} from "@/types";
 import {Avatar, Badge, Box, Button} from "@mui/material";
-import {getUserByUsername, updateUser, UserUpdate} from "@/helpers/userApi";
+import {deleteUser, getAuthors, getUserByUsername, updateUser, UserUpdate} from "@/helpers/userApi";
 import {ModeEditOutlineOutlined} from "@mui/icons-material";
 import {styled} from "@mui/material/styles";
 import FormInput from "@/components/FormInput";
 import IconButton from "@mui/material/IconButton";
 import {WithAuth} from "@/components/WithAuth";
+import Link from "next/link";
 
 type UserData = {
     username: string
@@ -58,6 +59,7 @@ function Users({params}: PageProps) {
     const [user, setUser] = useState<User>();
     const [formData, setFormData] = useState<UserData>();
     const [avatarFile, setAvatarFile] = useState<File>();
+    const [users, setUsers] = useState<User[]>([]);
 
     const zodForm = useForm<z.infer<typeof UserScheme>>({
         resolver: zodResolver(UserScheme),
@@ -99,6 +101,20 @@ function Users({params}: PageProps) {
         fetchData();
     }, [username, zodForm]);
 
+    useEffect(() => {
+        async function fetchData() {
+            try {
+                const allUsers = await getAuthors();
+                console.log(allUsers)
+                setUsers(allUsers);
+            } catch (error) {
+                console.error('Error fetching data:', error)
+            }
+        }
+
+        fetchData()
+    }, [])
+
     const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0];
         if (file) {
@@ -115,6 +131,12 @@ function Users({params}: PageProps) {
         console.log(updatedUserData);
         updateUser(updatedUserData);
     };
+
+    const handleDelete = (event: MouseEvent<HTMLElement>) => {
+        const userId = event.currentTarget.id
+        setUsers(users.filter((user) => user.username !== userId))
+        deleteUser(userId)
+    }
 
     if (!user) {
         return <div>Loading...</div>;
@@ -158,6 +180,7 @@ function Users({params}: PageProps) {
                     <FormInput name="currentPassword" label="Current password" type="password" variant="standard"/>
                     <FormInput name="newPassword" label="New password" type="password" variant="standard"/>
                     <Button type="submit">Update</Button>
+                    <Link href={`/users`}><Button id={user?.username} onClick={handleDelete}>Delete</Button></Link>
                 </Box>
             </FormProvider>
         </main>
