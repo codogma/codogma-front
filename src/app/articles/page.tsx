@@ -13,6 +13,12 @@ import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import CardActions from '@mui/material/CardActions';
 import {useAuth} from "@/components/AuthProvider";
+import Box from '@mui/material/Box';
+import InputLabel from '@mui/material/InputLabel';
+import TextField from '@mui/material/TextField';
+import MenuItem from '@mui/material/MenuItem';
+import FormControl from '@mui/material/FormControl';
+import Select, {SelectChangeEvent} from '@mui/material/Select';
 
 function stringToColor(string: string) {
     let hash = 0;
@@ -44,32 +50,75 @@ function stringAvatar(name: string) {
 }
 
 export default function Page() {
+    const resultsPerPage10 = 10;
+    const resultsPerPage20 = 20;
+    const resultsPerPage30 = 30;
+    const minPages = 2;
     const [articles, setArticles] = useState<Article[]>([]);
     const [totalPages, setTotalPages] = useState<number>(0);
+    const [totalElements, setTotalElements] = useState<number>(0);
     const [currentPage, setCurrentPage] = useState<number>(0);
+    const [resultsPerPage, setResultsPerPage] = useState<number>(resultsPerPage10);
     const {state} = useAuth();
 
     useEffect(() => {
         async function fetchData(page: number) {
             try {
-                const {content, totalPages} = await getArticles(undefined, page);
+                const {content, totalPages, totalElements} = await getArticles(undefined, page, resultsPerPage);
                 content.map((article) => article.content = DOMPurify.sanitize(article.content));
                 setArticles(content);
                 setTotalPages(totalPages);
+                setTotalElements(totalElements);
             } catch (error) {
                 console.error('Error fetching data:', error);
             }
         }
 
         fetchData(currentPage).then()
-    }, [currentPage])
+    }, [currentPage, resultsPerPage])
 
     const handlePageChange = (event: React.ChangeEvent<unknown>, value: number) => {
         setCurrentPage(value - 1);
     };
 
+    const handleArticlesCountChange = (event: SelectChangeEvent) => {
+        setResultsPerPage(Number(event.target.value));
+        setCurrentPage(0)
+    };
+
+    const handlePageChangeInput = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+        const value = Number(event.target.value)
+        if (value > 0 && value <= totalPages) {
+            setCurrentPage(value - 1);
+        }
+        if (value === 0) {
+            setCurrentPage(0)
+        }
+        if (value > totalPages) {
+            setCurrentPage(totalPages - 1)
+        }
+    };
+
     return (
         <>
+            <Box sx={{display: 'flex', justifyContent: 'flex-end'}}>
+                <FormControl sx={{m: 1, width: 100}} size="small" disabled={totalElements <= resultsPerPage10}>
+                    <InputLabel id="select-label">View Results</InputLabel>
+                    <Select
+                        labelId="select-label"
+                        id="simple-select"
+                        value={String(resultsPerPage)}
+                        label="View Results"
+                        onChange={handleArticlesCountChange}
+                    >
+                        <MenuItem value={resultsPerPage10}>{resultsPerPage10}</MenuItem>
+                        {totalElements > resultsPerPage10 &&
+                            <MenuItem value={resultsPerPage20}>{resultsPerPage20}</MenuItem>}
+                        {totalElements > resultsPerPage20 &&
+                            <MenuItem value={resultsPerPage30}>{resultsPerPage30}</MenuItem>}
+                    </Select>
+                </FormControl>
+            </Box>
             {articles?.map((article) => (
                 <Card key={article.id} className="itb-article">
                     <CardContent>
@@ -110,10 +159,30 @@ export default function Page() {
                     </CardActions>
                 </Card>
             ))}
-            <Stack spacing={2}>
-                <Pagination count={totalPages} page={currentPage + 1} onChange={handlePageChange} variant="outlined"
-                            shape="rounded"/>
-            </Stack>
+            {totalPages < minPages ? null : (
+                <Stack spacing={2}
+                       sx={{
+                           display: 'flex',
+                           alignItems: 'center',
+                           pb: 5,
+                           pt: 5,
+                           justifyContent: 'center',
+                           flexDirection: 'row',
+                           '& .MuiTextField-root': {m: 0}
+                       }}>
+                    <Pagination count={totalPages} page={currentPage + 1} onChange={handlePageChange} variant="outlined"
+                                shape="rounded"/>
+                    <TextField
+                        label="Page"
+                        id="page"
+                        size="small"
+                        defaultValue={currentPage + 1}
+                        value={currentPage + 1}
+                        sx={{width: 100}}
+                        onChange={handlePageChangeInput}
+                    />
+                </Stack>
+            )}
         </>
     );
 }

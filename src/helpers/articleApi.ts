@@ -29,6 +29,7 @@ export const updateArticle = (id: number, requestData: {
 }
 
 export const getArticles = async (category?: number, page: number = 0, size: number = 10): Promise<{
+    totalElements: number,
     totalPages: number,
     content: Article[]
 }> => {
@@ -36,6 +37,7 @@ export const getArticles = async (category?: number, page: number = 0, size: num
         const response = await axiosInstance.get('/articles', {params: {category: category, page, size}});
         return {
             totalPages: response.data.totalPages,
+            totalElements: response.data.totalElements,
             content: response.data.content.map((article: Article) => ({
                 ...article,
                 authorAvatarUrl: `${process.env.NEXT_PUBLIC_BASE_URL}${article.authorAvatarUrl}`

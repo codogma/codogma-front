@@ -1,5 +1,6 @@
 import {axiosInstance} from "@/helpers/axiosInstance";
 import {User} from "@/types";
+import Cookies from "js-cookie";
 
 export type UserUpdate = {
     username?: string,
@@ -61,6 +62,10 @@ export const getUserByUsername = async (username: string): Promise<User> => {
 
 export const deleteUser = (username: string) => {
     axiosInstance.delete(`/users/${username}`)
-        .then(() => console.log("User deleted successfully"))
+        .then(() => {
+            Cookies.remove('user');
+            window.dispatchEvent(new Event("storage"));
+            console.log("User deleted successfully")
+        })
         .catch((error) => console.error(error))
 }
