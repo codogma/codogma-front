@@ -13,6 +13,7 @@ import Autocomplete from "@mui/material/Autocomplete";
 import {TinyMCEEditor} from "@/components/TinyMCEEditor";
 import {WithAuth} from "@/components/WithAuth";
 import {useRouter} from "next/navigation";
+import Link from "next/link";
 
 const ArticleScheme = z.object({
     categoryIds: z.array(z.number()),
@@ -95,6 +96,9 @@ function Articles({params}: PageProps) {
 
     return (
         <main className="mt-10 mb-10">
+            <Link href={`/articles/${articleId}`}>
+                <Button className="article-btn" variant="outlined">Back to article</Button>
+            </Link>
             <FormProvider {...zodForm}>
                 <Box
                     component="form"
