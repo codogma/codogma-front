@@ -1,9 +1,8 @@
 "use client";
-import React, {MouseEvent, useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
 import {Category} from "@/types";
-import {deleteCategory, getCategories, getCategoryById} from "@/helpers/categoryApi";
+import {getCategoryById} from "@/helpers/categoryApi";
 import Link from "next/link";
-import {Button} from "@mui/material";
 
 type PageParams = {
     id: number

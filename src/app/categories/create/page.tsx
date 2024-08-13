@@ -12,7 +12,6 @@ import {styled} from "@mui/material/styles";
 import ImageIcon from '@mui/icons-material/Image';
 import IconButton from "@mui/material/IconButton";
 import {ModeEditOutlineOutlined} from "@mui/icons-material";
-import {Category} from "@/types";
 
 const CategoryScheme = z.object({
     name: z
