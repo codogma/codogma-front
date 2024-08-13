@@ -1,14 +1,18 @@
 import {axiosInstance} from "@/helpers/axiosInstance";
 import {Category} from "@/types";
 
-export type CategoryUpdate = {
+export type CategoryCreate = {
     name: string,
     image?: File,
     description?: string
 }
 
-export const createCategory = (requestData: CategoryUpdate) => {
-    axiosInstance.post("/categories", requestData)
+export const createCategory = (requestData: CategoryCreate) => {
+    axiosInstance.post("/categories", requestData, {
+        headers: {
+            "Content-Type": "multipart/form-data",
+        },
+    })
         .then(() => console.log("Category created successfully"))
         .catch((error) => {
             console.error("Error creating categories: " + error.message);

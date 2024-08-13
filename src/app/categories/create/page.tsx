@@ -1,17 +1,18 @@
 "use client";
 import "../../globals.css";
 import {z} from "zod";
-import {FormProvider, useForm} from "react-hook-form";
+import {FormProvider, SubmitHandler, useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
 import React, {useEffect, useState} from "react";
 import {createCategory} from "@/helpers/categoryApi";
 import {Avatar, Badge, Box, Button} from "@mui/material";
 import FormInput from "@/components/FormInput";
 import {WithAuth} from "@/components/WithAuth";
+import {styled} from "@mui/material/styles";
+import ImageIcon from '@mui/icons-material/Image';
 import IconButton from "@mui/material/IconButton";
 import {ModeEditOutlineOutlined} from "@mui/icons-material";
-import {styled} from "@mui/material/styles";
-import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
+import {Category} from "@/types";
 
 const CategoryScheme = z.object({
     name: z
@@ -35,7 +36,8 @@ const VisuallyHiddenInput = styled("input")({
 });
 
 function Categories() {
-    const [imageFile, setImageFile] = useState<string>();
+    const [imageFile, setImageFile] = useState<File>()
+    const [imageUrl, setImageUrl] = useState<string>()
 
     const zodForm = useForm<z.infer<typeof CategoryScheme>>({
         resolver: zodResolver(CategoryScheme),
@@ -60,16 +62,17 @@ function Categories() {
         }
     }, [isSubmitSuccessful, reset, zodForm]);
 
-    const onSubmit = (formData: z.infer<typeof CategoryScheme>) => {
-        console.log(formData);
-        createCategory(formData);
+    const onSubmit: SubmitHandler<z.infer<typeof CategoryScheme>> = (formData) => {
+        const requestData = {...formData, image: imageFile}
+        console.log(requestData)
+        createCategory(requestData)
     };
 
     const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0];
         if (file) {
-            setValue("image", file);
-            setImageFile(URL.createObjectURL(file));
+            setImageFile(file);
+            setImageUrl(URL.createObjectURL(file));
         }
     };
 
@@ -95,20 +98,15 @@ function Categories() {
                                 <ModeEditOutlineOutlined color="primary"/>
                                 <VisuallyHiddenInput
                                     id="image"
+                                    name="image"
                                     type="file"
-                                    {...register("image")}
                                     onChange={handleFileChange}
                                 />
                             </IconButton>
                         }
                     >
-                        <Avatar
-                            className="bg-mountain-mist"
-                            variant="rounded"
-                            src={imageFile}
-                            sx={{width: 112, height: 112}}
-                        >
-                            <AddPhotoAlternateIcon/>
+                        <Avatar variant="rounded" src={imageUrl} sx={{width: 112, height: 112}}>
+                            <ImageIcon/>
                         </Avatar>
                     </Badge>
                     <FormInput name="description" label="Description" variant="standard"/>
