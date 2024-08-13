@@ -13,7 +13,6 @@ import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import CardActions from '@mui/material/CardActions';
 import {useAuth} from "@/components/AuthProvider";
-import Box from '@mui/material/Box';
 import InputLabel from '@mui/material/InputLabel';
 import TextField from '@mui/material/TextField';
 import MenuItem from '@mui/material/MenuItem';
@@ -101,24 +100,6 @@ export default function Page() {
 
     return (
         <>
-            <Box sx={{display: 'flex', justifyContent: 'flex-end'}}>
-                <FormControl sx={{m: 1, width: 100}} size="small" disabled={totalElements <= resultsPerPage10}>
-                    <InputLabel id="select-label">View Results</InputLabel>
-                    <Select
-                        labelId="select-label"
-                        id="simple-select"
-                        value={String(resultsPerPage)}
-                        label="View Results"
-                        onChange={handleArticlesCountChange}
-                    >
-                        <MenuItem value={resultsPerPage10}>{resultsPerPage10}</MenuItem>
-                        {totalElements > resultsPerPage10 &&
-                            <MenuItem value={resultsPerPage20}>{resultsPerPage20}</MenuItem>}
-                        {totalElements > resultsPerPage20 &&
-                            <MenuItem value={resultsPerPage30}>{resultsPerPage30}</MenuItem>}
-                    </Select>
-                </FormControl>
-            </Box>
             {articles?.map((article) => (
                 <Card key={article.id} className="itb-article">
                     <CardContent>
@@ -168,7 +149,8 @@ export default function Page() {
                            pt: 5,
                            justifyContent: 'center',
                            flexDirection: 'row',
-                           '& .MuiTextField-root': {m: 0}
+                           '& .MuiTextField-root': {m: 0, ml: 1},
+                           '& .MuiFormControl-root': {m: 0, ml: 1}
                        }}>
                     <Pagination count={totalPages} page={currentPage + 1} onChange={handlePageChange} variant="outlined"
                                 shape="rounded"/>
@@ -181,6 +163,22 @@ export default function Page() {
                         sx={{width: 100}}
                         onChange={handlePageChangeInput}
                     />
+                    <FormControl sx={{width: 100}} size="small" disabled={totalElements <= resultsPerPage10}>
+                        <InputLabel id="select-label">View Results</InputLabel>
+                        <Select
+                            labelId="select-label"
+                            id="simple-select"
+                            value={String(resultsPerPage)}
+                            label="View Results"
+                            onChange={handleArticlesCountChange}
+                        >
+                            <MenuItem value={resultsPerPage10}>{resultsPerPage10}</MenuItem>
+                            {totalElements > resultsPerPage10 &&
+                                <MenuItem value={resultsPerPage20}>{resultsPerPage20}</MenuItem>}
+                            {totalElements > resultsPerPage20 &&
+                                <MenuItem value={resultsPerPage30}>{resultsPerPage30}</MenuItem>}
+                        </Select>
+                    </FormControl>
                 </Stack>
             )}
         </>

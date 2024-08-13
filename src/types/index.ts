@@ -18,7 +18,8 @@ export type User = {
 export type Category = {
     id: number,
     name: string;
-    articles: Article[] | [];
+    description: string;
+    imageUrl: string;
 }
 
 export type Article = {

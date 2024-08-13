@@ -6,22 +6,26 @@ import Cookies from 'js-cookie';
 
 interface AuthState {
     isAuthenticated: boolean;
+    isAccessDenied: boolean;
     user: User | null;
 }
 
-type AuthAction = { type: 'LOGIN', user: User } | { type: 'LOGOUT' };
+type AuthAction = { type: 'LOGIN', user: User } | { type: 'LOGOUT' } | { type: 'ACCESS_DENIED', user: User };
 
 const initialState: AuthState = {
     isAuthenticated: false,
+    isAccessDenied: false,
     user: null,
 };
 
 const authReducer = (state: AuthState, action: AuthAction): AuthState => {
     switch (action.type) {
         case 'LOGIN':
-            return {isAuthenticated: true, user: action.user};
+            return {isAuthenticated: true, isAccessDenied: false, user: action.user};
         case 'LOGOUT':
-            return {isAuthenticated: false, user: null};
+            return {isAuthenticated: false, isAccessDenied: false, user: null};
+        case 'ACCESS_DENIED':
+            return {isAuthenticated: true, isAccessDenied: true, user: action.user}
         default:
             return state;
     }
@@ -40,25 +44,33 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({children}) => {
     const [state, dispatch] = useReducer(authReducer, initialState);
     const [loading, setLoading] = useState(true);
 
-    useEffect(() => {
-        const savedUser = Cookies.get('user');
-        if (savedUser) {
-            const user = JSON.parse(savedUser);
-            dispatch({type: 'LOGIN', user});
-            setLoading(false);
-        } else {
-            setLoading(false);
-        }
-    }, []);
+    // useEffect(() => {
+    //     const savedUser = Cookies.get('user');
+    //     const username = Cookies.get('username');
+    //     if (savedUser) {
+    //         const user: User = JSON.parse(savedUser);
+    //         dispatch({type: 'LOGIN', user});
+    //         if (user.username === username) {
+    //             dispatch({type: 'ACCESS_DENIED', user});
+    //         }
+    //         setLoading(false);
+    //     } else {
+    //         setLoading(false);
+    //     }
+    // }, []);
 
     useEffect(() => {
         const handleStorageChange = () => {
             const savedUser = Cookies.get('user');
+            const username = Cookies.get('username');
             if (savedUser) {
                 currentUser()
                     .then((user) => {
                         if (user) {
                             dispatch({type: 'LOGIN', user});
+                            if (user.username === username) {
+                                dispatch({type: 'ACCESS_DENIED', user});
+                            }
                             Cookies.set('user', JSON.stringify(user), {secure: true, sameSite: 'strict'});
                         } else {
                             dispatch({type: 'LOGOUT'});
@@ -68,9 +80,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({children}) => {
                     .catch(() => {
                         dispatch({type: 'LOGOUT'});
                         Cookies.remove('user');
-                    });
+                    }).finally(() => setLoading(false));
             } else {
                 dispatch({type: 'LOGOUT'});
+                setLoading(false);
             }
         };
 

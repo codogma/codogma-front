@@ -1,7 +1,13 @@
 import {axiosInstance} from "@/helpers/axiosInstance";
 import {Category} from "@/types";
 
-export const createCategory = (requestData: { name: string }) => {
+export type CategoryUpdate = {
+    name: string,
+    image?: File,
+    description?: string
+}
+
+export const createCategory = (requestData: CategoryUpdate) => {
     axiosInstance.post("/categories", requestData)
         .then(() => console.log("Category created successfully"))
         .catch((error) => {

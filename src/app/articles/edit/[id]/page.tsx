@@ -4,16 +4,16 @@ import {z} from "zod"
 import {Controller, FormProvider, SubmitHandler, useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
 import React, {MouseEvent, useEffect, useState} from "react";
-import {Category, Article} from "@/types";
+import {Article, Category} from "@/types";
 import FormInput from "@/components/FormInput";
 import {Box, Button, TextField} from "@mui/material";
 import {deleteArticle, getArticleById, updateArticle} from "@/helpers/articleApi";
 import {getCategories} from "@/helpers/categoryApi";
 import Autocomplete from "@mui/material/Autocomplete";
 import {TinyMCEEditor} from "@/components/TinyMCEEditor";
-import {WithAuth} from "@/components/WithAuth";
 import {useRouter} from "next/navigation";
 import Link from "next/link";
+import {WithAcc} from "@/components/WithAcc";
 
 const ArticleScheme = z.object({
     categoryIds: z.array(z.number()),
@@ -94,6 +94,7 @@ function Articles({params}: PageProps) {
         router.push("/articles")
     }
 
+    // if (state.user?.username === article?.username) {
     return (
         <main className="mt-10 mb-10">
             <Link href={`/articles/${articleId}`}>
@@ -142,12 +143,16 @@ function Articles({params}: PageProps) {
                     />
                     <div className="flex justify-between w-full">
                         <Button type="submit">Update</Button>
-                        <Button id={articleId.toString()} style={{color: "red"}} onClick={handleDelete}>Delete</Button>
+                        <Button id={articleId.toString()} style={{color: "red"}}
+                                onClick={handleDelete}>Delete</Button>
                     </div>
                 </Box>
             </FormProvider>
         </main>
     );
+    // } else {
+    //     router.push("/not-found");
+    // }
 }
 
-export default WithAuth(Articles)
+export default WithAcc(Articles);

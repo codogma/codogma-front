@@ -1,5 +1,6 @@
 import {axiosInstance} from "@/helpers/axiosInstance";
 import {Article} from "@/types";
+import Cookies from "js-cookie";
 
 export const createArticle = async (requestData: {
     categoryIds: number[],
@@ -52,9 +53,13 @@ export const getArticles = async (category?: number, page: number = 0, size: num
 export const getArticleById = async (id: number): Promise<Article> => {
     try {
         const response = await axiosInstance.get(`/articles/${id}`);
+        const article: Article = response.data
+        const username = article.username
+        Cookies.set('username', username, {secure: true, sameSite: 'strict'});
+        window.dispatchEvent(new Event("storage"));
         return {
-            ...response.data,
-            authorAvatarUrl: `${process.env.NEXT_PUBLIC_BASE_URL}${response.data.authorAvatarUrl}`
+            ...article,
+            authorAvatarUrl: `${process.env.NEXT_PUBLIC_BASE_URL}${article.authorAvatarUrl}`
         };
     } catch (error) {
         console.error('Error fetching article:', error);

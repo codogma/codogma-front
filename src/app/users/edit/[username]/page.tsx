@@ -13,13 +13,6 @@ import IconButton from "@mui/material/IconButton";
 import {WithAuth} from "@/components/WithAuth";
 import Link from "next/link";
 
-type UserData = {
-    username: string
-    email: string
-    password: string,
-    avatar: File
-}
-
 const UserScheme = z.object({
     username: z.optional(z.string()
         .min(2, "Имя пользователя не может содержать менее 2 символов.")
@@ -57,7 +50,6 @@ const VisuallyHiddenInput = styled("input")({
 function Users({params}: PageProps) {
     const username: string = params.username;
     const [user, setUser] = useState<User>();
-    const [formData, setFormData] = useState<UserData>();
     const [avatarFile, setAvatarFile] = useState<File>();
     const [users, setUsers] = useState<User[]>([]);
 
