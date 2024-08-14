@@ -5,10 +5,16 @@ import Cookies from "js-cookie";
 export const createArticle = async (requestData: {
     categoryIds: number[],
     title: string,
-    content: string
+    content: string,
+    tagIds?: number[],
+    images?: File[]
 }): Promise<Article> => {
     try {
-        const response = await axiosInstance.post("/articles", requestData);
+        const response = await axiosInstance.post("/articles", requestData, {
+            headers: {
+                "Content-Type": "multipart/form-data",
+            },
+        });
         return response.data;
     } catch (error: any) {
         console.error("Error creating article: " + error.message);

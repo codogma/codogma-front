@@ -22,6 +22,11 @@ export type Category = {
     imageUrl: string;
 }
 
+export type Tag = {
+    id: number,
+    name: string;
+}
+
 export type Article = {
     id: number;
     title: string;

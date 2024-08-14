@@ -4,7 +4,7 @@ import {z} from "zod";
 import {zodResolver} from "@hookform/resolvers/zod";
 import {Controller, FormProvider, SubmitHandler, useForm} from "react-hook-form";
 import React, {useEffect, useState} from "react";
-import {Category} from "@/types";
+import {Category, Tag} from "@/types";
 import {createArticle} from "@/helpers/articleApi";
 import {Box, Button, TextField} from "@mui/material";
 import FormInput from "@/components/FormInput";
@@ -13,16 +13,21 @@ import {getCategories} from "@/helpers/categoryApi";
 import {TinyMCEEditor} from "@/components/TinyMCEEditor";
 import {WithAuth} from "@/components/WithAuth";
 import {useRouter} from "next/navigation";
+import {createTag, getTagsByName} from "@/helpers/tagApi";
 
 const ArticleScheme = z.object({
     categoryIds: z.array(z.number()),
     title: z.string().min(2, "Название статьи не может содержать менее 2 символов.").max(50, "Название статьи не может содержать более 50 символов."),
-    content: z.string()
+    content: z.string(),
+    tagIds: z.array(z.number()),
+    images: z.array(z.instanceof(File)).optional()
 });
 
 function Articles() {
     const route = useRouter();
     const [categories, setCategories] = useState<Category[]>([]);
+    const [tags, setTags] = useState<Tag[]>([]);
+    const [inputValue, setInputValue] = useState<string>("");
 
     useEffect(() => {
         async function fetchData() {
@@ -43,7 +48,9 @@ function Articles() {
         defaultValues: {
             categoryIds: [],
             title: "",
-            content: ""
+            content: "",
+            tagIds: [],
+            images: []
         }
     });
 
@@ -59,6 +66,36 @@ function Articles() {
             reset();
         }
     }, [isSubmitSuccessful, reset]);
+
+    const handleTagInputChange = async (event: React.SyntheticEvent, value: string) => {
+        setInputValue(value);
+        if (value.length > 0) {
+            try {
+                const fetchedTags = await getTagsByName(value);
+                setTags(fetchedTags);
+            } catch (error) {
+                console.error('Error fetching tags:', error);
+            }
+        }
+    };
+
+    const handleTagChange = async (event: React.SyntheticEvent, newValue: Tag[]) => {
+        const selectedTagIds = newValue.map(tag => tag.id);
+        const newTags = newValue.filter(tag => !tags.some(t => t.id === tag.id));
+
+        if (newTags.length > 0) {
+            try {
+                for (const tag of newTags) {
+                    const createdTag = await createTag({name: tag.name});
+                    setTags(prevTags => [...prevTags, createdTag]);
+                }
+            } catch (error) {
+                console.error('Error creating tag:', error);
+            }
+        }
+
+        zodForm.setValue("tagIds", selectedTagIds);
+    };
 
     const onSubmit: SubmitHandler<z.infer<typeof ArticleScheme>> = (formData) => {
         const requestData = {...formData};
@@ -92,6 +129,28 @@ function Articles() {
                                 renderInput={(params) => (
                                     <TextField {...params} label="Categories" variant="standard"
                                                placeholder="Select categories"/>
+                                )}
+                            />
+                        )}
+                    />
+                    <Controller
+                        name="tagIds"
+                        control={control}
+                        render={({field}) => (
+                            <Autocomplete
+                                multiple
+                                id="tags"
+                                options={tags}
+                                getOptionLabel={(tag) => tag?.name || ""}
+                                filterSelectedOptions
+                                inputValue={inputValue}
+                                onInputChange={handleTagInputChange}
+                                value={tags.filter(tag => field.value?.includes(tag.id) || false)}
+                                isOptionEqualToValue={(option, value) => option.id === value.id}
+                                onChange={handleTagChange}
+                                renderInput={(params) => (
+                                    <TextField {...params} label="Tags" variant="standard"
+                                               placeholder="Select or add tags"/>
                                 )}
                             />
                         )}
