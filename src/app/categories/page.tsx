@@ -15,7 +15,6 @@ import ImageIcon from "@mui/icons-material/Image";
 export default function Page() {
     const [categories, setCategories] = useState<Category[]>([])
     const {state} = useAuth();
-    const [imageUrl, setImageUrl] = useState<string>()
 
     useEffect(() => {
         async function fetchData() {
@@ -41,29 +40,29 @@ export default function Page() {
                             badgeContent={
                                 <IconButton component="label" color="inherit" sx={{p: 0}}/>
                             }
-                            >
-                        <Avatar variant="rounded" src={imageUrl} sx={{width: 112, height: 112}}>
-                            <ImageIcon/>
-                        </Avatar>
-                    </Badge>
-                    <ul>
-                        <li><Link href={`/categories/${category.id}`} className="category-name">{category.name}</Link>
-                        </li>
-                        <li>{category.description}</li>
-                    </ul>
-                    <CardActions>
-                        <Stack direction="row" spacing={2}>
-                            {state.user?.role === UserRole.ROLE_ADMIN && (
-                                <Link href={`/categories/edit/${category.id}`}>
-                                    <Button className="article-btn" variant="outlined">Update</Button>
-                                </Link>
-                            )}
-                        </Stack>
-                    </CardActions>
-                </CardContent>
+                        >
+                            <Avatar variant="rounded" src={category.imageUrl} sx={{width: 112, height: 112}}>
+                                <ImageIcon/>
+                            </Avatar>
+                        </Badge>
+                        <ul>
+                            <li><Link href={`/categories/${category.id}`}
+                                      className="category-name">{category.name}</Link>
+                            </li>
+                            <li>{category.description}</li>
+                        </ul>
+                        <CardActions>
+                            <Stack direction="row" spacing={2}>
+                                {state.user?.role === UserRole.ROLE_ADMIN && (
+                                    <Link href={`/categories/edit/${category.id}`}>
+                                        <Button className="article-btn" variant="outlined">Update</Button>
+                                    </Link>
+                                )}
+                            </Stack>
+                        </CardActions>
+                    </CardContent>
                 </Card>
-                ))}
-</>
-)
-;
+            ))}
+        </>
+    );
 }

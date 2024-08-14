@@ -31,7 +31,10 @@ export const updateCategory = (id: number, requestData: { name?: string }): Prom
 export const getCategories = async (): Promise<Category[]> => {
     try {
         const response = await axiosInstance.get('/categories');
-        return response.data;
+        return response.data.map((category: Category) => ({
+            ...category,
+            imageUrl: `${process.env.NEXT_PUBLIC_BASE_URL}${category.imageUrl}`
+        }))
     } catch (error) {
         console.error('Error fetching categories:', error)
         throw error;
