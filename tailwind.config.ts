@@ -12,9 +12,12 @@ const config: Config = {
                 'bunker': '#171717',
                 'cod-gray': '#080808',
                 'mine-shaft': '#333',
+                'alto': '#ddd',
                 'mountain-mist': '#909090',
                 'rolling-stone': '#6F7577',
+                'shady-lady': '#aaa',
                 'horizon': '#548EAA',
+                'deepsky-blue': '#4cb7eb',
                 'astral': '#39728E'
             }
         },

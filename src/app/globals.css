@@ -14,7 +14,7 @@
     }
 
     .nav-tabs {
-        @apply bg-white mb-5;
+        @apply bg-white dark:bg-bunker mb-5;
 
         .tabs {
             @apply pl-5 pr-5;
@@ -22,7 +22,7 @@
     }
 
     .itb-article {
-        @apply text-mine-shaft pt-4 pb-4 pl-5 pr-5 mb-4 bg-white dark:bg-bunker;
+        @apply text-mine-shaft pt-4 pb-4 pl-5 pr-5 mb-4 bg-white dark:bg-bunker !important;
 
         .article-meta-container {
             @apply flex items-center flex-nowrap mb-2 gap-1;
@@ -41,7 +41,7 @@
         }
 
         .article-title {
-            @apply text-mine-shaft text-xl font-[inherit] leading-[1.3] no-underline;
+            @apply text-mine-shaft dark:text-alto text-xl font-[inherit] leading-[1.3] no-underline !important;
         }
 
         .article-title:visited {
@@ -53,7 +53,7 @@
         }
 
         .article-title-h1 {
-            @apply text-mine-shaft text-2xl leading-[1.3] font-medium overflow-x-auto mt-0 mb-2 mx-0 !important;
+            @apply text-mine-shaft dark:text-alto text-2xl leading-[1.3] font-medium overflow-x-auto mt-0 mb-2 mx-0 !important;
         }
 
         .article-title em {
@@ -61,7 +61,7 @@
         }
 
         .article-category {
-            @apply relative text-rolling-stone text-[0.8125rem] font-medium leading-6 no-underline;
+            @apply relative text-rolling-stone dark:text-shady-lady text-[0.8125rem] font-medium leading-6 no-underline;
         }
 
         .category-item::after {
@@ -73,15 +73,15 @@
         }
 
         .article-content {
-            @apply mb-4;
+            @apply mb-4 dark:text-alto;
         }
 
         .article-btn {
-            @apply bg-transparent border border-horizon text-horizon cursor-pointer items-center inline-flex text-[0.8125rem] min-h-[36px] h-auto leading-[1.6875rem] no-underline px-3 py-0 rounded-sm border-solid !important;
+            @apply bg-transparent border border-horizon dark:border-deepsky-blue text-horizon dark:text-deepsky-blue cursor-pointer items-center inline-flex text-[0.8125rem] min-h-[36px] h-auto leading-[1.6875rem] no-underline px-3 py-0 rounded-sm border-solid !important;
         }
 
         .article-btn:hover {
-            @apply bg-astral border text-white border-solid border-transparent !important;
+            @apply bg-astral dark:bg-deepsky-blue border text-white border-solid border-transparent !important;
         }
 
         .article-presenter-meta {
