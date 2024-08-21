@@ -79,14 +79,13 @@ function Page() {
                                 {...(user.avatarUrl.length !== 0 ? stringAvatar(user.username) : {})}
                                 variant="rounded"
                             />
-                            {/*<ul key={user.username}>*/}
                         </div>
                             <Link
                                 href={`/users/${user.firstName}${user.lastName}`} className="user-title">{user.firstName} {user.lastName}</Link>
                         <Link
-                            href={`/users/${user.username}`} className="user-username">@{user.username}</Link>
-                            <div className="user-bio">О себе: {user.bio}</div>
-                            <div>Пишет в категориях:
+                            href={`/users/${user.username}`} className="user-nickname">@{user.username}</Link>
+                            <div className="user-description">{user.bio}</div>
+                            <div className="user-item_categories">Пишет в категориях:
                                 <div className="user-tags">{tags.map((tag) => (
                                     <span className="user-tag-item" key={user.username}>
                                         <Link key={tag.id} href={`/tags/${tag.id}`}
@@ -95,7 +94,6 @@ function Page() {
                                 ))}
                                 </div>
                             </div>
-                            {/*</ul>*/}
                     </CardContent>
                 </Card>
                 ))}

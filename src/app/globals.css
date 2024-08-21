@@ -155,6 +155,7 @@
         .tag-name {
             @apply text-horizon dark:text-deepsky-blue no-underline text-[0.8125rem] leading-[1.125rem] !important;
         }
+    }
 
     .itb-user {
         @apply text-mine-shaft pt-4 pb-4 pl-5 pr-5 mb-4 bg-white dark:bg-bunker;
@@ -168,31 +169,27 @@
         }
 
         .user-title {
-            @apply text-mine-shaft dark:text-alto text-xl font-[inherit] leading-[1.3] no-underline !important;
-        }
-
-        .user-title:visited {
-            @apply text-horizon !important;
+            @apply text-mine-shaft dark:text-alto text-[0.9375rem] leading-4 mb-2 !important;
         }
 
         .user-title:hover {
             @apply text-horizon dark:text-deepsky-blue !important;
         }
 
-        .user-bio {
-            @apply text-mine-shaft dark:text-alto text-xl font-[inherit] leading-[1.3] no-underline !important;
+        .user-nickname {
+            @apply text-horizon dark:text-deepsky-blue text-sm leading-none !important;
         }
 
-        .user-bio:visited {
-            @apply text-horizon !important;
+        .user-description {
+            @apply text-mountain-mist dark:text-shady-lady text-[0.8125rem] leading-4 mt-2 !important;
         }
 
-        .user-bio:hover {
-            @apply text-horizon !important;
+        .user-item_categories {
+            @apply text-mountain-mist dark:text-shady-lady text-[0.8125rem] font-normal leading-4 !important;
         }
 
         .user-tags {
-            @apply mt-2 pr-2;
+            @apply text-horizon dark:text-deepsky-blue text-[0.8125rem] font-normal leading-4 !important;
         }
 
         .user-tag-item::after {
@@ -202,10 +199,5 @@
         .user-tag-item:last-child::after {
             content: "";
         }
-
-        .user-tag-name {
-            @apply text-horizon no-underline text-[0.8125rem] leading-[1.125rem] !important;
-        }
-      }
     }
 }
