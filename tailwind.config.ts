@@ -18,7 +18,8 @@ const config: Config = {
                 'shady-lady': '#aaa',
                 'horizon': '#548EAA',
                 'deepsky-blue': '#4cb7eb',
-                'astral': '#39728E'
+                'astral': '#39728E',
+                'curious-blue': '#3193c4'
             }
         },
     },

@@ -6,7 +6,7 @@ export const createArticle = async (requestData: {
     categoryIds: number[],
     title: string,
     content: string,
-    tagIds?: number[],
+    tags?: string[],
     images?: File[]
 }): Promise<Article> => {
     try {
@@ -35,13 +35,13 @@ export const updateArticle = (id: number, requestData: {
         });
 }
 
-export const getArticles = async (category?: number, page: number = 0, size: number = 10): Promise<{
+export const getArticles = async (category?: number, page: number = 0, size: number = 10, tag?: string, content?: string): Promise<{
     totalElements: number,
     totalPages: number,
     content: Article[]
 }> => {
     try {
-        const response = await axiosInstance.get('/articles', {params: {category: category, page, size}});
+        const response = await axiosInstance.get('/articles', {params: {tag, content, category, page, size}});
         return {
             totalPages: response.data.totalPages,
             totalElements: response.data.totalElements,

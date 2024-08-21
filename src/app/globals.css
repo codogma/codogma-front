@@ -14,7 +14,7 @@
     }
 
     .nav-tabs {
-        @apply bg-white dark:bg-bunker mb-5;
+        @apply bg-white dark:bg-bunker mb-2;
 
         .tabs {
             @apply pl-5 pr-5;
@@ -33,7 +33,11 @@
         }
 
         .article-user-name {
-            @apply text-[0.8125rem] font-bold leading-[0.9375rem] no-underline;
+            @apply text-[0.8125rem] dark:text-alto font-bold leading-[0.9375rem] no-underline !important;
+        }
+
+        .article-user-name:hover {
+            @apply text-horizon dark:text-deepsky-blue !important;
         }
 
         .article-datetime {
@@ -45,7 +49,7 @@
         }
 
         .article-title:visited {
-            @apply text-horizon;
+            @apply text-horizon !important;
         }
 
         .article-title:hover {
@@ -62,6 +66,10 @@
 
         .article-category {
             @apply relative text-rolling-stone dark:text-shady-lady text-[0.8125rem] font-medium leading-6 no-underline;
+        }
+
+        .article-category:hover {
+            @apply text-horizon dark:text-deepsky-blue;
         }
 
         .category-item::after {
@@ -125,7 +133,7 @@
         }
 
         .category-name:hover {
-            @apply text-horizon !important;
+            @apply text-horizon dark:text-deepsky-blue !important;
         }
 
         .category-description {
@@ -145,7 +153,59 @@
         }
 
         .tag-name {
+            @apply text-horizon dark:text-deepsky-blue no-underline text-[0.8125rem] leading-[1.125rem] !important;
+        }
+
+    .itb-user {
+        @apply text-mine-shaft pt-4 pb-4 pl-5 pr-5 mb-4 bg-white dark:bg-bunker;
+
+       .user-meta-container {
+           @apply flex items-center flex-nowrap mb-2 gap-1;
+       }
+
+        .user-avatar {
+            @apply rounded-[3px] h-6 w-6 !important;
+        }
+
+        .user-title {
+            @apply text-mine-shaft dark:text-alto text-xl font-[inherit] leading-[1.3] no-underline !important;
+        }
+
+        .user-title:visited {
+            @apply text-horizon !important;
+        }
+
+        .user-title:hover {
+            @apply text-horizon dark:text-deepsky-blue !important;
+        }
+
+        .user-bio {
+            @apply text-mine-shaft dark:text-alto text-xl font-[inherit] leading-[1.3] no-underline !important;
+        }
+
+        .user-bio:visited {
+            @apply text-horizon !important;
+        }
+
+        .user-bio:hover {
+            @apply text-horizon !important;
+        }
+
+        .user-tags {
+            @apply mt-2 pr-2;
+        }
+
+        .user-tag-item::after {
+            content: ", ";
+        }
+
+        .user-tag-item:last-child::after {
+            content: "";
+        }
+
+        .user-tag-name {
             @apply text-horizon no-underline text-[0.8125rem] leading-[1.125rem] !important;
         }
+      }
     }
 }

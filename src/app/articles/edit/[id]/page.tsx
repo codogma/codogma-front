@@ -76,6 +76,7 @@ function Articles({params}: PageProps) {
     } = zodForm;
 
     useEffect(() => {
+        // console.log(errors)
         if (isSubmitSuccessful) {
             reset(zodForm.getValues());
         }
@@ -83,7 +84,7 @@ function Articles({params}: PageProps) {
 
     const onSubmit: SubmitHandler<z.infer<typeof ArticleScheme>> = (formData) => {
         const requestData = {...formData}
-        console.log(requestData)
+        // console.log(requestData)
         updateArticle(articleId, requestData)
         router.push(`/articles/${articleId}`)
     }

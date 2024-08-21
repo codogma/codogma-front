@@ -1,9 +1,8 @@
 "use client";
 import React, {useEffect, useState} from "react";
-import {Category, Tag, User} from "@/types";
+import {Tag, User} from "@/types";
 import {getAuthors} from "@/helpers/userApi";
 import Link from "next/link";
-import {getCategories} from "@/helpers/categoryApi";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import {Avatar} from "@mui/material";
@@ -53,15 +52,12 @@ function stringAvatar(name: string) {
 function Page() {
     const [users, setUsers] = useState<User[]>([]);
     const [tags, setTags] = useState<Tag[]>(tempTags);
-    const [categories, setCategories] = useState<Category[]>([]);
 
     useEffect(() => {
         async function fetchData() {
             try {
                 const allUsers = await getAuthors()
                 console.log(allUsers)
-                const allCategories = await getCategories();
-                setCategories(allCategories);
                 setUsers(allUsers);
             } catch (error) {
                 console.error('Error fetching data:', error)
@@ -74,38 +70,35 @@ function Page() {
     return (
         <>
             {users && users?.map((user) => (
-                <Card key={user.username} className="itb-author">
+                <Card key={user.username} className="itb-user">
                     <CardContent>
-                        <ul key={user.username}>
-                            <li>
-                                <Avatar
-                                    className="article-user-avatar"
-                                    src={user.avatarUrl}
-                                    {...(user.avatarUrl.length !== 0 ? stringAvatar(user.username) : {})}
-                                    variant="rounded"
-                                /></li>
-                            <li><Link
-                                href={`/users/${user.firstName}${user.lastName}`}>{user.firstName} {user.lastName} @{user.username}</Link>
-                            </li>
-                            <li>О себе: {user.bio}</li>
-                            <li>Пишет в категориях:
-                                <div className="article-category">{categories.map((category) => (
-                                    <div key={category.id} className="itb-category">
-                                        <div className="category-tags">{tags.map((tag) => (
-                                            <span className="tag-item" key={category.id}>
+                        <div className="user-meta-container">
+                            <Avatar
+                                className="user-avatar"
+                                src={user.avatarUrl}
+                                {...(user.avatarUrl.length !== 0 ? stringAvatar(user.username) : {})}
+                                variant="rounded"
+                            />
+                            {/*<ul key={user.username}>*/}
+                        </div>
+                            <Link
+                                href={`/users/${user.firstName}${user.lastName}`} className="user-title">{user.firstName} {user.lastName}</Link>
+                        <Link
+                            href={`/users/${user.username}`} className="user-username">@{user.username}</Link>
+                            <div className="user-bio">О себе: {user.bio}</div>
+                            <div>Пишет в категориях:
+                                <div className="user-tags">{tags.map((tag) => (
+                                    <span className="user-tag-item" key={user.username}>
                                         <Link key={tag.id} href={`/tags/${tag.id}`}
-                                              className="tag-name">{tag.name}</Link>
+                                              className="user-tag-name">{tag.name}</Link>
                                         </span>
-                                        ))}
-                                        </div>
-                                    </div>
                                 ))}
                                 </div>
-                            </li>
-                        </ul>
+                            </div>
+                            {/*</ul>*/}
                     </CardContent>
                 </Card>
-            ))}
+                ))}
         </>
     );
 }

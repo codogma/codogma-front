@@ -1,5 +1,5 @@
 "use client";
-import React, {useEffect, useState} from "react";
+import React, {FormEvent, useEffect, useState} from "react";
 import {getArticles} from "@/helpers/articleApi";
 import {Article, UserRole} from "@/types";
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
@@ -18,6 +18,11 @@ import TextField from '@mui/material/TextField';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select, {SelectChangeEvent} from '@mui/material/Select';
+import Paper from '@mui/material/Paper';
+import IconButton from '@mui/material/IconButton';
+import SearchIcon from '@mui/icons-material/Search';
+import MenuIcon from '@mui/icons-material/Menu';
+import Menu from '@mui/material/Menu';
 
 function stringToColor(string: string) {
     let hash = 0;
@@ -58,12 +63,36 @@ export default function Page() {
     const [totalElements, setTotalElements] = useState<number>(0);
     const [currentPage, setCurrentPage] = useState<number>(0);
     const [resultsPerPage, setResultsPerPage] = useState<number>(resultsPerPage10);
+    const [searchValue, setSearchValue] = useState<string>();
+    const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+    const [searchType, setSearchType] = useState<'content' | 'tag'>('content');
     const {state} = useAuth();
+
+    const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
+        setAnchorEl(event.currentTarget);
+    };
+
+    const handleMenuClose = (type: 'content' | 'tag') => {
+        setSearchType(type);
+        setAnchorEl(null);
+    };
 
     useEffect(() => {
         async function fetchData(page: number) {
             try {
-                const {content, totalPages, totalElements} = await getArticles(undefined, page, resultsPerPage);
+                let byTag: string | undefined = undefined;
+                let byContent: string | undefined = undefined;
+                if (searchType === 'tag') {
+                    byTag = searchValue
+                }
+                if (searchType === 'content') {
+                    byContent = searchValue
+                }
+                const {
+                    content,
+                    totalPages,
+                    totalElements
+                } = await getArticles(undefined, page, resultsPerPage, byTag, byContent);
                 content.map((article) => article.content = DOMPurify.sanitize(article.content));
                 setArticles(content);
                 setTotalPages(totalPages);
@@ -74,7 +103,15 @@ export default function Page() {
         }
 
         fetchData(currentPage).then()
-    }, [currentPage, resultsPerPage])
+    }, [currentPage, resultsPerPage, searchType, searchValue])
+
+    const handleSearchSubmit = (event: FormEvent<HTMLFormElement>) => {
+        event.preventDefault();
+        const formData = new FormData(event.currentTarget);
+        const searchValue = formData.get('search') as string;
+        setSearchValue(searchValue);
+        setCurrentPage(0);
+    };
 
     const handlePageChange = (event: React.ChangeEvent<unknown>, value: number) => {
         setCurrentPage(value - 1);
@@ -100,6 +137,33 @@ export default function Page() {
 
     return (
         <>
+            <Paper
+                component="form"
+                sx={{p: '6px', m: '0px auto 8px auto', display: 'flex', alignItems: 'center'}}
+                onSubmit={handleSearchSubmit}
+            >
+                <IconButton sx={{p: '10px'}} aria-label="menu" onClick={handleMenuOpen}>
+                    <MenuIcon/>
+                </IconButton>
+                <Menu
+                    anchorEl={anchorEl}
+                    open={Boolean(anchorEl)}
+                    onClose={() => handleMenuClose(searchType)}
+                >
+                    <MenuItem onClick={() => handleMenuClose('content')}>By content</MenuItem>
+                    <MenuItem onClick={() => handleMenuClose('tag')}>By tag</MenuItem>
+                </Menu>
+                <TextField
+                    label={`Search articles by ${searchType}`}
+                    id="search-input"
+                    sx={{ml: 1, flex: 1}}
+                    size="small"
+                    name="search"
+                />
+                <IconButton type="submit" sx={{p: '10px'}} aria-label="search">
+                    <SearchIcon/>
+                </IconButton>
+            </Paper>
             {articles?.map((article) => (
                 <Card key={article.id} className="itb-article">
                     <CardContent>
@@ -171,7 +235,7 @@ export default function Page() {
                             value={String(resultsPerPage)}
                             label="View Results"
                             onChange={handleArticlesCountChange}
-                        >
+                            variant="standard">
                             <MenuItem value={resultsPerPage10}>{resultsPerPage10}</MenuItem>
                             {totalElements > resultsPerPage10 &&
                                 <MenuItem value={resultsPerPage20}>{resultsPerPage20}</MenuItem>}

@@ -5,29 +5,28 @@ import {zodResolver} from "@hookform/resolvers/zod";
 import {Controller, FormProvider, SubmitHandler, useForm} from "react-hook-form";
 import React, {useEffect, useState} from "react";
 import {Category, Tag} from "@/types";
-import {createArticle} from "@/helpers/articleApi";
-import {Box, Button, TextField} from "@mui/material";
+import {Autocomplete, Box, Button, Chip, TextField} from "@mui/material";
 import FormInput from "@/components/FormInput";
-import Autocomplete from "@mui/material/Autocomplete";
 import {getCategories} from "@/helpers/categoryApi";
 import {TinyMCEEditor} from "@/components/TinyMCEEditor";
 import {WithAuth} from "@/components/WithAuth";
 import {useRouter} from "next/navigation";
-import {createTag, getTagsByName} from "@/helpers/tagApi";
+import {getTagsByName} from "@/helpers/tagApi";
+import {createArticle} from "@/helpers/articleApi";
 
 const ArticleScheme = z.object({
     categoryIds: z.array(z.number()),
     title: z.string().min(2, "Название статьи не может содержать менее 2 символов.").max(50, "Название статьи не может содержать более 50 символов."),
     content: z.string(),
-    tagIds: z.array(z.number()),
+    tags: z.array(z.string()).optional(),
     images: z.array(z.instanceof(File)).optional()
 });
 
 function Articles() {
     const route = useRouter();
-    const [categories, setCategories] = useState<Category[]>([]);
-    const [tags, setTags] = useState<Tag[]>([]);
-    const [inputValue, setInputValue] = useState<string>("");
+    const [categories, setCategories] = useState<Category[]>([])
+    const [inputTagValue, setInputTagValue] = useState<string>('');
+    const [availableTags, setAvailableTags] = useState<string[]>([]);
 
     useEffect(() => {
         async function fetchData() {
@@ -43,13 +42,32 @@ function Articles() {
         fetchData();
     }, []);
 
+    useEffect(() => {
+        if (inputTagValue === '') {
+            setAvailableTags([]);
+            return;
+        }
+
+        const fetchTags = async () => {
+            try {
+                const tagObjects: Tag[] = await getTagsByName(inputTagValue);
+                const tagNames = tagObjects.map(tag => tag.name);
+                setAvailableTags(tagNames);
+            } catch (error) {
+                console.error('Error fetching tags:', error);
+            }
+        };
+
+        fetchTags();
+    }, [inputTagValue]);
+
     const zodForm = useForm<z.infer<typeof ArticleScheme>>({
         resolver: zodResolver(ArticleScheme),
         defaultValues: {
             categoryIds: [],
             title: "",
             content: "",
-            tagIds: [],
+            tags: [],
             images: []
         }
     });
@@ -62,45 +80,15 @@ function Articles() {
     } = zodForm;
 
     useEffect(() => {
+        // console.log(errors)
         if (isSubmitSuccessful) {
-            reset();
+            reset(zodForm.getValues());
         }
-    }, [isSubmitSuccessful, reset]);
-
-    const handleTagInputChange = async (event: React.SyntheticEvent, value: string) => {
-        setInputValue(value);
-        if (value.length > 0) {
-            try {
-                const fetchedTags = await getTagsByName(value);
-                setTags(fetchedTags);
-            } catch (error) {
-                console.error('Error fetching tags:', error);
-            }
-        }
-    };
-
-    const handleTagChange = async (event: React.SyntheticEvent, newValue: Tag[]) => {
-        const selectedTagIds = newValue.map(tag => tag.id);
-        const newTags = newValue.filter(tag => !tags.some(t => t.id === tag.id));
-
-        if (newTags.length > 0) {
-            try {
-                for (const tag of newTags) {
-                    const createdTag = await createTag({name: tag.name});
-                    setTags(prevTags => [...prevTags, createdTag]);
-                }
-            } catch (error) {
-                console.error('Error creating tag:', error);
-            }
-        }
-
-        zodForm.setValue("tagIds", selectedTagIds);
-    };
+    }, [isSubmitSuccessful, reset, errors, zodForm]);
 
     const onSubmit: SubmitHandler<z.infer<typeof ArticleScheme>> = (formData) => {
-        const requestData = {...formData};
-        console.log(requestData);
-        createArticle(requestData).then(article => route.push(`/articles/${article.id}`));
+        // console.log(formData);
+        createArticle(formData).then(article => route.push(`/articles/${article.id}`));
     };
 
     return (
@@ -134,23 +122,46 @@ function Articles() {
                         )}
                     />
                     <Controller
-                        name="tagIds"
+                        name="tags"
                         control={control}
                         render={({field}) => (
                             <Autocomplete
                                 multiple
                                 id="tags"
-                                options={tags}
-                                getOptionLabel={(tag) => tag?.name || ""}
-                                filterSelectedOptions
-                                inputValue={inputValue}
-                                onInputChange={handleTagInputChange}
-                                value={tags.filter(tag => field.value?.includes(tag.id) || false)}
-                                isOptionEqualToValue={(option, value) => option.id === value.id}
-                                onChange={handleTagChange}
+                                options={availableTags.filter(tag =>
+                                    !field.value?.some(value => value.toLowerCase() === tag.toLowerCase())
+                                )}
+                                freeSolo
+                                value={field.value}
+                                onChange={(_, newValue) => {
+                                    const normalizedValue = newValue.map(value => {
+                                        const existingTag = availableTags.find(tag => tag.toLowerCase() === value.toLowerCase());
+                                        return existingTag || value;
+                                    });
+
+                                    const uniqueTags = new Set<string>();
+                                    normalizedValue.forEach(tag => {
+                                        uniqueTags.add(tag);
+                                    });
+
+                                    field.onChange(Array.from(uniqueTags));
+                                }}
+                                onInputChange={(_, newInputValue) => setInputTagValue(newInputValue)}
+                                renderTags={(value: string[], getTagProps) =>
+                                    value.map((option: string, index: number) => {
+                                        const {key, ...tagProps} = getTagProps({index});
+                                        return (
+                                            <Chip variant="outlined" label={option} key={key} {...tagProps} />
+                                        );
+                                    })
+                                }
                                 renderInput={(params) => (
-                                    <TextField {...params} label="Tags" variant="standard"
-                                               placeholder="Select or add tags"/>
+                                    <TextField
+                                        {...params}
+                                        variant="standard"
+                                        label="Tags"
+                                        placeholder="Select or create tags"
+                                    />
                                 )}
                             />
                         )}
