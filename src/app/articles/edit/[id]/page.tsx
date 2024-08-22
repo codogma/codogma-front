@@ -65,7 +65,9 @@ function Articles({params}: PageProps) {
                 zodForm.reset({
                     categoryIds: articleData.categories.map((category) => category.id),
                     title: articleData.title,
-                    content: articleData.content
+                    content: articleData.content,
+                    tags: articleData.tags.map(tag => tag.name),
+                    images: []
                 });
             } catch (error) {
                 console.error('Error fetching data:', error)
@@ -111,9 +113,8 @@ function Articles({params}: PageProps) {
 
     const onSubmit: SubmitHandler<z.infer<typeof ArticleScheme>> = (formData) => {
         const requestData = {...formData}
-        // console.log(requestData)
-        updateArticle(articleId, requestData)
-        router.push(`/articles/${articleId}`)
+        console.log(requestData)
+        updateArticle(articleId, requestData).then(() => router.push(`/articles/${articleId}`))
     }
 
     const handleDelete = (event: MouseEvent<HTMLElement>) => {
@@ -122,7 +123,6 @@ function Articles({params}: PageProps) {
         router.push("/articles")
     }
 
-    // if (state.user?.username === article?.username) {
     return (
         <main className="mt-10 mb-10">
             <Link href={`/articles/${articleId}`}>
@@ -167,6 +167,7 @@ function Articles({params}: PageProps) {
                                 options={availableTags.filter(tag =>
                                     !field.value?.some(value => value.toLowerCase() === tag.toLowerCase())
                                 )}
+                                defaultValue={article?.tags.map(tag => tag.name)}
                                 freeSolo
                                 value={field.value}
                                 onChange={(_, newValue) => {
@@ -223,9 +224,6 @@ function Articles({params}: PageProps) {
             </FormProvider>
         </main>
     );
-    // } else {
-    //     router.push("/not-found");
-    // }
 }
 
 export default WithAcc(Articles);

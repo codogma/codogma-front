@@ -16,17 +16,17 @@ export type User = {
     categories: { id: number, name: string }[]
 }
 
+export type Tag = {
+    id: number,
+    name: string;
+}
+
 export type Category = {
     id: number,
     name: string;
     description: string;
     imageUrl: string;
-    tags: { id: number, name: string }[]
-}
-
-export type Tag = {
-    id: number,
-    name: string;
+    tags: Tag[]
 }
 
 export type Article = {
@@ -37,5 +37,5 @@ export type Article = {
     authorAvatarUrl: string;
     createdAt: Date;
     categories: { id: number, name: string }[]
-    tags: { id: number, name: string }[]
+    tags: Tag[]
 };

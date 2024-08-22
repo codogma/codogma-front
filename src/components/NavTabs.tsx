@@ -21,11 +21,17 @@ function samePageLinkNavigation(
     return true;
 }
 
-interface LinkTabProps {
-    label?: string;
-    href?: string;
+export interface LinkTabProps {
+    label: string;
+    href: string;
     selected?: boolean;
 }
+
+const linkTabs: LinkTabProps[] = [
+    {label: 'Articles', href: '/articles'},
+    {label: 'Categories', href: '/categories'},
+    {label: 'Authors', href: '/users'},
+]
 
 function LinkTab(props: LinkTabProps) {
     return (
@@ -42,26 +48,20 @@ function LinkTab(props: LinkTabProps) {
     );
 }
 
-const NavTabs: React.FC = () => {
+type NavTabsProps = {
+    tabs?: LinkTabProps[]
+    shouldShow?: boolean
+}
+
+const NavTabs: React.FC<NavTabsProps> = ({tabs = linkTabs, shouldShow}) => {
     const pathname = usePathname();
     const router = useRouter();
     const [value, setValue] = React.useState<number>(0);
 
     useEffect(() => {
-        switch (pathname) {
-            case "/articles":
-                setValue(0);
-                break;
-            case "/categories":
-                setValue(1);
-                break;
-            case "/users":
-                setValue(2);
-                break;
-            default:
-                setValue(0);
-        }
-    }, [pathname]);
+        const index = tabs.findIndex(tab => tab.href === pathname);
+        setValue(index !== -1 ? index : 0);
+    }, [pathname, tabs]);
 
     const handleChange = (event: React.SyntheticEvent, newValue: number) => {
         setValue(newValue);
@@ -71,9 +71,9 @@ const NavTabs: React.FC = () => {
         }
     };
 
-    const shouldShowNavTabs = ["/articles", "/categories", "/users"].some(path => pathname.endsWith(path));
+    const shouldShowNavTabs = shouldShow ? true : tabs.map(link => link.href).some(path => pathname.endsWith(path));
 
-    if (!shouldShowNavTabs) return null;
+    if (!shouldShow) return null;
 
     return (
         <div className="nav-tabs">
@@ -84,9 +84,7 @@ const NavTabs: React.FC = () => {
                 role="navigation"
                 className="tabs"
             >
-                <LinkTab label="Articles" href="/articles"/>
-                <LinkTab label="Categories" href="/categories"/>
-                <LinkTab label="Authors" href="/users"/>
+                {tabs.map((link, index) => (<LinkTab key={index} label={link.label} href={link.href}/>))}
             </Tabs>
         </div>
     );

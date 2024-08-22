@@ -21,148 +21,160 @@
         }
     }
 
-    .itb-article {
+    .card {
         @apply text-mine-shaft pt-4 pb-4 pl-5 pr-5 mb-4 bg-white dark:bg-bunker !important;
+    }
 
-        .article-meta-container {
-            @apply flex items-center flex-nowrap mb-2 gap-1;
+    .card-content {
+        @apply p-0 !important;
+    }
+
+    .meta-container {
+        @apply flex items-start flex-nowrap mb-2 gap-1;
+    }
+
+    .article-user-avatar {
+        @apply rounded-[3px] h-8 w-8 !important;
+    }
+
+    .article-user-name {
+        @apply text-[0.8125rem] dark:text-alto font-bold leading-[0.9375rem] no-underline !important;
+    }
+
+    .article-user-name:hover {
+        @apply text-horizon dark:text-deepsky-blue !important;
+    }
+
+    .article-datetime {
+        @apply text-mountain-mist inline-block text-[0.8125rem] font-medium leading-[0.9375rem] align-middle no-underline m-0;
+    }
+
+    .article-title {
+        @apply text-mine-shaft dark:text-alto text-xl font-[inherit] leading-[1.3] no-underline !important;
+    }
+
+    .article-title:visited {
+        @apply text-horizon !important;
+    }
+
+    .article-title:hover {
+        @apply text-horizon !important;
+    }
+
+    .article-title-h1 {
+        @apply text-mine-shaft dark:text-alto text-2xl leading-[1.3] font-medium overflow-x-auto mt-0 mb-2 mx-0 !important;
+    }
+
+    .article-title em {
+        @apply transition-none;
+    }
+
+    .article-category {
+        @apply relative text-rolling-stone dark:text-shady-lady text-[0.8125rem] font-medium leading-6 no-underline;
+    }
+
+    .article-category:hover {
+        @apply text-horizon dark:text-deepsky-blue;
+    }
+
+    .category-item::after {
+        content: ", ";
+    }
+
+    .category-item:last-child::after {
+        content: "";
+    }
+
+    .tag-item::after {
+        content: ", ";
+    }
+
+    .tag-item:last-child::after {
+        content: "";
+    }
+
+    .article-content {
+        @apply mb-4 dark:text-alto;
+    }
+
+    .article-btn {
+        @apply bg-transparent border border-horizon dark:border-deepsky-blue text-horizon dark:text-deepsky-blue cursor-pointer items-center inline-flex text-[0.8125rem] min-h-[36px] h-auto leading-[1.6875rem] no-underline px-3 py-0 rounded-sm border-solid !important;
+    }
+
+    .article-btn:hover {
+        @apply bg-astral dark:bg-deepsky-blue border text-white border-solid border-transparent !important;
+    }
+
+    .article-presenter-meta {
+        @apply grid box-border text-horizon text-base leading-[180%] max-w-[780px] mx-0 my-6 gap-6;
+
+        .article-category-pm {
+            @apply text-mine-shaft font-bold mr-1;
+
+            .category-link {
+                @apply text-horizon inline-flex text-base font-medium leading-7 no-underline !important;
+            }
         }
 
-        .article-user-avatar {
-            @apply rounded-[3px] h-6 w-6 !important;
-        }
+        .article-tag-pm {
+            @apply text-mine-shaft font-bold mr-1;
 
-        .article-user-name {
-            @apply text-[0.8125rem] dark:text-alto font-bold leading-[0.9375rem] no-underline !important;
-        }
-
-        .article-user-name:hover {
-            @apply text-horizon dark:text-deepsky-blue !important;
-        }
-
-        .article-datetime {
-            @apply text-mountain-mist inline-block text-[0.8125rem] font-medium leading-[0.9375rem] align-middle no-underline m-0;
-        }
-
-        .article-title {
-            @apply text-mine-shaft dark:text-alto text-xl font-[inherit] leading-[1.3] no-underline !important;
-        }
-
-        .article-title:visited {
-            @apply text-horizon !important;
-        }
-
-        .article-title:hover {
-            @apply text-horizon !important;
-        }
-
-        .article-title-h1 {
-            @apply text-mine-shaft dark:text-alto text-2xl leading-[1.3] font-medium overflow-x-auto mt-0 mb-2 mx-0 !important;
-        }
-
-        .article-title em {
-            @apply transition-none;
-        }
-
-        .article-category {
-            @apply relative text-rolling-stone dark:text-shady-lady text-[0.8125rem] font-medium leading-6 no-underline;
-        }
-
-        .article-category:hover {
-            @apply text-horizon dark:text-deepsky-blue;
-        }
-
-        .category-item::after {
-            content: ", ";
-        }
-
-        .category-item:last-child::after {
-            content: "";
-        }
-
-        .article-content {
-            @apply mb-4 dark:text-alto;
-        }
-
-        .article-btn {
-            @apply bg-transparent border border-horizon dark:border-deepsky-blue text-horizon dark:text-deepsky-blue cursor-pointer items-center inline-flex text-[0.8125rem] min-h-[36px] h-auto leading-[1.6875rem] no-underline px-3 py-0 rounded-sm border-solid !important;
-        }
-
-        .article-btn:hover {
-            @apply bg-astral dark:bg-deepsky-blue border text-white border-solid border-transparent !important;
-        }
-
-        .article-presenter-meta {
-            @apply grid box-border text-horizon text-base leading-[180%] max-w-[780px] mx-0 my-6 gap-6;
-
-            .article-category-pm {
-                @apply text-mine-shaft font-bold mr-1;
-
-                .category-link {
-                    @apply text-horizon inline-flex text-base font-medium leading-7 no-underline !important;
-                }
+            .tag-link {
+                @apply text-horizon inline-flex text-base font-medium leading-7 no-underline !important;
             }
         }
     }
 
-    .itb-category {
-        @apply text-mine-shaft pt-4 pb-4 pl-5 pr-5 mb-4 bg-white dark:bg-bunker;
+    .category-img {
+        @apply block flex-none h-12 w-12 overflow-hidden relative mr-2 rounded-[3px] top-0.5 !important;
+    }
 
-        .card-content {
-            @apply p-0 m-0 !important;
-        }
+    .category-card-name {
+        @apply text-mine-shaft text-[1.24375rem] font-bold leading-7 no-underline m-0 !important;
+    }
 
-        .card-content:last-child {
-            @apply p-0 !important;
-        }
+    .category-card-description {
+        @apply text-mine-shaft text-sm leading-5 mt-1 m-0 !important;
+    }
 
-        .category-content {
-            @apply flex flex-1 mb-1.5;
-        }
+    .category-name {
+        @apply text-mine-shaft text-[0.9375rem] font-medium leading-4 no-underline mb-2 !important;
+    }
 
-        .category-img {
-            @apply block flex-none h-10 overflow-hidden relative w-10 mr-2 rounded-[3px] top-0.5;
-        }
+    .category-name:visited {
+        @apply text-horizon;
+    }
 
-        .category-name {
-            @apply text-mine-shaft text-[0.9375rem] font-medium leading-4 no-underline mb-2;
-        }
+    .category-name:hover {
+        @apply text-horizon dark:text-deepsky-blue !important;
+    }
 
-        .category-name:visited {
-            @apply text-horizon;
-        }
+    .category-description {
+        @apply text-mountain-mist text-[0.8125rem] leading-4 mt-2;
+    }
 
-        .category-name:hover {
-            @apply text-horizon dark:text-deepsky-blue !important;
-        }
+    .category-tags {
+        @apply mt-2 pr-2;
+    }
 
-        .category-description {
-            @apply text-mountain-mist text-[0.8125rem] leading-4 mt-2;
-        }
+    .tag-item::after {
+        content: ", ";
+    }
 
-        .category-tags {
-            @apply mt-2 pr-2;
-        }
+    .tag-item:last-child::after {
+        content: "";
+    }
 
-        .tag-item::after {
-            content: ", ";
-        }
-
-        .tag-item:last-child::after {
-            content: "";
-        }
-
-        .tag-name {
-            @apply text-horizon dark:text-deepsky-blue no-underline text-[0.8125rem] leading-[1.125rem] !important;
-        }
+    .tag-name {
+        @apply text-horizon dark:text-deepsky-blue no-underline text-[0.8125rem] leading-[1.125rem] !important;
     }
 
     .itb-user {
         @apply text-mine-shaft pt-4 pb-4 pl-5 pr-5 mb-4 bg-white dark:bg-bunker;
 
-       .user-meta-container {
-           @apply flex items-center flex-nowrap mb-2 gap-1;
-       }
+        .user-meta-container {
+            @apply flex items-center flex-nowrap mb-2 gap-1;
+        }
 
         .user-avatar {
             @apply rounded-[3px] h-6 w-6 !important;

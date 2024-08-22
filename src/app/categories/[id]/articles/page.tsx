@@ -23,7 +23,6 @@ import IconButton from '@mui/material/IconButton';
 import SearchIcon from '@mui/icons-material/Search';
 import MenuIcon from '@mui/icons-material/Menu';
 import Menu from '@mui/material/Menu';
-import NavTabs from "@/components/NavTabs";
 
 function stringToColor(string: string) {
     let hash = 0;

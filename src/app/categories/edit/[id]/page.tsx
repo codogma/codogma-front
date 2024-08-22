@@ -49,7 +49,6 @@ function Categories({params}: PageProps) {
                 const categoryData = await getCategoryById(categoryId);
                 setCategory(categoryData);
 
-
                 zodForm.reset({
                     name: categoryData.name
                 });

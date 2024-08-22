@@ -44,7 +44,11 @@ export const getCategories = async (): Promise<Category[]> => {
 export const getCategoryById = async (id: number): Promise<Category> => {
     try {
         const response = await axiosInstance.get(`/categories/${id}`);
-        return response.data;
+        const category: Category = response.data
+        return {
+            ...category,
+            imageUrl: `${process.env.NEXT_PUBLIC_BASE_URL}${category.imageUrl}`
+        }
     } catch (error) {
         console.error('Error fetching category:', error);
         throw error;

@@ -23,27 +23,42 @@ export const createArticle = async (requestData: {
 }
 
 
-export const updateArticle = (id: number, requestData: {
+export const updateArticle = async (id: number, requestData: {
     title?: string,
     content?: string,
     categoryIds: number[],
     tags?: string[],
     images?: File[]
-}) => {
-    axiosInstance.put(`/articles/${id}`, requestData)
-        .then(() => console.log("Article updated successfully"))
-        .catch((error: any) => {
-            console.error("Error updating article: " + error.message);
-        });
+}): Promise<Article> => {
+    try {
+        const response = await axiosInstance.put(`/articles/${id}`, requestData, {
+            headers: {
+                "Content-Type": "multipart/form-data",
+            },
+        })
+        return response.data;
+    } catch (error: any) {
+        console.error("Error updating article: " + error.message);
+        throw error;
+    }
 }
 
-export const getArticles = async (category?: number, page: number = 0, size: number = 10, tag?: string, content?: string): Promise<{
+export const getArticles = async (categoryId?: number, page: number = 0, size: number = 10, tag?: string, content?: string, authorId?: number): Promise<{
     totalElements: number,
     totalPages: number,
     content: Article[]
 }> => {
     try {
-        const response = await axiosInstance.get('/articles', {params: {tag, content, category, page, size}});
+        const response = await axiosInstance.get('/articles', {
+            params: {
+                tag,
+                content,
+                categoryId,
+                page,
+                size,
+                authorId
+            }
+        });
         return {
             totalPages: response.data.totalPages,
             totalElements: response.data.totalElements,
