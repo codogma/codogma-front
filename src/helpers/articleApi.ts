@@ -25,8 +25,10 @@ export const createArticle = async (requestData: {
 
 export const updateArticle = (id: number, requestData: {
     title?: string,
-    content?: string
-    categoryIds: number[]
+    content?: string,
+    categoryIds: number[],
+    tags?: string[],
+    images?: File[]
 }) => {
     axiosInstance.put(`/articles/${id}`, requestData)
         .then(() => console.log("Article updated successfully"))

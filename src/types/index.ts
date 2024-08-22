@@ -13,6 +13,7 @@ export type User = {
     role: UserRole;
     avatarUrl: string;
     articles: Article[] | [];
+    categories: { id: number, name: string }[]
 }
 
 export type Category = {
@@ -20,6 +21,7 @@ export type Category = {
     name: string;
     description: string;
     imageUrl: string;
+    tags: { id: number, name: string }[]
 }
 
 export type Tag = {
@@ -35,4 +37,5 @@ export type Article = {
     authorAvatarUrl: string;
     createdAt: Date;
     categories: { id: number, name: string }[]
+    tags: { id: number, name: string }[]
 };

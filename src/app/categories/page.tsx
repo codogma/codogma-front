@@ -1,6 +1,6 @@
 "use client";
 import React, {useEffect, useState} from "react";
-import {Category, Tag, UserRole} from "@/types";
+import {Category, UserRole} from "@/types";
 import {getCategories} from "@/helpers/categoryApi";
 import Link from "next/link";
 import {Avatar, Badge, Button} from "@mui/material";
@@ -12,22 +12,9 @@ import {useAuth} from "@/components/AuthProvider";
 import IconButton from "@mui/material/IconButton";
 import ImageIcon from "@mui/icons-material/Image";
 
-const tempTags: Tag[] = [
-    {id: 1, name: "vpn"},
-    {id: 2, name: "сетевые технологии"},
-    {id: 3, name: "блокировка"},
-    {id: 4, name: "ркн"},
-    {id: 5, name: "vpn"},
-    {id: 6, name: "сетевые технологии"},
-    {id: 7, name: "блокировка"},
-    {id: 8, name: "ркн"},
-    {id: 9, name: "vpn"},
-    {id: 10, name: "сетевые технологии"}
-]
 export default function Page() {
     const [categories, setCategories] = useState<Category[]>([])
     const {state} = useAuth();
-    const [tags, setTags] = useState<Tag[]>(tempTags);
 
     useEffect(() => {
         async function fetchData() {
@@ -65,8 +52,8 @@ export default function Page() {
                                 </li>
                                 <li><p className="category-description">{category.description}</p></li>
                                 <li>
-                                    <div className="category-tags">{tags.map((tag) => (
-                                        <span className="tag-item" key={category.id}>
+                                    <div className="category-tags">{category.tags.map((tag) => (
+                                        <span className="tag-item" key={tag.id}>
                                         <Link key={tag.id} href={`/tags/${tag.id}`}
                                               className="tag-name">{tag.name}</Link>
                                         </span>

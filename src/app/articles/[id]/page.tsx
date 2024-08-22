@@ -58,7 +58,8 @@ export default function Page({params}: PageProps) {
         username: "",
         authorAvatarUrl: "",
         createdAt: new Date(),
-        categories: []
+        categories: [],
+        tags: []
     });
 
     useEffect(() => {
@@ -102,19 +103,18 @@ export default function Page({params}: PageProps) {
                     </div>
                     <div className="article-content" dangerouslySetInnerHTML={{__html: article.content}}/>
                     <div className="article-presenter-meta">
-                        {/*TODO после добавления тегов раскомментировать и подправить*/}
-                        {/*<div className="article-category-pm">Теги: {article.categories.map((category) => (*/}
-                        {/*    <span className="category-item" key={category.id}>*/}
-                        {/*        <Link className="category-link" href={`/categories/${category.id}`}>*/}
-                        {/*        {category.name}*/}
-                        {/*        </Link>*/}
-                        {/*    </span>*/}
-                        {/*))}*/}
-                        {/*</div>*/}
                         <div className="article-category-pm">Категории: {article.categories.map((category) => (
                             <span className="category-item" key={category.id}>
                             <Link className="category-link" href={`/categories/${category.id}`}>
                             {category.name}
+                            </Link>
+                        </span>
+                        ))}
+                        </div>
+                        <div className="article-tag-pm">Теги: {article.tags.map((tag) => (
+                            <span className="tag-item" key={tag.id}>
+                            <Link className="tag-link" href={`/categories/${tag.id}`}>
+                            {tag.name}
                             </Link>
                         </span>
                         ))}

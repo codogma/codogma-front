@@ -4,9 +4,9 @@ import {z} from "zod"
 import {Controller, FormProvider, SubmitHandler, useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
 import React, {MouseEvent, useEffect, useState} from "react";
-import {Article, Category} from "@/types";
+import {Article, Category, Tag} from "@/types";
 import FormInput from "@/components/FormInput";
-import {Box, Button, TextField} from "@mui/material";
+import {Box, Button, Chip, TextField} from "@mui/material";
 import {deleteArticle, getArticleById, updateArticle} from "@/helpers/articleApi";
 import {getCategories} from "@/helpers/categoryApi";
 import Autocomplete from "@mui/material/Autocomplete";
@@ -14,11 +14,14 @@ import {TinyMCEEditor} from "@/components/TinyMCEEditor";
 import {useRouter} from "next/navigation";
 import Link from "next/link";
 import {WithAcc} from "@/components/WithAcc";
+import {getTagsByName} from "@/helpers/tagApi";
 
 const ArticleScheme = z.object({
     categoryIds: z.array(z.number()),
     title: z.optional(z.string().min(2, "Название статьи не может содержать менее 2 символов.").max(50, "Название статьи не может содержать более 50 символов.")),
-    content: z.optional(z.string())
+    content: z.optional(z.string()),
+    tags: z.array(z.string()).optional(),
+    images: z.array(z.instanceof(File)).optional()
 })
 
 type PageParams = {
@@ -34,16 +37,20 @@ function Articles({params}: PageProps) {
     const router = useRouter();
     const articleId: number = params.id;
     const [article, setArticle] = useState<Article>();
-    const [categories, setCategories] = useState<Category[]>([]);
+    const [categories, setCategories] = useState<Category[]>([])
+    const [inputTagValue, setInputTagValue] = useState<string>('');
+    const [availableTags, setAvailableTags] = useState<string[]>([]);
 
     const zodForm = useForm<z.infer<typeof ArticleScheme>>({
         resolver: zodResolver(ArticleScheme),
         defaultValues: {
             categoryIds: [],
             title: "",
-            content: ""
+            content: "",
+            tags: [],
+            images: []
         }
-    })
+    });
 
     useEffect(() => {
         async function fetchData() {
@@ -68,6 +75,25 @@ function Articles({params}: PageProps) {
         fetchData()
     }, [articleId, zodForm])
 
+    useEffect(() => {
+        if (inputTagValue === '') {
+            setAvailableTags([]);
+            return;
+        }
+
+        const fetchTags = async () => {
+            try {
+                const tagObjects: Tag[] = await getTagsByName(inputTagValue);
+                const tagNames = tagObjects.map(tag => tag.name);
+                setAvailableTags(tagNames);
+            } catch (error) {
+                console.error('Error fetching tags:', error);
+            }
+        };
+
+        fetchTags();
+    }, [inputTagValue]);
+
     const {
         reset,
         handleSubmit,
@@ -81,6 +107,7 @@ function Articles({params}: PageProps) {
             reset(zodForm.getValues());
         }
     }, [isSubmitSuccessful, reset, zodForm]);
+
 
     const onSubmit: SubmitHandler<z.infer<typeof ArticleScheme>> = (formData) => {
         const requestData = {...formData}
@@ -126,6 +153,51 @@ function Articles({params}: PageProps) {
                                 renderInput={(params) => (
                                     <TextField {...params} label="Categories" variant="standard"
                                                placeholder="Select categories"/>
+                                )}
+                            />
+                        )}
+                    />
+                    <Controller
+                        name="tags"
+                        control={control}
+                        render={({field}) => (
+                            <Autocomplete
+                                multiple
+                                id="tags"
+                                options={availableTags.filter(tag =>
+                                    !field.value?.some(value => value.toLowerCase() === tag.toLowerCase())
+                                )}
+                                freeSolo
+                                value={field.value}
+                                onChange={(_, newValue) => {
+                                    const normalizedValue = newValue.map(value => {
+                                        const existingTag = availableTags.find(tag => tag.toLowerCase() === value.toLowerCase());
+                                        return existingTag || value;
+                                    });
+
+                                    const uniqueTags = new Set<string>();
+                                    normalizedValue.forEach(tag => {
+                                        uniqueTags.add(tag);
+                                    });
+
+                                    field.onChange(Array.from(uniqueTags));
+                                }}
+                                onInputChange={(_, newInputValue) => setInputTagValue(newInputValue)}
+                                renderTags={(value: string[], getTagProps) =>
+                                    value.map((option: string, index: number) => {
+                                        const {key, ...tagProps} = getTagProps({index});
+                                        return (
+                                            <Chip variant="outlined" label={option} key={key} {...tagProps} />
+                                        );
+                                    })
+                                }
+                                renderInput={(params) => (
+                                    <TextField
+                                        {...params}
+                                        variant="standard"
+                                        label="Tags"
+                                        placeholder="Select or create tags"
+                                    />
                                 )}
                             />
                         )}
