@@ -24,8 +24,8 @@ export const createArticle = async (requestData: {
 
 
 export const updateArticle = async (id: number, requestData: {
-    title?: string,
-    content?: string,
+    title: string,
+    content: string,
     categoryIds: number[],
     tags?: string[],
     images?: File[]

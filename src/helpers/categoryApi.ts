@@ -1,5 +1,6 @@
 import {axiosInstance} from "@/helpers/axiosInstance";
 import {Category} from "@/types";
+import {ZodOptional, ZodString} from "zod";
 
 export type CategoryCreate = {
     name: string,
@@ -19,13 +20,22 @@ export const createCategory = (requestData: CategoryCreate) => {
         });
 }
 
-export const updateCategory = (id: number, requestData: { name?: string }): Promise<string> => {
-    return axiosInstance.put(`/categories/${id}`, requestData)
-        .then((response) => response.data)
-        .catch((error: Error) => {
-            console.error(error)
-            throw error.message
-        })
+export const updateCategory = async (id: number, requestData: {
+    image?: File,
+    name?: string,
+    description?: string
+}): Promise<Category> => {
+    try {
+    const response = await axiosInstance.put(`/categories/${id}`, requestData, {
+        headers: {
+            "Content-Type": "multipart/form-data",
+        },
+    })
+        return response.data;
+    } catch (error: any) {
+        console.error("Error updating category: " + error.message);
+        throw error;
+    }
 }
 
 export const getCategories = async (): Promise<Category[]> => {
