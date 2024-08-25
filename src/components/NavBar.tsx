@@ -75,7 +75,7 @@ const NavBar = () => {
                             <SearchIcon/>
                         </IconButton>
                         {state.user?.role === UserRole.ROLE_AUTHOR && (
-                            <Link href={`/articles/create`}>
+                            <Link href={`/create-article`}>
                                 <IconButton color="inherit">
                                     <CreateIcon/>
                                 </IconButton>
