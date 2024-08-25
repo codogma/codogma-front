@@ -108,7 +108,7 @@ function Categories({params}: PageProps) {
         const requestData = {...formData, image: imageFile}
         updateCategory(categoryId, requestData).then((response) => {
             setAlertSeverity("success")
-            setAlertText(response)
+            setAlertText("Category updated successfully")
             setOpen(true)
         }).catch((error) => {
             setAlertSeverity("error")

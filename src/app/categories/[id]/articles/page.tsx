@@ -53,7 +53,7 @@ function stringAvatar(name: string) {
     };
 }
 
-export default function Page() {
+export default function Layout() {
     const resultsPerPage10 = 10;
     const resultsPerPage20 = 20;
     const resultsPerPage30 = 30;
@@ -219,7 +219,7 @@ export default function Page() {
                     <Pagination count={totalPages} page={currentPage + 1} onChange={handlePageChange} variant="outlined"
                                 shape="rounded"/>
                     <TextField
-                        label="Page"
+                        label="Layout"
                         id="page"
                         size="small"
                         defaultValue={currentPage + 1}

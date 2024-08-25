@@ -6,7 +6,6 @@ import Link from "next/link";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import {Avatar} from "@mui/material";
-import NavTabs from "@/components/NavTabs";
 
 function stringToColor(string: string) {
     let hash = 0;

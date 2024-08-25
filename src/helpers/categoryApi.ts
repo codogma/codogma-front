@@ -1,6 +1,5 @@
 import {axiosInstance} from "@/helpers/axiosInstance";
 import {Category} from "@/types";
-import {ZodOptional, ZodString} from "zod";
 
 export type CategoryCreate = {
     name: string,
@@ -43,7 +42,7 @@ export const getCategories = async (): Promise<Category[]> => {
         const response = await axiosInstance.get('/categories');
         return response.data.map((category: Category) => ({
             ...category,
-            imageUrl: `${process.env.NEXT_PUBLIC_BASE_URL}${category.imageUrl}`
+            imageUrl: `${process.env.NEXT_PUBLIC_BASE_URL}${category.imageUrl}?t=${new Date().getTime()}`
         }))
     } catch (error) {
         console.error('Error fetching categories:', error)
@@ -57,7 +56,7 @@ export const getCategoryById = async (id: number): Promise<Category> => {
         const category: Category = response.data
         return {
             ...category,
-            imageUrl: `${process.env.NEXT_PUBLIC_BASE_URL}${category.imageUrl}`
+            imageUrl: `${process.env.NEXT_PUBLIC_BASE_URL}${category.imageUrl}?t=${new Date().getTime()}`
         }
     } catch (error) {
         console.error('Error fetching category:', error);

@@ -4,10 +4,12 @@ import type {Metadata} from "next";
 import {Inter} from "next/font/google";
 import "./globals.css";
 import NavBar from "@/components/NavBar";
-import NavTabs from "@/components/NavTabs";
 import {AuthProvider} from "@/components/AuthProvider";
 import {ColorModeProvider} from "@/components/ThemeContext";
 import Container from "@mui/material/Container";
+import React, {Suspense} from "react";
+import Loading from "@/app/loading";
+import NavTabs from "@/components/NavTabs";
 
 const inter = Inter({subsets: ["latin"]});
 
@@ -32,7 +34,9 @@ export default function RootLayout({
                         <NavBar/>
                         <Container maxWidth="lg">
                             <NavTabs/>
-                            {children}
+                            <Suspense fallback={<Loading/>}>
+                                {children}
+                            </Suspense>
                         </Container>
                     </AuthProvider>
                 </ColorModeProvider>

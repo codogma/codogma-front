@@ -1,5 +1,5 @@
 "use client";
-import "../../globals.css";
+import "../globals.css";
 import {z} from "zod";
 import {FormProvider, SubmitHandler, useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
@@ -34,7 +34,7 @@ const VisuallyHiddenInput = styled("input")({
     width: 1,
 });
 
-function Categories() {
+function Page() {
     const [imageFile, setImageFile] = useState<File>()
     const [imageUrl, setImageUrl] = useState<string>()
 
@@ -116,4 +116,4 @@ function Categories() {
     );
 }
 
-export default WithAuth(Categories);
+export default WithAuth(Page);

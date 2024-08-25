@@ -11,7 +11,6 @@ import CardActions from "@mui/material/CardActions";
 import {useAuth} from "@/components/AuthProvider";
 import IconButton from "@mui/material/IconButton";
 import ImageIcon from "@mui/icons-material/Image";
-import NavTabs from "@/components/NavTabs";
 
 export default function Page() {
     const [categories, setCategories] = useState<Category[]>([])

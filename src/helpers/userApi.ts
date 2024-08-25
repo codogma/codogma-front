@@ -1,5 +1,5 @@
 import {axiosInstance} from "@/helpers/axiosInstance";
-import {User} from "@/types";
+import {Category, User} from "@/types";
 import Cookies from "js-cookie";
 
 export type UserUpdate = {
@@ -13,21 +13,34 @@ export type UserUpdate = {
     avatar?: File
 }
 
-export const updateUser = (requestData: UserUpdate) => {
-    axiosInstance.put(`/users`, requestData, {
-        headers: {
-            "Content-Type": "multipart/form-data"
-        }
-    })
-        .then(() => console.log("User updated successfully"))
-        .catch((error) => console.error(error))
+export const updateUser = async (requestData: UserUpdate): Promise<User> => {
+    try {
+        const response = await axiosInstance.put(`/users`, requestData, {
+            headers: {
+                "Content-Type": "multipart/form-data"
+            }
+        })
+        const user: User = {
+            ...response.data,
+            avatarUrl: `${process.env.NEXT_PUBLIC_BASE_URL}${response.data.avatarUrl}?t=${new Date().getTime()}`
+        };
+        Cookies.set('user', JSON.stringify(user), {secure: true, sameSite: 'strict'});
+        window.dispatchEvent(new Event("storage"));
+        console.log("User updated successfully")
+        return user;
+    } catch (error) {
+        console.error(error)
+        throw error;
+    }
 }
 
 export const getUsers = async (): Promise<User[]> => {
     try {
         const response = await axiosInstance.get('/users');
-        console.log(response)
-        return response.data;
+        return response.data.map((user: User) => ({
+            ...user,
+            imageUrl: `${process.env.NEXT_PUBLIC_BASE_URL}${user.avatarUrl}?t=${new Date().getTime()}`
+        }))
     } catch (error) {
         console.error('Error fetching users:', error);
         throw error;
@@ -38,8 +51,11 @@ export const getUsers = async (): Promise<User[]> => {
 export const getAuthors = async (): Promise<User[]> => {
     try {
         const response = await axiosInstance.get('/users/authors');
-        console.log(response)
-        return response.data;
+        const users: User[] = response.data;
+        return users.map((user: User) => ({
+            ...user,
+            imageUrl: `${process.env.NEXT_PUBLIC_BASE_URL}${user.avatarUrl}?t=${new Date().getTime()}`
+        }))
     } catch (error) {
         console.error('Error fetching users:', error);
         throw error;
@@ -52,7 +68,7 @@ export const getUserByUsername = async (username: string): Promise<User> => {
         const response = await axiosInstance.get(`/users/${username}`);
         return {
             ...response.data,
-            avatarUrl: `${process.env.NEXT_PUBLIC_BASE_URL}${response.data.avatarUrl}`
+            avatarUrl: `${process.env.NEXT_PUBLIC_BASE_URL}${response.data.avatarUrl}?t=${new Date().getTime()}`
         };
     } catch (error) {
         console.error('Error fetching users:', error);

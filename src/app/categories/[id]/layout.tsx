@@ -1,36 +1,32 @@
 "use client";
-import React, {useEffect, useState} from "react";
+import React, {Suspense, useEffect, useState} from 'react';
 import {Category} from "@/types";
+import NavTabs, {LinkTabProps} from "@/components/NavTabs";
 import {getCategoryById} from "@/helpers/categoryApi";
+import CardContent from "@mui/material/CardContent";
 import {Avatar, Badge} from "@mui/material";
 import IconButton from "@mui/material/IconButton";
 import ImageIcon from "@mui/icons-material/Image";
 import Card from "@mui/material/Card";
-import CardContent from "@mui/material/CardContent";
-import NavTabs, {LinkTabProps} from "@/components/NavTabs";
-import {usePathname} from "next/navigation";
+import Loading from "@/app/loading";
 
 type PageParams = {
-    id: number
-}
+    id: number;
+};
 
 type PageProps = {
-    params: PageParams
-}
-
-export default function Page({params}: PageProps, {
-    children,
-}: Readonly<{
+    params: PageParams;
     children: React.ReactNode;
-}>) {
-    const pathname = usePathname();
-    const categoryId: number = params.id;
+};
+
+export default function Layout({params, children}: PageProps) {
+    const categoryId = params.id;
     const [category, setCategory] = useState<Category>({} as Category);
 
     const tabs: LinkTabProps[] = [
-        {label: 'Articles', href: `${pathname}/articles`},
-        {label: 'Authors', href: `${pathname}/users`},
-    ]
+        {label: 'Articles', href: `/categories/${categoryId}/articles`},
+        {label: 'Authors', href: `/categories/${categoryId}/authors`},
+    ];
 
     useEffect(() => {
         async function fetchData() {
@@ -43,20 +39,18 @@ export default function Page({params}: PageProps, {
         }
 
         fetchData();
-    }, [categoryId])
-
+    }, [categoryId]);
 
     return (
-        <>
+        <section>
             <Card className="card">
                 <CardContent className="card-content">
                     <div className="meta-container">
-                        <Badge className="items-start"
-                               overlap="circular"
-                               anchorOrigin={{vertical: "bottom", horizontal: "right"}}
-                               badgeContent={
-                                   <IconButton component="label" color="inherit" sx={{p: 0}}/>
-                               }
+                        <Badge
+                            className="items-start"
+                            overlap="circular"
+                            anchorOrigin={{vertical: 'bottom', horizontal: 'right'}}
+                            badgeContent={<IconButton component="label" color="inherit" sx={{p: 0}}/>}
                         >
                             <Avatar className="category-img" variant="rounded" src={category.imageUrl}>
                                 <ImageIcon/>
@@ -69,8 +63,10 @@ export default function Page({params}: PageProps, {
                     </div>
                 </CardContent>
             </Card>
-            <NavTabs tabs={tabs} shouldShow/>
-            {children}
-        </>
+            <NavTabs tabs={tabs}/>
+            <Suspense fallback={<Loading/>}>
+                {children}
+            </Suspense>
+        </section>
     );
 }

@@ -56,7 +56,7 @@ const NavBar = () => {
                         variant="h5"
                         noWrap
                         component="a"
-                        href="/articles"
+                        href="/"
                         sx={{
                             mr: 2,
                             display: {xs: 'flex', md: 'flex'},
@@ -82,7 +82,7 @@ const NavBar = () => {
                             </Link>
                         )}
                         {state.user?.role === UserRole.ROLE_ADMIN && (
-                            <Link href={`/categories/create`}>
+                            <Link href={`/create-category`}>
                                 <IconButton color="inherit">
                                     <CategoryIcon/>
                                 </IconButton>
@@ -104,7 +104,7 @@ const NavBar = () => {
                             <>
                                 <Tooltip title="Open settings">
                                     <IconButton onClick={handleOpenUserMenu} color="inherit" sx={{p: 0}}>
-                                        {state.user?.avatarUrl && <Avatar variant="rounded" src={state.user?.avatarUrl}/> }
+                                        {state.user?.avatarUrl && <Avatar key={new Date().getTime()} variant="rounded" src={state.user?.avatarUrl}/> }
                                         {!state.user?.avatarUrl && <AccountCircle/>}
                                     </IconButton>
                                 </Tooltip>

@@ -44,21 +44,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({children}) => {
     const [state, dispatch] = useReducer(authReducer, initialState);
     const [loading, setLoading] = useState(true);
 
-    // useEffect(() => {
-    //     const savedUser = Cookies.get('user');
-    //     const username = Cookies.get('username');
-    //     if (savedUser) {
-    //         const user: User = JSON.parse(savedUser);
-    //         dispatch({type: 'LOGIN', user});
-    //         if (user.username === username) {
-    //             dispatch({type: 'ACCESS_DENIED', user});
-    //         }
-    //         setLoading(false);
-    //     } else {
-    //         setLoading(false);
-    //     }
-    // }, []);
-
     useEffect(() => {
         const handleStorageChange = () => {
             const savedUser = Cookies.get('user');
