@@ -1,5 +1,5 @@
 import {axiosInstance} from "@/helpers/axiosInstance";
-import {Category, User} from "@/types";
+import {Category, User, UserRole} from "@/types";
 import Cookies from "js-cookie";
 
 export type UserUpdate = {
@@ -48,9 +48,14 @@ export const getUsers = async (): Promise<User[]> => {
 };
 
 
-export const getAuthors = async (): Promise<User[]> => {
+export const getAuthors = async (categoryId?: number): Promise<User[]> => {
     try {
-        const response = await axiosInstance.get('/users/authors');
+        const response = await axiosInstance.get(`/users`, {
+            params: {
+                categoryId,
+                role: UserRole.ROLE_AUTHOR
+            }
+        });
         const users: User[] = response.data;
         return users.map((user: User) => ({
             ...user,

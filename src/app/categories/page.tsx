@@ -30,17 +30,17 @@ export default function Page() {
     }, [])
 
     return (
-        <>
+        <section>
             {categories.map((category) => (
-                <Card key={category.id} className="itb-category">
+                <Card key={category.id} className="card">
                     <CardContent className="card-content">
-                        <div className="category-content">
-                            <Badge
-                                overlap="circular"
-                                anchorOrigin={{vertical: "bottom", horizontal: "right"}}
-                                badgeContent={
-                                    <IconButton component="label" color="inherit" sx={{p: 0}}/>
-                                }
+                        <div className="meta-container">
+                            <Badge className="items-start"
+                                   overlap="circular"
+                                   anchorOrigin={{vertical: "bottom", horizontal: "right"}}
+                                   badgeContent={
+                                       <IconButton component="label" color="inherit" sx={{p: 0}}/>
+                                   }
                             >
                                 <Avatar className="category-img" variant="rounded" src={category.imageUrl}>
                                     <ImageIcon/>
@@ -52,7 +52,7 @@ export default function Page() {
                                 </li>
                                 <li><p className="category-description">{category.description}</p></li>
                                 <li>
-                                    <div className="category-tags">{category.tags.map((tag) => (
+                                    <div className="category-tags">{category.tags?.map((tag) => (
                                         <span className="tag-item" key={tag.id}>
                                         <Link key={tag.id} href={`/tags/${tag.id}`}
                                               className="tag-name">{tag.name}</Link>
@@ -73,6 +73,6 @@ export default function Page() {
                     </CardContent>
                 </Card>
             ))}
-        </>
+        </section>
     );
 }

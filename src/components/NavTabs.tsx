@@ -17,7 +17,7 @@ type NavTabsProps = {
 const linkTabs: LinkTabProps[] = [
     {label: 'Articles', href: '/articles'},
     {label: 'Categories', href: '/categories'},
-    {label: 'Authors', href: '/authors'},
+    {label: 'Authors', href: '/users'},
 ]
 
 const NavTabs: React.FC<NavTabsProps> = ({tabs = linkTabs}) => {

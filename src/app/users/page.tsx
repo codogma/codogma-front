@@ -38,12 +38,11 @@ function stringAvatar(name: string) {
 
 function Page() {
     const [users, setUsers] = useState<User[]>([]);
-    const [categories, setCategories] = useState<Category[]>([])
 
     useEffect(() => {
         async function fetchData() {
             try {
-                const allUsers = await getAuthors()
+                const allUsers = await getAuthors();
                 console.log(allUsers)
                 setUsers(allUsers);
             } catch (error) {

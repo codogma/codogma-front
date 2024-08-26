@@ -2,13 +2,23 @@ import {axiosInstance} from "@/helpers/axiosInstance";
 import {Article} from "@/types";
 import Cookies from "js-cookie";
 
-export const createArticle = async (requestData: {
+export type CreateArticleDTO = {
     categoryIds: number[],
     title: string,
     content: string,
     tags?: string[],
     images?: File[]
-}): Promise<Article> => {
+}
+
+export type UpdateArticleDTO = {
+    title: string,
+    content: string,
+    categoryIds: number[],
+    tags?: string[],
+    images?: File[]
+}
+
+export const createArticle = async (requestData: CreateArticleDTO): Promise<Article> => {
     try {
         const response = await axiosInstance.post("/articles", requestData, {
             headers: {
@@ -23,13 +33,7 @@ export const createArticle = async (requestData: {
 }
 
 
-export const updateArticle = async (id: number, requestData: {
-    title: string,
-    content: string,
-    categoryIds: number[],
-    tags?: string[],
-    images?: File[]
-}): Promise<Article> => {
+export const updateArticle = async (id: number, requestData: UpdateArticleDTO): Promise<Article> => {
     try {
         const response = await axiosInstance.put(`/articles/${id}`, requestData, {
             headers: {

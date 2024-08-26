@@ -36,14 +36,24 @@ function stringAvatar(name: string) {
     };
 }
 
-function Page() {
+type PageParams = {
+    id: number;
+};
+
+type PageProps = {
+    params: PageParams;
+};
+
+
+function Page({params}: PageProps) {
+    const categoryId = params.id
     const [users, setUsers] = useState<User[]>([]);
     const [categories, setCategories] = useState<Category[]>([])
 
     useEffect(() => {
         async function fetchData() {
             try {
-                const allUsers = await getAuthors()
+                const allUsers = await getAuthors(categoryId)
                 console.log(allUsers)
                 setUsers(allUsers);
             } catch (error) {

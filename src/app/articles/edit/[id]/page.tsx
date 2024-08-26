@@ -7,7 +7,7 @@ import React, {MouseEvent, useEffect, useState} from "react";
 import {Article, Category, Tag} from "@/types";
 import FormInput from "@/components/FormInput";
 import {Box, Button, Chip, TextField} from "@mui/material";
-import {deleteArticle, getArticleById, updateArticle} from "@/helpers/articleApi";
+import {deleteArticle, getArticleById, updateArticle, UpdateArticleDTO} from "@/helpers/articleApi";
 import {getCategories} from "@/helpers/categoryApi";
 import Autocomplete from "@mui/material/Autocomplete";
 import {TinyMCEEditor} from "@/components/TinyMCEEditor";
@@ -18,8 +18,8 @@ import {getTagsByName} from "@/helpers/tagApi";
 
 const ArticleScheme = z.object({
     categoryIds: z.array(z.number()),
-    title: z.optional(z.string().min(2, "Название статьи не может содержать менее 2 символов.").max(50, "Название статьи не может содержать более 50 символов.")),
-    content: z.optional(z.string()),
+    title: z.string().min(2, "Название статьи не может содержать менее 2 символов.").max(50, "Название статьи не может содержать более 50 символов."),
+    content: z.string(),
     tags: z.array(z.string()).optional(),
     images: z.array(z.instanceof(File)).optional()
 })
@@ -112,7 +112,7 @@ function Articles({params}: PageProps) {
 
 
     const onSubmit: SubmitHandler<z.infer<typeof ArticleScheme>> = (formData) => {
-        const requestData = {...formData}
+        const requestData: UpdateArticleDTO = {...formData}
         console.log(requestData)
         updateArticle(articleId, requestData).then(() => router.push(`/articles/${articleId}`))
     }

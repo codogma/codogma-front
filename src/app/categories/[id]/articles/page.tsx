@@ -53,7 +53,16 @@ function stringAvatar(name: string) {
     };
 }
 
-export default function Layout() {
+type PageParams = {
+    id: number;
+};
+
+type PageProps = {
+    params: PageParams;
+};
+
+export default function Layout({params}: PageProps) {
+    const categoryId = params.id;
     const resultsPerPage10 = 10;
     const resultsPerPage20 = 20;
     const resultsPerPage30 = 30;
@@ -92,7 +101,7 @@ export default function Layout() {
                     content,
                     totalPages,
                     totalElements
-                } = await getArticles(undefined, page, resultsPerPage, byTag, byContent, undefined);
+                } = await getArticles(categoryId, page, resultsPerPage, byTag, byContent, undefined);
                 content.map((article) => article.content = DOMPurify.sanitize(article.content));
                 setArticles(content);
                 setTotalPages(totalPages);
