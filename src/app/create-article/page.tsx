@@ -16,10 +16,9 @@ import {createArticle} from "@/helpers/articleApi";
 
 const ArticleScheme = z.object({
     categoryIds: z.array(z.number()),
-    title: z.string().min(2, "Название статьи не может содержать менее 2 символов.").max(50, "Название статьи не может содержать более 50 символов."),
+    title: z.string().min(2, "Название статьи не может содержать менее 2 символов.").max(300, "Название статьи не может содержать более 300 символов."),
     content: z.string(),
-    tags: z.array(z.string()).optional(),
-    images: z.array(z.instanceof(File)).optional()
+    tags: z.array(z.string()).optional()
 });
 
 function Articles() {
@@ -67,8 +66,7 @@ function Articles() {
             categoryIds: [],
             title: "",
             content: "",
-            tags: [],
-            images: []
+            tags: []
         }
     });
 

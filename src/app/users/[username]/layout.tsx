@@ -4,8 +4,7 @@ import {User} from "@/types";
 import {getUserByUsername} from "@/helpers/userApi";
 import {Avatar, Box, Button} from "@mui/material";
 import Link from "next/link";
-import {WithAuth} from "@/components/WithAuth";
-import {useAuth} from "@/components/AuthProvider";
+import {LinkTabProps} from "@/components/NavTabs";
 
 type PageParams = {
     username: string
@@ -13,12 +12,15 @@ type PageParams = {
 
 type PageProps = {
     params: PageParams
-}
-
-function Page({params}: PageProps) {
+};
+export default function Layout({params}: PageProps) {
     const username: string = params.username;
     const [user, setUser] = useState<User>();
-    const {state} = useAuth();
+
+    const tabs: LinkTabProps[] = [
+        {label: 'Articles', href: `/users/${username}/articles`},
+        {label: 'Profile', href: `/users/${username}/profile`},
+    ];
 
     useEffect(() => {
         async function fetchData() {
@@ -32,7 +34,6 @@ function Page({params}: PageProps) {
 
         fetchData();
     }, [username])
-
 
     return (
         <main className="flex min-h-screen max-w-3xl flex-col items-left justify-self-auto p-24">
@@ -50,12 +51,10 @@ function Page({params}: PageProps) {
                 <p className="article-title">{user?.firstName}</p>
                 <p className="article-title">{user?.lastName}</p>
                 <p className="article-title">{user?.bio}</p>
-                {state.user?.username === username && (
+                {user?.username === username && (
                     <Link href={`/users/edit/${user?.username}`}><Button type="submit">Update</Button></Link>
                 )}
             </Box>
         </main>
     );
 }
-
-export default WithAuth(Page)

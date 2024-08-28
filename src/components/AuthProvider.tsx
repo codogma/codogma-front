@@ -24,8 +24,6 @@ const authReducer = (state: AuthState, action: AuthAction): AuthState => {
             return {isAuthenticated: true, isAccessDenied: false, user: action.user};
         case 'LOGOUT':
             return {isAuthenticated: false, isAccessDenied: false, user: null};
-        case 'ACCESS_DENIED':
-            return {isAuthenticated: true, isAccessDenied: true, user: action.user}
         default:
             return state;
     }
@@ -47,15 +45,11 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({children}) => {
     useEffect(() => {
         const handleStorageChange = () => {
             const savedUser = Cookies.get('user');
-            const username = Cookies.get('username');
             if (savedUser) {
                 currentUser()
                     .then((user) => {
                         if (user) {
                             dispatch({type: 'LOGIN', user});
-                            if (user.username === username) {
-                                dispatch({type: 'ACCESS_DENIED', user});
-                            }
                             Cookies.set('user', JSON.stringify(user), {secure: true, sameSite: 'strict'});
                         } else {
                             dispatch({type: 'LOGOUT'});

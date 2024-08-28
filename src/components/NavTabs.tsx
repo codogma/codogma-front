@@ -15,7 +15,7 @@ type NavTabsProps = {
 };
 
 const linkTabs: LinkTabProps[] = [
-    {label: 'Articles', href: '/articles'},
+    {label: 'Articles', href: '/profile'},
     {label: 'Categories', href: '/categories'},
     {label: 'Authors', href: '/users'},
 ]

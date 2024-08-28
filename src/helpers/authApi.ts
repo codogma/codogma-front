@@ -17,9 +17,8 @@ export const register = (requestData: { username: string, email: string, passwor
 export const login = async (requestData: { usernameOrEmail: string, password: string }): Promise<User> => {
     try {
         await axiosInstance.post("/auth/login", requestData);
-        window.dispatchEvent(new Event("storage"));
         const user = await currentUser();
-        Cookies.set('user', JSON.stringify(user), {secure: true, sameSite: 'strict'});
+        window.dispatchEvent(new Event("storage"));
         return user;
     } catch (error: any) {
         console.error("Error logging in user: " + error.message);
@@ -41,10 +40,12 @@ export const logout = async () => {
 export const currentUser = async (): Promise<User> => {
     try {
         const response = await axiosInstance.get("/auth/current-user");
-        return {
+        const user: User = {
             ...response.data,
             avatarUrl: `${process.env.NEXT_PUBLIC_BASE_URL}${response.data.avatarUrl}`
         };
+        Cookies.set('user', JSON.stringify(user), {secure: true, sameSite: 'strict'});
+        return user
     } catch {
         throw new Error('Error fetching current user');
     }

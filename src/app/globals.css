@@ -13,6 +13,10 @@
         @apply bg-seashell dark:bg-cod-gray !important;
     }
 
+    .tox-promotion {
+        @apply hidden !important;
+    }
+
     .nav-tabs {
         @apply bg-white dark:bg-bunker mb-2;
 
@@ -138,7 +142,7 @@
     }
 
     .category-name {
-        @apply text-mine-shaft text-[0.9375rem] font-medium leading-4 no-underline mb-2 !important;
+        @apply text-mine-shaft dark:text-alto text-[0.9375rem] font-medium leading-4 no-underline mb-2 !important;
     }
 
     .category-name:visited {

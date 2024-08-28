@@ -1,7 +1,7 @@
 "use client";
 import React, {useEffect, useState} from "react";
 import {User} from "@/types";
-import {getAuthors} from "@/helpers/userApi";
+import {getUserByUsername} from "@/helpers/userApi";
 import Link from "next/link";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
@@ -37,31 +37,31 @@ function stringAvatar(name: string) {
 }
 
 type PageParams = {
-    id: number;
-};
+    username: string
+}
 
 type PageProps = {
-    params: PageParams;
+    params: PageParams
 };
 
 
 function Page({params}: PageProps) {
-    const categoryId = params.id
+    const username: string = params.username;
+    const [user, setUser] = useState<User>();
     const [users, setUsers] = useState<User[]>([]);
 
     useEffect(() => {
         async function fetchData() {
             try {
-                const allUsers = await getAuthors(categoryId)
-                console.log(allUsers)
-                setUsers(allUsers);
+                const userData = await getUserByUsername(username);
+                setUser(userData);
             } catch (error) {
-                console.error('Error fetching data:', error)
+                console.error('Error fetching data:', error);
             }
         }
 
-        fetchData()
-    }, [])
+        fetchData();
+    }, [username])
 
     return (
         <>

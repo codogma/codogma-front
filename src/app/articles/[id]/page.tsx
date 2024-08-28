@@ -78,9 +78,9 @@ export default function Page({params}: PageProps) {
 
     return (
         <>
-            <Card className="itb-article">
-                <CardContent>
-                    <div className="article-meta-container">
+            <Card key={article.id} className="card">
+                <CardContent className="card-content">
+                    <div className="meta-container">
                         <Avatar
                             className="article-user-avatar"
                             src={article.authorAvatarUrl}
@@ -92,7 +92,7 @@ export default function Page({params}: PageProps) {
                         </Link>
                         <TimeAgo datetime={article.createdAt} className="article-datetime"/>
                     </div>
-                    <h1 className="article-title-h1">{article.title}</h1>
+                    <h1 className="article-title">{article.title}</h1>
                     <div className="article-category">{article.categories.map((category) => (
                         <span className="category-item" key={category.id}>
                             <Link className="category-link" href={`/categories/${category.id}`}>

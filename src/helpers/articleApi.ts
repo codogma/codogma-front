@@ -1,30 +1,23 @@
 import {axiosInstance} from "@/helpers/axiosInstance";
 import {Article} from "@/types";
-import Cookies from "js-cookie";
 
 export type CreateArticleDTO = {
     categoryIds: number[],
     title: string,
     content: string,
-    tags?: string[],
-    images?: File[]
+    tags?: string[]
 }
 
 export type UpdateArticleDTO = {
     title: string,
     content: string,
     categoryIds: number[],
-    tags?: string[],
-    images?: File[]
+    tags?: string[]
 }
 
 export const createArticle = async (requestData: CreateArticleDTO): Promise<Article> => {
     try {
-        const response = await axiosInstance.post("/articles", requestData, {
-            headers: {
-                "Content-Type": "multipart/form-data",
-            },
-        });
+        const response = await axiosInstance.post("/articles", requestData);
         return response.data;
     } catch (error: any) {
         console.error("Error creating article: " + error.message);
@@ -35,11 +28,7 @@ export const createArticle = async (requestData: CreateArticleDTO): Promise<Arti
 
 export const updateArticle = async (id: number, requestData: UpdateArticleDTO): Promise<Article> => {
     try {
-        const response = await axiosInstance.put(`/articles/${id}`, requestData, {
-            headers: {
-                "Content-Type": "multipart/form-data",
-            },
-        })
+        const response = await axiosInstance.put(`/articles/${id}`, requestData)
         return response.data;
     } catch (error: any) {
         console.error("Error updating article: " + error.message);
@@ -72,7 +61,7 @@ export const getArticles = async (categoryId?: number, page: number = 0, size: n
             }))
         };
     } catch (error) {
-        console.error('Error fetching articles:', error);
+        console.error('Error fetching profile:', error);
         throw error;
     }
 }
@@ -81,9 +70,6 @@ export const getArticleById = async (id: number): Promise<Article> => {
     try {
         const response = await axiosInstance.get(`/articles/${id}`);
         const article: Article = response.data
-        const username = article.username
-        Cookies.set('username', username, {secure: true, sameSite: 'strict'});
-        window.dispatchEvent(new Event("storage"));
         return {
             ...article,
             authorAvatarUrl: `${process.env.NEXT_PUBLIC_BASE_URL}${article.authorAvatarUrl}`
