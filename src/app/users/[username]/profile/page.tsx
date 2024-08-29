@@ -5,6 +5,8 @@ import {getUserByUsername} from "@/helpers/userApi";
 import {Avatar, Box, Button} from "@mui/material";
 import Link from "next/link";
 import {LinkTabProps} from "@/components/NavTabs";
+import {WithAuth} from "@/components/WithAuth";
+import {useAuth} from "@/components/AuthProvider";
 
 type PageParams = {
     username: string
@@ -13,14 +15,10 @@ type PageParams = {
 type PageProps = {
     params: PageParams
 };
-export default function Layout({params}: PageProps) {
+function Page({params}: PageProps) {
     const username: string = params.username;
     const [user, setUser] = useState<User>();
-
-    const tabs: LinkTabProps[] = [
-        {label: 'Articles', href: `/users/${username}/articles`},
-        {label: 'Profile', href: `/users/${username}/profile`},
-    ];
+    const {state} = useAuth();
 
     useEffect(() => {
         async function fetchData() {
@@ -51,10 +49,11 @@ export default function Layout({params}: PageProps) {
                 <p className="article-title">{user?.firstName}</p>
                 <p className="article-title">{user?.lastName}</p>
                 <p className="article-title">{user?.bio}</p>
-                {user?.username === username && (
+                {state.user?.username === username && (
                     <Link href={`/users/edit/${user?.username}`}><Button type="submit">Update</Button></Link>
                 )}
             </Box>
         </main>
     );
 }
+export default WithAuth(Page)

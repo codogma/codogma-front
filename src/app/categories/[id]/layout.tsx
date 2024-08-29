@@ -31,8 +31,8 @@ export default function Layout({params, children}: PageProps) {
     useEffect(() => {
         async function fetchData() {
             try {
-                const genreData = await getCategoryById(categoryId);
-                setCategory(genreData);
+                const categoryData = await getCategoryById(categoryId);
+                setCategory(categoryData);
             } catch (error) {
                 console.error('Error fetching data:', error);
             }

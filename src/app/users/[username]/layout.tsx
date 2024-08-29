@@ -1,25 +1,31 @@
 "use client";
-import React, {useEffect, useState} from "react";
+import React, {Suspense, useEffect, useState} from 'react';
 import {User} from "@/types";
+import NavTabs, {LinkTabProps} from "@/components/NavTabs";
+import CardContent from "@mui/material/CardContent";
+import {Avatar, Badge} from "@mui/material";
+import Card from "@mui/material/Card";
+import Loading from "@/app/loading";
 import {getUserByUsername} from "@/helpers/userApi";
-import {Avatar, Box, Button} from "@mui/material";
-import Link from "next/link";
-import {LinkTabProps} from "@/components/NavTabs";
+import IconButton from "@mui/material/IconButton";
+import ImageIcon from "@mui/icons-material/Image";
 
 type PageParams = {
-    username: string
-}
+    username: string;
+};
 
 type PageProps = {
-    params: PageParams
+    params: PageParams;
+    children: React.ReactNode;
 };
-export default function Layout({params}: PageProps) {
+
+export default function Layout({params, children}: PageProps) {
     const username: string = params.username;
     const [user, setUser] = useState<User>();
 
     const tabs: LinkTabProps[] = [
-        {label: 'Articles', href: `/users/${username}/articles`},
         {label: 'Profile', href: `/users/${username}/profile`},
+        {label: 'Articles', href: `/users/${username}/articles`},
     ];
 
     useEffect(() => {
@@ -33,28 +39,34 @@ export default function Layout({params}: PageProps) {
         }
 
         fetchData();
-    }, [username])
+    }, [username]);
 
     return (
-        <main className="flex min-h-screen max-w-3xl flex-col items-left justify-self-auto p-24">
-            <Box
-                component="form"
-                noValidate
-                sx={{
-                    m: 1, width: '25ch',
-                }}
-                autoComplete="off"
-            >
-                <Avatar variant="rounded" src={user?.avatarUrl} sx={{width: 112, height: 112}}/>
-                <p className="article-title">{user?.username}</p>
-                <p className="article-title">{user?.email}</p>
-                <p className="article-title">{user?.firstName}</p>
-                <p className="article-title">{user?.lastName}</p>
-                <p className="article-title">{user?.bio}</p>
-                {user?.username === username && (
-                    <Link href={`/users/edit/${user?.username}`}><Button type="submit">Update</Button></Link>
-                )}
-            </Box>
-        </main>
+        <section>
+            <Card className="card">
+                <CardContent className="card-content">
+                    <div className="meta-container">
+                        <Badge
+                            className="items-start"
+                            overlap="circular"
+                            anchorOrigin={{vertical: 'bottom', horizontal: 'right'}}
+                            badgeContent={<IconButton component="label" color="inherit" sx={{p: 0}}/>}
+                        >
+                            <Avatar className="category-img" variant="rounded" src={user?.avatarUrl}>
+                                <ImageIcon/>
+                            </Avatar>
+                        </Badge>
+                        <div>
+                            <h1 className="category-card-name">{user?.username}</h1>
+                            <p className="category-card-description">{user?.bio}</p>
+                        </div>
+                    </div>
+                </CardContent>
+            </Card>
+            <NavTabs tabs={tabs}/>
+            <Suspense fallback={<Loading/>}>
+                {children}
+            </Suspense>
+        </section>
     );
 }

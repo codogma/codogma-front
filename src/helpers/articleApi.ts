@@ -36,7 +36,7 @@ export const updateArticle = async (id: number, requestData: UpdateArticleDTO): 
     }
 }
 
-export const getArticles = async (categoryId?: number, page: number = 0, size: number = 10, tag?: string, content?: string, authorId?: number): Promise<{
+export const getArticles = async (categoryId?: number, page: number = 0, size: number = 10, tag?: string, content?: string, username?: string): Promise<{
     totalElements: number,
     totalPages: number,
     content: Article[]
@@ -49,7 +49,7 @@ export const getArticles = async (categoryId?: number, page: number = 0, size: n
                 categoryId,
                 page,
                 size,
-                authorId
+                username
             }
         });
         return {

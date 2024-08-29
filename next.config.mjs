@@ -4,14 +4,19 @@ const nextConfig = {
         return [
             {
                 source: '/',
-                destination: '/profile',
+                destination: '/articles',
                 permanent: true,
             },
             {
                 source: '/categories/:id',
-                destination: '/categories/:id/profile',
+                destination: '/categories/:id/articles',
                 permanent: true,
             },
+            {
+                source: '/users/:username',
+                destination: '/users/:username/profile',
+                permanent: true,
+            }
         ];
     }
 };
