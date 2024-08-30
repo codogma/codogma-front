@@ -13,7 +13,7 @@ export type User = {
     role: UserRole;
     avatarUrl: string;
     articles: Article[] | [];
-    categories: { id: number, name: string }[];
+    categories: Category[];
     shortInfo: string
 }
 
@@ -33,10 +33,11 @@ export type Category = {
 export type Article = {
     id: number;
     title: string;
+    previewContent: string,
     content: string;
     username: string;
     authorAvatarUrl: string;
     createdAt: Date;
-    categories: { id: number, name: string }[]
+    categories: Category[]
     tags: Tag[]
 };

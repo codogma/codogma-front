@@ -189,9 +189,9 @@
         @apply text-mine-shaft dark:text-alto block text-sm font-bold leading-[1.15] mt-0 mb-[15px] mx-0 !important;
     }
 
-    /*.user-tags {*/
-    /*    @apply bg-solitude dark:bg-elephant text-horizon dark:text-deepsky-blue inline-flex items-center text-[0.8125rem] leading-[1.125rem] min-h-[1.75rem] no-underline align-middle px-[13px] py-0 rounded-[3px] !important;*/
-    /*}*/
+    .user-tags {
+        @apply bg-solitude dark:bg-elephant text-horizon dark:text-deepsky-blue inline-flex items-center text-[0.8125rem] leading-[1.125rem] min-h-[1.75rem] no-underline align-middle px-[13px] py-0 rounded-[3px] !important;
+    }
 
 
     .itb-user {

@@ -11,10 +11,9 @@ import {WithAuth} from "@/components/WithAuth";
 import Chip from '@mui/material/Chip';
 import Stack from '@mui/material/Stack';
 import Popover from '@mui/material/Popover';
-import Typography from '@mui/material/Typography';
 
 type PageParams = {
-    username: string
+    username: string;
 }
 
 type PageProps = {
@@ -24,7 +23,8 @@ type PageProps = {
 function Page({params}: PageProps) {
     const username: string = params.username;
     const [user, setUser] = useState<User>();
-    const [anchorEl, setAnchorEl] = React.useState<HTMLElement | null>(null);
+    const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
+    const [currentCategory, setCurrentCategory] = useState<number | null>(null);
     const {state} = useAuth();
 
     useEffect(() => {
@@ -40,34 +40,69 @@ function Page({params}: PageProps) {
         fetchData();
     }, [username])
 
-    const handlePopoverOpen = (event: React.MouseEvent<HTMLElement>) => {
+    const handlePopoverOpen = (event: React.MouseEvent<HTMLElement>, categoryId: number) => {
         setAnchorEl(event.currentTarget);
+        setCurrentCategory(categoryId);
     };
 
     const handlePopoverClose = () => {
         setAnchorEl(null);
+        setCurrentCategory(null);
     };
 
-    const open = Boolean(anchorEl);
-
-
+    const open = Boolean(anchorEl) && Boolean(currentCategory);
 
     return (
         <>
             <Card className="card">
                 <CardContent className="card-content">
-                    <div className="meta-container">
+                    <div>
                         <div className="user-profile-description">О себе</div>
                         <div className="user-profile-content">{user?.bio}</div>
                         <div className="user-categories-profile">Пишет в категориях:
                             <div className="user-tags">{user?.categories.map((category) => (
                                 <span className="user-tag-item" key={category.id}>
-                            <Link className="user-tag-name" href={`/categories/${category.id}`}>
-                                 <Stack direction="row" spacing={1}>
-                            <Chip label={category.name} variant="outlined"/>
-                                  </Stack>
-                            </Link>
-                             </span>
+                                    <Link className="user-tag-name" href={`/categories/${category.id}`}>
+                                         <Stack direction="row" spacing={1}>
+                                             <Chip
+                                                 aria-owns={category.id.toString()}
+                                                 aria-haspopup="true"
+                                                 label={category.name}
+                                                 variant="outlined"
+                                                 onMouseEnter={(event) => handlePopoverOpen(event, category.id)}
+                                                 onMouseLeave={handlePopoverClose}
+                                             />
+                                             <Popover
+                                                 id={category.id.toString()}
+                                                 sx={{pointerEvents: 'none'}}
+                                                 open={open && currentCategory === category.id}
+                                                 anchorEl={anchorEl}
+                                                 anchorOrigin={{
+                                                     vertical: 'bottom',
+                                                     horizontal: 'left',
+                                                 }}
+                                                 transformOrigin={{
+                                                     vertical: 'top',
+                                                     horizontal: 'left',
+                                                 }}
+                                                 onClose={handlePopoverClose}
+                                                 disableRestoreFocus
+                                             >
+                                                 <Card>
+                                                     <CardContent>
+                                                         <div className="meta-container">
+                                                             <div
+                                                                 className="category-card-name">{category.name}</div>
+                                                             <div className="category-card-description">
+                                                                    {category.description}
+                                                             </div>
+                                                            </div>
+                                                        </CardContent>
+                                                    </Card>
+                                             </Popover>
+                                          </Stack>
+                                    </Link>
+                                 </span>
                             ))}
                             </div>
                         </div>

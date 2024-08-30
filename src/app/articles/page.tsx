@@ -186,7 +186,7 @@ export default function Layout() {
                             </Link>
                         </span>
                         ))}</div>
-                        <div className="article-content" dangerouslySetInnerHTML={{__html: article.content}}/>
+                        <div className="article-content" dangerouslySetInnerHTML={{__html: article.previewContent}}/>
                     </CardContent>
                     <CardActions>
                         <Stack direction="row" spacing={2}>

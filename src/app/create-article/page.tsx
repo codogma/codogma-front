@@ -13,11 +13,13 @@ import {WithAuth} from "@/components/WithAuth";
 import {useRouter} from "next/navigation";
 import {getTagsByName} from "@/helpers/tagApi";
 import {createArticle} from "@/helpers/articleApi";
+import Typography from "@mui/material/Typography";
 
 const ArticleScheme = z.object({
-    categoryIds: z.array(z.number()),
+    categoryIds: z.array(z.number()).min(1, "Выберите хотя бы одну категорию."),
     title: z.string().min(2, "Название статьи не может содержать менее 2 символов.").max(300, "Название статьи не может содержать более 300 символов."),
-    content: z.string(),
+    previewContent: z.string().min(1, "Краткое описание не может быть пустым."),
+    content: z.string().min(1, "Основная статья не может быть пустой."),
     tags: z.array(z.string()).optional()
 });
 
@@ -65,6 +67,7 @@ function Articles() {
         defaultValues: {
             categoryIds: [],
             title: "",
+            previewContent: "",
             content: "",
             tags: []
         }
@@ -78,7 +81,7 @@ function Articles() {
     } = zodForm;
 
     useEffect(() => {
-        // console.log(errors)
+        console.log(errors)
         if (isSubmitSuccessful) {
             reset(zodForm.getValues());
         }
@@ -114,7 +117,9 @@ function Articles() {
                                 onChange={(_, newValue) => field.onChange(newValue.map(category => category.id))}
                                 renderInput={(params) => (
                                     <TextField {...params} label="Categories" variant="standard"
-                                               placeholder="Select categories"/>
+                                               placeholder="Select categories"
+                                               error={Boolean(errors.categoryIds?.message)}
+                                               helperText={errors.categoryIds?.message}/>
                                 )}
                             />
                         )}
@@ -165,6 +170,28 @@ function Articles() {
                         )}
                     />
                     <FormInput name="title" label="Title" variant="standard"/>
+                    <Typography className="mb-4 mt-4">Краткое описание:</Typography>
+                    {errors.previewContent?.message && (
+                        <Typography variant="body2" color="error" className="error-text">
+                            {errors.previewContent?.message}
+                        </Typography>
+                    )}
+                    <Controller
+                        name="previewContent"
+                        control={control}
+                        render={({field}) => (
+                            <TinyMCEEditor
+                                value={field.value}
+                                onChange={field.onChange}
+                            />
+                        )}
+                    />
+                    <Typography className="mb-4 mt-4">Основная статья:</Typography>
+                    {errors.content?.message && (
+                        <Typography variant="body2" color="error" className="error-text">
+                            {errors.content?.message}
+                        </Typography>
+                    )}
                     <Controller
                         name="content"
                         control={control}

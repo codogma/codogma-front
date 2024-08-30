@@ -4,12 +4,14 @@ import {Article} from "@/types";
 export type CreateArticleDTO = {
     categoryIds: number[],
     title: string,
+    previewContent: string,
     content: string,
     tags?: string[]
 }
 
 export type UpdateArticleDTO = {
     title: string,
+    previewContent: string,
     content: string,
     categoryIds: number[],
     tags?: string[]

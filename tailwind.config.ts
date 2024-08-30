@@ -19,7 +19,9 @@ const config: Config = {
                 'horizon': '#548EAA',
                 'deepsky-blue': '#4cb7eb',
                 'astral': '#39728E',
-                'curious-blue': '#3193c4'
+                'curious-blue': '#3193c4',
+                'solitude': '#E7F3FF',
+                'elephant': '#1a334d',
             }
         },
     },
