@@ -57,8 +57,8 @@ export default function Layout({params, children}: PageProps) {
                             </Avatar>
                         </Badge>
                         <div>
-                            <h1 className="category-card-name">{user?.username}</h1>
-                            <p className="category-card-description">{user?.bio}</p>
+                            <h1 className="category-card-name">{user?.firstName} {user?.lastName}</h1>
+                            <p className="category-card-shortInfo">{user?.shortInfo}</p>
                         </div>
                     </div>
                 </CardContent>

@@ -1,6 +1,6 @@
 "use client";
 import React, {useEffect, useState} from "react";
-import {Category, User} from "@/types";
+import {User} from "@/types";
 import {getAuthors} from "@/helpers/userApi";
 import Link from "next/link";
 import Card from "@mui/material/Card";

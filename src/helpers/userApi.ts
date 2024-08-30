@@ -1,5 +1,5 @@
 import {axiosInstance} from "@/helpers/axiosInstance";
-import {Category, User, UserRole} from "@/types";
+import {User, UserRole} from "@/types";
 import Cookies from "js-cookie";
 
 export type UserUpdate = {
@@ -10,7 +10,8 @@ export type UserUpdate = {
     newEmail?: string,
     currentPassword?: string,
     newPassword?: string,
-    avatar?: File
+    avatar?: File,
+    shortInfo?: string
 }
 
 export const updateUser = async (requestData: UserUpdate): Promise<User> => {
@@ -59,7 +60,7 @@ export const getAuthors = async (categoryId?: number): Promise<User[]> => {
         const users: User[] = response.data;
         return users.map((user: User) => ({
             ...user,
-            imageUrl: `${process.env.NEXT_PUBLIC_BASE_URL}${user.avatarUrl}?t=${new Date().getTime()}`
+            avatarUrl: `${process.env.NEXT_PUBLIC_BASE_URL}${user.avatarUrl}?t=${new Date().getTime()}`
         }))
     } catch (error) {
         console.error('Error fetching users:', error);

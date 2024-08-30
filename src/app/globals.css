@@ -134,7 +134,11 @@
     }
 
     .category-card-name {
-        @apply text-mine-shaft text-[1.24375rem] font-bold leading-7 no-underline m-0 !important;
+        @apply text-mine-shaft dark:text-alto text-[1.24375rem] font-bold leading-7 no-underline m-0 !important;
+    }
+
+    .category-card-shortInfo {
+        @apply text-mine-shaft dark:text-alto text-sm leading-5 mt-1 m-0 !important;
     }
 
     .category-card-description {
@@ -172,6 +176,23 @@
     .tag-name {
         @apply text-horizon dark:text-deepsky-blue no-underline text-[0.8125rem] leading-[1.125rem] !important;
     }
+
+    .user-profile-description {
+        @apply text-mine-shaft dark:text-alto block text-sm font-bold leading-[1.15] mt-0 mb-[15px] mx-0 !important;
+    }
+
+    .user-profile-content {
+        @apply text-mine-shaft dark:text-alto text-[0.9375rem] leading-6 min-w-0 -mt-1 mb-0 mx-0 !important;
+    }
+
+    .user-categories-profile {
+        @apply text-mine-shaft dark:text-alto block text-sm font-bold leading-[1.15] mt-0 mb-[15px] mx-0 !important;
+    }
+
+    /*.user-tags {*/
+    /*    @apply bg-solitude dark:bg-elephant text-horizon dark:text-deepsky-blue inline-flex items-center text-[0.8125rem] leading-[1.125rem] min-h-[1.75rem] no-underline align-middle px-[13px] py-0 rounded-[3px] !important;*/
+    /*}*/
+
 
     .itb-user {
         @apply text-mine-shaft pt-4 pb-4 pl-5 pr-5 mb-4 bg-white dark:bg-bunker;

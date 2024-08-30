@@ -24,7 +24,8 @@ const UserScheme = z.object({
     bio: z.optional(z.string()),
     newEmail: z.optional(z.string()),
     currentPassword: z.optional(z.string()),
-    newPassword: z.optional(z.string())
+    newPassword: z.optional(z.string()),
+    shortInfo: z.optional(z.string())
 });
 
 type PageParams = {
@@ -63,7 +64,8 @@ function Users({params}: PageProps) {
             bio: "",
             newEmail: "",
             currentPassword: "",
-            newPassword: ""
+            newPassword: "",
+            shortInfo: ""
         }
     });
 
@@ -83,7 +85,8 @@ function Users({params}: PageProps) {
                     bio: userData.bio,
                     newEmail: userData.email,
                     currentPassword: undefined,
-                    newPassword: undefined
+                    newPassword: undefined,
+                    shortInfo: userData.shortInfo
                 });
             } catch (error) {
                 console.error("Error fetching data: " + error);
@@ -169,6 +172,7 @@ function Users({params}: PageProps) {
                     <FormInput name="firstName" label="First name" variant="standard" defaultValue={user?.firstName}/>
                     <FormInput name="lastName" label="Last name" variant="standard" defaultValue={user?.lastName}/>
                     <FormInput name="bio" label="Bio" variant="standard" defaultValue={user?.bio}/>
+                    <FormInput name="shortInfo" label="ShortInfo" variant="standard" defaultValue={user?.shortInfo}/>
                     <FormInput name="currentPassword" label="Current password" type="password" variant="standard"/>
                     <FormInput name="newPassword" label="New password" type="password" variant="standard"/>
                     <Button type="submit">Update</Button>

@@ -13,7 +13,8 @@ export type User = {
     role: UserRole;
     avatarUrl: string;
     articles: Article[] | [];
-    categories: { id: number, name: string }[]
+    categories: { id: number, name: string }[];
+    shortInfo: string
 }
 
 export type Tag = {
