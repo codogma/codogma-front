@@ -7,7 +7,6 @@ import Link from "next/link";
 import {useAuth} from "@/components/AuthProvider";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
-import {WithAuth} from "@/components/WithAuth";
 import Chip from '@mui/material/Chip';
 import Stack from '@mui/material/Stack';
 import Popover from '@mui/material/Popover';
@@ -20,7 +19,7 @@ type PageProps = {
     params: PageParams
 };
 
-function Page({params}: PageProps) {
+export default function Page({params}: PageProps) {
     const username: string = params.username;
     const [user, setUser] = useState<User>();
     const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
@@ -115,5 +114,3 @@ function Page({params}: PageProps) {
         </>
     );
 }
-
-export default WithAuth(Page)
