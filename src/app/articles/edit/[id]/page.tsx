@@ -15,11 +15,13 @@ import {useRouter} from "next/navigation";
 import Link from "next/link";
 import {getTagsByName} from "@/helpers/tagApi";
 import {useAuth} from "@/components/AuthProvider";
+import Typography from "@mui/material/Typography";
 
 const ArticleScheme = z.object({
     categoryIds: z.array(z.number()),
     title: z.string().min(2, "Название статьи не может содержать менее 2 символов.").max(300, "Название статьи не может содержать более 300 символов."),
     content: z.string(),
+    previewContent: z.string(),
     tags: z.array(z.string()).optional()
 })
 
@@ -48,7 +50,8 @@ export default function ArticlesPage({params}: PageProps) {
             categoryIds: [],
             title: "",
             content: "",
-            tags: []
+            tags: [],
+            previewContent: ""
         }
     });
 
@@ -71,6 +74,7 @@ export default function ArticlesPage({params}: PageProps) {
                     categoryIds: articleData.categories.map((category) => category.id),
                     title: articleData.title,
                     content: articleData.content,
+                    previewContent: articleData.previewContent,
                     tags: articleData.tags.map(tag => tag.name)
                 });
             } catch (error) {
@@ -212,6 +216,19 @@ export default function ArticlesPage({params}: PageProps) {
                             )}
                         />
                         <FormInput name="title" label="Title" variant="standard"/>
+                        <Typography className="mb-4 mt-4">Краткое описание:</Typography>
+                        <Controller
+                            name="previewContent"
+                            control={control}
+                            render={({field}) => (
+                                <TinyMCEEditor
+                                    defaultValue={article?.previewContent}
+                                    value={field.value}
+                                    onChange={field.onChange}
+                                />
+                            )}
+                        />
+                        <Typography className="mb-4 mt-4">Основная статья:</Typography>
                         <Controller
                             name="content"
                             control={control}
