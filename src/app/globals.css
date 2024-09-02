@@ -9,6 +9,14 @@
 }
 
 @layer app {
+    html, body {
+        scroll-behavior: smooth;
+    }
+
+    #search-input {
+        @apply scroll-mt-96;
+    }
+
     body {
         @apply bg-seashell dark:bg-cod-gray !important;
     }
