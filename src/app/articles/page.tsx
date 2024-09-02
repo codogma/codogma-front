@@ -1,5 +1,5 @@
 "use client";
-import React, {FormEvent, useEffect, useState} from "react";
+import React, {FormEvent, useEffect, useRef, useState} from "react";
 import {getArticles} from "@/helpers/articleApi";
 import {Article, UserRole} from "@/types";
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
@@ -58,6 +58,7 @@ export default function Layout() {
     const resultsPerPage20 = 20;
     const resultsPerPage30 = 30;
     const minPages = 2;
+    const searchInputRef = useRef<HTMLInputElement>(null);
     const [articles, setArticles] = useState<Article[]>([]);
     const [totalPages, setTotalPages] = useState<number>(0);
     const [totalElements, setTotalElements] = useState<number>(0);
@@ -104,6 +105,13 @@ export default function Layout() {
 
         fetchData(currentPage).then()
     }, [currentPage, resultsPerPage, searchType, searchValue])
+
+    useEffect(() => {
+        if (window.location.hash === "#search-input" && searchInputRef.current) {
+            searchInputRef.current.scrollIntoView({ behavior: "smooth", block: "center" });
+            searchInputRef.current.focus();
+        }
+    }, []);
 
     const handleSearchSubmit = (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault();
