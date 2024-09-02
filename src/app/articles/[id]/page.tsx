@@ -55,6 +55,7 @@ export default function Page({params}: PageProps) {
         id: 0,
         title: "",
         content: "",
+        previewContent: "",
         username: "",
         authorAvatarUrl: "",
         createdAt: new Date(),

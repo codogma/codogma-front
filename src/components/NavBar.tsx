@@ -17,18 +17,20 @@ import CreateIcon from '@mui/icons-material/Create';
 import PreviewIcon from '@mui/icons-material/Preview';
 import CategoryIcon from '@mui/icons-material/Category';
 import Link from "next/link";
-import {useAuth} from "@/components/AuthProvider";
-import {ThemeToggleButton} from "@/components/ThemeContext";
-import {Avatar, ButtonGroup} from "@mui/material";
-import {logout} from "@/helpers/authApi";
-import {UserRole} from "@/types";
-import {useRouter} from "next/navigation";
+import { useAuth } from "@/components/AuthProvider";
+import { ThemeToggleButton } from "@/components/ThemeContext";
+import { Avatar, ButtonGroup } from "@mui/material";
+import { logout } from "@/helpers/authApi";
+import { UserRole } from "@/types";
+import { useRouter } from "next/navigation";
 
 const NavBar = () => {
     const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
     const router = useRouter();
-    const {state} = useAuth();
-    console.log(state)
+    const { state } = useAuth();
+    console.log(state);
+
+
 
     const handleLogout = () => {
         logout().then(() => router.push('/articles'));
@@ -59,7 +61,7 @@ const NavBar = () => {
                         href="/"
                         sx={{
                             mr: 2,
-                            display: {xs: 'flex', md: 'flex'},
+                            display: { xs: 'flex', md: 'flex' },
                             flexGrow: 1,
                             fontFamily: 'monospace',
                             fontWeight: 700,
@@ -70,30 +72,32 @@ const NavBar = () => {
                     >
                         IT BLOG
                     </Typography>
-                    <ButtonGroup variant="text" sx={{display: {xs: 'flex'}, mr: 1, color: "inherit"}}>
-                        <IconButton color="inherit">
-                            <SearchIcon/>
-                        </IconButton>
+                    <ButtonGroup variant="text" sx={{ display: { xs: 'flex' }, mr: 1, color: "inherit" }}>
+                        <Link href="/articles/#search-input">
+                            <IconButton color="inherit">
+                                <SearchIcon />
+                            </IconButton>
+                        </Link>
                         {state.user?.role === UserRole.ROLE_AUTHOR && (
                             <Link href={`/create-article`}>
                                 <IconButton color="inherit">
-                                    <CreateIcon/>
+                                    <CreateIcon />
                                 </IconButton>
                             </Link>
                         )}
                         {state.user?.role === UserRole.ROLE_ADMIN && (
                             <Link href={`/create-category`}>
                                 <IconButton color="inherit">
-                                    <CategoryIcon/>
+                                    <CategoryIcon />
                                 </IconButton>
                             </Link>
                         )}
                         <IconButton color="inherit">
-                            <PreviewIcon/>
+                            <PreviewIcon />
                         </IconButton>
-                        <ThemeToggleButton sx={{color: "inherit"}}/>
+                        <ThemeToggleButton sx={{ color: "inherit" }} />
                     </ButtonGroup>
-                    <Box sx={{flexGrow: 0}}>
+                    <Box sx={{ flexGrow: 0 }}>
                         {!state.isAuthenticated && (
                             <>
                                 <Link href={`/register`}><Button color="inherit">Register</Button></Link>
@@ -103,13 +107,13 @@ const NavBar = () => {
                         {state.isAuthenticated && (
                             <>
                                 <Tooltip title="Open settings">
-                                    <IconButton onClick={handleOpenUserMenu} color="inherit" sx={{p: 0}}>
-                                        {state.user?.avatarUrl && <Avatar key={new Date().getTime()} variant="rounded" src={state.user?.avatarUrl}/> }
-                                        {!state.user?.avatarUrl && <AccountCircle/>}
+                                    <IconButton onClick={handleOpenUserMenu} color="inherit" sx={{ p: 0 }}>
+                                        {state.user?.avatarUrl && <Avatar key={new Date().getTime()} variant="rounded" src={state.user?.avatarUrl} />}
+                                        {!state.user?.avatarUrl && <AccountCircle />}
                                     </IconButton>
                                 </Tooltip>
                                 <Menu
-                                    sx={{mt: '45px'}}
+                                    sx={{ mt: '45px' }}
                                     id="menu-appbar"
                                     anchorEl={anchorElUser}
                                     anchorOrigin={{
