@@ -1,6 +1,7 @@
 import {axiosInstance} from "@/helpers/axiosInstance";
 import {User, UserRole} from "@/types";
 import Cookies from "js-cookie";
+import axios from "axios";
 
 export type UserUpdate = {
     username?: string,
@@ -91,3 +92,32 @@ export const deleteUser = (username: string) => {
         })
         .catch((error) => console.error(error))
 }
+
+
+export const checkSubscription = async (username: string): Promise<boolean> => {
+        try {
+           const response = await axiosInstance.get(`/users/${username}/is-subscribed`);
+           return response.data;
+        } catch (error) {
+            console.error(error);
+            throw error;
+        }
+    };
+
+export const unsubscribeToUser = async (username: string): Promise<void> => {
+    try {
+        await axiosInstance.delete(`/users/${username}/unsubscribe`);
+    } catch (error) {
+        console.error(error);
+        throw error;
+    }
+};
+
+export const subscribeToUser = async (username: string): Promise<void> => {
+    try {
+        await axiosInstance.post(`/users/${username}/subscribe`);
+    } catch (error) {
+        console.error(error);
+        throw error;
+    }
+};

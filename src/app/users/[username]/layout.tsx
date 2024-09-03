@@ -6,10 +6,14 @@ import CardContent from "@mui/material/CardContent";
 import {Avatar, Badge} from "@mui/material";
 import Card from "@mui/material/Card";
 import Loading from "@/app/loading";
-import {getUserByUsername} from "@/helpers/userApi";
+import {
+    getUserByUsername,
+    subscribeToUser,
+    unsubscribeToUser,
+    checkSubscription,
+} from "@/helpers/userApi";
 import IconButton from "@mui/material/IconButton";
 import ImageIcon from "@mui/icons-material/Image";
-import axios from "axios";
 
 type PageParams = {
     username: string;
@@ -39,37 +43,29 @@ export default function Layout({params, children}: PageProps) {
                 console.error('Error fetching data:', error);
             }
         }
+
         fetchData();
     }, [username]);
 
     useEffect(() => {
-        const checkSubscription = async () => {
-            try {
-                const response = await axios.get(`/users/${username}/is-subscribed`);
-                setIsSubscribed(response.data);
-            } catch (error) {
-                console.error('Error checking subscription:', error);
-            }
+        const check = async (username: string) => {
+             await checkSubscription(username)
+                 .then((response) => setIsSubscribed(response))
+                 .catch((error) => console.error('Error checking subscription:', error));
         };
-        checkSubscription();
+        check(username);
     }, [username]);
 
     const handleUnsubscribe = async () => {
-        try {
-            await axios.post(`/users/${username}/unsubscribe`);
-            setIsSubscribed(false);
-        } catch (error) {
-            console.error('Error unsubscribing:', error);
-        }
+        await unsubscribeToUser(username)
+            .then(() => setIsSubscribed(false))
+            .catch((error) => console.error('Error unsubscribing:', error));
     };
 
     const handleSubscribe = async () => {
-        try {
-            await axios.post(`/users/${username}/subscribe`);
-            setIsSubscribed(true);
-        } catch (error) {
-            console.error('Error subscribing:', error);
-        }
+        await subscribeToUser(username)
+            .then(() => setIsSubscribed(true))
+            .catch((error) => console.error('Error subscribing:', error));
     };
 
     return (
