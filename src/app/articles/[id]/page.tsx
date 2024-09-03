@@ -88,7 +88,7 @@ export default function Page({params}: PageProps) {
                             {...(article.authorAvatarUrl.length !== 0 ? stringAvatar(article.username) : {})}
                             variant="rounded"
                         />
-                        <Link className="article-user-name" href={`/users/edit/${article.username}`}>
+                        <Link className="article-user-name" href={`/users/${article.username}`}>
                             {article.username}
                         </Link>
                         <TimeAgo datetime={article.createdAt} className="article-datetime"/>

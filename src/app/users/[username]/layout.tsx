@@ -9,6 +9,7 @@ import Loading from "@/app/loading";
 import {getUserByUsername} from "@/helpers/userApi";
 import IconButton from "@mui/material/IconButton";
 import ImageIcon from "@mui/icons-material/Image";
+import axios from "axios";
 
 type PageParams = {
     username: string;
@@ -22,6 +23,7 @@ type PageProps = {
 export default function Layout({params, children}: PageProps) {
     const username: string = params.username;
     const [user, setUser] = useState<User>();
+    const [isSubscribed, setIsSubscribed] = useState(false);
 
     const tabs: LinkTabProps[] = [
         {label: 'Profile', href: `/users/${username}/profile`},
@@ -37,9 +39,38 @@ export default function Layout({params, children}: PageProps) {
                 console.error('Error fetching data:', error);
             }
         }
-
         fetchData();
     }, [username]);
+
+    useEffect(() => {
+        const checkSubscription = async () => {
+            try {
+                const response = await axios.get(`/users/${username}/is-subscribed`);
+                setIsSubscribed(response.data);
+            } catch (error) {
+                console.error('Error checking subscription:', error);
+            }
+        };
+        checkSubscription();
+    }, [username]);
+
+    const handleUnsubscribe = async () => {
+        try {
+            await axios.post(`/users/${username}/unsubscribe`);
+            setIsSubscribed(false);
+        } catch (error) {
+            console.error('Error unsubscribing:', error);
+        }
+    };
+
+    const handleSubscribe = async () => {
+        try {
+            await axios.post(`/users/${username}/subscribe`);
+            setIsSubscribed(true);
+        } catch (error) {
+            console.error('Error subscribing:', error);
+        }
+    };
 
     return (
         <section>
@@ -56,6 +87,14 @@ export default function Layout({params, children}: PageProps) {
                                 <ImageIcon/>
                             </Avatar>
                         </Badge>
+                        <div>
+
+                            {isSubscribed ? (
+                                <button className="article-btn" onClick={handleUnsubscribe}>Following</button>
+                            ) : (
+                                <button className="article-btn" onClick={handleSubscribe}>Follow</button>
+                            )}
+                        </div>
                         <div>
                             <h1 className="category-card-name">{user?.firstName} {user?.lastName}</h1>
                             <p className="category-card-shortInfo">{user?.shortInfo}</p>
