@@ -30,6 +30,8 @@ export default function Layout({params, children}: PageProps) {
     const [isSubscribed, setIsSubscribed] = useState(false);
 
     const tabs: LinkTabProps[] = [
+        {label: 'Profile', href: `/users/${username}/profile`},
+        {label: 'Articles', href: `/users/${username}/articles`},
         {label: 'Subscribers', href:`/users/${username}/subscribers`},
         {label: 'Subscriptions', href:`/users/${username}/subscriptions`},
         {label: 'Comments', href:`/users/${username}/comments`},
