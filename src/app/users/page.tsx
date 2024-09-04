@@ -56,7 +56,7 @@ function Page() {
     return (
         <>
             {users && users?.map((user) => (
-                <Card key={user.username} className="itb-user">
+                <Card key={user.username} variant="outlined" className="itb-user">
                     <CardContent>
                         <div className="user-meta-container">
                             <Avatar

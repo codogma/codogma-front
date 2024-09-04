@@ -32,7 +32,7 @@ export default function Page() {
     return (
         <section>
             {categories.map((category) => (
-                <Card key={category.id} className="card">
+                <Card key={category.id} variant="outlined" className="card">
                     <CardContent className="card-content">
                         <div className="meta-container">
                             <Badge className="items-start"

@@ -43,7 +43,7 @@ export default function Layout({params, children}: PageProps) {
 
     return (
         <section>
-            <Card className="card">
+            <Card variant="outlined" className="card">
                 <CardContent className="card-content">
                     <div className="meta-container">
                         <Badge

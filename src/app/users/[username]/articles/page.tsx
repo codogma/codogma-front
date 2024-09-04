@@ -174,7 +174,7 @@ export default function Layout({params}: PageProps) {
                 </IconButton>
             </Paper>
             {articles?.map((article) => (
-                <Card key={article.id} className="card">
+                <Card key={article.id} variant="outlined" className="card">
                     <CardContent className="card-content">
                         <div className="meta-container">
                             <Avatar

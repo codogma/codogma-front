@@ -12,6 +12,7 @@ export type User = {
     bio: string;
     role: UserRole;
     subscribers: User[] | [];
+    subscriptions: User[] | [];
     avatarUrl: string;
     articles: Article[] | [];
     categories: Category[];

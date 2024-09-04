@@ -1,7 +1,6 @@
 import {axiosInstance} from "@/helpers/axiosInstance";
 import {User, UserRole} from "@/types";
 import Cookies from "js-cookie";
-import axios from "axios";
 
 export type UserUpdate = {
     username?: string,
@@ -77,6 +76,10 @@ export const getUserByUsername = async (username: string): Promise<User> => {
             ...response.data,
             avatarUrl: `${process.env.NEXT_PUBLIC_BASE_URL}${response.data.avatarUrl}?t=${new Date().getTime()}`,
             subscribers: response.data.subscribers.map((user: User) => ({
+                ...user,
+                avatarUrl: `${process.env.NEXT_PUBLIC_BASE_URL}${user.avatarUrl}?t=${new Date().getTime()}`
+            })),
+            subscriptions: response.data.subscriptions.map((user: User) => ({
                 ...user,
                 avatarUrl: `${process.env.NEXT_PUBLIC_BASE_URL}${user.avatarUrl}?t=${new Date().getTime()}`
             }))

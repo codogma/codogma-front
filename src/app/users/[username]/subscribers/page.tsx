@@ -46,9 +46,9 @@ const Page = ({params}: PageProps) => {
                                     variant="rounded"
                                 />
                                 <Link href={`/users/${user.username}`}
-                                      className="article-user-name">@{user.username}</Link>
+                                      className="subscribers-user-name">@{user.username}</Link>
                             </>
-                            <div className="user-description">{user.shortInfo}</div>
+                            <div className="subscribers-user-description">{user.shortInfo}</div>
                         </Box>
                     </CardContent>
                 </Card>

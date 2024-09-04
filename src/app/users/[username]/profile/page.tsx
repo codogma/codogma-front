@@ -53,7 +53,7 @@ export default function Page({params}: PageProps) {
 
     return (
         <>
-            <Card className="card">
+            <Card variant="outlined" className="card">
                 <CardContent className="card-content">
                     <div>
                         <div className="user-profile-description">О себе</div>
