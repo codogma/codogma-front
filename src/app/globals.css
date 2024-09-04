@@ -21,6 +21,12 @@
         @apply bg-seashell dark:bg-cod-gray !important;
     }
 
+    .your-interest {
+        .your-interest-h3 {
+            @apply font-semibold text-[1.6019rem] leading-[1.0925] tracking-[0.005em] text-[#302f2a] mb-2 m-0 !important;
+        }
+    }
+
     .tox-promotion {
         @apply hidden !important;
     }

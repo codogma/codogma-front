@@ -10,6 +10,8 @@ import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 import {useAuth} from "@/components/AuthProvider";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
+import CommentList from "@/components/CommentList";
+import Typography from "@mui/material/Typography";
 
 type PageParams = {
     id: number
@@ -79,7 +81,7 @@ export default function Page({params}: PageProps) {
 
     return (
         <>
-            <Card key={article.id} className="card">
+            <Card key={article.id} variant="outlined" className="card">
                 <CardContent className="card-content">
                     <div className="meta-container">
                         <Avatar
@@ -130,6 +132,10 @@ export default function Page({params}: PageProps) {
                     )}
                 </CardContent>
             </Card>
+            <Typography>
+                Comments:
+            </Typography>
+            <CommentList articleId={articleId}/>
         </>
     );
 }

@@ -75,7 +75,11 @@ export const getUserByUsername = async (username: string): Promise<User> => {
         const response = await axiosInstance.get(`/users/${username}`);
         return {
             ...response.data,
-            avatarUrl: `${process.env.NEXT_PUBLIC_BASE_URL}${response.data.avatarUrl}?t=${new Date().getTime()}`
+            avatarUrl: `${process.env.NEXT_PUBLIC_BASE_URL}${response.data.avatarUrl}?t=${new Date().getTime()}`,
+            subscribers: response.data.subscribers.map((user: User) => ({
+                ...user,
+                avatarUrl: `${process.env.NEXT_PUBLIC_BASE_URL}${user.avatarUrl}?t=${new Date().getTime()}`
+            }))
         };
     } catch (error) {
         console.error('Error fetching users:', error);

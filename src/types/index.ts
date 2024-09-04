@@ -11,6 +11,7 @@ export type User = {
     lastName: string;
     bio: string;
     role: UserRole;
+    subscribers: User[] | [];
     avatarUrl: string;
     articles: Article[] | [];
     categories: Category[];
@@ -41,3 +42,24 @@ export type Article = {
     categories: Category[]
     tags: Tag[]
 };
+
+export interface GetComment {
+    id: number;
+    content: string;
+    article: Article;
+    parentCommentId?: number;
+    user: User;
+    replies?: GetComment[];
+    createdAt: Date;
+    updatedAt: Date;
+}
+
+export interface CreateComment {
+    content: string;
+    articleId: number;
+    parentCommentId?: number;
+}
+
+export interface UpdateComment {
+    content: string;
+}

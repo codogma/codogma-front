@@ -23,6 +23,7 @@ import IconButton from '@mui/material/IconButton';
 import SearchIcon from '@mui/icons-material/Search';
 import MenuIcon from '@mui/icons-material/Menu';
 import Menu from '@mui/material/Menu';
+import Typography from "@mui/material/Typography";
 
 function stringToColor(string: string) {
     let hash = 0;
@@ -108,7 +109,7 @@ export default function Layout() {
 
     useEffect(() => {
         if (window.location.hash === "#search-input" && searchInputRef.current) {
-            searchInputRef.current.scrollIntoView({ behavior: "smooth", block: "center" });
+            searchInputRef.current.scrollIntoView({behavior: "smooth", block: "center"});
             searchInputRef.current.focus();
         }
     }, []);
@@ -149,6 +150,7 @@ export default function Layout() {
                 component="form"
                 sx={{p: '6px', m: '0px auto 8px auto', display: 'flex', alignItems: 'center'}}
                 onSubmit={handleSearchSubmit}
+                variant="outlined"
             >
                 <IconButton sx={{p: '10px'}} aria-label="menu" onClick={handleMenuOpen}>
                     <MenuIcon/>
@@ -173,7 +175,7 @@ export default function Layout() {
                 </IconButton>
             </Paper>
             {articles?.map((article) => (
-                <Card key={article.id} className="card">
+                <Card key={article.id} variant="outlined" className="card">
                     <CardContent className="card-content">
                         <div className="meta-container">
                             <Avatar
