@@ -14,7 +14,7 @@ const nextConfig = {
             },
             {
                 source: '/users/:username',
-                destination: '/users/:username/profile',
+                destination: '/users/:username/subscribers',
                 permanent: true,
             }
         ];

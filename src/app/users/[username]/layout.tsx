@@ -30,8 +30,9 @@ export default function Layout({params, children}: PageProps) {
     const [isSubscribed, setIsSubscribed] = useState(false);
 
     const tabs: LinkTabProps[] = [
-        {label: 'Profile', href: `/users/${username}/profile`},
-        {label: 'Articles', href: `/users/${username}/articles`},
+        {label: 'Subscribers', href:`/users/${username}/subscribers`},
+        {label: 'Subscriptions', href:`/users/${username}/subscriptions`},
+        {label: 'Comments', href:`/users/${username}/comments`},
     ];
 
     useEffect(() => {
@@ -84,7 +85,6 @@ export default function Layout({params, children}: PageProps) {
                             </Avatar>
                         </Badge>
                         <div>
-
                             {isSubscribed ? (
                                 <button className="article-btn" onClick={handleUnsubscribe}>Following</button>
                             ) : (
