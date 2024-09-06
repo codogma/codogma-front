@@ -3,7 +3,10 @@ import React, {useEffect, useState} from 'react';
 import {CreateComment, GetComment, UpdateComment} from "@/types";
 import {createComment, updateComment} from "@/helpers/commentAPI";
 import {Box, Button, TextField} from "@mui/material";
+import Typography from "@mui/material/Typography";
+import Popover from "@mui/material/Popover";
 import {useAuth} from "@/components/AuthProvider";
+import Link from "next/link";
 
 interface CommentFormProps {
     articleId: number;
@@ -21,6 +24,7 @@ const CommentForm: React.FC<CommentFormProps> = ({
                                                      onCancelEdit
                                                  }) => {
     const [content, setContent] = useState<string>('');
+    const [anchorEl, setAnchorEl] = React.useState<HTMLElement | null>(null);
     const {state} = useAuth();
 
     useEffect(() => {
@@ -42,7 +46,17 @@ const CommentForm: React.FC<CommentFormProps> = ({
 
         setContent('');
         onCommentAdded();
+    }
+
+    const handlePopoverOpen = (event: React.MouseEvent<HTMLElement>) => {
+        setAnchorEl(event.currentTarget);
     };
+
+    const handlePopoverClose = () => {
+        setAnchorEl(null);
+    };
+
+    const open = Boolean(anchorEl);
 
     return (
         <Box component="form" onSubmit={handleSubmit} sx={{display: 'flex', flexDirection: 'column', gap: 2}}>
@@ -56,16 +70,41 @@ const CommentForm: React.FC<CommentFormProps> = ({
                 fullWidth
                 disabled={!state.isAuthenticated}
             />
-            <Box sx={{display: 'flex', gap: 1}}>
-                <Button type="submit" variant="outlined" size="small">
-                    {comment ? 'Update Comment' : 'Add Comment'}
-                </Button>
-                {onCancelEdit && (
-                    <Button variant="outlined" color="warning" size="small" onClick={onCancelEdit}>
-                        Cancel
+            <Typography
+                aria-owns={open ? 'mouse-over-popover' : undefined}
+                aria-haspopup="true"
+                onMouseEnter={handlePopoverOpen}
+                onMouseLeave={handlePopoverClose}
+            >
+                <Box sx={{display: 'flex', gap: 1}}>
+                    <Button type="submit" variant="outlined" size="small">
+                        {comment ? 'Update Comment' : 'Add Comment'}
                     </Button>
-                )}
-            </Box>
+                    {onCancelEdit && (
+                        <Button variant="outlined" color="warning" size="small" onClick={onCancelEdit}>
+                            Cancel
+                        </Button>
+                    )}
+                </Box>
+            </Typography>
+            <Popover
+                id="mouse-over-popover"
+                sx={{pointerEvents: 'none'}}
+                open={open}
+                anchorEl={anchorEl}
+                anchorOrigin={{
+                    vertical: 'bottom',
+                    horizontal: 'left',
+                }}
+                transformOrigin={{
+                    vertical: 'top',
+                    horizontal: 'left',
+                }}
+                onClose={handlePopoverClose}
+                disableRestoreFocus
+            >
+                {!state.isAuthenticated && <Typography sx={{ p: 1 }}>Log in</Typography>}
+            </Popover>
         </Box>
     );
 };

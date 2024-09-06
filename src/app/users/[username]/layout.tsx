@@ -14,6 +14,9 @@ import {
 } from "@/helpers/userApi";
 import IconButton from "@mui/material/IconButton";
 import ImageIcon from "@mui/icons-material/Image";
+import Typography from "@mui/material/Typography";
+import Popover from "@mui/material/Popover";
+import {useAuth} from "@/components/AuthProvider";
 
 type PageParams = {
     username: string;
@@ -28,6 +31,8 @@ export default function Layout({params, children}: PageProps) {
     const username: string = params.username;
     const [user, setUser] = useState<User>();
     const [isSubscribed, setIsSubscribed] = useState(false);
+    const [anchorEl, setAnchorEl] = React.useState<HTMLElement | null>(null);
+    const {state} = useAuth();
 
     const tabs: LinkTabProps[] = [
         {label: 'Profile', href: `/users/${username}/profile`},
@@ -71,6 +76,17 @@ export default function Layout({params, children}: PageProps) {
             .catch((error) => console.error('Error subscribing:', error));
     };
 
+    const handlePopoverOpen = (event: React.MouseEvent<HTMLElement>) => {
+        setAnchorEl(event.currentTarget);
+    };
+
+    const handlePopoverClose = () => {
+        setAnchorEl(null);
+    };
+
+    const open = Boolean(anchorEl);
+
+
     return (
         <section>
             <Card variant="outlined" className="card">
@@ -86,13 +102,38 @@ export default function Layout({params, children}: PageProps) {
                                 <ImageIcon/>
                             </Avatar>
                         </Badge>
-                        <div>
-                            {isSubscribed ? (
-                                <button className="article-btn" onClick={handleUnsubscribe}>Following</button>
-                            ) : (
-                                <button className="article-btn" onClick={handleSubscribe}>Follow</button>
-                            )}
-                        </div>
+                       <Typography
+                            aria-owns={open ? 'mouse-over-popover' : undefined}
+                            aria-haspopup="true"
+                            onMouseEnter={handlePopoverOpen}
+                            onMouseLeave={handlePopoverClose}
+                        >
+                            <div>
+                                {isSubscribed ? (
+                                    <button className="article-btn" onClick={handleUnsubscribe}>Following</button>
+                                ) : (
+                                    <button className="article-btn" onClick={handleSubscribe}>Follow</button>
+                                )}
+                            </div>
+                        </Typography>
+                        <Popover
+                            id="mouse-over-popover"
+                            sx={{pointerEvents: 'none'}}
+                            open={open}
+                            anchorEl={anchorEl}
+                            anchorOrigin={{
+                                vertical: 'bottom',
+                                horizontal: 'left',
+                            }}
+                            transformOrigin={{
+                                vertical: 'top',
+                                horizontal: 'left',
+                            }}
+                            onClose={handlePopoverClose}
+                            disableRestoreFocus
+                        >
+                            {!state.isAuthenticated && <Typography sx={{ p: 1 }}>Log in</Typography>}
+                        </Popover>
                         <div>
                             <h1 className="category-card-name">{user?.firstName} {user?.lastName}</h1>
                             <p className="category-card-shortInfo">{user?.shortInfo}</p>
