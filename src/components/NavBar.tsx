@@ -30,7 +30,6 @@ const NavBar = () => {
     const {state} = useAuth();
     console.log(state);
 
-
     const handleLogout = () => {
         logout().then(() => router.push('/articles'));
         handleCloseUserMenu();
@@ -71,7 +70,7 @@ const NavBar = () => {
                             textDecoration: 'none',
                         }}
                     >
-                        IT BLOG
+                        LINKEDNOTE
                     </Typography>
                     <ButtonGroup variant="text" sx={{display: {xs: 'flex'}, mr: 1, ml: 'auto', color: "inherit"}}>
                         <Link href="/articles/#search-input">

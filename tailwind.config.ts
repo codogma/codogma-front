@@ -22,6 +22,9 @@ const config: Config = {
                 'curious-blue': '#3193c4',
                 'solitude': '#E7F3FF',
                 'elephant': '#1a334d',
+                'shark': '#1F2225',
+                'loblolly': '#BBCDD6',
+                'cerulean': '#49ADDF'
             }
         },
     },

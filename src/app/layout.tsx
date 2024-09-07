@@ -10,6 +10,7 @@ import Container from "@mui/material/Container";
 import React, {Suspense} from "react";
 import Loading from "@/app/loading";
 import NavTabs from "@/components/NavTabs";
+import Footer from "@/components/Footer";
 
 const inter = Inter({subsets: ["latin"]});
 
@@ -37,6 +38,7 @@ export default function RootLayout({
                             <Suspense fallback={<Loading/>}>
                                 {children}
                             </Suspense>
+                            <Footer/>
                         </Container>
                     </AuthProvider>
                 </ColorModeProvider>
