@@ -25,11 +25,11 @@ export const updateCategory = async (id: number, requestData: {
     description?: string
 }): Promise<Category> => {
     try {
-    const response = await axiosInstance.put(`/categories/${id}`, requestData, {
-        headers: {
-            "Content-Type": "multipart/form-data",
-        },
-    })
+        const response = await axiosInstance.put(`/categories/${id}`, requestData, {
+            headers: {
+                "Content-Type": "multipart/form-data",
+            },
+        })
         return response.data;
     } catch (error: any) {
         console.error("Error updating category: " + error.message);

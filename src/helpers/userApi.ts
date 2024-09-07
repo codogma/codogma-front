@@ -102,14 +102,14 @@ export const deleteUser = (username: string) => {
 
 
 export const checkSubscription = async (username: string): Promise<boolean> => {
-        try {
-           const response = await axiosInstance.get(`/users/${username}/is-subscribed`);
-           return response.data;
-        } catch (error) {
-            console.error(error);
-            throw error;
-        }
-    };
+    try {
+        const response = await axiosInstance.get(`/users/${username}/is-subscribed`);
+        return response.data;
+    } catch (error) {
+        console.error(error);
+        throw error;
+    }
+};
 
 export const unsubscribeToUser = async (username: string): Promise<void> => {
     try {

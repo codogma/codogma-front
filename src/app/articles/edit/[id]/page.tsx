@@ -1,5 +1,4 @@
 "use client";
-import "../../../globals.css"
 import {z} from "zod"
 import {Controller, FormProvider, SubmitHandler, useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
