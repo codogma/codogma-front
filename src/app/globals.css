@@ -127,6 +127,10 @@
         @apply text-mountain-mist dark:text-shady-lady text-[0.8125rem] leading-4 !important;
     }
 
+    .footer {
+        @apply bg-shark shadow text-white mt-auto p-4 !important;
+    }
+
     .article-content {
         @apply mb-4 dark:text-alto;
     }

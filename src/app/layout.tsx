@@ -38,8 +38,8 @@ export default function RootLayout({
                             <Suspense fallback={<Loading/>}>
                                 {children}
                             </Suspense>
-                            <Footer/>
                         </Container>
+                        <Footer/>
                     </AuthProvider>
                 </ColorModeProvider>
             </StyledEngineProvider>

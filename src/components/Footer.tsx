@@ -1,7 +1,6 @@
 "use client";
 import * as React from 'react';
 import {memo} from 'react';
-import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
 import IconButton from '@mui/material/IconButton';
@@ -21,9 +20,9 @@ const Footer = () => {
 
 
     return (
-        <AppBar position="sticky">
-            <Container maxWidth="lg">
+            <Container maxWidth="lg" className="footer">
                 <Toolbar disableGutters sx={{
+                    color: '#4cb7eb',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'space-between',
@@ -49,27 +48,26 @@ const Footer = () => {
                         <Button color="inherit">Техническая поддержка</Button>
                         <Button color="inherit">Настройка языка</Button>
                     </>
-                    <Box sx={{flexGrow: 0}}>
-                        <>
-                            <ButtonGroup variant="text" sx={{display: {xs: 'flex'}, mr: 1, ml: 'auto', color: "inherit"}}>
-                                    <IconButton color="inherit">
-                                        <FacebookIcon/>
-                                    </IconButton>
-                                    <IconButton color="inherit">
-                                        <XIcon/>
-                                    </IconButton>
-                                    <IconButton color="inherit">
-                                        <YouTubeIcon/>
-                                    </IconButton>
-                                <IconButton color="inherit">
-                                    <TelegramIcon/>
-                                </IconButton>
-                            </ButtonGroup>
-                        </>
-                    </Box>
                 </Toolbar>
+                <Box sx={{flexGrow: 0, color: '#BBCDD6'}}>
+                    <>
+                        <ButtonGroup variant="text" sx={{display: {xs: 'flex'}, mr: 1, ml: 'auto', color: "inherit"}}>
+                            <IconButton color="inherit">
+                                <FacebookIcon/>
+                            </IconButton>
+                            <IconButton color="inherit">
+                                <XIcon/>
+                            </IconButton>
+                            <IconButton color="inherit">
+                                <YouTubeIcon/>
+                            </IconButton>
+                            <IconButton color="inherit">
+                                <TelegramIcon/>
+                            </IconButton>
+                        </ButtonGroup>
+                    </>
+                </Box>
             </Container>
-        </AppBar>
     );
 }
 
