@@ -6,7 +6,6 @@ import {Box, Button, TextField} from "@mui/material";
 import Typography from "@mui/material/Typography";
 import Popover from "@mui/material/Popover";
 import {useAuth} from "@/components/AuthProvider";
-import Link from "next/link";
 
 interface CommentFormProps {
     articleId: number;
@@ -103,7 +102,7 @@ const CommentForm: React.FC<CommentFormProps> = ({
                 onClose={handlePopoverClose}
                 disableRestoreFocus
             >
-                {!state.isAuthenticated && <Typography sx={{ p: 1 }}>Log in</Typography>}
+                {!state.isAuthenticated && <Typography sx={{p: 1}}>Log in</Typography>}
             </Popover>
         </Box>
     );

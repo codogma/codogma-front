@@ -166,7 +166,8 @@ function Categories({params}: PageProps) {
                             </Avatar>
                         </Badge>
                         <FormInput name="name" label="Name" variant="standard" defaultValue={category?.name}/>
-                        <FormInput name="description" label="Description" variant="standard" defaultValue={category?.description}/>
+                        <FormInput name="description" label="Description" variant="standard"
+                                   defaultValue={category?.description}/>
                         <Button type="submit">Update</Button>
                         <Button className="article-btn" variant="outlined" onClick={handleDelete}>Delete
                             category</Button>

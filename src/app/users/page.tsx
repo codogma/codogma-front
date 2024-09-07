@@ -72,7 +72,7 @@ function Page() {
                         <Link
                             href={`/users/${user.username}`} className="user-nickname">@{user.username}</Link>
                         <div className="user-description">{user.bio}</div>
-                       <div className="user-item_categories">Пишет в категориях:
+                        <div className="user-item_categories">Пишет в категориях:
                             <div className="user-tags">{user.categories.map((category) => (
                                 <span className="user-tag-item" key={category.id}>
                             <Link className="user-tag-name" href={`/categories/${category.id}`}>

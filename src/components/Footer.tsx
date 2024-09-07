@@ -20,54 +20,54 @@ const Footer = () => {
 
 
     return (
-            <Container maxWidth="lg" className="footer">
-                <Toolbar disableGutters sx={{
-                    color: '#4cb7eb',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                }}>
-                    <Typography
-                        variant="h5"
-                        noWrap
-                        component="a"
-                        href="/"
-                        sx={{
-                            mr: 2,
-                            fontFamily: 'monospace',
-                            fontWeight: 700,
-                            letterSpacing: '.3rem',
-                            color: '#BBCDD6',
-                            fontSize: '.875rem',
-                            textDecoration: 'none',
-                        }}
-                    >
-                        ©Linkednote
-                    </Typography>
-                    <>
-                        <Button color="inherit">Техническая поддержка</Button>
-                        <Button color="inherit">Настройка языка</Button>
-                    </>
-                </Toolbar>
-                <Box sx={{flexGrow: 0, color: '#BBCDD6'}}>
-                    <>
-                        <ButtonGroup variant="text" sx={{display: {xs: 'flex'}, mr: 1, ml: 'auto', color: "inherit"}}>
-                            <IconButton color="inherit">
-                                <FacebookIcon/>
-                            </IconButton>
-                            <IconButton color="inherit">
-                                <XIcon/>
-                            </IconButton>
-                            <IconButton color="inherit">
-                                <YouTubeIcon/>
-                            </IconButton>
-                            <IconButton color="inherit">
-                                <TelegramIcon/>
-                            </IconButton>
-                        </ButtonGroup>
-                    </>
-                </Box>
-            </Container>
+        <Container maxWidth="lg" className="footer">
+            <Toolbar disableGutters sx={{
+                color: '#4cb7eb',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+            }}>
+                <Typography
+                    variant="h5"
+                    noWrap
+                    component="a"
+                    href="/"
+                    sx={{
+                        mr: 2,
+                        fontFamily: 'monospace',
+                        fontWeight: 700,
+                        letterSpacing: '.3rem',
+                        color: '#BBCDD6',
+                        fontSize: '.875rem',
+                        textDecoration: 'none',
+                    }}
+                >
+                    ©Linkednote
+                </Typography>
+                <>
+                    <Button color="inherit">Техническая поддержка</Button>
+                    <Button color="inherit">Настройка языка</Button>
+                </>
+            </Toolbar>
+            <Box sx={{flexGrow: 0, color: '#BBCDD6'}}>
+                <>
+                    <ButtonGroup variant="text" sx={{display: {xs: 'flex'}, mr: 1, ml: 'auto', color: "inherit"}}>
+                        <IconButton color="inherit">
+                            <FacebookIcon/>
+                        </IconButton>
+                        <IconButton color="inherit">
+                            <XIcon/>
+                        </IconButton>
+                        <IconButton color="inherit">
+                            <YouTubeIcon/>
+                        </IconButton>
+                        <IconButton color="inherit">
+                            <TelegramIcon/>
+                        </IconButton>
+                    </ButtonGroup>
+                </>
+            </Box>
+        </Container>
     );
 }
 

@@ -6,12 +6,7 @@ import CardContent from "@mui/material/CardContent";
 import {Avatar, Badge} from "@mui/material";
 import Card from "@mui/material/Card";
 import Loading from "@/app/loading";
-import {
-    getUserByUsername,
-    subscribeToUser,
-    unsubscribeToUser,
-    checkSubscription,
-} from "@/helpers/userApi";
+import {checkSubscription, getUserByUsername, subscribeToUser, unsubscribeToUser,} from "@/helpers/userApi";
 import IconButton from "@mui/material/IconButton";
 import ImageIcon from "@mui/icons-material/Image";
 import Typography from "@mui/material/Typography";
@@ -37,9 +32,9 @@ export default function Layout({params, children}: PageProps) {
     const tabs: LinkTabProps[] = [
         {label: 'Profile', href: `/users/${username}/profile`},
         {label: 'Articles', href: `/users/${username}/articles`},
-        {label: 'Subscribers', href:`/users/${username}/subscribers`},
-        {label: 'Subscriptions', href:`/users/${username}/subscriptions`},
-        {label: 'Comments', href:`/users/${username}/comments`},
+        {label: 'Subscribers', href: `/users/${username}/subscribers`},
+        {label: 'Subscriptions', href: `/users/${username}/subscriptions`},
+        {label: 'Comments', href: `/users/${username}/comments`},
     ];
 
     useEffect(() => {
@@ -57,9 +52,9 @@ export default function Layout({params, children}: PageProps) {
 
     useEffect(() => {
         const check = async (username: string) => {
-             await checkSubscription(username)
-                 .then((response) => setIsSubscribed(response))
-                 .catch((error) => console.error('Error checking subscription:', error));
+            await checkSubscription(username)
+                .then((response) => setIsSubscribed(response))
+                .catch((error) => console.error('Error checking subscription:', error));
         };
         check(username);
     }, [username]);
@@ -102,7 +97,7 @@ export default function Layout({params, children}: PageProps) {
                                 <ImageIcon/>
                             </Avatar>
                         </Badge>
-                       <Typography
+                        <Typography
                             aria-owns={open ? 'mouse-over-popover' : undefined}
                             aria-haspopup="true"
                             onMouseEnter={handlePopoverOpen}
@@ -132,7 +127,7 @@ export default function Layout({params, children}: PageProps) {
                             onClose={handlePopoverClose}
                             disableRestoreFocus
                         >
-                            {!state.isAuthenticated && <Typography sx={{ p: 1 }}>Log in</Typography>}
+                            {!state.isAuthenticated && <Typography sx={{p: 1}}>Log in</Typography>}
                         </Popover>
                         <div>
                             <h1 className="category-card-name">{user?.firstName} {user?.lastName}</h1>
