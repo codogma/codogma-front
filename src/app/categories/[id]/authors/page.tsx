@@ -41,6 +41,7 @@ function Page({params}: PageProps) {
                     <CardContent>
                         <div className="user-meta-container">
                             <AvatarImage
+                                alt={user.username}
                                 className="user-avatar"
                                 src={user.avatarUrl}
                                 variant="rounded"

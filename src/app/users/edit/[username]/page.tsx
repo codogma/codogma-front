@@ -165,7 +165,7 @@ function Users({params}: PageProps) {
                             </IconButton>
                         }
                     >
-                        <AvatarImage variant="rounded" src={user?.avatarUrl} size={112}/>
+                        <AvatarImage alt={user?.username} variant="rounded" src={user?.avatarUrl} size={112}/>
                     </Badge>
                     <FormInput name="username" label="Username" variant="standard" defaultValue={user?.username}/>
                     <FormInput name="newEmail" label="Email" type="email" variant="standard"

@@ -93,7 +93,8 @@ export default function Layout({params, children}: PageProps) {
                             anchorOrigin={{vertical: 'bottom', horizontal: 'right'}}
                             badgeContent={<IconButton component="label" color="inherit" sx={{p: 0}}/>}
                         >
-                            <AvatarImage className="category-img" variant="rounded" src={user?.avatarUrl} size={24}/>
+                            <AvatarImage alt={user?.username} className="category-img" variant="rounded"
+                                         src={user?.avatarUrl} size={24}/>
                         </Badge>
                         <Typography
                             aria-owns={open ? 'mouse-over-popover' : undefined}

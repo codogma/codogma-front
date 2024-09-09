@@ -52,7 +52,8 @@ export default function Layout({params, children}: PageProps) {
                             anchorOrigin={{vertical: 'bottom', horizontal: 'right'}}
                             badgeContent={<IconButton component="label" color="inherit" sx={{p: 0}}/>}
                         >
-                            <AvatarImage className="category-img" variant="rounded" src={category.imageUrl} size={48}/>
+                            <AvatarImage alt={category.name} className="category-img" variant="rounded"
+                                         src={category.imageUrl} size={48}/>
                         </Badge>
                         <div>
                             <h1 className="category-card-name">{category.name}</h1>

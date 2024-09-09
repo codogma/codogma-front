@@ -150,6 +150,7 @@ export default function Layout() {
                     <CardContent className="card-content">
                         <div className="meta-container">
                             <AvatarImage
+                                alt={article.username}
                                 className="article-user-avatar"
                                 src={article.authorAvatarUrl}
                                 variant="rounded"

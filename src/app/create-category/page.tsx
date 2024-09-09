@@ -49,8 +49,6 @@ function Page() {
     const {
         reset,
         handleSubmit,
-        register,
-        setValue,
         formState: {isSubmitSuccessful, errors},
     } = zodForm;
 

@@ -162,7 +162,8 @@ function Categories({params}: PageProps) {
                                    </IconButton>
                                }
                         >
-                            <AvatarImage className="category-img" variant="rounded" src={category?.imageUrl} size={48}/>
+                            <AvatarImage alt={category?.name} className="category-img" variant="rounded"
+                                         src={category?.imageUrl} size={48}/>
                         </Badge>
                         <FormInput name="name" label="Name" variant="standard" defaultValue={category?.name}/>
                         <FormInput name="description" label="Description" variant="standard"
