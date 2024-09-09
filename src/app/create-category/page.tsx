@@ -4,13 +4,13 @@ import {FormProvider, SubmitHandler, useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
 import React, {useEffect, useState} from "react";
 import {createCategory} from "@/helpers/categoryApi";
-import {Avatar, Badge, Box, Button} from "@mui/material";
+import {Badge, Box, Button} from "@mui/material";
 import FormInput from "@/components/FormInput";
 import {WithAuth} from "@/components/WithAuth";
 import {styled} from "@mui/material/styles";
-import ImageIcon from '@mui/icons-material/Image';
 import IconButton from "@mui/material/IconButton";
 import {ModeEditOutlineOutlined} from "@mui/icons-material";
+import {AvatarImage} from "@/components/AvatarImage";
 
 const CategoryScheme = z.object({
     name: z
@@ -103,9 +103,7 @@ function Page() {
                             </IconButton>
                         }
                     >
-                        <Avatar variant="rounded" src={imageUrl} sx={{width: 112, height: 112}}>
-                            <ImageIcon/>
-                        </Avatar>
+                        <AvatarImage variant="rounded" src={imageUrl} size={112}/>
                     </Badge>
                     <FormInput name="description" label="Description" variant="standard"/>
                     <Button type="submit">Create</Button>

@@ -4,11 +4,11 @@ import {Category} from "@/types";
 import NavTabs, {LinkTabProps} from "@/components/NavTabs";
 import {getCategoryById} from "@/helpers/categoryApi";
 import CardContent from "@mui/material/CardContent";
-import {Avatar, Badge} from "@mui/material";
+import {Badge} from "@mui/material";
 import IconButton from "@mui/material/IconButton";
-import ImageIcon from "@mui/icons-material/Image";
 import Card from "@mui/material/Card";
 import Loading from "@/app/loading";
+import {AvatarImage} from "@/components/AvatarImage";
 
 type PageParams = {
     id: number;
@@ -52,9 +52,7 @@ export default function Layout({params, children}: PageProps) {
                             anchorOrigin={{vertical: 'bottom', horizontal: 'right'}}
                             badgeContent={<IconButton component="label" color="inherit" sx={{p: 0}}/>}
                         >
-                            <Avatar className="category-img" variant="rounded" src={category.imageUrl}>
-                                <ImageIcon/>
-                            </Avatar>
+                            <AvatarImage className="category-img" variant="rounded" src={category.imageUrl} size={48}/>
                         </Badge>
                         <div>
                             <h1 className="category-card-name">{category.name}</h1>

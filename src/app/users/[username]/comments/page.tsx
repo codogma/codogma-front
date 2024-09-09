@@ -1,13 +1,14 @@
 "use client"
 
 import CardContent from "@mui/material/CardContent";
-import {Avatar, Box, Divider, Typography} from "@mui/material";
+import {Box, Divider, Typography} from "@mui/material";
 import Link from "next/link";
 import {TimeAgo} from "@/components/TimeAgo";
 import {GetComment} from "@/types";
 import Card from "@mui/material/Card";
 import React, {useEffect, useState} from "react";
 import {getCommentsByUsername} from "@/helpers/commentAPI";
+import {AvatarImage} from "@/components/AvatarImage";
 
 type PageParams = {
     username: string
@@ -39,11 +40,12 @@ export default function Page({params}: PageProps) {
                             <Divider/>
                         </Box>
                         <Box className="meta-container">
-                            <Avatar
+                            <AvatarImage
                                 className="article-user-avatar"
                                 src={comment.user.avatarUrl}
                                 alt={comment.user.username}
                                 variant="rounded"
+                                size={32}
                             />
                             <Link className="article-user-name" href={`/users/${comment.user.username}`}>
                                 {comment.user.username}

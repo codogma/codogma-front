@@ -4,7 +4,7 @@ import {z} from "zod";
 import {FormProvider, SubmitHandler, useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
 import {User} from "@/types";
-import {Avatar, Badge, Box, Button} from "@mui/material";
+import {Badge, Box, Button} from "@mui/material";
 import {deleteUser, getAuthors, getUserByUsername, updateUser, UserUpdate} from "@/helpers/userApi";
 import {ModeEditOutlineOutlined} from "@mui/icons-material";
 import {styled} from "@mui/material/styles";
@@ -12,6 +12,7 @@ import FormInput from "@/components/FormInput";
 import IconButton from "@mui/material/IconButton";
 import {WithAuth} from "@/components/WithAuth";
 import Link from "next/link";
+import {AvatarImage} from "@/components/AvatarImage";
 
 const UserScheme = z.object({
     username: z.optional(z.string()
@@ -164,7 +165,7 @@ function Users({params}: PageProps) {
                             </IconButton>
                         }
                     >
-                        <Avatar variant="rounded" src={user?.avatarUrl} sx={{width: 112, height: 112}}/>
+                        <AvatarImage variant="rounded" src={user?.avatarUrl} size={112}/>
                     </Badge>
                     <FormInput name="username" label="Username" variant="standard" defaultValue={user?.username}/>
                     <FormInput name="newEmail" label="Email" type="email" variant="standard"

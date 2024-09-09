@@ -11,7 +11,6 @@ import Container from '@mui/material/Container';
 import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
-import AccountCircle from '@mui/icons-material/AccountCircle';
 import SearchIcon from '@mui/icons-material/Search';
 import CreateIcon from '@mui/icons-material/Create';
 import LanguageIcon from '@mui/icons-material/Language';
@@ -19,10 +18,11 @@ import CategoryIcon from '@mui/icons-material/Category';
 import Link from "next/link";
 import {useAuth} from "@/components/AuthProvider";
 import {ThemeToggleButton} from "@/components/ThemeContext";
-import {Avatar, ButtonGroup} from "@mui/material";
+import {ButtonGroup} from "@mui/material";
 import {logout} from "@/helpers/authApi";
 import {UserRole} from "@/types";
 import {useRouter} from "next/navigation";
+import {AvatarImage} from "@/components/AvatarImage";
 
 const NavBar = () => {
     const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
@@ -108,9 +108,9 @@ const NavBar = () => {
                             <>
                                 <Tooltip title="Open settings">
                                     <IconButton onClick={handleOpenUserMenu} color="inherit" sx={{p: 0}}>
-                                        {state.user?.avatarUrl && <Avatar key={new Date().getTime()} variant="rounded"
-                                                                          src={state.user?.avatarUrl}/>}
-                                        {!state.user?.avatarUrl && <AccountCircle/>}
+                                        <AvatarImage alt={state.user?.username} key={new Date().getTime()}
+                                                     variant="rounded"
+                                                     src={state.user?.avatarUrl} size={40}/>
                                     </IconButton>
                                 </Tooltip>
                                 <Menu

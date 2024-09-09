@@ -1,70 +1,150 @@
-"use client"
-import * as React from 'react';
-import {FormEvent} from 'react';
-import {Box, Button, TextField} from "@mui/material";
-import {styled} from '@mui/material/styles';
-import CloudUploadIcon from '@mui/icons-material/CloudUpload';
+"use client";
+import {
+    Box,
+    Button,
+    Card,
+    Container,
+    Divider,
+    FormControl,
+    FormLabel,
+    Stack,
+    TextField,
+    Typography
+} from "@mui/material";
+import {FacebookIcon, GoogleIcon} from '@/components/CustomIcons';
+import Link from "next/link";
+import {useState} from "react";
 import {useRouter} from "next/navigation";
-import {register} from "@/helpers/authApi";
+import {register, RegisterUser} from "@/helpers/authApi";
+import {z} from 'zod';
+import {FormProvider, SubmitHandler, useForm} from 'react-hook-form';
+import {zodResolver} from '@hookform/resolvers/zod';
+import {generateAvatar} from "@/helpers/generateAvatar";
 
-
-type User = {
-    username: string
-    email: string
-    password: string,
-    avatar: File
-}
-
-const VisuallyHiddenInput = styled('input')({
-    clip: 'rect(0 0 0 0)',
-    clipPath: 'inset(50%)',
-    height: 1,
-    overflow: 'hidden',
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    whiteSpace: 'nowrap',
-    width: 1,
+const signUpSchema = z.object({
+    username: z.string().min(1, {message: "Name is required"}),
+    email: z.string().email({message: "Invalid email address"}),
+    password: z.string().min(6, {message: "Password must be at least 6 characters long"}),
 });
 
-export default function RegisterPage() {
+export default function SignUp() {
     const router = useRouter();
-    const onSubmit = (e: FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
-        const formData = new FormData(e.currentTarget);
-        const user: User = Object.fromEntries(formData.entries()) as User
-        register(user)
-        router.push("/login")
-        console.log(user);
-    }
+    const [serverError, setServerError] = useState('');
+
+    const methods = useForm<RegisterUser>({
+        resolver: zodResolver(signUpSchema),
+    });
+
+    const onSubmit: SubmitHandler<RegisterUser> = (data: RegisterUser) => {
+        try {
+            const {username} = data;
+            generateAvatar(username, 200).then(file => register({...data, avatar: file}));
+            router.push("/login");
+        } catch (error) {
+            setServerError('An error occurred during registration.');
+        }
+    };
+
     return (
-        <>
-            <Box
-                component="form"
-                noValidate
+        <Container sx={{direction: "column", justifyContent: "space-between", height: "100%"}}>
+            <Stack
                 sx={{
-                    m: 1, width: '25ch',
+                    justifyContent: 'center',
+                    height: '100dvh',
+                    p: 2,
                 }}
-                autoComplete="off"
-                onSubmit={onSubmit}
             >
-                <TextField id="username" name="username" label="Username" variant="standard"/>
-                <TextField id="email" name="email" label="Email" variant="standard"/>
-                <TextField id="password" name="password" label="Password" variant="standard" type="password"/>
-                <Button
-                    component="label"
-                    role={undefined}
-                    variant="contained"
-                    tabIndex={-1}
-                    startIcon={<CloudUploadIcon/>}
-                >
-                    Upload avatar
-                    <VisuallyHiddenInput id="avatar" name="avatar" type="file"/>
-                </Button>
-                <Button type="submit">Register</Button>
-            </Box>
-        </>
+                <Card className="flex flex-col self-center w-full p-4 gap-2 mx-auto sm:w-[450px]"
+                      variant="outlined">
+                    <Typography
+                        component="h1"
+                        variant="h4"
+                        sx={{width: '100%', fontSize: 'clamp(2rem, 10vw, 2.15rem)'}}
+                    >
+                        Sign up
+                    </Typography>
+                    <FormProvider {...methods}>
+                        <Box
+                            component="form"
+                            onSubmit={methods.handleSubmit(onSubmit)}
+                            sx={{display: 'flex', flexDirection: 'column', gap: 2}}
+                        >
+                            <FormControl>
+                                <FormLabel htmlFor="username">Username</FormLabel>
+                                <TextField
+                                    autoComplete="username"
+                                    {...methods.register("username")}
+                                    fullWidth
+                                    id="username"
+                                    placeholder="username"
+                                    error={!!methods.formState.errors.username}
+                                    helperText={methods.formState.errors.username?.message}
+                                />
+                            </FormControl>
+                            <FormControl>
+                                <FormLabel htmlFor="email">Email</FormLabel>
+                                <TextField
+                                    fullWidth
+                                    {...methods.register("email")}
+                                    id="email"
+                                    placeholder="your@email.com"
+                                    autoComplete="email"
+                                    error={!!methods.formState.errors.email}
+                                    helperText={methods.formState.errors.email?.message}
+                                />
+                            </FormControl>
+                            <FormControl>
+                                <FormLabel htmlFor="password">Password</FormLabel>
+                                <TextField
+                                    fullWidth
+                                    {...methods.register("password")}
+                                    type="password"
+                                    id="password"
+                                    placeholder="••••••"
+                                    autoComplete="new-password"
+                                    error={!!methods.formState.errors.password}
+                                    helperText={methods.formState.errors.password?.message}
+                                />
+                            </FormControl>
+                            {serverError && <Typography color="error">{serverError}</Typography>}
+                            <Button
+                                type="submit"
+                                fullWidth
+                                variant="contained"
+                            >
+                                Sign up
+                            </Button>
+                            <Typography sx={{textAlign: 'center'}}>
+                                Already have an account?{' '}
+                                <span>
+                                    <Link href="/login">Sign in</Link>
+                                </span>
+                            </Typography>
+                        </Box>
+                    </FormProvider>
+                    <Divider>
+                        <Typography sx={{color: 'text.secondary'}}>or</Typography>
+                    </Divider>
+                    <Box sx={{display: 'flex', flexDirection: 'column', gap: 2}}>
+                        <Button
+                            fullWidth
+                            variant="outlined"
+                            onClick={() => alert('Sign up with Google')}
+                            startIcon={<GoogleIcon/>}
+                        >
+                            Sign up with Google
+                        </Button>
+                        <Button
+                            fullWidth
+                            variant="outlined"
+                            onClick={() => alert('Sign up with Facebook')}
+                            startIcon={<FacebookIcon/>}
+                        >
+                            Sign up with Facebook
+                        </Button>
+                    </Box>
+                </Card>
+            </Stack>
+        </Container>
     );
 }
-
-

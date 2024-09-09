@@ -3,10 +3,11 @@ import React, {useEffect, useState} from 'react';
 import CommentForm from './CommentForm';
 import {deleteComment, getCommentsByArticleId} from "@/helpers/commentAPI";
 import {GetComment} from "@/types";
-import {Avatar, Box, Button, Card, CardContent, Typography} from "@mui/material";
+import {Box, Button, Card, CardContent, Typography} from "@mui/material";
 import Link from "next/link";
 import {TimeAgo} from "@/components/TimeAgo";
 import {useAuth} from "@/components/AuthProvider";
+import {AvatarImage} from "@/components/AvatarImage";
 
 interface CommentListProps {
     articleId: number;
@@ -55,11 +56,12 @@ export const CommentList: React.FC<CommentListProps> = ({articleId, comments: in
             <Card key={comment.id} variant="outlined" className="card">
                 <CardContent className="card-content">
                     <Box className="meta-container">
-                        <Avatar
+                        <AvatarImage
                             className="article-user-avatar"
                             src={comment.user.avatarUrl}
                             alt={comment.user.username}
                             variant="rounded"
+                            size={32}
                         />
                         <Link className="article-user-name" href={`/users/${comment.user.username}`}>
                             {comment.user.username}

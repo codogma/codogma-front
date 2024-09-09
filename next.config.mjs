@@ -13,6 +13,9 @@ const nextConfig = {
                 permanent: true,
             }
         ];
+    },
+    images: {
+        domains: ['localhost']
     }
 };
 

@@ -2,7 +2,19 @@ import {axiosInstance} from "@/helpers/axiosInstance";
 import {User} from "@/types";
 import Cookies from 'js-cookie';
 
-export const register = (requestData: { username: string, email: string, password: string, avatar: File }) => {
+export type RegisterUser = {
+    username: string
+    email: string
+    password: string
+    avatar: File
+}
+
+export type LoginUser = {
+    usernameOrEmail: string,
+    password: string
+}
+
+export const register = (requestData: RegisterUser) => {
     axiosInstance.post("/auth/signup", requestData, {
         headers: {
             "Content-Type": "multipart/form-data"
@@ -14,7 +26,7 @@ export const register = (requestData: { username: string, email: string, passwor
         });
 }
 
-export const login = async (requestData: { usernameOrEmail: string, password: string }): Promise<User> => {
+export const login = async (requestData: LoginUser): Promise<User> => {
     try {
         await axiosInstance.post("/auth/login", requestData);
         const user = await currentUser();

@@ -3,14 +3,14 @@ import React, {useEffect, useState} from "react";
 import {Category, UserRole} from "@/types";
 import {getCategories} from "@/helpers/categoryApi";
 import Link from "next/link";
-import {Avatar, Badge, Button} from "@mui/material";
+import {Badge, Button} from "@mui/material";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import Stack from "@mui/material/Stack";
 import CardActions from "@mui/material/CardActions";
 import {useAuth} from "@/components/AuthProvider";
 import IconButton from "@mui/material/IconButton";
-import ImageIcon from "@mui/icons-material/Image";
+import {AvatarImage} from "@/components/AvatarImage";
 
 export default function Page() {
     const [categories, setCategories] = useState<Category[]>([])
@@ -42,9 +42,8 @@ export default function Page() {
                                        <IconButton component="label" color="inherit" sx={{p: 0}}/>
                                    }
                             >
-                                <Avatar className="category-img" variant="rounded" src={category.imageUrl}>
-                                    <ImageIcon/>
-                                </Avatar>
+                                <AvatarImage alt={category.name} className="category-img" variant="rounded"
+                                             src={category.imageUrl} size={48}/>
                             </Badge>
                             <ul>
                                 <li><Link href={`/categories/${category.id}`}

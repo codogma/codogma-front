@@ -6,7 +6,7 @@ import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import Link from "next/link";
 import DOMPurify from "dompurify";
 import {TimeAgo} from "@/components/TimeAgo";
-import {Avatar, Button} from "@mui/material";
+import {Button} from "@mui/material";
 import Pagination from '@mui/material/Pagination';
 import Stack from '@mui/material/Stack';
 import Card from '@mui/material/Card';
@@ -23,35 +23,7 @@ import IconButton from '@mui/material/IconButton';
 import SearchIcon from '@mui/icons-material/Search';
 import MenuIcon from '@mui/icons-material/Menu';
 import Menu from '@mui/material/Menu';
-
-function stringToColor(string: string) {
-    let hash = 0;
-    let i;
-
-    /* eslint-disable no-bitwise */
-    for (i = 0; i < string.length; i += 1) {
-        hash = string.charCodeAt(i) + ((hash << 5) - hash);
-    }
-
-    let color = '#';
-
-    for (i = 0; i < 3; i += 1) {
-        const value = (hash >> (i * 8)) & 0xff;
-        color += `00${value.toString(16)}`.slice(-2);
-    }
-    /* eslint-enable no-bitwise */
-
-    return color;
-}
-
-function stringAvatar(name: string) {
-    return {
-        sx: {
-            bgcolor: stringToColor(name),
-        },
-        children: `${name.split(' ')[0][0]}`,
-    };
-}
+import {AvatarImage} from "@/components/AvatarImage";
 
 type PageParams = {
     id: number;
@@ -177,11 +149,11 @@ export default function Layout({params}: PageProps) {
                 <Card key={article.id} variant="outlined" className="card">
                     <CardContent className="card-content">
                         <div className="meta-container">
-                            <Avatar
+                            <AvatarImage
                                 className="article-user-avatar"
                                 src={article.authorAvatarUrl}
-                                {...(article.authorAvatarUrl.length !== 0 ? stringAvatar(article.username) : {})}
                                 variant="rounded"
+                                size={32}
                             />
                             <Link href={`/users/${article.username}`}
                                   className="article-user-name">{article.username}</Link>

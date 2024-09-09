@@ -5,7 +5,7 @@ import {zodResolver} from "@hookform/resolvers/zod";
 import React, {useEffect, useState} from "react";
 import {Category, UserRole} from "@/types";
 import {deleteCategory, getCategoryById, updateCategory} from "@/helpers/categoryApi";
-import {Avatar, Badge, Box, Button} from "@mui/material";
+import {Badge, Box, Button} from "@mui/material";
 import FormInput from "@/components/FormInput";
 import {WithAuth} from "@/components/WithAuth";
 import Snackbar, {SnackbarCloseReason} from '@mui/material/Snackbar';
@@ -14,9 +14,10 @@ import Link from "next/link";
 import {useAuth} from "@/components/AuthProvider";
 import {useRouter} from "next/navigation";
 import IconButton from "@mui/material/IconButton";
-import ImageIcon from "@mui/icons-material/Image";
 import {ModeEditOutlineOutlined} from "@mui/icons-material";
 import {styled} from "@mui/material/styles";
+import {AvatarImage} from "@/components/AvatarImage";
+
 
 const CategoryScheme = z.object({
     name: z.optional(z.string().min(2, "Название категории не может содержать менее 2 символов.").max(50, "Название категории не может содержать более 50 символов.")),
@@ -161,9 +162,7 @@ function Categories({params}: PageProps) {
                                    </IconButton>
                                }
                         >
-                            <Avatar className="category-img" variant="rounded" src={category?.imageUrl}>
-                                <ImageIcon/>
-                            </Avatar>
+                            <AvatarImage className="category-img" variant="rounded" src={category?.imageUrl} size={48}/>
                         </Badge>
                         <FormInput name="name" label="Name" variant="standard" defaultValue={category?.name}/>
                         <FormInput name="description" label="Description" variant="standard"

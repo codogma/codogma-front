@@ -5,7 +5,8 @@ import {getUserByUsername} from "@/helpers/userApi";
 import Link from "next/link";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
-import {Avatar, Box} from "@mui/material";
+import {Box} from "@mui/material";
+import {AvatarImage} from "@/components/AvatarImage";
 
 type PageParams = {
     username: string;
@@ -39,11 +40,12 @@ const Page = ({params}: PageProps) => {
                     <CardContent className="card-content">
                         <Box className="meta-container">
                             <>
-                                <Avatar
+                                <AvatarImage
                                     className="article-user-avatar"
                                     src={user.avatarUrl}
                                     alt={user.username}
                                     variant="rounded"
+                                    size={32}
                                 />
                                 <Link href={`/users/${user.username}`}
                                       className="subscribers-user-name">@{user.username}</Link>
