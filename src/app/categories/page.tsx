@@ -1,15 +1,15 @@
 "use client";
 import React, {useEffect, useState} from "react";
 import {Category, UserRole} from "@/types";
-import {getCategories} from "@/helpers/categoryApi";
 import Link from "next/link";
-import {Badge, Button, Card, CardActions, CardContent, IconButton, Skeleton, Stack,} from "@mui/material";
+import {getCategories} from "@/helpers/categoryApi";
+import {Badge, Button, Card, CardActions, CardContent, IconButton, Skeleton, Stack} from "@mui/material";
 import {useAuth} from "@/components/AuthProvider";
 import {AvatarImage} from "@/components/AvatarImage";
 
 export default function Page() {
     const [categories, setCategories] = useState<Category[]>([]);
-    const [loading, setLoading] = useState(true); // Состояние загрузки
+    const [loading, setLoading] = useState(true);
     const {state} = useAuth();
 
     useEffect(() => {
@@ -20,7 +20,7 @@ export default function Page() {
             } catch (error) {
                 console.error("Error fetching data:", error);
             } finally {
-                setLoading(false); // Окончание загрузки данных
+                setLoading(false);
             }
         }
 
@@ -30,30 +30,19 @@ export default function Page() {
     return (
         <section>
             {loading ? (
-                // Скелетоны для состояния загрузки
                 <Card variant="outlined" className="card">
                     <CardContent className="card-content">
                         <div className="meta-container">
-                            <Skeleton variant="circular" width={48} height={48}/>
+                            <Skeleton variant="rounded" width={48} height={48}/>
                             <ul>
-                                <li>
-                                    <Skeleton animation="wave" height={10} width="60%"/>
-                                </li>
-                                <li>
-                                    <Skeleton animation="wave" height={10} width="80%"/>
-                                </li>
-                                <li>
-                                    <Skeleton animation="wave" height={10} width="50%"/>
-                                </li>
+                                <li><Skeleton variant="text" width={100}/></li>
+                                <li><Skeleton variant="text" width={150}/></li>
+                                <li><Skeleton variant="text" width={150}/></li>
                             </ul>
                         </div>
-                        <CardActions className="p-0 m-0">
-                            <Skeleton animation="wave" height={36} width="20%"/>
-                        </CardActions>
                     </CardContent>
                 </Card>
             ) : (
-                // Отображение категорий после загрузки данных
                 categories.map((category) => (
                     <Card key={category.id} variant="outlined" className="card">
                         <CardContent className="card-content">
