@@ -1,74 +1,72 @@
 "use client";
-import * as React from 'react';
-import {memo} from 'react';
-import Box from '@mui/material/Box';
-import Toolbar from '@mui/material/Toolbar';
-import IconButton from '@mui/material/IconButton';
-import Container from '@mui/material/Container';
-import Button from '@mui/material/Button';
-import {useAuth} from "@/components/AuthProvider";
-import {ButtonGroup} from "@mui/material";
+import React from 'react';
+import {Box, Container, Divider, Link, Typography} from '@mui/material';
+import Grid from '@mui/material/Grid2';
 import FacebookIcon from '@mui/icons-material/Facebook';
 import XIcon from '@mui/icons-material/X';
 import YouTubeIcon from '@mui/icons-material/YouTube';
 import TelegramIcon from '@mui/icons-material/Telegram';
-import Typography from "@mui/material/Typography";
 
-const Footer = () => {
-    const {state} = useAuth();
-    console.log(state);
-
-
+function Footer() {
     return (
-        <Container maxWidth="lg" className="footer">
-            <Toolbar disableGutters sx={{
-                color: '#4cb7eb',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-            }}>
-                <Typography
-                    variant="h5"
-                    noWrap
-                    component="a"
-                    href="/"
-                    sx={{
-                        mr: 2,
-                        fontFamily: 'monospace',
-                        fontWeight: 700,
-                        letterSpacing: '.3rem',
-                        color: '#BBCDD6',
-                        fontSize: '.875rem',
-                        textDecoration: 'none',
-                    }}
-                >
-                    ©Linkednote
-                </Typography>
-                <>
-                    <Button color="inherit">Техническая поддержка</Button>
-                    <Button color="inherit">Настройка языка</Button>
-                </>
-            </Toolbar>
-            <Box sx={{flexGrow: 0, color: '#BBCDD6'}}>
-                <>
-                    <ButtonGroup variant="text" sx={{display: {xs: 'flex'}, mr: 1, ml: 'auto', color: "inherit"}}>
-                        <IconButton color="inherit">
-                            <FacebookIcon/>
-                        </IconButton>
-                        <IconButton color="inherit">
-                            <XIcon/>
-                        </IconButton>
-                        <IconButton color="inherit">
-                            <YouTubeIcon/>
-                        </IconButton>
-                        <IconButton color="inherit">
-                            <TelegramIcon/>
-                        </IconButton>
-                    </ButtonGroup>
-                </>
-            </Box>
-        </Container>
+        <Box sx={{bgcolor: '#303B44', color: 'white', py: 3}}>
+            <Container maxWidth="lg">
+                <Grid container spacing={4}>
+                    <Grid size={{xs: 12, sm: 3}}>
+                        <Typography variant="h6" gutterBottom>Ваш аккаунт</Typography>
+                        <Link href="#" color="inherit" variant="body2">Профиль</Link><br/>
+                        <Link href="#" color="inherit" variant="body2">Трекер</Link><br/>
+                        <Link href="#" color="inherit" variant="body2">Диалоги</Link><br/>
+                        <Link href="#" color="inherit" variant="body2">Настройки</Link><br/>
+                        <Link href="#" color="inherit" variant="body2">ППА</Link><br/>
+                    </Grid>
+                    <Grid size={{xs: 12, sm: 3}}>
+                        <Typography variant="h6" gutterBottom>Разделы</Typography>
+                        <Link href="#" color="inherit" variant="body2">Статьи</Link><br/>
+                        <Link href="#" color="inherit" variant="body2">Новости</Link><br/>
+                        <Link href="#" color="inherit" variant="body2">Хабы</Link><br/>
+                        <Link href="#" color="inherit" variant="body2">Компании</Link><br/>
+                        <Link href="#" color="inherit" variant="body2">Авторы</Link><br/>
+                        <Link href="#" color="inherit" variant="body2">Песочница</Link><br/>
+                    </Grid>
+                    <Grid size={{xs: 12, sm: 3}}>
+                        <Typography variant="h6" gutterBottom>Информация</Typography>
+                        <Link href="#" color="inherit" variant="body2">Устройство сайта</Link><br/>
+                        <Link href="#" color="inherit" variant="body2">Для авторов</Link><br/>
+                        <Link href="#" color="inherit" variant="body2">Для компаний</Link><br/>
+                        <Link href="#" color="inherit" variant="body2">Документы</Link><br/>
+                        <Link href="#" color="inherit" variant="body2">Соглашение</Link><br/>
+                        <Link href="#" color="inherit" variant="body2">Конфиденциальность</Link><br/>
+                    </Grid>
+                    <Grid size={{xs: 12, sm: 3}}>
+                        <Typography variant="h6" gutterBottom>Услуги</Typography>
+                        <Link href="#" color="inherit" variant="body2">Корпоративный блог</Link><br/>
+                        <Link href="#" color="inherit" variant="body2">Медийная реклама</Link><br/>
+                        <Link href="#" color="inherit" variant="body2">Нативные проекты</Link><br/>
+                        <Link href="#" color="inherit" variant="body2">Образовательные программы</Link><br/>
+                        <Link href="#" color="inherit" variant="body2">Стартапам</Link><br/>
+                    </Grid>
+                </Grid>
+                <Divider sx={{my: 3, bgcolor: 'grey.700'}}/>
+                <Box sx={{bgcolor: '#303B44', color: 'white'}} display="flex" justifyContent="space-between"
+                     alignItems="center">
+                    <Typography variant="body2" color="inherit">
+                        © Linkednote
+                    </Typography>
+                    <Box>
+                        <Link href="#" color="inherit">Техническая поддержка</Link> |
+                        <Link href="#" color="inherit">Настройка языка</Link>
+                    </Box>
+                    <Box mt={2} display="flex" justifyContent="center">
+                        <Link href="#" color="inherit"><FacebookIcon/></Link>
+                        <Link href="#" color="inherit"><XIcon/></Link>
+                        <Link href="#" color="inherit"><YouTubeIcon/></Link>
+                        <Link href="#" color="inherit"><TelegramIcon/></Link>
+                    </Box>
+                </Box>
+            </Container>
+        </Box>
     );
 }
 
-export default memo(Footer);
+export default Footer;
