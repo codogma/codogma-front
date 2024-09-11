@@ -9,6 +9,7 @@ import IconButton from "@mui/material/IconButton";
 import Card from "@mui/material/Card";
 import Loading from "@/app/loading";
 import {AvatarImage} from "@/components/AvatarImage";
+import {useRouter} from "next/navigation";
 
 type PageParams = {
     id: number;
@@ -21,6 +22,7 @@ type PageProps = {
 
 export default function Layout({params, children}: PageProps) {
     const categoryId = params.id;
+    const router = useRouter();
     const [category, setCategory] = useState<Category>({} as Category);
 
     const tabs: LinkTabProps[] = [
@@ -35,6 +37,7 @@ export default function Layout({params, children}: PageProps) {
                 setCategory(categoryData);
             } catch (error) {
                 console.error('Error fetching data:', error);
+                router.push('/');
             }
         }
 

@@ -1,18 +1,10 @@
 "use client";
 import React, {FormEvent, useEffect, useState} from "react";
 import {getArticles} from "@/helpers/articleApi";
-import {Article, UserRole} from "@/types";
-import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
-import Link from "next/link";
+import {Article} from "@/types";
 import DOMPurify from "dompurify";
-import {TimeAgo} from "@/components/TimeAgo";
-import {Button} from "@mui/material";
 import Pagination from '@mui/material/Pagination';
 import Stack from '@mui/material/Stack';
-import Card from '@mui/material/Card';
-import CardContent from '@mui/material/CardContent';
-import CardActions from '@mui/material/CardActions';
-import {useAuth} from "@/components/AuthProvider";
 import InputLabel from '@mui/material/InputLabel';
 import TextField from '@mui/material/TextField';
 import MenuItem from '@mui/material/MenuItem';
@@ -23,7 +15,7 @@ import IconButton from '@mui/material/IconButton';
 import SearchIcon from '@mui/icons-material/Search';
 import MenuIcon from '@mui/icons-material/Menu';
 import Menu from '@mui/material/Menu';
-import {AvatarImage} from "@/components/AvatarImage";
+import Articles from "@/components/Articles";
 
 type PageParams = {
     id: number;
@@ -40,6 +32,7 @@ export default function Layout({params}: PageProps) {
     const resultsPerPage30 = 30;
     const minPages = 2;
     const [articles, setArticles] = useState<Article[]>([]);
+    const [loading, setLoading] = useState(true);
     const [totalPages, setTotalPages] = useState<number>(0);
     const [totalElements, setTotalElements] = useState<number>(0);
     const [currentPage, setCurrentPage] = useState<number>(0);
@@ -47,7 +40,6 @@ export default function Layout({params}: PageProps) {
     const [searchValue, setSearchValue] = useState<string>();
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     const [searchType, setSearchType] = useState<'content' | 'tag'>('content');
-    const {state} = useAuth();
 
     const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
         setAnchorEl(event.currentTarget);
@@ -80,6 +72,8 @@ export default function Layout({params}: PageProps) {
                 setTotalElements(totalElements);
             } catch (error) {
                 console.error('Error fetching data:', error);
+            } finally {
+                setLoading(false);
             }
         }
 
@@ -145,47 +139,7 @@ export default function Layout({params}: PageProps) {
                     <SearchIcon/>
                 </IconButton>
             </Paper>
-            {articles?.map((article) => (
-                <Card key={article.id} variant="outlined" className="card">
-                    <CardContent className="card-content">
-                        <div className="meta-container">
-                            <AvatarImage
-                                alt={article.username}
-                                className="article-user-avatar"
-                                src={article.authorAvatarUrl}
-                                variant="rounded"
-                                size={32}
-                            />
-                            <Link href={`/users/${article.username}`}
-                                  className="article-user-name">{article.username}</Link>
-                            <TimeAgo datetime={article.createdAt} className="article-datetime"/>
-                        </div>
-                        <Link href={`/articles/${article.id}`} className="article-title">{article.title}</Link>
-                        <div className="article-category">{article.categories.map((category) => (
-                            <span className="category-item" key={category.id}>
-                            <Link className="category-link" href={`/categories/${category.id}`}>
-                            {category.name}
-                            </Link>
-                        </span>
-                        ))}</div>
-                        <div className="article-content" dangerouslySetInnerHTML={{__html: article.previewContent}}/>
-                    </CardContent>
-                    <CardActions>
-                        <Stack direction="row" spacing={2}>
-                            <Link href={`/articles/${article.id}`}>
-                                <Button className="article-btn" variant="outlined">Read More</Button>
-                            </Link>
-                            {state.user?.username === article.username && state.user.role === UserRole.ROLE_AUTHOR && (
-                                <Link href={`/articles/edit/${article.id}`}>
-                                    <Button className="article-btn" variant="outlined" startIcon={<EditOutlinedIcon/>}>
-                                        Edit
-                                    </Button>
-                                </Link>
-                            )}
-                        </Stack>
-                    </CardActions>
-                </Card>
-            ))}
+            <Articles articles={articles} loading={loading}/>
             {totalPages < minPages ? null : (
                 <Stack spacing={2}
                        sx={{

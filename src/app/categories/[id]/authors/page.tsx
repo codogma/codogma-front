@@ -2,10 +2,7 @@
 import React, {useEffect, useState} from "react";
 import {User} from "@/types";
 import {getAuthors} from "@/helpers/userApi";
-import Link from "next/link";
-import Card from "@mui/material/Card";
-import CardContent from "@mui/material/CardContent";
-import {AvatarImage} from "@/components/AvatarImage";
+import Authors from "@/components/Authors";
 
 type PageParams = {
     id: number;
@@ -19,6 +16,7 @@ type PageProps = {
 function Page({params}: PageProps) {
     const categoryId = params.id
     const [users, setUsers] = useState<User[]>([]);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         async function fetchData() {
@@ -28,6 +26,8 @@ function Page({params}: PageProps) {
                 setUsers(allUsers);
             } catch (error) {
                 console.error('Error fetching data:', error)
+            } finally {
+                setLoading(false);
             }
         }
 
@@ -36,37 +36,7 @@ function Page({params}: PageProps) {
 
     return (
         <>
-            {users && users?.map((user) => (
-                <Card key={user.username} variant="outlined" className="itb-user">
-                    <CardContent>
-                        <div className="user-meta-container">
-                            <AvatarImage
-                                alt={user.username}
-                                className="user-avatar"
-                                src={user.avatarUrl}
-                                variant="rounded"
-                                size={24}
-                            />
-                        </div>
-                        <Link
-                            href={`/users/${user.firstName}${user.lastName}`}
-                            className="user-title">{user.firstName} {user.lastName}</Link>
-                        <Link
-                            href={`/users/${user.username}`} className="user-nickname">@{user.username}</Link>
-                        <div className="user-description">{user.bio}</div>
-                        <div className="user-item_categories">Пишет в категориях:
-                            <div className="user-tags">{user.categories.map((category) => (
-                                <span className="user-tag-item" key={category.id}>
-                            <Link className="user-tag-name" href={`/categories/${category.id}`}>
-                            {category.name}
-                            </Link>
-                        </span>
-                            ))}
-                            </div>
-                        </div>
-                    </CardContent>
-                </Card>
-            ))}
+            <Authors users={users} loading={loading}/>
         </>
     );
 }
