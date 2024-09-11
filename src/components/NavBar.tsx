@@ -23,6 +23,7 @@ import {logout} from "@/helpers/authApi";
 import {UserRole} from "@/types";
 import {useRouter} from "next/navigation";
 import {AvatarImage} from "@/components/AvatarImage";
+import StickyNote2OutlinedIcon from '@mui/icons-material/StickyNote2Outlined';
 
 const NavBar = () => {
     const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
@@ -70,7 +71,7 @@ const NavBar = () => {
                             textDecoration: 'none',
                         }}
                     >
-                        LINKEDNOTE
+                        LINKED<StickyNote2OutlinedIcon/>
                     </Typography>
                     <ButtonGroup variant="text" sx={{display: {xs: 'flex'}, mr: 1, ml: 'auto', color: "inherit"}}>
                         <Link href="/articles/#search-input">

@@ -1,5 +1,5 @@
 "use client";
-import React from 'react';
+import React, {memo} from 'react';
 import {Box, Container, Divider, Link, Typography} from '@mui/material';
 import Grid from '@mui/material/Grid2';
 import FacebookIcon from '@mui/icons-material/Facebook';
@@ -69,4 +69,4 @@ function Footer() {
     );
 }
 
-export default Footer;
+export default memo(Footer);

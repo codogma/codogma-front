@@ -4,6 +4,7 @@ import Typography from "@mui/material/Typography";
 import Grid from '@mui/material/Grid2';
 import NavTabs, {LinkTabProps} from "@/components/NavTabs";
 import React from "react";
+import Banner from "@/components/Banner";
 
 export default function Page() {
 
@@ -17,6 +18,7 @@ export default function Page() {
 
     return (
         <section>
+            <Banner/>
             <section className="your-interest">
                 <Typography variant="h3" className="your-interest-h3">Your interest</Typography>
                 <NavTabs tabs={tabs}/>
