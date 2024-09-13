@@ -1,48 +1,68 @@
 "use client";
-import {
-    Box,
-    Button,
-    Card,
-    Container,
-    Divider,
-    FormControl,
-    FormLabel,
-    Stack,
-    TextField,
-    Typography
-} from "@mui/material";
-import {FacebookIcon, GoogleIcon} from '@/components/CustomIcons';
+import {Box, Button, Card, Container, Divider, Stack, Typography} from "@mui/material";
+import {GithubIcon, GitlabIcon} from '@/components/CustomIcons';
 import Link from "next/link";
-import {useState} from "react";
+import React, {useEffect, useState} from "react";
 import {useRouter} from "next/navigation";
-import {register, RegisterUser} from "@/helpers/authApi";
+import {signUp} from "@/helpers/authApi";
 import {z} from 'zod';
 import {FormProvider, SubmitHandler, useForm} from 'react-hook-form';
 import {zodResolver} from '@hookform/resolvers/zod';
 import {generateAvatar} from "@/helpers/generateAvatar";
+import FormInput from "@/components/FormInput";
+import {AxiosError} from "axios";
 
-const signUpSchema = z.object({
+const SignUpScheme = z.object({
     username: z.string().min(1, {message: "Name is required"}),
     email: z.string().email({message: "Invalid email address"}),
     password: z.string().min(6, {message: "Password must be at least 6 characters long"}),
 });
 
-export default function SignUp() {
+export type OAuthProvider = 'github' | 'gitlab';
+
+export default function Page() {
     const router = useRouter();
     const [serverError, setServerError] = useState('');
 
-    const methods = useForm<RegisterUser>({
-        resolver: zodResolver(signUpSchema),
+    const zodForm = useForm<z.infer<typeof SignUpScheme>>({
+        resolver: zodResolver(SignUpScheme),
+        defaultValues: {
+            username: "",
+            email: "",
+            password: "",
+        }
     });
 
-    const onSubmit: SubmitHandler<RegisterUser> = (data: RegisterUser) => {
-        try {
-            const {username} = data;
-            generateAvatar(username, 200).then(file => register({...data, avatar: file}));
-            router.push("/login");
-        } catch (error) {
-            setServerError('An error occurred during registration.');
+    const {
+        reset,
+        handleSubmit,
+        register,
+        setValue,
+        formState: {isSubmitSuccessful, errors},
+    } = zodForm;
+
+    useEffect(() => {
+        if (isSubmitSuccessful) {
+            reset();
         }
+    }, [isSubmitSuccessful, reset]);
+
+    const onSubmit: SubmitHandler<z.infer<typeof SignUpScheme>> = async (formData) => {
+        try {
+            const {username} = formData;
+            const file = await generateAvatar(username, 200);
+            const requestData = {...formData, avatar: file};
+            await signUp(requestData);
+            router.push("/signup-success");
+        } catch (error: AxiosError | any) {
+            const message = error?.response?.data || 'An error occurred during registration.';
+            setServerError(message);
+        }
+    };
+
+    const handleOAuth2Redirect = (provider: OAuthProvider) => {
+        const redirectSuccessUri = encodeURIComponent(window.location.origin + "/profile-update");
+        window.location.href = `${process.env.NEXT_PUBLIC_BASE_URL}/api/oauth2/authorization/${provider}?redirect_success_uri=${redirectSuccessUri}`;
     };
 
     return (
@@ -50,7 +70,7 @@ export default function SignUp() {
             <Stack
                 sx={{
                     justifyContent: 'center',
-                    height: '100dvh',
+                    height: '70dvh',
                     p: 2,
                 }}
             >
@@ -59,60 +79,50 @@ export default function SignUp() {
                     <Typography
                         component="h1"
                         variant="h4"
-                        sx={{width: '100%', fontSize: 'clamp(2rem, 10vw, 2.15rem)'}}
+                        sx={{textAlign: 'center', width: '100%', fontSize: 'clamp(2rem, 10vw, 2.15rem)'}}
                     >
-                        Sign up
+                        Create an account
                     </Typography>
-                    <FormProvider {...methods}>
+                    <FormProvider {...zodForm}>
                         <Box
                             component="form"
-                            onSubmit={methods.handleSubmit(onSubmit)}
+                            onSubmit={handleSubmit(onSubmit)}
                             sx={{display: 'flex', flexDirection: 'column', gap: 2}}
                         >
-                            <FormControl>
-                                <FormLabel htmlFor="username">Username</FormLabel>
-                                <TextField
-                                    autoComplete="username"
-                                    {...methods.register("username")}
-                                    fullWidth
-                                    id="username"
-                                    placeholder="username"
-                                    error={!!methods.formState.errors.username}
-                                    helperText={methods.formState.errors.username?.message}
-                                />
-                            </FormControl>
-                            <FormControl>
-                                <FormLabel htmlFor="email">Email</FormLabel>
-                                <TextField
-                                    fullWidth
-                                    {...methods.register("email")}
-                                    id="email"
-                                    placeholder="your@email.com"
-                                    autoComplete="email"
-                                    error={!!methods.formState.errors.email}
-                                    helperText={methods.formState.errors.email?.message}
-                                />
-                            </FormControl>
-                            <FormControl>
-                                <FormLabel htmlFor="password">Password</FormLabel>
-                                <TextField
-                                    fullWidth
-                                    {...methods.register("password")}
-                                    type="password"
-                                    id="password"
-                                    placeholder="••••••"
-                                    autoComplete="new-password"
-                                    error={!!methods.formState.errors.password}
-                                    helperText={methods.formState.errors.password?.message}
-                                />
-                            </FormControl>
-                            {serverError && <Typography color="error">{serverError}</Typography>}
+                            <FormInput
+                                id="username"
+                                name="username"
+                                label="Username"
+                                fullWidth
+                                variant="standard"
+                                autoComplete="off"
+                            />
+                            <FormInput
+                                id="email"
+                                name="email"
+                                label="Email"
+                                fullWidth
+                                variant="standard"
+                                autoComplete="off"
+                            />
+                            <FormInput
+                                id="password"
+                                name="password"
+                                label="Password"
+                                fullWidth
+                                type="password"
+                                variant="standard"
+                                autoComplete="new-password"
+                            />
+                            {serverError &&
+                                <Typography sx={{textAlign: 'center'}} color="error">{serverError}</Typography>}
                             <Button
                                 type="submit"
                                 fullWidth
                                 variant="contained"
+                                disabled={isSubmitSuccessful}
                             >
-                                Sign up
+                                {isSubmitSuccessful ? 'Signing up...' : 'Sign up'}
                             </Button>
                             <Typography sx={{textAlign: 'center'}}>
                                 Already have an account?{' '}
@@ -129,18 +139,18 @@ export default function SignUp() {
                         <Button
                             fullWidth
                             variant="outlined"
-                            onClick={() => alert('Sign up with Google')}
-                            startIcon={<GoogleIcon/>}
+                            onClick={() => handleOAuth2Redirect('github')}
+                            startIcon={<GithubIcon/>}
                         >
-                            Sign up with Google
+                            Sign up with Github
                         </Button>
                         <Button
                             fullWidth
                             variant="outlined"
-                            onClick={() => alert('Sign up with Facebook')}
-                            startIcon={<FacebookIcon/>}
+                            onClick={() => handleOAuth2Redirect('gitlab')}
+                            startIcon={<GitlabIcon/>}
                         >
-                            Sign up with Facebook
+                            Sign up with Gitlab
                         </Button>
                     </Box>
                 </Card>

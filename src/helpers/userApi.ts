@@ -1,6 +1,7 @@
 import {axiosInstance} from "@/helpers/axiosInstance";
 import {User, UserRole} from "@/types";
 import Cookies from "js-cookie";
+import {generateAvatarUrl} from "@/helpers/generateAvatar";
 
 export type UserUpdate = {
     username?: string,
@@ -23,7 +24,7 @@ export const updateUser = async (requestData: UserUpdate): Promise<User> => {
         })
         const user: User = {
             ...response.data,
-            avatarUrl: `${process.env.NEXT_PUBLIC_BASE_URL}${response.data.avatarUrl}?t=${new Date().getTime()}`
+            avatarUrl: response.data.avatarUrl ? `${process.env.NEXT_PUBLIC_BASE_URL}${response.data.avatarUrl}?t=${new Date().getTime()}` : await generateAvatarUrl(response.data.username, 200)
         };
         Cookies.set('user', JSON.stringify(user), {secure: true, sameSite: 'strict'});
         window.dispatchEvent(new Event("storage"));
@@ -38,9 +39,9 @@ export const updateUser = async (requestData: UserUpdate): Promise<User> => {
 export const getUsers = async (): Promise<User[]> => {
     try {
         const response = await axiosInstance.get('/users');
-        return response.data.map((user: User) => ({
+        return response.data.map(async (user: User) => ({
             ...user,
-            imageUrl: `${process.env.NEXT_PUBLIC_BASE_URL}${user.avatarUrl}?t=${new Date().getTime()}`
+            imageUrl: user.avatarUrl ? `${process.env.NEXT_PUBLIC_BASE_URL}${user.avatarUrl}?t=${new Date().getTime()}` : await generateAvatarUrl(user.username, 200)
         }))
     } catch (error) {
         console.error('Error fetching users:', error);
@@ -57,10 +58,9 @@ export const getAuthors = async (categoryId?: number): Promise<User[]> => {
                 role: UserRole.ROLE_AUTHOR
             }
         });
-        const users: User[] = response.data;
-        return users.map((user: User) => ({
+        return response.data.map(async (user: User) => ({
             ...user,
-            avatarUrl: `${process.env.NEXT_PUBLIC_BASE_URL}${user.avatarUrl}?t=${new Date().getTime()}`
+            avatarUrl: user.avatarUrl ? `${process.env.NEXT_PUBLIC_BASE_URL}${user.avatarUrl}?t=${new Date().getTime()}` : await generateAvatarUrl(user.username, 200)
         }))
     } catch (error) {
         console.error('Error fetching users:', error);
@@ -69,19 +69,19 @@ export const getAuthors = async (categoryId?: number): Promise<User[]> => {
 };
 
 
-export const getUserByUsername = async (username: string): Promise<User> => {
+export const getUserByUsername = async (username?: string): Promise<User> => {
     try {
         const response = await axiosInstance.get(`/users/${username}`);
         return {
             ...response.data,
-            avatarUrl: `${process.env.NEXT_PUBLIC_BASE_URL}${response.data.avatarUrl}?t=${new Date().getTime()}`,
-            subscribers: response.data.subscribers.map((user: User) => ({
+            avatarUrl: response.data.avatarUrl ? `${process.env.NEXT_PUBLIC_BASE_URL}${response.data.avatarUrl}?t=${new Date().getTime()}` : await generateAvatarUrl(response.data.username, 200),
+            subscribers: response.data.subscribers.map(async (user: User) => ({
                 ...user,
-                avatarUrl: `${process.env.NEXT_PUBLIC_BASE_URL}${user.avatarUrl}?t=${new Date().getTime()}`
+                avatarUrl: user.avatarUrl ? `${process.env.NEXT_PUBLIC_BASE_URL}${user.avatarUrl}?t=${new Date().getTime()}` : await generateAvatarUrl(user.username, 200)
             })),
-            subscriptions: response.data.subscriptions.map((user: User) => ({
+            subscriptions: response.data.subscriptions.map(async (user: User) => ({
                 ...user,
-                avatarUrl: `${process.env.NEXT_PUBLIC_BASE_URL}${user.avatarUrl}?t=${new Date().getTime()}`
+                avatarUrl: user.avatarUrl ? `${process.env.NEXT_PUBLIC_BASE_URL}${user.avatarUrl}?t=${new Date().getTime()}` : await generateAvatarUrl(user.username, 200)
             }))
         };
     } catch (error) {

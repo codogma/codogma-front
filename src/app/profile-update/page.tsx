@@ -13,6 +13,7 @@ import IconButton from "@mui/material/IconButton";
 import {WithAuth} from "@/components/WithAuth";
 import Link from "next/link";
 import {AvatarImage} from "@/components/AvatarImage";
+import {useAuth} from "@/components/AuthProvider";
 
 const UserScheme = z.object({
     username: z.optional(z.string()
@@ -29,14 +30,6 @@ const UserScheme = z.object({
     shortInfo: z.optional(z.string())
 });
 
-type PageParams = {
-    username: string;
-};
-
-type PageProps = {
-    params: PageParams;
-};
-
 const VisuallyHiddenInput = styled("input")({
     clip: "rect(0 0 0 0)",
     clipPath: "inset(50%)",
@@ -49,8 +42,9 @@ const VisuallyHiddenInput = styled("input")({
     width: 1,
 });
 
-function Users({params}: PageProps) {
-    const username: string = params.username;
+function Users() {
+    const {state} = useAuth();
+    const username: string | undefined = state.user?.username
     const [user, setUser] = useState<User>();
     const [avatarFile, setAvatarFile] = useState<File>();
     const [users, setUsers] = useState<User[]>([]);

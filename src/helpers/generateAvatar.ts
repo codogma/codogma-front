@@ -29,3 +29,8 @@ export const generateAvatar = async (value: string, size: number): Promise<File>
         img.src = url;
     });
 };
+
+export const generateAvatarUrl = async (value: string, size: number): Promise<string> => {
+    const file = await generateAvatar(value, size);
+    return URL.createObjectURL(file);
+}

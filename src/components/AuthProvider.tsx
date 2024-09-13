@@ -44,26 +44,26 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({children}) => {
 
     useEffect(() => {
         const handleStorageChange = () => {
-            const savedUser = Cookies.get('user');
-            if (savedUser) {
-                currentUser()
-                    .then((user) => {
-                        if (user) {
-                            dispatch({type: 'LOGIN', user});
-                            Cookies.set('user', JSON.stringify(user), {secure: true, sameSite: 'strict'});
-                        } else {
-                            dispatch({type: 'LOGOUT'});
-                            Cookies.remove('user');
-                        }
-                    })
-                    .catch(() => {
+            // const savedUser = Cookies.get('user');
+            // if (savedUser) {
+            currentUser()
+                .then((user) => {
+                    if (user) {
+                        dispatch({type: 'LOGIN', user});
+                        Cookies.set('user', JSON.stringify(user), {secure: true, sameSite: 'strict'});
+                    } else {
                         dispatch({type: 'LOGOUT'});
                         Cookies.remove('user');
-                    }).finally(() => setLoading(false));
-            } else {
-                dispatch({type: 'LOGOUT'});
-                setLoading(false);
-            }
+                    }
+                })
+                .catch(() => {
+                    dispatch({type: 'LOGOUT'});
+                    Cookies.remove('user');
+                }).finally(() => setLoading(false));
+            // } else {
+            //     dispatch({type: 'LOGOUT'});
+            //     setLoading(false);
+            // }
         };
 
         handleStorageChange();

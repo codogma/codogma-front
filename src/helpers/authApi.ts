@@ -1,40 +1,74 @@
 import {axiosInstance} from "@/helpers/axiosInstance";
 import {User} from "@/types";
 import Cookies from 'js-cookie';
+import axios, {AxiosError} from "axios";
+import {generateAvatarUrl} from "@/helpers/generateAvatar";
 
-export type RegisterUser = {
+export type SignUp = {
     username: string
     email: string
     password: string
     avatar: File
 }
 
-export type LoginUser = {
+export type SignIn = {
     usernameOrEmail: string,
     password: string
 }
 
-export const register = (requestData: RegisterUser) => {
-    axiosInstance.post("/auth/signup", requestData, {
-        headers: {
-            "Content-Type": "multipart/form-data"
-        }
-    })
-        .then((response) => console.log(response.data))
-        .catch((error: any) => {
-            console.error("Error registering user: " + error.message);
+export const signUp = async (requestData: SignUp): Promise<User> => {
+    try {
+        const response = await axiosInstance.post("/auth/signup", requestData, {
+            headers: {
+                "Content-Type": "multipart/form-data"
+            }
         });
+        console.log("User registered successfully:", response.data);
+        return response.data;
+    } catch (error: AxiosError | any) {
+        if (axios.isAxiosError(error)) {
+            const serverMessage = error.response?.data || 'An unknown error occurred';
+            console.error("Error registering user: " + serverMessage);
+        } else {
+            console.error("An unexpected error occurred: " + error.message);
+        }
+        throw error;
+    }
 }
 
-export const login = async (requestData: LoginUser): Promise<User> => {
+export const confirmEmail = async (token: string | null): Promise<string> => {
+    try {
+        const response = await axiosInstance.post("/auth/confirm-email", null, {
+            params: {
+                token
+            }
+        });
+        return response.data;
+    } catch (error: AxiosError | any) {
+        if (axios.isAxiosError(error)) {
+            const serverMessage = error.response?.data || 'An unknown error occurred';
+            console.error("Error confirming email: " + serverMessage);
+        } else {
+            console.error("An unexpected error occurred: " + error.message);
+        }
+        throw error;
+    }
+}
+
+export const signIn = async (requestData: SignIn): Promise<User> => {
     try {
         await axiosInstance.post("/auth/login", requestData);
         const user = await currentUser();
         window.dispatchEvent(new Event("storage"));
         return user;
-    } catch (error: any) {
-        console.error("Error logging in user: " + error.message);
-        throw new Error("Error logging in user");
+    } catch (error: AxiosError | any) {
+        if (axios.isAxiosError(error)) {
+            const serverMessage = error.response?.data || 'An unknown error occurred';
+            console.error("Error signing in user: " + serverMessage);
+        } else {
+            console.error("An unexpected error occurred: " + error.message);
+        }
+        throw error;
     }
 }
 
@@ -54,7 +88,7 @@ export const currentUser = async (): Promise<User> => {
         const response = await axiosInstance.get("/auth/current-user");
         const user: User = {
             ...response.data,
-            avatarUrl: `${process.env.NEXT_PUBLIC_BASE_URL}${response.data.avatarUrl}`
+            avatarUrl: response.data.avatarUrl ? `${process.env.NEXT_PUBLIC_BASE_URL}${response.data.avatarUrl}` : await generateAvatarUrl(response.data.username, 200)
         };
         Cookies.set('user', JSON.stringify(user), {secure: true, sameSite: 'strict'});
         return user

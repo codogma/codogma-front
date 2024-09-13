@@ -106,7 +106,7 @@ export default function Page({params}: PageProps) {
                             </div>
                         </div>
                         {state.user?.username === username && (
-                            <Link href={`/users/edit/${user?.username}`}><Button type="submit">Update</Button></Link>
+                            <Link href="/profile-update"><Button type="submit">Update</Button></Link>
                         )}
                     </div>
                 </CardContent>
