@@ -5,7 +5,6 @@ import NavTabs, {LinkTabProps} from "@/components/NavTabs";
 import React from "react";
 import Banner from "@/components/Banner";
 import Carousel from "@/components/Carousel";
-import Grid from "@mui/material/Grid2";
 
 
 export default function Page() {
@@ -27,13 +26,6 @@ export default function Page() {
             </section>
             <Carousel/>
             <section className="carousels-section">
-                <section className="recent-added">
-                    <Grid container spacing={2}>
-                        <Grid size={8}>
-                            <Typography variant="h3">Recently added</Typography>
-                        </Grid>
-                    </Grid>
-                </section>
                 <section className="recommended">
                     <Typography variant="h3">Recommended for you</Typography>
                 </section>

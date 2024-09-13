@@ -1,14 +1,17 @@
 "use client";
 import React from 'react';
-import {Box, Paper, Typography} from '@mui/material';
+import {Paper, Typography} from '@mui/material';
 import Grid from '@mui/material/Grid2';
+import Box from "@mui/material/Box";
 
 const Banner = () => {
     return (
         <Paper
             sx={{
+                backgroundImage: 'url(/images/banner.png)',
+                backgroundSize: 'cover',
+                backgroundPosition: 'center',
                 padding: '20px',
-                backgroundColor: '#004492',
                 color: '#fff',
                 textAlign: 'center',
                 borderRadius: '8px',

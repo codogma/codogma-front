@@ -1,13 +1,11 @@
 "use client";
 import React from 'react';
-import {styled} from '@mui/material/styles';
 import {Swiper, SwiperSlide} from 'swiper/react';
 import {Autoplay, Navigation, Pagination} from 'swiper/modules';
-import {Box, Card, CardActions, CardContent, IconButtonProps, Typography} from '@mui/material';
-import Grid from "@mui/material/Grid2";
-import Collapse from '@mui/material/Collapse';
-import IconButton from "@mui/material/IconButton";
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import 'swiper/css';
+import 'swiper/css/navigation';
+import 'swiper/css/pagination';
+import {Box, Card, CardContent, Typography} from '@mui/material';
 
 interface DataItem {
     type: string;
@@ -16,127 +14,126 @@ interface DataItem {
     author: string;
 }
 
-interface ExpandMoreProps extends IconButtonProps {
-    expand: boolean;
-}
-
 const data: DataItem[] = [
     {
         type: 'Book',
         title: 'Artificial Intelligence of Things (AIoT)',
-        description:
-            'Artificial Intelligence of Things (AIoT): Current and Future Trends brings together researchers and developers from a wide range of domains to share ideas on how to implement technical advances...',
+        description: 'Artificial Intelligence of Things (AIoT): Current and Future Trends brings together researchers and developers...',
         author: 'By Fadi Al-Turjman, Fahriye Altinay, & Zehra Altinay Gazi',
     },
     {
         type: 'Book',
-        title: 'Artificial Intelligence of Things (AIoT)',
-        description:
-            'Artificial Intelligence of Things (AIoT): Current and Future Trends brings together researchers and developers from a wide range of domains to share ideas on how to implement technical advances...',
-        author: 'By Fadi Al-Turjman, Fahriye Altinay, & Zehra Altinay Gazi',
+        title: 'The Internet of Things (IoT)',
+        description: 'A comprehensive introduction to the Internet of Things, covering all major aspects and trends...',
+        author: 'By John Doe, Jane Smith',
     },
     {
         type: 'Book',
         title: 'Artificial Intelligence of Things (AIoT)',
-        description:
-            'Artificial Intelligence of Things (AIoT): Current and Future Trends brings together researchers and developers from a wide range of domains to share ideas on how to implement technical advances...',
+        description: 'Artificial Intelligence of Things (AIoT): Current and Future Trends brings together researchers and developers...',
         author: 'By Fadi Al-Turjman, Fahriye Altinay, & Zehra Altinay Gazi',
+    },
+    {
+        type: 'Book',
+        title: 'The Internet of Things (IoT)',
+        description: 'A comprehensive introduction to the Internet of Things, covering all major aspects and trends...',
+        author: 'By John Doe, Jane Smith',
+    },
+    {
+        type: 'Book',
+        title: 'Artificial Intelligence of Things (AIoT)',
+        description: 'Artificial Intelligence of Things (AIoT): Current and Future Trends brings together researchers and developers...',
+        author: 'By Fadi Al-Turjman, Fahriye Altinay, & Zehra Altinay Gazi',
+    },
+    {
+        type: 'Book',
+        title: 'The Internet of Things (IoT)',
+        description: 'A comprehensive introduction to the Internet of Things, covering all major aspects and trends...',
+        author: 'By John Doe, Jane Smith',
+    },
+    {
+        type: 'Book',
+        title: 'Artificial Intelligence of Things (AIoT)',
+        description: 'Artificial Intelligence of Things (AIoT): Current and Future Trends brings together researchers and developers...',
+        author: 'By Fadi Al-Turjman, Fahriye Altinay, & Zehra Altinay Gazi',
+    },
+    {
+        type: 'Book',
+        title: 'The Internet of Things (IoT)',
+        description: 'A comprehensive introduction to the Internet of Things, covering all major aspects and trends...',
+        author: 'By John Doe, Jane Smith',
+    },
+    {
+        type: 'Book',
+        title: 'The Internet of Things (IoT)',
+        description: 'A comprehensive introduction to the Internet of Things, covering all major aspects and trends...',
+        author: 'By John Doe, Jane Smith',
     }
 ];
 
-const ExpandMore = styled((props: ExpandMoreProps) => {
-    const {expand, ...other} = props;
-    return <IconButton {...other} />;
-})(({theme}) => ({
-    marginLeft: 'auto',
-    transition: theme.transitions.create('transform', {
-        duration: theme.transitions.duration.shortest,
-    }),
-    variants: [
-        {
-            props: ({expand}) => !expand,
-            style: {
-                transform: 'rotate(0deg)',
-            },
-        },
-        {
-            props: ({expand}) => !!expand,
-            style: {
-                transform: 'rotate(180deg)',
-            },
-        },
-    ],
-}));
-
-
-const RecentlyAdded: React.FC = () => {
-    const [expanded, setExpanded] = React.useState(false);
-
-    const handleExpandClick = () => {
-        setExpanded(!expanded);
-    };
+const Carousel: React.FC = () => {
 
     return (
-        <Box sx={{maxWidth: 800, margin: 'auto', paddingTop: '20px'}}>
+        <Box sx={{width: '100%', maxWidth: 1200, margin: 'auto', padding: '20px 0'}}>
+            <Typography variant="h5" gutterBottom>
+                Recently Added
+            </Typography>
             <Swiper
                 modules={[Autoplay, Pagination, Navigation]}
                 spaceBetween={30}
-                centeredSlides={true}
+                slidesPerView={3}
+                slidesPerGroup={3}
+                navigation={true}
+                pagination={{clickable: true}}
                 autoplay={{
-                    delay: 3000,
+                    delay: 20000,
                     disableOnInteraction: false,
                 }}
-                pagination={{
-                    clickable: true,
-                }}
-                navigation={true}
                 loop={true}
+                className="swiper"
             >
-                <SwiperSlide>
-                    <Box sx={{padding: 2, backgroundColor: '#f5f5f5', borderRadius: 2}}>
-                        <Typography variant="h5" gutterBottom>
-                            Recently Added
-                        </Typography>
-                        <Grid container spacing={2}>
-                            {data.map((item: DataItem, index: number) => (
-                                <Grid size={{xs: 12, md: 4}} key={index}>
-                                    <Card>
-                                        <CardContent>
-                                            <Typography variant="subtitle1" color="text.secondary">
-                                                {item.type}
-                                            </Typography>
-                                            <Typography variant="h6" gutterBottom>
-                                                {item.title}
-                                            </Typography>
-                                            <Typography variant="body2" color="text.secondary">
-                                                {item.description}
-                                            </Typography>
-                                            <Typography variant="caption" display="block" gutterBottom>
-                                                {item.author}
-                                            </Typography>
-                                            <ExpandMore
-                                                expand={expanded}
-                                                onClick={handleExpandClick}
-                                                aria-expanded={expanded}
-                                                aria-label="show more"
-                                            >
-                                                <ExpandMoreIcon/>
-                                            </ExpandMore>
-                                        </CardContent>
-                                        <Collapse in={expanded} timeout="auto" unmountOnExit>
-                                            <CardActions>
-                                                <Typography sx={{marginBottom: 2}}>Method:</Typography>
-                                            </CardActions>
-                                        </Collapse>
-                                    </Card>
-                                </Grid>
-                            ))}
-                        </Grid>
-                    </Box>
-                </SwiperSlide>
+                {data.map((item, index) => (
+                    <SwiperSlide key={index}>
+                        <Box sx={{backgroundColor: '#f5f5f5', borderRadius: 2}}>
+                            <Card sx={{
+                                height: 300,
+                                display: 'flex',
+                                flexDirection: 'column',
+                                justifyContent: 'space-between'
+                            }}
+                                  variant="outlined"
+                            >
+                                <CardContent sx={{flexGrow: 1}}>
+                                    <Typography variant="subtitle1" color="text.secondary">
+                                        {item.type}
+                                    </Typography>
+                                    <Typography variant="h6" gutterBottom>
+                                        {item.title}
+                                    </Typography>
+                                    <Typography
+                                        variant="body2"
+                                        color="text.secondary"
+                                        sx={{
+                                            display: '-webkit-box',
+                                            WebkitBoxOrient: 'vertical',
+                                            WebkitLineClamp: 3,
+                                            overflow: 'hidden',
+                                            textOverflow: 'ellipsis',
+                                        }}
+                                    >
+                                        {item.description}
+                                    </Typography>
+                                    <Typography variant="caption" display="block" gutterBottom>
+                                        {item.author}
+                                    </Typography>
+                                </CardContent>
+                            </Card>
+                        </Box>
+                    </SwiperSlide>
+                ))}
             </Swiper>
         </Box>
     );
 };
 
-export default RecentlyAdded;
+export default Carousel;

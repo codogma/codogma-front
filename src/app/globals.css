@@ -272,4 +272,11 @@
             content: "";
         }
     }
+
+    .swiper {
+        --swiper-navigation-size: 44px;
+        --swiper-navigation-top-offset: 90%;
+        --swiper-navigation-sides-offset: 10px;
+        --swiper-navigation-color: #1976d2;
+    }
 }
