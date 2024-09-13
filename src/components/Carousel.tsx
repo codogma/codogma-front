@@ -3,10 +3,11 @@ import React from 'react';
 import {styled} from '@mui/material/styles';
 import {Swiper, SwiperSlide} from 'swiper/react';
 import {Autoplay, Navigation, Pagination} from 'swiper/modules';
-import {Box, Button, Card, CardActions, CardContent, IconButtonProps, Typography} from '@mui/material';
+import {Box, Card, CardActions, CardContent, IconButtonProps, Typography} from '@mui/material';
 import Grid from "@mui/material/Grid2";
 import Collapse from '@mui/material/Collapse';
 import IconButton from "@mui/material/IconButton";
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
 interface DataItem {
     type: string;
@@ -113,10 +114,18 @@ const RecentlyAdded: React.FC = () => {
                                             <Typography variant="caption" display="block" gutterBottom>
                                                 {item.author}
                                             </Typography>
+                                            <ExpandMore
+                                                expand={expanded}
+                                                onClick={handleExpandClick}
+                                                aria-expanded={expanded}
+                                                aria-label="show more"
+                                            >
+                                                <ExpandMoreIcon/>
+                                            </ExpandMore>
                                         </CardContent>
                                         <Collapse in={expanded} timeout="auto" unmountOnExit>
                                             <CardActions>
-                                                <Button size="small">Learn More</Button>
+                                                <Typography sx={{marginBottom: 2}}>Method:</Typography>
                                             </CardActions>
                                         </Collapse>
                                     </Card>
