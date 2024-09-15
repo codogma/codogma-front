@@ -71,7 +71,8 @@ const data: DataItem[] = [
     }
 ];
 
-const Carousel: React.FC = () => {
+
+const Carousel: React.FC = (props) => {
 
     return (
         <Box sx={{width: '100%', maxWidth: 1200, margin: 'auto', padding: '20px 0'}}>

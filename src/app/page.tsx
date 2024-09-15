@@ -25,14 +25,16 @@ export default function Page() {
                 <NavTabs tabs={tabs}/>
             </section>
             <Carousel/>
-            <section className="carousels-section">
-                <section className="recommended">
-                    <Typography variant="h3">Recommended for you</Typography>
-                </section>
-                <section className="popular">
-                    <Typography variant="h3">Most popular</Typography>
-                </section>
-            </section>
+            <Carousel/>
+            <Carousel/>
+            {/*<section className="carousels-section">*/}
+            {/*    <section className="recommended">*/}
+            {/*        <Typography variant="h3">Recommended for you</Typography>*/}
+            {/*    </section>*/}
+            {/*    <section className="popular">*/}
+            {/*        <Typography variant="h3">Most popular</Typography>*/}
+            {/*    </section>*/}
+            {/*</section>*/}
         </section>
     );
 }

@@ -1,6 +1,6 @@
 "use client";
 import * as React from 'react';
-import {memo, useState} from 'react';
+import {memo, useEffect, useState} from 'react';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
@@ -12,21 +12,25 @@ import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import SearchIcon from '@mui/icons-material/Search';
-import CreateIcon from '@mui/icons-material/Create';
 import LanguageIcon from '@mui/icons-material/Language';
-import CategoryIcon from '@mui/icons-material/Category';
 import Link from "next/link";
 import {useAuth} from "@/components/AuthProvider";
 import {ThemeToggleButton} from "@/components/ThemeContext";
-import {ButtonGroup} from "@mui/material";
+import {ButtonGroup, Skeleton} from "@mui/material";
 import {logout} from "@/helpers/authApi";
 import {UserRole} from "@/types";
 import {useRouter} from "next/navigation";
 import {AvatarImage} from "@/components/AvatarImage";
 import StickyNote2OutlinedIcon from '@mui/icons-material/StickyNote2Outlined';
+import LoginIcon from '@mui/icons-material/Login';
+import CreateIcon from "@mui/icons-material/Create";
+import CategoryIcon from "@mui/icons-material/Category";
+import PersonIcon from '@mui/icons-material/Person';
+import LogoutIcon from '@mui/icons-material/Logout';
 
 const NavBar = () => {
     const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
+    const [loading, setLoading] = useState(true);
     const router = useRouter();
     const {state} = useAuth();
     console.log(state);
@@ -48,6 +52,18 @@ const NavBar = () => {
     const handleCloseUserMenu = () => {
         setAnchorElUser(null);
     };
+
+    useEffect(() => {
+        async function fetchData() {
+            try {
+                setLoading(false);
+            } catch (error) {
+                console.error("Error fetching data:", error);
+            }
+        }
+
+        fetchData();
+    }, []);
 
     return (
         <AppBar position="sticky">
@@ -79,20 +95,6 @@ const NavBar = () => {
                                 <SearchIcon/>
                             </IconButton>
                         </Link>
-                        {state.user?.role === UserRole.ROLE_AUTHOR && (
-                            <Link href={`/create-article`}>
-                                <IconButton color="inherit">
-                                    <CreateIcon/>
-                                </IconButton>
-                            </Link>
-                        )}
-                        {state.user?.role === UserRole.ROLE_ADMIN && (
-                            <Link href={`/create-category`}>
-                                <IconButton color="inherit">
-                                    <CategoryIcon/>
-                                </IconButton>
-                            </Link>
-                        )}
                         <IconButton color="inherit">
                             <LanguageIcon/>
                         </IconButton>
@@ -102,18 +104,24 @@ const NavBar = () => {
                         {!state.isAuthenticated && (
                             <>
                                 <Link href={`/register`}><Button color="inherit">Register</Button></Link>
-                                <Link href={`/login`}><Button color="inherit">Log in</Button></Link>
+                                <Link href={`/login`}><Button color="inherit"><LoginIcon/></Button></Link>
                             </>
                         )}
                         {state.isAuthenticated && (
                             <>
-                                <Tooltip title="Open settings">
-                                    <IconButton onClick={handleOpenUserMenu} color="inherit" sx={{p: 0}}>
-                                        <AvatarImage alt={state.user?.username} key={new Date().getTime()}
-                                                     variant="rounded"
-                                                     src={state.user?.avatarUrl} size={40}/>
-                                    </IconButton>
-                                </Tooltip>
+                                {loading ? (
+                                    <div className="Open settings">
+                                        <Skeleton variant="rounded" width={40} height={40}/>
+                                    </div>
+                                ) : (
+                                    <Tooltip title="Open settings">
+                                        <IconButton onClick={handleOpenUserMenu} color="inherit" sx={{p: 0}}>
+                                            <AvatarImage alt={state.user?.username} key={new Date().getTime()}
+                                                         variant="rounded"
+                                                         src={state.user?.avatarUrl} size={40}/>
+                                        </IconButton>
+                                    </Tooltip>
+                                )}
                                 <Menu
                                     sx={{mt: '45px'}}
                                     id="menu-appbar"
@@ -131,10 +139,28 @@ const NavBar = () => {
                                     onClose={handleCloseUserMenu}
                                 >
                                     <MenuItem onClick={handleProfile}>
-                                        <Typography textAlign="center">Profile</Typography>
+                                        <Typography
+                                            textAlign="center"><PersonIcon fontSize="small"/> Profile</Typography>
                                     </MenuItem>
+                                    {state.user?.role === UserRole.ROLE_AUTHOR && (
+                                        <Link href={`/create-article`}>
+                                            <MenuItem>
+                                                <Typography textAlign="center"><CreateIcon fontSize="small"/> Create
+                                                    article</Typography>
+                                            </MenuItem>
+                                        </Link>
+                                    )}
+                                    {state.user?.role === UserRole.ROLE_ADMIN && (
+                                        <Link href={`/create-category`}>
+                                            <MenuItem>
+                                                <Typography textAlign="center"><CategoryIcon fontSize="small"/> Create
+                                                    category</Typography>
+                                            </MenuItem>
+                                        </Link>
+                                    )}
                                     <MenuItem onClick={handleLogout}>
-                                        <Typography textAlign="center">Log out</Typography>
+                                        <Typography textAlign="center"><LogoutIcon fontSize="small"/> Log
+                                            out</Typography>
                                     </MenuItem>
                                 </Menu>
                             </>

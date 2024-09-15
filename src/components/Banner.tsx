@@ -38,9 +38,9 @@ const Banner = () => {
                                     sx={{
                                         width: '400px',
                                         height: '140px',
-                                        backgroundColor: '#ffffff',
                                         borderRadius: '4px',
                                         display: 'flex',
+                                        backgroundColor: '#ffffff',
                                         justifyContent: 'center',
                                         alignItems: 'center',
                                         border: '1px solid #ddd'
