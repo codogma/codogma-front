@@ -3,6 +3,7 @@ import {createContext, ReactNode, useContext, useEffect, useReducer, useState} f
 import {currentUser} from "@/helpers/authApi";
 import {User} from "@/types";
 import Cookies from 'js-cookie';
+import Spinner from "@/components/Spinner";
 
 interface AuthState {
     isAuthenticated: boolean;
@@ -74,7 +75,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({children}) => {
     }, []);
 
     if (loading) {
-        return <div>Loading...</div>; // Можно заменить на компонент загрузки
+        return <Spinner/>;
     }
 
     return (

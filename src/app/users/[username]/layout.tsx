@@ -5,13 +5,13 @@ import NavTabs, {LinkTabProps} from "@/components/NavTabs";
 import CardContent from "@mui/material/CardContent";
 import {Badge} from "@mui/material";
 import Card from "@mui/material/Card";
-import Loading from "@/app/loading";
 import {checkSubscription, getUserByUsername, subscribeToUser, unsubscribeToUser,} from "@/helpers/userApi";
 import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
 import Popover from "@mui/material/Popover";
 import {useAuth} from "@/components/AuthProvider";
 import {AvatarImage} from "@/components/AvatarImage";
+import Spinner from "@/components/Spinner";
 
 type PageParams = {
     username: string;
@@ -136,7 +136,7 @@ export default function Layout({params, children}: PageProps) {
                 </CardContent>
             </Card>
             <NavTabs tabs={tabs}/>
-            <Suspense fallback={<Loading/>}>
+            <Suspense fallback={<Spinner/>}>
                 {children}
             </Suspense>
         </section>

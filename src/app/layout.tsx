@@ -8,9 +8,9 @@ import {AuthProvider} from "@/components/AuthProvider";
 import {ColorModeProvider} from "@/components/ThemeContext";
 import Container from "@mui/material/Container";
 import React, {Suspense} from "react";
-import Loading from "@/app/loading";
 import NavTabs from "@/components/NavTabs";
 import Footer from "@/components/Footer";
+import Spinner from "@/components/Spinner";
 
 const inter = Inter({subsets: ["latin"]});
 
@@ -35,7 +35,7 @@ export default function RootLayout({
                         <NavBar/>
                         <Container maxWidth="lg">
                             <NavTabs/>
-                            <Suspense fallback={<Loading/>}>
+                            <Suspense fallback={<Spinner/>}>
                                 {children}
                             </Suspense>
                         </Container>

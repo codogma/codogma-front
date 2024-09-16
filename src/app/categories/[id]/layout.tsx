@@ -7,9 +7,9 @@ import CardContent from "@mui/material/CardContent";
 import {Badge} from "@mui/material";
 import IconButton from "@mui/material/IconButton";
 import Card from "@mui/material/Card";
-import Loading from "@/app/loading";
 import {AvatarImage} from "@/components/AvatarImage";
 import {useRouter} from "next/navigation";
+import Spinner from "@/components/Spinner";
 
 type PageParams = {
     id: number;
@@ -66,7 +66,7 @@ export default function Layout({params, children}: PageProps) {
                 </CardContent>
             </Card>
             <NavTabs tabs={tabs}/>
-            <Suspense fallback={<Loading/>}>
+            <Suspense fallback={<Spinner/>}>
                 {children}
             </Suspense>
         </section>

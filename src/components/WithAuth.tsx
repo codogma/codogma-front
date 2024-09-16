@@ -2,6 +2,7 @@
 import {FC, useEffect, useState} from 'react';
 import {useRouter} from 'next/navigation';
 import {useAuth} from "@/components/AuthProvider";
+import Spinner from "@/components/Spinner";
 
 export const WithAuth = <P extends object>(WrappedComponent: FC<P>) => {
     const Wrapper: FC<P> = (props) => {
@@ -18,7 +19,7 @@ export const WithAuth = <P extends object>(WrappedComponent: FC<P>) => {
         }, [state.isAuthenticated, router]);
 
         if (isLoading) {
-            return <div>Loading...</div>; // Можно заменить на ваш компонент загрузки
+            return <Spinner/>;
         }
 
         return <WrappedComponent {...props} />;

@@ -14,6 +14,7 @@ import {WithAuth} from "@/components/WithAuth";
 import Link from "next/link";
 import {AvatarImage} from "@/components/AvatarImage";
 import {useAuth} from "@/components/AuthProvider";
+import Spinner from "@/components/Spinner";
 
 const UserScheme = z.object({
     username: z.optional(z.string()
@@ -129,7 +130,7 @@ function Users() {
     }
 
     if (!user) {
-        return <div>Loading...</div>;
+        return <Spinner/>;
     }
 
     return (
