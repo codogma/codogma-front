@@ -88,7 +88,7 @@ export const currentUser = async (): Promise<User> => {
         const response = await axiosInstance.get("/auth/current-user");
         const user: User = {
             ...response.data,
-            avatarUrl: response.data.avatarUrl ? `${process.env.NEXT_PUBLIC_BASE_URL}${response.data.avatarUrl}` : await generateAvatarUrl(response.data.username, 200)
+            avatarUrl: response.data.avatarUrl ? `${process.env.NEXT_PUBLIC_BASE_URL}${response.data.avatarUrl}?t=${new Date().getTime()}` : await generateAvatarUrl(response.data.username, 200),
         };
         Cookies.set('user', JSON.stringify(user), {secure: true, sameSite: 'strict'});
         return user

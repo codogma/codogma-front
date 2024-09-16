@@ -1,7 +1,13 @@
 "use client";
 import * as React from 'react';
+import {FC} from 'react';
 import Stack from '@mui/material/Stack';
 import CircularProgress from '@mui/material/CircularProgress';
+import clsx from "clsx";
+
+interface SpinnerProps {
+    className?: string;
+}
 
 function GradientCircularProgress() {
     return (
@@ -14,14 +20,14 @@ function GradientCircularProgress() {
                     </linearGradient>
                 </defs>
             </svg>
-            <CircularProgress sx={{'svg circle': {stroke: 'url(#my_gradient)'}}}/>
+            <CircularProgress size={60} sx={{'svg circle': {stroke: 'url(#my_gradient)'}}}/>
         </React.Fragment>
     );
 }
 
-export default function Spinner() {
+export const Spinner: FC<SpinnerProps> = ({className}) => {
     return (
-        <Stack spacing={2} sx={{flexGrow: 1}}>
+        <Stack spacing={2} className={clsx("global-spinner", className)}>
             <GradientCircularProgress/>
         </Stack>
     );

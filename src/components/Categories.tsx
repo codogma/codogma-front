@@ -15,7 +15,7 @@ type CategoriesProps = {
 
 export default function Categories({categories, loading}: CategoriesProps) {
     const {state} = useAuth();
-    
+
     return (
         <>
             {

@@ -9,7 +9,7 @@ import TelegramIcon from '@mui/icons-material/Telegram';
 
 function Footer() {
     return (
-        <Box sx={{bgcolor: '#303B44', color: 'white', py: 3}}>
+        <Box className="bg-limed-spruce dark:bg-woodsmoke text-white py-6">
             <Container maxWidth="lg">
                 <Grid container spacing={4}>
                     <Grid size={{xs: 12, sm: 3}}>

@@ -1,5 +1,5 @@
 "use client";
-import React, {Suspense, useEffect, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Category} from "@/types";
 import NavTabs, {LinkTabProps} from "@/components/NavTabs";
 import {getCategoryById} from "@/helpers/categoryApi";
@@ -9,7 +9,6 @@ import IconButton from "@mui/material/IconButton";
 import Card from "@mui/material/Card";
 import {AvatarImage} from "@/components/AvatarImage";
 import {useRouter} from "next/navigation";
-import Spinner from "@/components/Spinner";
 
 type PageParams = {
     id: number;
@@ -66,9 +65,7 @@ export default function Layout({params, children}: PageProps) {
                 </CardContent>
             </Card>
             <NavTabs tabs={tabs}/>
-            <Suspense fallback={<Spinner/>}>
-                {children}
-            </Suspense>
+            {children}
         </section>
     );
 }

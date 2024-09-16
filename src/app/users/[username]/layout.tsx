@@ -1,5 +1,5 @@
 "use client";
-import React, {Suspense, useEffect, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {User} from "@/types";
 import NavTabs, {LinkTabProps} from "@/components/NavTabs";
 import CardContent from "@mui/material/CardContent";
@@ -11,7 +11,6 @@ import Typography from "@mui/material/Typography";
 import Popover from "@mui/material/Popover";
 import {useAuth} from "@/components/AuthProvider";
 import {AvatarImage} from "@/components/AvatarImage";
-import Spinner from "@/components/Spinner";
 
 type PageParams = {
     username: string;
@@ -94,7 +93,7 @@ export default function Layout({params, children}: PageProps) {
                             badgeContent={<IconButton component="label" color="inherit" sx={{p: 0}}/>}
                         >
                             <AvatarImage alt={user?.username} className="category-img" variant="rounded"
-                                         src={user?.avatarUrl} size={24}/>
+                                         src={user?.avatarUrl} size={48}/>
                         </Badge>
                         <Typography
                             aria-owns={open ? 'mouse-over-popover' : undefined}
@@ -136,9 +135,7 @@ export default function Layout({params, children}: PageProps) {
                 </CardContent>
             </Card>
             <NavTabs tabs={tabs}/>
-            <Suspense fallback={<Spinner/>}>
-                {children}
-            </Suspense>
+            {children}
         </section>
     );
 }

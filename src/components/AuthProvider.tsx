@@ -1,9 +1,10 @@
 "use client";
-import {createContext, ReactNode, useContext, useEffect, useReducer, useState} from 'react';
+import {createContext, Dispatch, FC, ReactNode, useContext, useEffect, useReducer} from 'react';
+import {useQuery} from '@tanstack/react-query';
 import {currentUser} from "@/helpers/authApi";
 import {User} from "@/types";
-import Cookies from 'js-cookie';
-import Spinner from "@/components/Spinner";
+import Cookies from "js-cookie";
+import {Spinner} from "@/components/Spinner";
 
 interface AuthState {
     isAuthenticated: boolean;
@@ -11,7 +12,7 @@ interface AuthState {
     user: User | null;
 }
 
-type AuthAction = { type: 'LOGIN', user: User } | { type: 'LOGOUT' } | { type: 'ACCESS_DENIED', user: User };
+type AuthAction = { type: 'LOGIN', user: User | null } | { type: 'LOGOUT' };
 
 const initialState: AuthState = {
     isAuthenticated: false,
@@ -32,50 +33,64 @@ const authReducer = (state: AuthState, action: AuthAction): AuthState => {
 
 const AuthContext = createContext<{
     state: AuthState;
-    dispatch: React.Dispatch<AuthAction>;
+    dispatch: Dispatch<AuthAction>;
 }>({state: initialState, dispatch: () => null});
 
 interface AuthProviderProps {
     children: ReactNode;
 }
 
-export const AuthProvider: React.FC<AuthProviderProps> = ({children}) => {
+export const AuthProvider: FC<AuthProviderProps> = ({children}) => {
     const [state, dispatch] = useReducer(authReducer, initialState);
-    const [loading, setLoading] = useState(true);
+
+    const {data: user, isError, refetch, isPending} = useQuery<User | null>({
+        queryKey: ['currentUser'],
+        queryFn: () => currentUser(),
+        refetchOnWindowFocus: false,
+        retry: false,
+    });
+
+    useEffect(() => {
+        if (user) {
+            dispatch({type: 'LOGIN', user});
+            Cookies.set('user', JSON.stringify(user), {secure: true, sameSite: 'strict'});
+        } else if (!user || isError) {
+            dispatch({type: 'LOGOUT'});
+            Cookies.remove('user');
+        }
+    }, [user, isError, dispatch]);
 
     useEffect(() => {
         const handleStorageChange = () => {
-            // const savedUser = Cookies.get('user');
-            // if (savedUser) {
-            currentUser()
-                .then((user) => {
-                    if (user) {
-                        dispatch({type: 'LOGIN', user});
-                        Cookies.set('user', JSON.stringify(user), {secure: true, sameSite: 'strict'});
-                    } else {
+            const savedUser = Cookies.get('user');
+            if (savedUser) {
+                refetch()
+                    .then(({data}) => {
+                        if (data) {
+                            dispatch({type: 'LOGIN', user: data});
+                            Cookies.set('user', JSON.stringify(user), {secure: true, sameSite: 'strict'});
+                        } else {
+                            dispatch({type: 'LOGOUT'});
+                            Cookies.remove('user');
+                        }
+                    })
+                    .catch(() => {
                         dispatch({type: 'LOGOUT'});
                         Cookies.remove('user');
-                    }
-                })
-                .catch(() => {
-                    dispatch({type: 'LOGOUT'});
-                    Cookies.remove('user');
-                }).finally(() => setLoading(false));
-            // } else {
-            //     dispatch({type: 'LOGOUT'});
-            //     setLoading(false);
-            // }
+                    });
+            } else {
+                dispatch({type: 'LOGOUT'});
+            }
         };
-
-        handleStorageChange();
+        
         window.addEventListener('storage', handleStorageChange);
         return () => {
             window.removeEventListener('storage', handleStorageChange);
         };
-    }, []);
+    }, [refetch, dispatch, user]);
 
-    if (loading) {
-        return <Spinner/>;
+    if (isPending) {
+        return <Spinner className="reload-spinner"/>;
     }
 
     return (

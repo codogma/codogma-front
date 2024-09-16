@@ -19,7 +19,7 @@ type ArticlesProps = {
 
 export default function Articles({articles, loading}: ArticlesProps) {
     const {state} = useAuth();
-    
+
     return (
         <>
             {loading ? (

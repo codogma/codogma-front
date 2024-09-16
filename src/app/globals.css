@@ -21,14 +21,26 @@
         @apply bg-seashell dark:bg-cod-gray !important;
     }
 
+    .reload-spinner {
+        @apply h-screen bg-mine-shaft !important;
+    }
+
+    .global-spinner {
+        @apply flex flex-col min-h-[50vh] justify-center items-center;
+    }
+
     .your-interest {
         .your-interest-h3 {
             @apply font-semibold text-[1.6019rem] leading-[1.0925] tracking-[0.005em] text-[#302f2a] mb-2 m-0 !important;
         }
     }
 
-    .tox-promotion {
+    .tox-promotion, .tox-statusbar__branding {
         @apply hidden !important;
+    }
+
+    .nav-app-bar {
+        @apply bg-limed-spruce-rgba dark:bg-woodsmoke-rgba shadow-none backdrop-blur-md sticky !important;
     }
 
     .nav-tabs {

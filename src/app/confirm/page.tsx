@@ -33,7 +33,7 @@ export default function Page() {
     }, [token]);
 
     const handleRedirect = () => {
-        router.push("/login");
+        router.push("/sign-in");
     };
 
     return (

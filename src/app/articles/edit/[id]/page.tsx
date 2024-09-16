@@ -15,7 +15,7 @@ import Link from "next/link";
 import {getTagsByName} from "@/helpers/tagApi";
 import {useAuth} from "@/components/AuthProvider";
 import Typography from "@mui/material/Typography";
-import Spinner from "@/components/Spinner";
+import {Spinner} from "@/components/Spinner";
 
 const ArticleScheme = z.object({
     categoryIds: z.array(z.number()),

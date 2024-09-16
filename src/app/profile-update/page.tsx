@@ -14,7 +14,6 @@ import {WithAuth} from "@/components/WithAuth";
 import Link from "next/link";
 import {AvatarImage} from "@/components/AvatarImage";
 import {useAuth} from "@/components/AuthProvider";
-import Spinner from "@/components/Spinner";
 
 const UserScheme = z.object({
     username: z.optional(z.string()
@@ -127,10 +126,6 @@ function Users() {
         const userId = event.currentTarget.id
         setUsers(users.filter((user) => user.username !== userId))
         deleteUser(userId)
-    }
-
-    if (!user) {
-        return <Spinner/>;
     }
 
     return (

@@ -1,8 +1,7 @@
 "use client";
-import React, {FormEvent, useEffect, useState} from "react";
-import {getArticles} from "@/helpers/articleApi";
-import {Article} from "@/types";
-import DOMPurify from "dompurify";
+import React, {FormEvent, useState} from "react";
+import {getArticles, GetArticlesDTO} from "@/helpers/articleApi";
+import {useQuery} from "@tanstack/react-query";
 import Pagination from '@mui/material/Pagination';
 import Stack from '@mui/material/Stack';
 import InputLabel from '@mui/material/InputLabel';
@@ -31,10 +30,6 @@ export default function Layout({params}: PageProps) {
     const resultsPerPage20 = 20;
     const resultsPerPage30 = 30;
     const minPages = 2;
-    const [articles, setArticles] = useState<Article[]>([]);
-    const [loading, setLoading] = useState(true);
-    const [totalPages, setTotalPages] = useState<number>(0);
-    const [totalElements, setTotalElements] = useState<number>(0);
     const [currentPage, setCurrentPage] = useState<number>(0);
     const [resultsPerPage, setResultsPerPage] = useState<number>(resultsPerPage10);
     const [searchValue, setSearchValue] = useState<string>();
@@ -50,35 +45,19 @@ export default function Layout({params}: PageProps) {
         setAnchorEl(null);
     };
 
-    useEffect(() => {
-        async function fetchData(page: number) {
-            try {
-                let byTag: string | undefined = undefined;
-                let byContent: string | undefined = undefined;
-                if (searchType === 'tag') {
-                    byTag = searchValue
-                }
-                if (searchType === 'content') {
-                    byContent = searchValue
-                }
-                const {
-                    content,
-                    totalPages,
-                    totalElements
-                } = await getArticles(categoryId, page, resultsPerPage, byTag, byContent, undefined);
-                content.map((article) => article.content = DOMPurify.sanitize(article.content));
-                setArticles(content);
-                setTotalPages(totalPages);
-                setTotalElements(totalElements);
-            } catch (error) {
-                console.error('Error fetching data:', error);
-            } finally {
-                setLoading(false);
+    const {data, isPending, isError} = useQuery<GetArticlesDTO>({
+            queryKey: ["articles", categoryId, currentPage, resultsPerPage, searchType, searchValue],
+            queryFn: () => {
+                const byTag = searchType === 'tag' ? searchValue : undefined;
+                const byContent = searchType === 'content' ? searchValue : undefined;
+                return getArticles(categoryId, currentPage, resultsPerPage, byTag, byContent);
             }
         }
+    );
 
-        fetchData(currentPage).then()
-    }, [currentPage, resultsPerPage, searchType, searchValue])
+    const articles = data?.content || [];
+    const totalPages = data?.totalPages || 0;
+    const totalElements = data?.totalElements || 0;
 
     const handleSearchSubmit = (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault();
@@ -139,7 +118,7 @@ export default function Layout({params}: PageProps) {
                     <SearchIcon/>
                 </IconButton>
             </Paper>
-            <Articles articles={articles} loading={loading}/>
+            <Articles articles={articles} loading={isPending}/>
             {totalPages < minPages ? null : (
                 <Stack spacing={2}
                        sx={{
@@ -155,7 +134,7 @@ export default function Layout({params}: PageProps) {
                     <Pagination count={totalPages} page={currentPage + 1} onChange={handlePageChange} variant="outlined"
                                 shape="rounded"/>
                     <TextField
-                        label="Layout"
+                        label="Page"
                         id="page"
                         size="small"
                         defaultValue={currentPage + 1}

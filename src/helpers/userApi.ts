@@ -41,7 +41,7 @@ export const getUsers = async (): Promise<User[]> => {
         const response = await axiosInstance.get('/users');
         return response.data.map(async (user: User) => ({
             ...user,
-            imageUrl: user.avatarUrl ? `${process.env.NEXT_PUBLIC_BASE_URL}${user.avatarUrl}?t=${new Date().getTime()}` : await generateAvatarUrl(user.username, 200)
+            avatarUrl: user.avatarUrl ? `${process.env.NEXT_PUBLIC_BASE_URL}${user.avatarUrl}?t=${new Date().getTime()}` : await generateAvatarUrl(user.username, 200)
         }))
     } catch (error) {
         console.error('Error fetching users:', error);
@@ -60,7 +60,7 @@ export const getAuthors = async (categoryId?: number): Promise<User[]> => {
         });
         return response.data.map(async (user: User) => ({
             ...user,
-            avatarUrl: user.avatarUrl ? `${process.env.NEXT_PUBLIC_BASE_URL}${user.avatarUrl}?t=${new Date().getTime()}` : await generateAvatarUrl(user.username, 200)
+            avatarUrl: user.avatarUrl ? `${process.env.NEXT_PUBLIC_BASE_URL}${user.avatarUrl}?t=${new Date().getTime()}` : await generateAvatarUrl(user.username, 24)
         }))
     } catch (error) {
         console.error('Error fetching users:', error);
@@ -99,7 +99,6 @@ export const deleteUser = (username: string) => {
         })
         .catch((error) => console.error(error))
 }
-
 
 export const checkSubscription = async (username: string): Promise<boolean> => {
     try {

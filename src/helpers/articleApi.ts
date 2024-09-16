@@ -17,6 +17,12 @@ export type UpdateArticleDTO = {
     tags?: string[]
 }
 
+export type GetArticlesDTO = {
+    totalElements: number,
+    totalPages: number,
+    content: Article[]
+}
+
 export const createArticle = async (requestData: CreateArticleDTO): Promise<Article> => {
     try {
         const response = await axiosInstance.post("/articles", requestData);
@@ -38,11 +44,7 @@ export const updateArticle = async (id: number, requestData: UpdateArticleDTO): 
     }
 }
 
-export const getArticles = async (categoryId?: number, page: number = 0, size: number = 10, tag?: string, content?: string, username?: string): Promise<{
-    totalElements: number,
-    totalPages: number,
-    content: Article[]
-}> => {
+export const getArticles = async (categoryId?: number, page: number = 0, size: number = 10, tag?: string, content?: string, username?: string): Promise<GetArticlesDTO> => {
     try {
         const response = await axiosInstance.get('/articles', {
             params: {

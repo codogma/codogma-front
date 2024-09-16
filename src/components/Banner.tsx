@@ -3,12 +3,13 @@ import React from 'react';
 import {Paper, Typography} from '@mui/material';
 import Grid from '@mui/material/Grid2';
 import Box from "@mui/material/Box";
+import {DefaultImage} from "@/components/DefaultImage";
 
 const Banner = () => {
     return (
         <Paper
             sx={{
-                backgroundImage: 'url(/images/banner.png)',
+                position: 'relative',
                 backgroundSize: 'cover',
                 backgroundPosition: 'center',
                 padding: '20px',
@@ -17,10 +18,21 @@ const Banner = () => {
                 borderRadius: '8px',
                 marginBottom: '20px',
                 width: '100%',
-                boxSizing: 'border-box'
+                height: '400px',
+                boxSizing: 'border-box',
+                overflow: 'hidden'
             }}
+            variant="outlined"
         >
-            <Grid container spacing={2} alignItems="center">
+            <DefaultImage
+                src="/images/banner.png"
+                alt="Banner Background"
+                position="absolute"
+                top={0}
+                left={0}
+                zIndex={0}
+            />
+            <Grid container spacing={2} alignItems="center" sx={{position: 'relative', zIndex: 1}}>
                 <Grid size={{xs: 12, md: 3}}>
                     <Typography variant="h4" component="h1" gutterBottom>
                         Welcome!

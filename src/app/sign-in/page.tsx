@@ -81,11 +81,10 @@ export default function Page() {
     };
 
     return (
-        <Container sx={{direction: "column", justifyContent: "space-between", height: "100%"}}>
+        <Container sx={{direction: "column", justifyContent: "space-between"}}>
             <Stack
                 sx={{
                     justifyContent: 'center',
-                    height: '70dvh',
                     p: 2,
                 }}
             >
@@ -94,7 +93,7 @@ export default function Page() {
                     <Typography
                         component="h1"
                         variant="h4"
-                        sx={{textAlign: 'center', width: '100%', fontSize: 'clamp(2rem, 10vw, 2.15rem)'}}
+                        sx={{textAlign: 'center', width: '100%', fontSize: 'clamp(1.25rem, 10vw, 1.5rem)'}}
                     >
                         Sign in
                     </Typography>
@@ -151,7 +150,7 @@ export default function Page() {
                             <Typography sx={{textAlign: 'center'}}>
                                 Don&apos;t have an account?{' '}
                                 <span>
-                            <Link href="/register">Sign up</Link>
+                            <Link href="/sign-up">Sign up</Link>
                         </span>
                             </Typography>
                         </Box>

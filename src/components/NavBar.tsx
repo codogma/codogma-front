@@ -66,29 +66,30 @@ const NavBar = () => {
     }, []);
 
     return (
-        <AppBar position="sticky">
+        <AppBar className="nav-app-bar">
             <Container maxWidth="lg">
                 <Toolbar disableGutters sx={{
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'space-between',
                 }}>
-                    <Typography
-                        variant="h5"
-                        noWrap
-                        component="a"
-                        href="/"
-                        sx={{
-                            mr: 2,
-                            fontFamily: 'monospace',
-                            fontWeight: 700,
-                            letterSpacing: '.3rem',
-                            color: 'inherit',
-                            textDecoration: 'none',
-                        }}
-                    >
-                        LINKED<StickyNote2OutlinedIcon/>
-                    </Typography>
+                    <Link href="/">
+                        <Typography
+                            variant="h5"
+                            noWrap
+                            component="h5"
+                            sx={{
+                                mr: 2,
+                                fontFamily: 'monospace',
+                                fontWeight: 700,
+                                letterSpacing: '.3rem',
+                                color: 'inherit',
+                                textDecoration: 'none',
+                            }}
+                        >
+                            LINKED<StickyNote2OutlinedIcon/>
+                        </Typography>
+                    </Link>
                     <ButtonGroup variant="text" sx={{display: {xs: 'flex'}, mr: 1, ml: 'auto', color: "inherit"}}>
                         <Link href="/articles/#search-input">
                             <IconButton color="inherit">
@@ -103,8 +104,8 @@ const NavBar = () => {
                     <Box sx={{flexGrow: 0}}>
                         {!state.isAuthenticated && (
                             <>
-                                <Link href={`/register`}><Button color="inherit">Register</Button></Link>
-                                <Link href={`/login`}><Button color="inherit"><LoginIcon/></Button></Link>
+                                <Link href={`/sign-up`}><Button color="inherit">Register</Button></Link>
+                                <Link href={`/sign-in`}><Button color="inherit"><LoginIcon/></Button></Link>
                             </>
                         )}
                         {state.isAuthenticated && (
@@ -140,7 +141,8 @@ const NavBar = () => {
                                 >
                                     <MenuItem onClick={handleProfile}>
                                         <Typography
-                                            textAlign="center"><PersonIcon fontSize="small"/> Profile</Typography>
+                                            textAlign="center"><PersonIcon className="mr-2"
+                                                                           fontSize="small"/>Profile</Typography>
                                     </MenuItem>
                                     {state.user?.role === UserRole.ROLE_AUTHOR && (
                                         <Link href={`/create-article`}>
