@@ -134,7 +134,7 @@ export default function Layout({params}: PageProps) {
                     <Pagination count={totalPages} page={currentPage + 1} onChange={handlePageChange} variant="outlined"
                                 shape="rounded"/>
                     <TextField
-                        label="Page"
+                        label="Success"
                         id="page"
                         size="small"
                         defaultValue={currentPage + 1}

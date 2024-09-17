@@ -3,7 +3,7 @@ import React from "react";
 import {useRouter} from "next/navigation";
 import {Button, Container, Typography} from "@mui/material";
 
-export default function Page() {
+export default function Success() {
     const router = useRouter();
 
     const handleRedirect = () => {

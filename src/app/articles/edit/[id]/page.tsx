@@ -67,7 +67,6 @@ export default function ArticlesPage({params}: PageProps) {
                 }
 
                 const allCategories = await getCategories();
-                console.log(allCategories);
                 setCategories(allCategories);
 
                 zodForm.reset({

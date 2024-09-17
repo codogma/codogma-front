@@ -29,6 +29,16 @@
         @apply flex flex-col min-h-[50vh] justify-center items-center;
     }
 
+    .gradient-circular-progress {
+        .first-stop {
+            stop-color: #f39d0b;
+        }
+
+        .second-stop {
+            stop-color: #ed4444;
+        }
+    }
+
     .your-interest {
         .your-interest-h3 {
             @apply font-semibold text-[1.6019rem] leading-[1.0925] tracking-[0.005em] text-[#302f2a] mb-2 m-0 !important;

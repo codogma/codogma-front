@@ -39,9 +39,9 @@ export const updateUser = async (requestData: UserUpdate): Promise<User> => {
 export const getUsers = async (): Promise<User[]> => {
     try {
         const response = await axiosInstance.get('/users');
-        return response.data.map(async (user: User) => ({
+        return response.data.map((user: User) => ({
             ...user,
-            avatarUrl: user.avatarUrl ? `${process.env.NEXT_PUBLIC_BASE_URL}${user.avatarUrl}?t=${new Date().getTime()}` : await generateAvatarUrl(user.username, 200)
+            avatarUrl: user.avatarUrl ? `${process.env.NEXT_PUBLIC_BASE_URL}${user.avatarUrl}?t=${new Date().getTime()}` : generateAvatarUrl(user.username, 24)
         }))
     } catch (error) {
         console.error('Error fetching users:', error);
@@ -58,9 +58,9 @@ export const getAuthors = async (categoryId?: number): Promise<User[]> => {
                 role: UserRole.ROLE_AUTHOR
             }
         });
-        return response.data.map(async (user: User) => ({
+        return response.data.map((user: User) => ({
             ...user,
-            avatarUrl: user.avatarUrl ? `${process.env.NEXT_PUBLIC_BASE_URL}${user.avatarUrl}?t=${new Date().getTime()}` : await generateAvatarUrl(user.username, 24)
+            avatarUrl: user.avatarUrl ? `${process.env.NEXT_PUBLIC_BASE_URL}${user.avatarUrl}?t=${new Date().getTime()}` : generateAvatarUrl(user.username, 24)
         }))
     } catch (error) {
         console.error('Error fetching users:', error);
@@ -75,13 +75,13 @@ export const getUserByUsername = async (username?: string): Promise<User> => {
         return {
             ...response.data,
             avatarUrl: response.data.avatarUrl ? `${process.env.NEXT_PUBLIC_BASE_URL}${response.data.avatarUrl}?t=${new Date().getTime()}` : await generateAvatarUrl(response.data.username, 200),
-            subscribers: response.data.subscribers.map(async (user: User) => ({
+            subscribers: response.data.subscribers.map((user: User) => ({
                 ...user,
-                avatarUrl: user.avatarUrl ? `${process.env.NEXT_PUBLIC_BASE_URL}${user.avatarUrl}?t=${new Date().getTime()}` : await generateAvatarUrl(user.username, 200)
+                avatarUrl: user.avatarUrl ? `${process.env.NEXT_PUBLIC_BASE_URL}${user.avatarUrl}?t=${new Date().getTime()}` : generateAvatarUrl(user.username, 200)
             })),
-            subscriptions: response.data.subscriptions.map(async (user: User) => ({
+            subscriptions: response.data.subscriptions.map((user: User) => ({
                 ...user,
-                avatarUrl: user.avatarUrl ? `${process.env.NEXT_PUBLIC_BASE_URL}${user.avatarUrl}?t=${new Date().getTime()}` : await generateAvatarUrl(user.username, 200)
+                avatarUrl: user.avatarUrl ? `${process.env.NEXT_PUBLIC_BASE_URL}${user.avatarUrl}?t=${new Date().getTime()}` : generateAvatarUrl(user.username, 200)
             }))
         };
     } catch (error) {

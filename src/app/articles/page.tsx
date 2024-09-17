@@ -17,7 +17,7 @@ import MenuIcon from '@mui/icons-material/Menu';
 import Menu from '@mui/material/Menu';
 import Articles from "@/components/Articles";
 
-export default function Layout() {
+export default function Page() {
     const resultsPerPage10 = 10;
     const resultsPerPage20 = 20;
     const resultsPerPage30 = 30;

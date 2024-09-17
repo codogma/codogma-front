@@ -3,6 +3,7 @@ import React, {useEffect, useState} from "react";
 import {User} from "@/types";
 import {getAuthors} from "@/helpers/userApi";
 import Authors from "@/components/Authors";
+import {devConsole} from "@/helpers/devConsole";
 
 type PageParams = {
     id: number;
@@ -22,7 +23,7 @@ function Page({params}: PageProps) {
         async function fetchData() {
             try {
                 const allUsers = await getAuthors(categoryId)
-                console.log(allUsers)
+                devConsole(allUsers)
                 setUsers(allUsers);
             } catch (error) {
                 console.error('Error fetching data:', error)

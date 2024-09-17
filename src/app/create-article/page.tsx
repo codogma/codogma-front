@@ -32,7 +32,6 @@ function Articles() {
         async function fetchData() {
             try {
                 const allCategories = await getCategories();
-                console.log(allCategories);
                 setCategories(allCategories);
             } catch (error) {
                 console.error('Error fetching data:', error);

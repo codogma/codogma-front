@@ -33,9 +33,9 @@ const NavTabs: React.FC<NavTabsProps> = ({tabs = linkTabs}) => {
     return (
         <div className="nav-tabs">
             <Tabs value={pathname} className="tabs">
-                {tabs.map((tab) => (
+                {tabs.map((tab, index) => (
                     <Tab
-                        key={tab.href}
+                        key={index}
                         component={Link}
                         href={tab.href}
                         label={tab.label}

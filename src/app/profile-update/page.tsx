@@ -95,7 +95,6 @@ function Users() {
         async function fetchData() {
             try {
                 const allUsers = await getAuthors();
-                console.log(allUsers)
                 setUsers(allUsers);
             } catch (error) {
                 console.error('Error fetching data:', error)

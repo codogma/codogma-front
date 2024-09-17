@@ -24,8 +24,8 @@ export default function RootLayout({children}: { children: ReactNode }) {
     return (
         <html lang="en">
         <body className={inter.className}>
-        <AppRouterCacheProvider>
-            <StyledEngineProvider injectFirst>
+        <StyledEngineProvider injectFirst>
+            <AppRouterCacheProvider>
                 <ColorModeProvider>
                     <ReactQueryProvider>
                         <AuthProvider>
@@ -46,8 +46,8 @@ export default function RootLayout({children}: { children: ReactNode }) {
                         </AuthProvider>
                     </ReactQueryProvider>
                 </ColorModeProvider>
-            </StyledEngineProvider>
-        </AppRouterCacheProvider>
+            </AppRouterCacheProvider>
+        </StyledEngineProvider>
         </body>
         </html>
     );

@@ -3,6 +3,7 @@ import React, {useEffect, useState} from "react";
 import {User} from "@/types";
 import {getAuthors} from "@/helpers/userApi";
 import Authors from "@/components/Authors";
+import {devConsole} from "@/helpers/devConsole";
 
 
 function Page() {
@@ -13,7 +14,7 @@ function Page() {
         async function fetchData() {
             try {
                 const allUsers = await getAuthors();
-                console.log(allUsers)
+                devConsole(allUsers)
                 setUsers(allUsers);
             } catch (error) {
                 console.error('Error fetching data:', error)
