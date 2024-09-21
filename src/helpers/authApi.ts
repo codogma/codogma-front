@@ -16,9 +16,9 @@ export type SignIn = {
     password: string
 }
 
-export const signUp = async (requestData: SignUp): Promise<User> => {
+export const signUp = async (requestData: SignUp): Promise<string> => {
     try {
-        const response = await axiosInstance.post("/auth/signup", requestData, {
+        const response = await axiosInstance.post("/auth/sign-up", requestData, {
             headers: {
                 "Content-Type": "multipart/form-data"
             }
@@ -55,9 +55,9 @@ export const confirmEmail = async (token: string | null): Promise<string> => {
     }
 }
 
-export const signIn = async (requestData: SignIn): Promise<User> => {
+export const signIn = async (requestData: SignIn): Promise<User | null> => {
     try {
-        await axiosInstance.post("/auth/login", requestData);
+        await axiosInstance.post("/auth/sign-in", requestData);
         const user = await currentUser();
         window.dispatchEvent(new Event("storage"));
         return user;
@@ -72,7 +72,7 @@ export const signIn = async (requestData: SignIn): Promise<User> => {
     }
 }
 
-export const logout = async () => {
+export const logout = async (): Promise<void> => {
     try {
         await axiosInstance.post("/auth/logout");
         console.log("User logged out successfully");
@@ -83,15 +83,28 @@ export const logout = async () => {
     }
 };
 
-export const currentUser = async (): Promise<User> => {
+export const currentUser = async (): Promise<User | null> => {
     try {
         const response = await axiosInstance.get("/auth/current-user");
-        const user: User = {
-            ...response.data,
-            avatarUrl: response.data.avatarUrl ? `${process.env.NEXT_PUBLIC_BASE_URL}${response.data.avatarUrl}?t=${new Date().getTime()}` : await generateAvatarUrl(response.data.username, 200),
-        };
-        Cookies.set('user', JSON.stringify(user), {secure: true, sameSite: 'strict'});
-        return user
+        if (response.data) {
+            const user: User = {
+                ...response.data,
+                avatarUrl: response.data.avatarUrl ? `${process.env.NEXT_PUBLIC_BASE_URL}${response.data.avatarUrl}?t=${new Date().getTime()}` : await generateAvatarUrl(response.data.username, 200),
+            };
+            Cookies.set('user', JSON.stringify(user), {secure: true, sameSite: 'strict'});
+            return user;
+        }
+        Cookies.remove('user');
+        window.dispatchEvent(new Event("storage"));
+        return null;
+    } catch {
+        throw new Error('Error fetching current user');
+    }
+};
+
+export const refreshToken = async (): Promise<void> => {
+    try {
+        return await axiosInstance.post("/auth/refresh-token");
     } catch {
         throw new Error('Error fetching current user');
     }

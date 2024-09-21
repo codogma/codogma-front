@@ -1,5 +1,6 @@
 import {axiosInstance} from "@/helpers/axiosInstance";
 import {Article} from "@/types";
+import {generateAvatarUrl} from "@/helpers/generateAvatar";
 
 export type CreateArticleDTO = {
     categoryIds: number[],
@@ -59,10 +60,16 @@ export const getArticles = async (categoryId?: number, page: number = 0, size: n
         return {
             totalPages: response.data.totalPages,
             totalElements: response.data.totalElements,
-            content: response.data.content.map((article: Article) => ({
-                ...article,
-                authorAvatarUrl: `${process.env.NEXT_PUBLIC_BASE_URL}${article.authorAvatarUrl}`
-            }))
+            content: await Promise.all(
+                response.data.content.map(async (article: Article) => {
+                    return {
+                        ...article,
+                        authorAvatarUrl: article.authorAvatarUrl
+                            ? `${process.env.NEXT_PUBLIC_BASE_URL}${article.authorAvatarUrl}?t=${new Date().getTime()}`
+                            : await generateAvatarUrl(article.username, 32)
+                    };
+                })
+            )
         };
     } catch (error) {
         console.error('Error fetching profile:', error);
@@ -76,7 +83,7 @@ export const getArticleById = async (id: number): Promise<Article> => {
         const article: Article = response.data
         return {
             ...article,
-            authorAvatarUrl: `${process.env.NEXT_PUBLIC_BASE_URL}${article.authorAvatarUrl}`
+            authorAvatarUrl: article.authorAvatarUrl ? `${process.env.NEXT_PUBLIC_BASE_URL}${article.authorAvatarUrl}?t=${new Date().getTime()}` : await generateAvatarUrl(article.username, 32)
         };
     } catch (error) {
         console.error('Error fetching article:', error);
@@ -84,8 +91,11 @@ export const getArticleById = async (id: number): Promise<Article> => {
     }
 };
 
-export const deleteArticle = (id: number) => {
-    axiosInstance.delete(`/articles/${id}`)
-        .then(() => console.log("Article deleted successfully"))
-        .catch((error) => console.error(error))
+export const deleteArticle = async (id: number): Promise<void> => {
+    try {
+        await axiosInstance.delete(`/articles/${id}`)
+    } catch (error) {
+        console.error('Error deleting article:', error);
+        throw error;
+    }
 }

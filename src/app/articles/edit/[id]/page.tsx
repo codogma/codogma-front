@@ -2,7 +2,7 @@
 import {z} from "zod"
 import {Controller, FormProvider, SubmitHandler, useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
-import React, {MouseEvent, useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
 import {Article, Category, Tag} from "@/types";
 import FormInput from "@/components/FormInput";
 import {Box, Button, Chip, TextField} from "@mui/material";
@@ -15,7 +15,7 @@ import Link from "next/link";
 import {getTagsByName} from "@/helpers/tagApi";
 import {useAuth} from "@/components/AuthProvider";
 import Typography from "@mui/material/Typography";
-import {Spinner} from "@/components/Spinner";
+import {WithAuth} from "@/components/WithAuth";
 
 const ArticleScheme = z.object({
     categoryIds: z.array(z.number()),
@@ -34,11 +34,10 @@ type PageProps = {
 }
 
 
-export default function ArticlesPage({params}: PageProps) {
+const Page = ({params}: PageProps) => {
     const articleId: number = params.id;
     const router = useRouter();
     const {state} = useAuth();
-    const [isLoading, setIsLoading] = useState(true);
     const [article, setArticle] = useState<Article>();
     const [categories, setCategories] = useState<Category[]>([])
     const [inputTagValue, setInputTagValue] = useState<string>('');
@@ -60,9 +59,7 @@ export default function ArticlesPage({params}: PageProps) {
             try {
                 const articleData = await getArticleById(articleId);
                 setArticle(articleData);
-                if (state.user?.username === articleData.username) {
-                    setIsLoading(false);
-                } else {
+                if (state.user?.username !== articleData.username) {
                     router.push("/not-found");
                 }
 
@@ -125,128 +122,124 @@ export default function ArticlesPage({params}: PageProps) {
         updateArticle(articleId, requestData).then(() => router.push(`/articles/${articleId}`))
     }
 
-    const handleDelete = (event: MouseEvent<HTMLElement>) => {
-        const articleId = Number(event.currentTarget.id)
-        deleteArticle(articleId)
-        router.push("/articles")
+    const handleDelete = () => {
+        deleteArticle(articleId).then(() => router.push("/articles"))
     }
 
-    if (isLoading) {
-        return <Spinner/>;
-    } else {
-        return (
-            <main className="mt-10 mb-10">
-                <Link href={`/articles/${articleId}`}>
-                    <Button className="article-btn" variant="outlined">Back to article</Button>
-                </Link>
-                <FormProvider {...zodForm}>
-                    <Box
-                        component="form"
-                        noValidate
-                        // sx={{m: 1, ml: '20ch', mr: '20ch'}}
-                        autoComplete="off"
-                        onSubmit={handleSubmit(onSubmit)}
-                    >
-                        <Controller
-                            name="categoryIds"
-                            control={control}
-                            render={({field}) => (
-                                <Autocomplete
-                                    multiple
-                                    id="categories"
-                                    options={categories}
-                                    defaultValue={article?.categories}
-                                    getOptionLabel={(category) => category?.name}
-                                    filterSelectedOptions
-                                    value={categories.filter(category => field.value.includes(category.id))}
-                                    isOptionEqualToValue={(option, value) => option.id === value.id}
-                                    onChange={(_, newValue) => field.onChange(newValue.map(category => category.id))}
-                                    renderInput={(params) => (
-                                        <TextField {...params} label="Categories" variant="standard"
-                                                   placeholder="Select categories"/>
-                                    )}
-                                />
-                            )}
-                        />
-                        <Controller
-                            name="tags"
-                            control={control}
-                            render={({field}) => (
-                                <Autocomplete
-                                    multiple
-                                    id="tags"
-                                    options={availableTags.filter(tag =>
-                                        !field.value?.some(value => value.toLowerCase() === tag.toLowerCase())
-                                    )}
-                                    defaultValue={article?.tags.map(tag => tag.name)}
-                                    freeSolo
-                                    value={field.value}
-                                    onChange={(_, newValue) => {
-                                        const normalizedValue = newValue.map(value => {
-                                            const existingTag = availableTags.find(tag => tag.toLowerCase() === value.toLowerCase());
-                                            return existingTag || value;
-                                        });
+    return (
+        <main className="mt-10 mb-10">
+            <Link href={`/articles/${articleId}`}>
+                <Button className="article-btn" variant="outlined">Back to article</Button>
+            </Link>
+            <FormProvider {...zodForm}>
+                <Box
+                    component="form"
+                    noValidate
+                    // sx={{m: 1, ml: '20ch', mr: '20ch'}}
+                    autoComplete="off"
+                    onSubmit={handleSubmit(onSubmit)}
+                >
+                    <Controller
+                        name="categoryIds"
+                        control={control}
+                        render={({field}) => (
+                            <Autocomplete
+                                multiple
+                                id="categories"
+                                options={categories}
+                                defaultValue={article?.categories}
+                                getOptionLabel={(category) => category?.name}
+                                filterSelectedOptions
+                                value={categories.filter(category => field.value.includes(category.id))}
+                                isOptionEqualToValue={(option, value) => option.id === value.id}
+                                onChange={(_, newValue) => field.onChange(newValue.map(category => category.id))}
+                                renderInput={(params) => (
+                                    <TextField {...params} label="Categories" variant="standard"
+                                               placeholder="Select categories"/>
+                                )}
+                            />
+                        )}
+                    />
+                    <Controller
+                        name="tags"
+                        control={control}
+                        render={({field}) => (
+                            <Autocomplete
+                                multiple
+                                id="tags"
+                                options={availableTags.filter(tag =>
+                                    !field.value?.some(value => value.toLowerCase() === tag.toLowerCase())
+                                )}
+                                defaultValue={article?.tags.map(tag => tag.name)}
+                                freeSolo
+                                value={field.value}
+                                onChange={(_, newValue) => {
+                                    const normalizedValue = newValue.map(value => {
+                                        const existingTag = availableTags.find(tag => tag.toLowerCase() === value.toLowerCase());
+                                        return existingTag || value;
+                                    });
 
-                                        const uniqueTags = new Set<string>();
-                                        normalizedValue.forEach(tag => {
-                                            uniqueTags.add(tag);
-                                        });
+                                    const uniqueTags = new Set<string>();
+                                    normalizedValue.forEach(tag => {
+                                        uniqueTags.add(tag);
+                                    });
 
-                                        field.onChange(Array.from(uniqueTags));
-                                    }}
-                                    onInputChange={(_, newInputValue) => setInputTagValue(newInputValue)}
-                                    renderTags={(value: string[], getTagProps) =>
-                                        value.map((option: string, index: number) => {
-                                            const {key, ...tagProps} = getTagProps({index});
-                                            return (
-                                                <Chip variant="outlined" label={option} key={key} {...tagProps} />
-                                            );
-                                        })
-                                    }
-                                    renderInput={(params) => (
-                                        <TextField
-                                            {...params}
-                                            variant="standard"
-                                            label="Tags"
-                                            placeholder="Select or create tags"
-                                        />
-                                    )}
-                                />
-                            )}
-                        />
-                        <FormInput name="title" label="Title" variant="standard"/>
-                        <Typography className="mb-4 mt-4">Краткое описание:</Typography>
-                        <Controller
-                            name="previewContent"
-                            control={control}
-                            render={({field}) => (
-                                <TinyMCEEditor
-                                    defaultValue={article?.previewContent}
-                                    value={field.value}
-                                    onChange={field.onChange}
-                                />
-                            )}
-                        />
-                        <Typography className="mb-4 mt-4">Основная статья:</Typography>
-                        <Controller
-                            name="content"
-                            control={control}
-                            render={({field}) => (
-                                <TinyMCEEditor
-                                    defaultValue={article?.content}
-                                    value={field.value}
-                                    onChange={field.onChange}
-                                />
-                            )}
-                        />
-                        <div className="flex justify-between w-full">
-                            <Button type="submit">Update</Button>
-                            <Button id={articleId.toString()} style={{color: "red"}}
-                                    onClick={handleDelete}>Delete</Button>
-                        </div>
-                    </Box>
-                </FormProvider>
-            </main>
-        );
-    }
+                                    field.onChange(Array.from(uniqueTags));
+                                }}
+                                onInputChange={(_, newInputValue) => setInputTagValue(newInputValue)}
+                                renderTags={(value: string[], getTagProps) =>
+                                    value.map((option: string, index: number) => {
+                                        const {key, ...tagProps} = getTagProps({index});
+                                        return (
+                                            <Chip variant="outlined" label={option} key={key} {...tagProps} />
+                                        );
+                                    })
+                                }
+                                renderInput={(params) => (
+                                    <TextField
+                                        {...params}
+                                        variant="standard"
+                                        label="Tags"
+                                        placeholder="Select or create tags"
+                                    />
+                                )}
+                            />
+                        )}
+                    />
+                    <FormInput name="title" label="Title" variant="standard"/>
+                    <Typography className="mb-4 mt-4">Краткое описание:</Typography>
+                    <Controller
+                        name="previewContent"
+                        control={control}
+                        render={({field}) => (
+                            <TinyMCEEditor
+                                defaultValue={article?.previewContent}
+                                value={field.value}
+                                onChange={field.onChange}
+                            />
+                        )}
+                    />
+                    <Typography className="mb-4 mt-4">Основная статья:</Typography>
+                    <Controller
+                        name="content"
+                        control={control}
+                        render={({field}) => (
+                            <TinyMCEEditor
+                                defaultValue={article?.content}
+                                value={field.value}
+                                onChange={field.onChange}
+                            />
+                        )}
+                    />
+                    <div className="flex justify-between w-full">
+                        <Button type="submit">Update</Button>
+                        <Button id={articleId.toString()} style={{color: "red"}}
+                                onClick={handleDelete}>Delete</Button>
+                    </div>
+                </Box>
+            </FormProvider>
+        </main>
+    );
 }
+
+export default WithAuth(Page)

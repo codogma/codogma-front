@@ -1,3 +1,5 @@
+import {ReactNode} from "react";
+
 export enum UserRole {
     ROLE_USER = "ROLE_USER",
     ROLE_AUTHOR = "ROLE_AUTHOR",
@@ -36,7 +38,9 @@ export type Article = {
     id: number;
     title: string;
     previewContent: string,
+    previewContentNode?: ReactNode,
     content: string;
+    contentNode?: ReactNode;
     username: string;
     authorAvatarUrl: string;
     createdAt: Date;

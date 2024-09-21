@@ -1,7 +1,7 @@
 "use client";
 import {createContext, Dispatch, FC, ReactNode, useContext, useEffect, useReducer} from 'react';
 import {useQuery} from '@tanstack/react-query';
-import {currentUser} from "@/helpers/authApi";
+import {currentUser, refreshToken} from "@/helpers/authApi";
 import {User} from "@/types";
 import Cookies from "js-cookie";
 import {Spinner} from "@/components/Spinner";
@@ -9,10 +9,10 @@ import {Spinner} from "@/components/Spinner";
 interface AuthState {
     isAuthenticated: boolean;
     isAccessDenied: boolean;
-    user: User | null;
+    user?: User | null;
 }
 
-type AuthAction = { type: 'LOGIN', user: User | null } | { type: 'LOGOUT' };
+type AuthAction = { type: 'LOGIN', user?: User | null } | { type: 'LOGOUT' };
 
 const initialState: AuthState = {
     isAuthenticated: false,
@@ -43,22 +43,29 @@ interface AuthProviderProps {
 export const AuthProvider: FC<AuthProviderProps> = ({children}) => {
     const [state, dispatch] = useReducer(authReducer, initialState);
 
-    const {data: user, isError, refetch, isPending} = useQuery<User | null>({
+    const {data: user, isError: hasCurrentUserError, refetch, isPending} = useQuery<User | null>({
         queryKey: ['currentUser'],
         queryFn: () => currentUser(),
         refetchOnWindowFocus: false,
-        retry: false,
+    });
+
+    const {isError: hasRefreshTokenError} = useQuery<void>({
+        queryKey: ['refreshToken'],
+        queryFn: () => refreshToken(),
+        staleTime: 1000 * 60 * 10,
+        refetchInterval: 1000 * 60 * 15,
     });
 
     useEffect(() => {
-        if (user) {
+        const savedUser = Cookies.get('user');
+        if (savedUser) {
             dispatch({type: 'LOGIN', user});
             Cookies.set('user', JSON.stringify(user), {secure: true, sameSite: 'strict'});
-        } else if (!user || isError) {
+        } else if (!user || hasCurrentUserError || hasRefreshTokenError) {
             dispatch({type: 'LOGOUT'});
             Cookies.remove('user');
         }
-    }, [user, isError, dispatch]);
+    }, [user, hasCurrentUserError, hasRefreshTokenError, dispatch]);
 
     useEffect(() => {
         const handleStorageChange = () => {
@@ -82,7 +89,7 @@ export const AuthProvider: FC<AuthProviderProps> = ({children}) => {
                 dispatch({type: 'LOGOUT'});
             }
         };
-        
+
         window.addEventListener('storage', handleStorageChange);
         return () => {
             window.removeEventListener('storage', handleStorageChange);

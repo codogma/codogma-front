@@ -16,6 +16,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import MenuIcon from '@mui/icons-material/Menu';
 import Menu from '@mui/material/Menu';
 import Articles from "@/components/Articles";
+import {useContentImageContext} from "@/components/ContentImageProvider";
 
 export default function Page() {
     const resultsPerPage10 = 10;
@@ -32,6 +33,7 @@ export default function Page() {
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     const [searchType, setSearchType] = useState<'content' | 'tag'>('content');
     const [loading, setLoading] = useState(true);
+    const {processContent} = useContentImageContext();
 
     const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
         setAnchorEl(event.currentTarget);
@@ -58,8 +60,11 @@ export default function Page() {
                     totalPages,
                     totalElements
                 } = await getArticles(undefined, page, resultsPerPage, byTag, byContent, undefined);
-                content.map((article) => article.content = DOMPurify.sanitize(article.content));
-                setArticles(content);
+                const sanitizedArticles = content.map((article) => ({
+                    ...article,
+                    previewContentNode: processContent(DOMPurify.sanitize(article.previewContent))
+                }));
+                setArticles(sanitizedArticles);
                 setTotalPages(totalPages);
                 setTotalElements(totalElements);
             } catch (error) {

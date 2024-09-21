@@ -13,6 +13,7 @@ import CardContent from "@mui/material/CardContent";
 import CommentList from "@/components/CommentList";
 import Typography from "@mui/material/Typography";
 import {AvatarImage} from "@/components/AvatarImage";
+import {useContentImageContext} from "@/components/ContentImageProvider";
 
 type PageParams = {
     id: number
@@ -24,8 +25,9 @@ type PageProps = {
 
 
 export default function Page({params}: PageProps) {
-    const articleId: number = params.id;
+    const articleId = params.id;
     const {state} = useAuth();
+    const {processContent} = useContentImageContext();
     const [article, setArticle] = useState<Article>({
         id: 0,
         title: "",
@@ -39,18 +41,19 @@ export default function Page({params}: PageProps) {
     });
 
     useEffect(() => {
-        async function fetchData() {
+        const fetchData = async () => {
             try {
                 const articleData = await getArticleById(articleId);
                 articleData.content = DOMPurify.sanitize(articleData.content);
-                setArticle(articleData);
+                const contentNode = processContent(articleData.content);
+                setArticle({...articleData, contentNode});
             } catch (error) {
                 console.error('Error fetching data:', error);
             }
         }
 
         fetchData();
-    }, [articleId])
+    }, [articleId, processContent]);
 
     return (
         <>
@@ -70,7 +73,7 @@ export default function Page({params}: PageProps) {
                         <TimeAgo datetime={article.createdAt} className="article-datetime"/>
                     </div>
                     <h1 className="article-title">{article.title}</h1>
-                    <div className="article-category">{article.categories.map((category) => (
+                    <div className="article-category">{article.categories?.map((category) => (
                         <span className="category-item" key={category.id}>
                             <Link className="category-link" href={`/categories/${category.id}`}>
                             {category.name}
@@ -78,9 +81,11 @@ export default function Page({params}: PageProps) {
                     </span>
                     ))}
                     </div>
-                    <div className="article-content" dangerouslySetInnerHTML={{__html: article.content}}/>
+                    <div className="article-content">
+                        {article.contentNode}
+                    </div>
                     <div className="article-presenter-meta">
-                        <div className="article-category-pm">Категории: {article.categories.map((category) => (
+                        <div className="article-category-pm">Категории: {article.categories?.map((category) => (
                             <span className="category-item" key={category.id}>
                             <Link className="category-link" href={`/categories/${category.id}`}>
                             {category.name}
@@ -88,7 +93,7 @@ export default function Page({params}: PageProps) {
                         </span>
                         ))}
                         </div>
-                        <div className="article-tag-pm">Теги: {article.tags.map((tag) => (
+                        <div className="article-tag-pm">Теги: {article.tags?.map((tag) => (
                             <span className="tag-item" key={tag.id}>
                             <Link className="tag-link" href={`/categories/${tag.id}`}>
                             {tag.name}
@@ -97,7 +102,7 @@ export default function Page({params}: PageProps) {
                         ))}
                         </div>
                     </div>
-                    {state.user?.username === article.username && state.user.role === UserRole.ROLE_AUTHOR && (
+                    {state.user?.username === article.username && state.user?.role === UserRole.ROLE_AUTHOR && (
                         <Link href={`/articles/edit/${article.id}`}>
                             <Button className="article-btn" variant="outlined" startIcon={<EditOutlinedIcon/>}>
                                 Edit
@@ -106,7 +111,7 @@ export default function Page({params}: PageProps) {
                     )}
                 </CardContent>
             </Card>
-            <Typography>
+            <Typography component="div">
                 Comments:
             </Typography>
             <CommentList articleId={articleId}/>

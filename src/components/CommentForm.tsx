@@ -102,7 +102,7 @@ const CommentForm: React.FC<CommentFormProps> = ({
                 onClose={handlePopoverClose}
                 disableRestoreFocus
             >
-                {!state.isAuthenticated && <Typography sx={{p: 1}}>Log in</Typography>}
+                <Typography sx={{p: 1}}>Log in</Typography>
             </Popover>
         </Box>
     );

@@ -12,6 +12,7 @@ import NavTabs from "@/components/NavTabs";
 import Footer from "@/components/Footer";
 import {ReactQueryProvider} from "@/components/ReactQueryProvider";
 import Spinner from "@/app/loading";
+import {ContentImageProvider} from "@/components/ContentImageProvider";
 
 const inter = Inter({subsets: ["latin"]});
 
@@ -38,7 +39,9 @@ export default function RootLayout({children}: { children: ReactNode }) {
                                 >
                                     <NavTabs/>
                                     <Suspense fallback={<Spinner/>}>
-                                        {children}
+                                        <ContentImageProvider>
+                                            {children}
+                                        </ContentImageProvider>
                                     </Suspense>
                                 </Container>
                                 <Footer/>

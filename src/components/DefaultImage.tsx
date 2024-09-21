@@ -1,6 +1,7 @@
 import React, {FC} from 'react';
 import {Box, BoxProps} from '@mui/material';
 import Image from 'next/image';
+import clsx from "clsx";
 
 interface DefaultImageProps extends BoxProps {
     src: string;
@@ -18,6 +19,7 @@ export const DefaultImage: FC<DefaultImageProps> = ({
                                                         quality = 80,
                                                         width = "100%",
                                                         height = "100%",
+                                                        className,
                                                         ...props
                                                     }) => {
     return (
@@ -32,7 +34,7 @@ export const DefaultImage: FC<DefaultImageProps> = ({
                 fill={true}
                 priority={priority}
                 quality={quality}
-                className="object-cover"
+                className={clsx("object-cover", className)}
             />
         </Box>
     );

@@ -58,10 +58,12 @@ export const getAuthors = async (categoryId?: number): Promise<User[]> => {
                 role: UserRole.ROLE_AUTHOR
             }
         });
-        return response.data.map((user: User) => ({
+        return await Promise.all(response.data.map(async (user: User) => ({
             ...user,
-            avatarUrl: user.avatarUrl ? `${process.env.NEXT_PUBLIC_BASE_URL}${user.avatarUrl}?t=${new Date().getTime()}` : generateAvatarUrl(user.username, 24)
-        }))
+            avatarUrl: user.avatarUrl
+                ? `${process.env.NEXT_PUBLIC_BASE_URL}${user.avatarUrl}?t=${new Date().getTime()}`
+                : await generateAvatarUrl(user.username, 24)
+        })))
     } catch (error) {
         console.error('Error fetching users:', error);
         throw error;

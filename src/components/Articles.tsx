@@ -51,15 +51,16 @@ export default function Articles({articles, loading}: ArticlesProps) {
                                 <TimeAgo datetime={article.createdAt} className="article-datetime"/>
                             </div>
                             <Link href={`/articles/${article.id}`} className="article-title">{article.title}</Link>
-                            <div className="article-category">{article.categories.map((category) => (
+                            <div className="article-category">{article.categories?.map((category) => (
                                 <span className="category-item" key={category.id}>
                             <Link className="category-link" href={`/categories/${category.id}`}>
                             {category.name}
                             </Link>
                         </span>
                             ))}</div>
-                            <div className="article-content"
-                                 dangerouslySetInnerHTML={{__html: article.previewContent}}/>
+                            <div className="article-content">
+                                {article.previewContentNode}
+                            </div>
                         </CardContent>
                         <CardActions>
                             <Stack direction="row" spacing={2}>

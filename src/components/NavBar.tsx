@@ -38,8 +38,8 @@ const NavBar = () => {
         handleCloseUserMenu();
     };
 
-    const handleProfile = () => {
-        router.push(`/users/${state.user?.username}`);
+    const handleClickMenuItem = (url: string) => {
+        router.push(url);
         handleCloseUserMenu();
     };
 
@@ -155,19 +155,17 @@ const NavBar = () => {
                                     open={Boolean(anchorElUser)}
                                     onClose={handleCloseUserMenu}
                                 >
-                                    <MenuItem onClick={handleProfile}>
+                                    <MenuItem onClick={() => handleClickMenuItem(`/users/${state.user?.username}`)}>
                                         <Typography
                                             textAlign="center"><PersonIcon className="mr-2"
                                                                            fontSize="small"/>Profile</Typography>
                                     </MenuItem>
                                     {state.user?.role === UserRole.ROLE_AUTHOR && (
-                                        <Link href={`/create-article`}>
-                                            <MenuItem>
-                                                <Typography textAlign="center"><CreateIcon className="mr-2"
-                                                                                           fontSize="small"/>Create
-                                                    article</Typography>
-                                            </MenuItem>
-                                        </Link>
+                                        <MenuItem onClick={() => handleClickMenuItem(`/create-article`)}>
+                                            <Typography textAlign="center"><CreateIcon className="mr-2"
+                                                                                       fontSize="small"/>Create
+                                                article</Typography>
+                                        </MenuItem>
                                     )}
                                     {state.user?.role === UserRole.ROLE_ADMIN && (
                                         <Link href={`/create-category`}>

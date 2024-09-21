@@ -1,5 +1,5 @@
 "use client";
-import React, {useEffect, useState} from 'react';
+import React from 'react';
 import {Category} from "@/types";
 import NavTabs, {LinkTabProps} from "@/components/NavTabs";
 import {getCategoryById} from "@/helpers/categoryApi";
@@ -9,6 +9,7 @@ import IconButton from "@mui/material/IconButton";
 import Card from "@mui/material/Card";
 import {AvatarImage} from "@/components/AvatarImage";
 import {useRouter} from "next/navigation";
+import {useQuery} from "@tanstack/react-query";
 
 type PageParams = {
     id: number;
@@ -22,26 +23,37 @@ type PageProps = {
 export default function Layout({params, children}: PageProps) {
     const categoryId = params.id;
     const router = useRouter();
-    const [category, setCategory] = useState<Category>({} as Category);
+    // const [category, setCategory] = useState<Category>({} as Category);
 
     const tabs: LinkTabProps[] = [
         {label: 'Articles', href: `/categories/${categoryId}/articles`},
         {label: 'Authors', href: `/categories/${categoryId}/authors`},
     ];
 
-    useEffect(() => {
-        async function fetchData() {
-            try {
-                const categoryData = await getCategoryById(categoryId);
-                setCategory(categoryData);
-            } catch (error) {
-                console.error('Error fetching data:', error);
-                router.push('/');
-            }
-        }
+    // useEffect(() => {
+    //     async function fetchData() {
+    //         try {
+    //             const categoryData = await getCategoryById(categoryId);
+    //             setCategory(categoryData);
+    //         } catch (error) {
+    //             console.error('Error fetching data:', error);
+    //             router.push('/');
+    //         }
+    //     }
+    //
+    //     fetchData();
+    // }, [categoryId]);
 
-        fetchData();
-    }, [categoryId]);
+    const {data: category, isPending, isError, error} = useQuery<Category>({
+            queryKey: ["category", categoryId],
+            queryFn: () => getCategoryById(categoryId)
+        }
+    );
+
+    if (isError) {
+        console.error('Error fetching data:', error);
+        router.push('/');
+    }
 
     return (
         <section>
@@ -54,12 +66,12 @@ export default function Layout({params, children}: PageProps) {
                             anchorOrigin={{vertical: 'bottom', horizontal: 'right'}}
                             badgeContent={<IconButton component="label" color="inherit" sx={{p: 0}}/>}
                         >
-                            <AvatarImage alt={category.name} className="category-img" variant="rounded"
-                                         src={category.imageUrl} size={48}/>
+                            <AvatarImage alt={category?.name} className="category-img" variant="rounded"
+                                         src={category?.imageUrl} size={48}/>
                         </Badge>
                         <div>
-                            <h1 className="category-card-name">{category.name}</h1>
-                            <p className="category-card-description">{category.description}</p>
+                            <h1 className="category-card-name">{category?.name}</h1>
+                            <p className="category-card-description">{category?.description}</p>
                         </div>
                     </div>
                 </CardContent>

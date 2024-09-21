@@ -1,23 +1,31 @@
 import {axiosInstance} from "@/helpers/axiosInstance";
 import {CreateComment, GetComment, UpdateComment} from "@/types";
+import {generateAvatarUrl} from "@/helpers/generateAvatar";
+
+const updateAvatarUrls = async (comments: GetComment[]): Promise<GetComment[]> => {
+    return Promise.all(
+        comments.map(async (comment) => {
+            const avatarUrl = comment.user.avatarUrl
+                ? `${process.env.NEXT_PUBLIC_BASE_URL}${comment.user.avatarUrl}`
+                : await generateAvatarUrl(comment.user.username, 32);
+
+            return {
+                ...comment,
+                user: {
+                    ...comment.user,
+                    avatarUrl,
+                },
+                replies: comment.replies ? await updateAvatarUrls(comment.replies) : [],
+            };
+        })
+    );
+};
 
 export const getCommentsByArticleId = async (articleId: number): Promise<GetComment[]> => {
     try {
         const response = await axiosInstance.get(`comments/article/${articleId}`);
         const comments: GetComment[] = response.data;
-
-        const updateAvatarUrls = (comments: GetComment[]): GetComment[] => {
-            return comments.map((comment) => ({
-                ...comment,
-                user: {
-                    ...comment.user,
-                    avatarUrl: `${process.env.NEXT_PUBLIC_BASE_URL}${comment.user.avatarUrl}`
-                },
-                replies: comment.replies ? updateAvatarUrls(comment.replies) : []
-            }));
-        };
-
-        return updateAvatarUrls(comments);
+        return await updateAvatarUrls(comments);
     } catch (error) {
         console.error("Error fetching comments by article ID:", error);
         throw error;
@@ -28,18 +36,7 @@ export const getCommentsByUsername = async (username: string): Promise<GetCommen
     try {
         const response = await axiosInstance.get(`/comments/user/${username}`);
         const comments: GetComment[] = response.data;
-        const updateAvatarUrls = (comments: GetComment[]): GetComment[] => {
-            return comments.map((comment) => ({
-                ...comment,
-                user: {
-                    ...comment.user,
-                    avatarUrl: `${process.env.NEXT_PUBLIC_BASE_URL}${comment.user.avatarUrl}`
-                },
-                replies: comment.replies ? updateAvatarUrls(comment.replies) : []
-            }));
-        };
-
-        return updateAvatarUrls(comments);
+        return await updateAvatarUrls(comments);
     } catch (error) {
         console.error("Error fetching comments by username:", error);
         throw error;
