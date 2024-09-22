@@ -11,7 +11,7 @@
     "lint:fix": "npm run lint -- --fix",
     "format": "prettier --write .",
     "postinstall": "node ./postinstall.mjs",
-    "prepare": "husky init"
+    "prepare": "husky"
   },
   "lint-staged": {
     "src/*": [
