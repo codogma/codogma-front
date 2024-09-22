@@ -1,71 +1,78 @@
-"use client";
+'use client';
 import * as React from 'react';
-import {createTheme, ThemeProvider, useTheme} from '@mui/material/styles';
+import { createTheme, ThemeProvider, useTheme } from '@mui/material/styles';
 import IconButton from '@mui/material/IconButton';
 import Brightness4Icon from '@mui/icons-material/Brightness4';
 import Brightness7Icon from '@mui/icons-material/Brightness7';
 
 const ColorModeContext = React.createContext({
-    toggleColorMode: () => {
-    }
+  toggleColorMode: () => {},
 });
 
-export const ColorModeProvider = ({children}: { children: React.ReactNode }) => {
-    const [mode, setMode] = React.useState<'light' | 'dark'>(() => {
-        if (typeof window !== 'undefined') {
-            return localStorage.getItem('theme-mode') === 'dark' ? 'dark' : 'light';
-        }
-        return 'light';
-    });
+export const ColorModeProvider = ({
+  children,
+}: {
+  children: React.ReactNode;
+}) => {
+  const [mode, setMode] = React.useState<'light' | 'dark'>(() => {
+    if (typeof window !== 'undefined') {
+      return localStorage.getItem('theme-mode') === 'dark' ? 'dark' : 'light';
+    }
+    return 'light';
+  });
 
-    React.useEffect(() => {
-        if (mode === 'dark') {
-            document.documentElement.classList.add('dark');
-        } else {
-            document.documentElement.classList.remove('dark');
-        }
-        localStorage.setItem('theme-mode', mode);
-    }, [mode]);
+  React.useEffect(() => {
+    if (mode === 'dark') {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+    localStorage.setItem('theme-mode', mode);
+  }, [mode]);
 
-    const colorMode = React.useMemo(
-        () => ({
-            toggleColorMode: () => {
-                setMode((prevMode) => (prevMode === 'light' ? 'dark' : 'light'));
-            },
-        }),
-        []
-    );
+  const colorMode = React.useMemo(
+    () => ({
+      toggleColorMode: () => {
+        setMode((prevMode) => (prevMode === 'light' ? 'dark' : 'light'));
+      },
+    }),
+    [],
+  );
 
-    const theme = React.useMemo(
-        () =>
-            createTheme({
-                palette: {
-                    mode,
-                },
-            }),
-        [mode]
-    );
+  const theme = React.useMemo(
+    () =>
+      createTheme({
+        palette: {
+          mode,
+        },
+      }),
+    [mode],
+  );
 
-    return (
-        <ColorModeContext.Provider value={colorMode}>
-            <ThemeProvider theme={theme}>{children}</ThemeProvider>
-        </ColorModeContext.Provider>
-    );
+  return (
+    <ColorModeContext.Provider value={colorMode}>
+      <ThemeProvider theme={theme}>{children}</ThemeProvider>
+    </ColorModeContext.Provider>
+  );
 };
 
 export const useColorMode = () => React.useContext(ColorModeContext);
 
 interface ThemeToggleButtonProps {
-    sx?: object;
+  sx?: object;
 }
 
-export const ThemeToggleButton: React.FC<ThemeToggleButtonProps> = ({sx}) => {
-    const theme = useTheme();
-    const colorMode = useColorMode();
+export const ThemeToggleButton: React.FC<ThemeToggleButtonProps> = ({ sx }) => {
+  const theme = useTheme();
+  const colorMode = useColorMode();
 
-    return (
-        <IconButton sx={sx} onClick={colorMode.toggleColorMode}>
-            {theme.palette.mode === 'dark' ? <Brightness7Icon/> : <Brightness4Icon/>}
-        </IconButton>
-    );
+  return (
+    <IconButton sx={sx} onClick={colorMode.toggleColorMode}>
+      {theme.palette.mode === 'dark' ? (
+        <Brightness7Icon />
+      ) : (
+        <Brightness4Icon />
+      )}
+    </IconButton>
+  );
 };

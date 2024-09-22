@@ -3,306 +3,306 @@
 @tailwind utilities;
 
 @layer utilities {
-    .text-balance {
-        text-wrap: balance;
-    }
+  .text-balance {
+    text-wrap: balance;
+  }
 }
 
 @layer app {
-    html, body {
-        scroll-behavior: smooth;
+  html,
+  body {
+    scroll-behavior: smooth;
+  }
+
+  #search-input {
+    @apply scroll-mt-96;
+  }
+
+  body {
+    @apply bg-seashell dark:bg-cod-gray !important;
+  }
+
+  .reload-spinner {
+    @apply h-screen bg-mine-shaft !important;
+  }
+
+  .global-spinner {
+    @apply flex min-h-[50vh] flex-col items-center justify-center;
+  }
+
+  .gradient-circular-progress {
+    .first-stop {
+      stop-color: #f39d0b;
     }
 
-    #search-input {
-        @apply scroll-mt-96;
+    .second-stop {
+      stop-color: #ed4444;
+    }
+  }
+
+  .your-interest {
+    .your-interest-h3 {
+      @apply m-0 mb-2 text-[1.6019rem] font-semibold leading-[1.0925] tracking-[0.005em] text-[#302f2a] !important;
+    }
+  }
+
+  .tox-promotion,
+  .tox-statusbar__branding {
+    @apply hidden !important;
+  }
+
+  .nav-app-bar {
+    @apply sticky bg-limed-spruce-rgba shadow-none backdrop-blur-md dark:bg-woodsmoke-rgba !important;
+  }
+
+  .nav-tabs {
+    @apply mb-2 bg-white dark:bg-bunker;
+
+    .tabs {
+      @apply pl-5 pr-5;
+    }
+  }
+
+  .card {
+    @apply mb-4 bg-white pb-4 pl-5 pr-5 pt-4 text-mine-shaft dark:bg-bunker !important;
+  }
+
+  .card-content {
+    @apply p-0 !important;
+  }
+
+  .meta-container {
+    @apply mb-2 flex flex-nowrap items-start gap-1;
+  }
+
+  .article-user-avatar {
+    @apply h-8 w-8 rounded-[3px] !important;
+  }
+
+  .article-user-name {
+    @apply text-[0.8125rem] font-bold leading-[0.9375rem] no-underline dark:text-alto !important;
+  }
+
+  .article-user-name:hover {
+    @apply text-horizon dark:text-deepsky-blue !important;
+  }
+
+  .article-datetime {
+    @apply m-0 inline-block align-middle text-[0.8125rem] font-medium leading-[0.9375rem] text-mountain-mist no-underline;
+  }
+
+  .article-title {
+    @apply font-[inherit] text-xl leading-[1.3] text-mine-shaft no-underline dark:text-alto !important;
+  }
+
+  .article-title:visited {
+    @apply text-horizon !important;
+  }
+
+  .article-title:hover {
+    @apply text-horizon !important;
+  }
+
+  .article-title-h1 {
+    @apply mx-0 mb-2 mt-0 overflow-x-auto text-2xl font-medium leading-[1.3] text-mine-shaft dark:text-alto !important;
+  }
+
+  .article-title em {
+    @apply transition-none;
+  }
+
+  .article-category {
+    @apply relative text-[0.8125rem] font-medium leading-6 text-rolling-stone no-underline dark:text-shady-lady;
+  }
+
+  .article-category:hover {
+    @apply text-horizon dark:text-deepsky-blue;
+  }
+
+  .content-image {
+    @apply relative !important;
+  }
+
+  .category-item::after {
+    content: ', ';
+  }
+
+  .category-item:last-child::after {
+    content: '';
+  }
+
+  .tag-item::after {
+    content: ', ';
+  }
+
+  .tag-item:last-child::after {
+    content: '';
+  }
+
+  .subscribers-user-name {
+    @apply text-sm leading-none text-horizon dark:text-deepsky-blue !important;
+  }
+
+  .subscribers-user-description {
+    @apply text-[0.8125rem] leading-4 text-mountain-mist dark:text-shady-lady !important;
+  }
+
+  .subscriptions-user-name {
+    @apply text-sm leading-none text-horizon dark:text-deepsky-blue !important;
+  }
+
+  .subscriptions-user-description {
+    @apply text-[0.8125rem] leading-4 text-mountain-mist dark:text-shady-lady !important;
+  }
+
+  .footer {
+    @apply mt-auto bg-shark p-4 text-white shadow !important;
+  }
+
+  .article-content {
+    @apply mb-4 dark:text-alto;
+  }
+
+  .article-btn {
+    @apply inline-flex h-auto min-h-[36px] cursor-pointer items-center rounded-sm border border-solid border-horizon bg-transparent px-3 py-0 text-[0.8125rem] leading-[1.6875rem] text-horizon no-underline dark:border-deepsky-blue dark:text-deepsky-blue !important;
+  }
+
+  .article-btn:hover {
+    @apply border border-solid border-transparent bg-astral text-white dark:bg-deepsky-blue !important;
+  }
+
+  .article-presenter-meta {
+    @apply mx-0 my-6 box-border grid max-w-[780px] gap-6 text-base leading-[180%] text-horizon;
+
+    .article-category-pm {
+      @apply mr-1 font-bold text-mine-shaft;
+
+      .category-link {
+        @apply inline-flex text-base font-medium leading-7 text-horizon no-underline !important;
+      }
     }
 
-    body {
-        @apply bg-seashell dark:bg-cod-gray !important;
+    .article-tag-pm {
+      @apply mr-1 font-bold text-mine-shaft;
+
+      .tag-link {
+        @apply inline-flex text-base font-medium leading-7 text-horizon no-underline !important;
+      }
+    }
+  }
+
+  .category-img {
+    @apply relative top-0.5 mr-2 block h-12 w-12 flex-none overflow-hidden rounded-[3px] !important;
+  }
+
+  .category-card-name {
+    @apply m-0 text-[1.24375rem] font-bold leading-7 text-mine-shaft no-underline dark:text-alto !important;
+  }
+
+  .category-card-shortInfo {
+    @apply m-0 mt-1 text-sm leading-5 text-mine-shaft dark:text-alto !important;
+  }
+
+  .category-card-description {
+    @apply m-0 mt-1 text-sm leading-5 text-mine-shaft !important;
+  }
+
+  .category-name {
+    @apply mb-2 text-[0.9375rem] font-medium leading-4 text-mine-shaft no-underline dark:text-alto !important;
+  }
+
+  .category-name:visited {
+    @apply text-horizon;
+  }
+
+  .category-name:hover {
+    @apply text-horizon dark:text-deepsky-blue !important;
+  }
+
+  .category-description {
+    @apply mt-2 text-[0.8125rem] leading-4 text-mountain-mist;
+  }
+
+  .category-tags {
+    @apply mt-2 pr-2;
+  }
+
+  .tag-item::after {
+    content: ', ';
+  }
+
+  .tag-item:last-child::after {
+    content: '';
+  }
+
+  .tag-name {
+    @apply text-[0.8125rem] leading-[1.125rem] text-horizon no-underline dark:text-deepsky-blue !important;
+  }
+
+  .user-profile-description {
+    @apply mx-0 mb-[15px] mt-0 block text-sm font-bold leading-[1.15] text-mine-shaft dark:text-alto !important;
+  }
+
+  .user-profile-content {
+    @apply mx-0 -mt-1 mb-0 min-w-0 text-[0.9375rem] leading-6 text-mine-shaft dark:text-alto !important;
+  }
+
+  .user-categories-profile {
+    @apply mx-0 mb-[15px] mt-0 block text-sm font-bold leading-[1.15] text-mine-shaft dark:text-alto !important;
+  }
+
+  .user-tags {
+    @apply inline-flex min-h-[1.75rem] items-center rounded-[3px] bg-solitude px-[13px] py-0 align-middle text-[0.8125rem] leading-[1.125rem] text-horizon no-underline dark:bg-elephant dark:text-deepsky-blue !important;
+  }
+
+  .itb-user {
+    @apply mb-4 bg-white pb-4 pl-5 pr-5 pt-4 text-mine-shaft dark:bg-bunker;
+
+    .user-meta-container {
+      @apply mb-2 flex flex-nowrap items-center gap-1;
     }
 
-    .reload-spinner {
-        @apply h-screen bg-mine-shaft !important;
+    .user-avatar {
+      @apply h-6 w-6 rounded-[3px] !important;
     }
 
-    .global-spinner {
-        @apply flex flex-col min-h-[50vh] justify-center items-center;
+    .user-title {
+      @apply mb-2 text-[0.9375rem] leading-4 text-mine-shaft dark:text-alto !important;
     }
 
-    .gradient-circular-progress {
-        .first-stop {
-            stop-color: #f39d0b;
-        }
-
-        .second-stop {
-            stop-color: #ed4444;
-        }
+    .user-title:hover {
+      @apply text-horizon dark:text-deepsky-blue !important;
     }
 
-    .your-interest {
-        .your-interest-h3 {
-            @apply font-semibold text-[1.6019rem] leading-[1.0925] tracking-[0.005em] text-[#302f2a] mb-2 m-0 !important;
-        }
+    .user-nickname {
+      @apply text-sm leading-none text-horizon dark:text-deepsky-blue !important;
     }
 
-    .tox-promotion, .tox-statusbar__branding {
-        @apply hidden !important;
+    .user-description {
+      @apply mt-2 text-[0.8125rem] leading-4 text-mountain-mist dark:text-shady-lady !important;
     }
 
-    .nav-app-bar {
-        @apply bg-limed-spruce-rgba dark:bg-woodsmoke-rgba shadow-none backdrop-blur-md sticky !important;
-    }
-
-    .nav-tabs {
-        @apply bg-white dark:bg-bunker mb-2;
-
-        .tabs {
-            @apply pl-5 pr-5;
-        }
-    }
-
-    .card {
-        @apply text-mine-shaft pt-4 pb-4 pl-5 pr-5 mb-4 bg-white dark:bg-bunker !important;
-    }
-
-    .card-content {
-        @apply p-0 !important;
-    }
-
-    .meta-container {
-        @apply flex items-start flex-nowrap mb-2 gap-1;
-    }
-
-    .article-user-avatar {
-        @apply rounded-[3px] h-8 w-8 !important;
-    }
-
-    .article-user-name {
-        @apply text-[0.8125rem] dark:text-alto font-bold leading-[0.9375rem] no-underline !important;
-    }
-
-    .article-user-name:hover {
-        @apply text-horizon dark:text-deepsky-blue !important;
-    }
-
-    .article-datetime {
-        @apply text-mountain-mist inline-block text-[0.8125rem] font-medium leading-[0.9375rem] align-middle no-underline m-0;
-    }
-
-    .article-title {
-        @apply text-mine-shaft dark:text-alto text-xl font-[inherit] leading-[1.3] no-underline !important;
-    }
-
-    .article-title:visited {
-        @apply text-horizon !important;
-    }
-
-    .article-title:hover {
-        @apply text-horizon !important;
-    }
-
-    .article-title-h1 {
-        @apply text-mine-shaft dark:text-alto text-2xl leading-[1.3] font-medium overflow-x-auto mt-0 mb-2 mx-0 !important;
-    }
-
-    .article-title em {
-        @apply transition-none;
-    }
-
-    .article-category {
-        @apply relative text-rolling-stone dark:text-shady-lady text-[0.8125rem] font-medium leading-6 no-underline;
-    }
-
-    .article-category:hover {
-        @apply text-horizon dark:text-deepsky-blue;
-    }
-
-    .content-image {
-        @apply relative !important;
-    }
-
-    .category-item::after {
-        content: ", ";
-    }
-
-    .category-item:last-child::after {
-        content: "";
-    }
-
-    .tag-item::after {
-        content: ", ";
-    }
-
-    .tag-item:last-child::after {
-        content: "";
-    }
-
-    .subscribers-user-name {
-        @apply text-horizon dark:text-deepsky-blue text-sm leading-none !important;
-    }
-
-    .subscribers-user-description {
-        @apply text-mountain-mist dark:text-shady-lady text-[0.8125rem] leading-4 !important;
-    }
-
-    .subscriptions-user-name {
-        @apply text-horizon dark:text-deepsky-blue text-sm leading-none !important;
-    }
-
-    .subscriptions-user-description {
-        @apply text-mountain-mist dark:text-shady-lady text-[0.8125rem] leading-4 !important;
-    }
-
-    .footer {
-        @apply bg-shark shadow text-white mt-auto p-4 !important;
-    }
-
-    .article-content {
-        @apply mb-4 dark:text-alto;
-    }
-
-    .article-btn {
-        @apply bg-transparent border border-horizon dark:border-deepsky-blue text-horizon dark:text-deepsky-blue cursor-pointer items-center inline-flex text-[0.8125rem] min-h-[36px] h-auto leading-[1.6875rem] no-underline px-3 py-0 rounded-sm border-solid !important;
-    }
-
-    .article-btn:hover {
-        @apply bg-astral dark:bg-deepsky-blue border text-white border-solid border-transparent !important;
-    }
-
-    .article-presenter-meta {
-        @apply grid box-border text-horizon text-base leading-[180%] max-w-[780px] mx-0 my-6 gap-6;
-
-        .article-category-pm {
-            @apply text-mine-shaft font-bold mr-1;
-
-            .category-link {
-                @apply text-horizon inline-flex text-base font-medium leading-7 no-underline !important;
-            }
-        }
-
-        .article-tag-pm {
-            @apply text-mine-shaft font-bold mr-1;
-
-            .tag-link {
-                @apply text-horizon inline-flex text-base font-medium leading-7 no-underline !important;
-            }
-        }
-    }
-
-
-    .category-img {
-        @apply block flex-none h-12 w-12 overflow-hidden relative mr-2 rounded-[3px] top-0.5 !important;
-    }
-
-    .category-card-name {
-        @apply text-mine-shaft dark:text-alto text-[1.24375rem] font-bold leading-7 no-underline m-0 !important;
-    }
-
-    .category-card-shortInfo {
-        @apply text-mine-shaft dark:text-alto text-sm leading-5 mt-1 m-0 !important;
-    }
-
-    .category-card-description {
-        @apply text-mine-shaft text-sm leading-5 mt-1 m-0 !important;
-    }
-
-    .category-name {
-        @apply text-mine-shaft dark:text-alto text-[0.9375rem] font-medium leading-4 no-underline mb-2 !important;
-    }
-
-    .category-name:visited {
-        @apply text-horizon;
-    }
-
-    .category-name:hover {
-        @apply text-horizon dark:text-deepsky-blue !important;
-    }
-
-    .category-description {
-        @apply text-mountain-mist text-[0.8125rem] leading-4 mt-2;
-    }
-
-    .category-tags {
-        @apply mt-2 pr-2;
-    }
-
-    .tag-item::after {
-        content: ", ";
-    }
-
-    .tag-item:last-child::after {
-        content: "";
-    }
-
-    .tag-name {
-        @apply text-horizon dark:text-deepsky-blue no-underline text-[0.8125rem] leading-[1.125rem] !important;
-    }
-
-    .user-profile-description {
-        @apply text-mine-shaft dark:text-alto block text-sm font-bold leading-[1.15] mt-0 mb-[15px] mx-0 !important;
-    }
-
-    .user-profile-content {
-        @apply text-mine-shaft dark:text-alto text-[0.9375rem] leading-6 min-w-0 -mt-1 mb-0 mx-0 !important;
-    }
-
-    .user-categories-profile {
-        @apply text-mine-shaft dark:text-alto block text-sm font-bold leading-[1.15] mt-0 mb-[15px] mx-0 !important;
+    .user-item_categories {
+      @apply text-[0.8125rem] font-normal leading-4 text-mountain-mist dark:text-shady-lady !important;
     }
 
     .user-tags {
-        @apply bg-solitude dark:bg-elephant text-horizon dark:text-deepsky-blue inline-flex items-center text-[0.8125rem] leading-[1.125rem] min-h-[1.75rem] no-underline align-middle px-[13px] py-0 rounded-[3px] !important;
+      @apply text-[0.8125rem] font-normal leading-4 text-horizon dark:text-deepsky-blue !important;
     }
 
-
-    .itb-user {
-        @apply text-mine-shaft pt-4 pb-4 pl-5 pr-5 mb-4 bg-white dark:bg-bunker;
-
-        .user-meta-container {
-            @apply flex items-center flex-nowrap mb-2 gap-1;
-        }
-
-        .user-avatar {
-            @apply rounded-[3px] h-6 w-6 !important;
-        }
-
-        .user-title {
-            @apply text-mine-shaft dark:text-alto text-[0.9375rem] leading-4 mb-2 !important;
-        }
-
-        .user-title:hover {
-            @apply text-horizon dark:text-deepsky-blue !important;
-        }
-
-        .user-nickname {
-            @apply text-horizon dark:text-deepsky-blue text-sm leading-none !important;
-        }
-
-        .user-description {
-            @apply text-mountain-mist dark:text-shady-lady text-[0.8125rem] leading-4 mt-2 !important;
-        }
-
-        .user-item_categories {
-            @apply text-mountain-mist dark:text-shady-lady text-[0.8125rem] font-normal leading-4 !important;
-        }
-
-        .user-tags {
-            @apply text-horizon dark:text-deepsky-blue text-[0.8125rem] font-normal leading-4 !important;
-        }
-
-        .user-tag-item::after {
-            content: ", ";
-        }
-
-        .user-tag-item:last-child::after {
-            content: "";
-        }
+    .user-tag-item::after {
+      content: ', ';
     }
 
-    .swiper {
-        --swiper-navigation-size: 44px;
-        --swiper-navigation-top-offset: 90%;
-        --swiper-navigation-sides-offset: 10px;
-        --swiper-navigation-color: #1976d2;
+    .user-tag-item:last-child::after {
+      content: '';
     }
+  }
+
+  .swiper {
+    --swiper-navigation-size: 44px;
+    --swiper-navigation-top-offset: 90%;
+    --swiper-navigation-sides-offset: 10px;
+    --swiper-navigation-color: #1976d2;
+  }
 }

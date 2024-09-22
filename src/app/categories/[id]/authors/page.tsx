@@ -1,46 +1,44 @@
-"use client";
-import React, {useEffect, useState} from "react";
-import {User} from "@/types";
-import {getAuthors} from "@/helpers/userApi";
-import Authors from "@/components/Authors";
-import {devConsole} from "@/helpers/devConsole";
+'use client';
+import React, { useEffect, useState } from 'react';
+import { User } from '@/types';
+import { getAuthors } from '@/helpers/userApi';
+import Authors from '@/components/Authors';
+import { devConsole } from '@/helpers/devConsole';
 
 type PageParams = {
-    id: number;
+  id: number;
 };
 
 type PageProps = {
-    params: PageParams;
+  params: PageParams;
 };
 
+function Page({ params }: PageProps) {
+  const categoryId = params.id;
+  const [users, setUsers] = useState<User[]>([]);
+  const [loading, setLoading] = useState(true);
 
-function Page({params}: PageProps) {
-    const categoryId = params.id
-    const [users, setUsers] = useState<User[]>([]);
-    const [loading, setLoading] = useState(true);
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const allUsers = await getAuthors(categoryId);
+        devConsole(allUsers);
+        setUsers(allUsers);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      } finally {
+        setLoading(false);
+      }
+    }
 
-    useEffect(() => {
-        async function fetchData() {
-            try {
-                const allUsers = await getAuthors(categoryId)
-                devConsole(allUsers)
-                setUsers(allUsers);
-            } catch (error) {
-                console.error('Error fetching data:', error)
-            } finally {
-                setLoading(false);
-            }
-        }
+    fetchData();
+  }, [categoryId]);
 
-        fetchData()
-    }, [])
-
-    return (
-        <>
-            <Authors users={users} loading={loading}/>
-        </>
-    );
+  return (
+    <>
+      <Authors users={users} loading={loading} />
+    </>
+  );
 }
 
-
-export default Page
+export default Page;
