@@ -44,8 +44,7 @@ export default function Page({params}: PageProps) {
         const fetchData = async () => {
             try {
                 const articleData = await getArticleById(articleId);
-                articleData.content = DOMPurify.sanitize(articleData.content);
-                const contentNode = processContent(articleData.content);
+                const contentNode = processContent(DOMPurify.sanitize(articleData.content));
                 setArticle({...articleData, contentNode});
             } catch (error) {
                 console.error('Error fetching data:', error);

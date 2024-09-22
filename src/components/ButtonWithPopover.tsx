@@ -1,11 +1,9 @@
 "use client";
 import React, {useEffect, useState} from 'react';
-import Popover from "@mui/material/Popover";
 import {useAuth} from "@/components/AuthProvider";
 import {useRouter} from "next/navigation";
-import {Button, Link} from "@mui/material";
+import {Button, Link, Popover, Typography} from "@mui/material";
 import {checkSubscription, subscribeToUser, unsubscribeToUser} from "@/helpers/userApi";
-import Typography from "@mui/material/Typography";
 
 interface CustomPopoverProps {
     destination?: string;
@@ -29,24 +27,22 @@ export const ButtonWithPopover: React.FC<CustomPopoverProps> = ({destination = "
         if (state.isAuthenticated) {
             check(username);
         }
-    }, [username]);
+    }, [state.isAuthenticated, username]);
 
     const handleUnsubscribe = async (event: React.MouseEvent<HTMLButtonElement>) => {
-        if (state.isAuthenticated)
+        if (state.isAuthenticated) {
             await unsubscribeToUser(username)
                 .then(() => setIsSubscribed(false))
                 .catch((error) => console.error('Error unsubscribing:', error));
-        else {
-            setAnchorEl(event.currentTarget);
         }
     };
 
     const handleSubscribe = async (event: React.MouseEvent<HTMLButtonElement>) => {
-        if (state.isAuthenticated)
+        if (state.isAuthenticated) {
             await subscribeToUser(username)
                 .then(() => setIsSubscribed(true))
                 .catch((error) => console.error('Error subscribing:', error));
-        else {
+        } else {
             setAnchorEl(event.currentTarget);
         }
     };
@@ -56,15 +52,11 @@ export const ButtonWithPopover: React.FC<CustomPopoverProps> = ({destination = "
         handlePopoverClose();
     };
 
-    const handlePopoverOpen = (event: React.MouseEvent<HTMLButtonElement>) => {
-        setAnchorEl(event.currentTarget);
-    };
-
     const handlePopoverClose = () => {
         setAnchorEl(null);
     };
 
-    return (
+    return state.user?.username !== username ? (
         <>
             {isSubscribed ? (
                 <Button className="article-btn" onClick={handleUnsubscribe}>Following</Button>
@@ -74,7 +66,7 @@ export const ButtonWithPopover: React.FC<CustomPopoverProps> = ({destination = "
             {!state.isAuthenticated &&
                 <Popover
                     id={id}
-                    open={Boolean(anchorEl)}
+                    open={open}
                     anchorEl={anchorEl}
                     anchorOrigin={{
                         vertical: 'bottom',
@@ -96,5 +88,5 @@ export const ButtonWithPopover: React.FC<CustomPopoverProps> = ({destination = "
                     </Typography>
                 </Popover>}
         </>
-    );
+    ) : null;
 };
