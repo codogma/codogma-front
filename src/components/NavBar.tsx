@@ -131,25 +131,21 @@ const NavBar = () => {
                   open={Boolean(anchorElUser)}
                   onClose={handleCloseUserMenu}
                 >
-                  <Link href={`/sign-up`}>
-                    <MenuItem>
-                      <Typography textAlign='center'>
-                        <PersonAddAltRoundedIcon
-                          className='mr-2'
-                          fontSize='small'
-                        />
-                        Sign up
-                      </Typography>
-                    </MenuItem>
-                  </Link>
-                  <Link href={`/sign-in`}>
-                    <MenuItem>
-                      <Typography textAlign='center'>
-                        <LoginIcon className='mr-2' fontSize='small' />
-                        Sign in
-                      </Typography>
-                    </MenuItem>
-                  </Link>
+                  <MenuItem onClick={() => handleClickMenuItem(`/sign-up`)}>
+                    <Typography textAlign='center'>
+                      <PersonAddAltRoundedIcon
+                        className='mr-2'
+                        fontSize='small'
+                      />
+                      Sign up
+                    </Typography>
+                  </MenuItem>
+                  <MenuItem onClick={() => handleClickMenuItem(`/sign-in`)}>
+                    <Typography textAlign='center'>
+                      <LoginIcon className='mr-2' fontSize='small' />
+                      Sign in
+                    </Typography>
+                  </MenuItem>
                 </Menu>
               </>
             )}
@@ -207,14 +203,14 @@ const NavBar = () => {
                     </MenuItem>
                   )}
                   {state.user?.role === UserRole.ROLE_ADMIN && (
-                    <Link href={`/create-category`}>
-                      <MenuItem>
-                        <Typography textAlign='center'>
-                          <CategoryIcon className='mr-2' fontSize='small' />
-                          Create category
-                        </Typography>
-                      </MenuItem>
-                    </Link>
+                    <MenuItem
+                      onClick={() => handleClickMenuItem(`/create-category`)}
+                    >
+                      <Typography textAlign='center'>
+                        <CategoryIcon className='mr-2' fontSize='small' />
+                        Create category
+                      </Typography>
+                    </MenuItem>
                   )}
                   <MenuItem onClick={handleLogout}>
                     <Typography textAlign='center'>
