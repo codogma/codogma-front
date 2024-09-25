@@ -20,7 +20,6 @@ import { logout } from '@/helpers/authApi';
 import { UserRole } from '@/types';
 import { useRouter } from 'next/navigation';
 import { AvatarImage } from '@/components/AvatarImage';
-import StickyNote2OutlinedIcon from '@mui/icons-material/StickyNote2Outlined';
 import CreateIcon from '@mui/icons-material/Create';
 import CategoryIcon from '@mui/icons-material/Category';
 import PersonIcon from '@mui/icons-material/Person';
@@ -76,8 +75,7 @@ const NavBar = () => {
                 textDecoration: 'none',
               }}
             >
-              LINKED
-              <StickyNote2OutlinedIcon />
+              CODOGMA
             </Typography>
           </Link>
           <ButtonGroup

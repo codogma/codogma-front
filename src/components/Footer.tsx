@@ -129,7 +129,7 @@ function Footer() {
           alignItems='center'
         >
           <Typography variant='body2' color='inherit'>
-            © Linkednote
+            © Codogma
           </Typography>
           <Box>
             <Link href='#' color='inherit'>

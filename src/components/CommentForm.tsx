@@ -2,10 +2,12 @@
 import React, { useEffect, useState } from 'react';
 import { CreateComment, GetComment, UpdateComment } from '@/types';
 import { createComment, updateComment } from '@/helpers/commentAPI';
-import { Box, Button, TextField } from '@mui/material';
+import { Box, Button, Link, TextField } from '@mui/material';
 import Typography from '@mui/material/Typography';
-import Popover from '@mui/material/Popover';
 import { useAuth } from '@/components/AuthProvider';
+import CardContent from '@mui/material/CardContent';
+import Card from '@mui/material/Card';
+import { router } from 'next/client';
 
 interface CommentFormProps {
   articleId: number;
@@ -63,56 +65,52 @@ const CommentForm: React.FC<CommentFormProps> = ({
       onSubmit={handleSubmit}
       sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}
     >
-      <TextField
-        multiline
-        minRows={3}
-        value={content}
-        onChange={(e) => setContent(e.target.value)}
-        placeholder='Write your comment...'
-        variant='outlined'
-        fullWidth
-        disabled={!state.isAuthenticated}
-      />
-      <Typography
-        aria-owns={open ? 'mouse-over-popover' : undefined}
-        aria-haspopup='true'
-        onMouseEnter={handlePopoverOpen}
-        onMouseLeave={handlePopoverClose}
-      >
-        <Box sx={{ display: 'flex', gap: 1 }}>
-          <Button type='submit' variant='outlined' size='small'>
-            {comment ? 'Update Comment' : 'Add Comment'}
-          </Button>
-          {onCancelEdit && (
-            <Button
-              variant='outlined'
-              color='warning'
-              size='small'
-              onClick={onCancelEdit}
-            >
-              Cancel
+      {state.isAuthenticated ? (
+        <>
+          <TextField
+            multiline
+            minRows={3}
+            value={content}
+            onChange={(e) => setContent(e.target.value)}
+            placeholder='Write your comment...'
+            variant='outlined'
+            fullWidth
+            disabled={!state.isAuthenticated}
+          />
+          <Box sx={{ display: 'flex', gap: 1 }}>
+            <Button type='submit' variant='outlined' size='small'>
+              {comment ? 'Update Comment' : 'Add Comment'}
             </Button>
-          )}
-        </Box>
-      </Typography>
-      <Popover
-        id='mouse-over-popover'
-        sx={{ pointerEvents: 'none' }}
-        open={open}
-        anchorEl={anchorEl}
-        anchorOrigin={{
-          vertical: 'bottom',
-          horizontal: 'left',
-        }}
-        transformOrigin={{
-          vertical: 'top',
-          horizontal: 'left',
-        }}
-        onClose={handlePopoverClose}
-        disableRestoreFocus
-      >
-        <Typography sx={{ p: 1 }}>Log in</Typography>
-      </Popover>
+            {onCancelEdit && (
+              <Button
+                variant='outlined'
+                color='warning'
+                size='small'
+                onClick={onCancelEdit}
+              >
+                Cancel
+              </Button>
+            )}
+          </Box>
+        </>
+      ) : (
+        <Card>
+          <CardContent>
+            <Typography variant='body2'>
+              <Link
+                component='button'
+                type='button'
+                underline='none'
+                onClick={() => router.push('/sign-up')}
+                sx={{ mr: '5px', verticalAlign: 'unset' }}
+              >
+                Sign up
+              </Link>
+              to leave a comment.
+            </Typography>
+          </CardContent>
+        </Card>
+      )}
     </Box>
   );
 };
