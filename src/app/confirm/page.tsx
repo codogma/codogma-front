@@ -12,8 +12,8 @@ import {
 import { confirmEmail } from '@/helpers/authApi';
 
 export default function Page() {
-  const searchParams = useSearchParams(); // Получаем параметры запроса
-  const token = searchParams.get('token'); // Извлекаем значение токена
+  const searchParams = useSearchParams();
+  const token = searchParams?.get('token');
   const [confirmationStatus, setConfirmationStatus] = useState<
     'loading' | 'success' | 'error'
   >('loading');

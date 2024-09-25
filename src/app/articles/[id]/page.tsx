@@ -1,7 +1,6 @@
 'use client';
-import React, { useEffect, useState } from 'react';
-import { Article, UserRole } from '@/types';
-import { getArticleById } from '@/helpers/articleApi';
+import React from 'react';
+import { UserRole } from '@/types';
 import Link from 'next/link';
 import DOMPurify from 'dompurify';
 import { TimeAgo } from '@/components/TimeAgo';
@@ -14,47 +13,13 @@ import CommentList from '@/components/CommentList';
 import Typography from '@mui/material/Typography';
 import { AvatarImage } from '@/components/AvatarImage';
 import { useContentImageContext } from '@/components/ContentImageProvider';
+import { useArticle } from '@/components/ArticleProvider';
 
-type PageParams = {
-  id: number;
-};
-
-type PageProps = {
-  params: PageParams;
-};
-
-export default function Page({ params }: PageProps) {
-  const articleId = params.id;
+export default function Page() {
+  const { article } = useArticle();
   const { state } = useAuth();
   const { processContent } = useContentImageContext();
-  const [article, setArticle] = useState<Article>({
-    id: 0,
-    title: '',
-    content: '',
-    previewContent: '',
-    username: '',
-    authorAvatarUrl: '',
-    createdAt: new Date(),
-    categories: [],
-    tags: [],
-  });
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const articleData = await getArticleById(articleId);
-        const contentNode = processContent(
-          DOMPurify.sanitize(articleData.content),
-        );
-        setArticle({ ...articleData, contentNode });
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      }
-    };
-
-    fetchData();
-  }, [articleId, processContent]);
-
+  const content = processContent(DOMPurify.sanitize(article.content));
   return (
     <>
       <Card key={article.id} variant='outlined' className='card'>
@@ -91,7 +56,7 @@ export default function Page({ params }: PageProps) {
               </span>
             ))}
           </div>
-          <div className='article-content'>{article.contentNode}</div>
+          <div className='article-content'>{content}</div>
           <div className='article-presenter-meta'>
             <div className='article-category-pm'>
               Категории:{' '}
@@ -132,7 +97,7 @@ export default function Page({ params }: PageProps) {
         </CardContent>
       </Card>
       <Typography component='div'>Comments:</Typography>
-      <CommentList articleId={articleId} />
+      <CommentList articleId={article.id} />
     </>
   );
 }

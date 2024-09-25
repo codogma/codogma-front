@@ -22,6 +22,11 @@ const nextConfig = {
         port: '9000',
         pathname: '/api/**',
       },
+      {
+        protocol: 'https',
+        hostname: '**',
+        pathname: '/**',
+      },
     ],
   },
 };

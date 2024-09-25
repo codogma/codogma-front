@@ -1,8 +1,6 @@
 'use client';
 import React, { FormEvent, useEffect, useRef, useState } from 'react';
-import { getArticles } from '@/helpers/articleApi';
-import { Article } from '@/types';
-import DOMPurify from 'dompurify';
+import { getArticles, GetArticlesDTO } from '@/helpers/articleApi';
 import Pagination from '@mui/material/Pagination';
 import Stack from '@mui/material/Stack';
 import InputLabel from '@mui/material/InputLabel';
@@ -17,6 +15,8 @@ import MenuIcon from '@mui/icons-material/Menu';
 import Menu from '@mui/material/Menu';
 import Articles from '@/components/Articles';
 import { useContentImageContext } from '@/components/ContentImageProvider';
+import { useQuery } from '@tanstack/react-query';
+import DOMPurify from 'dompurify';
 
 export default function Page() {
   const resultsPerPage10 = 10;
@@ -24,16 +24,12 @@ export default function Page() {
   const resultsPerPage30 = 30;
   const minPages = 2;
   const searchInputRef = useRef<HTMLInputElement>(null);
-  const [articles, setArticles] = useState<Article[]>([]);
-  const [totalPages, setTotalPages] = useState<number>(0);
-  const [totalElements, setTotalElements] = useState<number>(0);
   const [currentPage, setCurrentPage] = useState<number>(0);
   const [resultsPerPage, setResultsPerPage] =
     useState<number>(resultsPerPage10);
   const [searchValue, setSearchValue] = useState<string>();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [searchType, setSearchType] = useState<'content' | 'tag'>('content');
-  const [loading, setLoading] = useState(true);
   const { processContent } = useContentImageContext();
 
   const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
@@ -45,43 +41,37 @@ export default function Page() {
     setAnchorEl(null);
   };
 
-  useEffect(() => {
-    async function fetchData(page: number) {
-      try {
-        let byTag: string | undefined = undefined;
-        let byContent: string | undefined = undefined;
-        if (searchType === 'tag') {
-          byTag = searchValue;
-        }
-        if (searchType === 'content') {
-          byContent = searchValue;
-        }
-        const { content, totalPages, totalElements } = await getArticles(
-          undefined,
-          page,
-          resultsPerPage,
-          byTag,
-          byContent,
-          undefined,
-        );
-        const sanitizedArticles = content.map((article) => ({
-          ...article,
-          previewContentNode: processContent(
-            DOMPurify.sanitize(article.previewContent),
-          ),
-        }));
-        setArticles(sanitizedArticles);
-        setTotalPages(totalPages);
-        setTotalElements(totalElements);
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      } finally {
-        setLoading(false);
-      }
-    }
+  const { data, isPending, isError } = useQuery<GetArticlesDTO>({
+    queryKey: [
+      'articles',
+      currentPage,
+      resultsPerPage,
+      searchType,
+      searchValue,
+    ],
+    queryFn: () => {
+      const byTag = searchType === 'tag' ? searchValue : undefined;
+      const byContent = searchType === 'content' ? searchValue : undefined;
+      return getArticles(
+        undefined,
+        currentPage,
+        resultsPerPage,
+        byTag,
+        byContent,
+        undefined,
+      );
+    },
+  });
 
-    fetchData(currentPage).then();
-  }, [processContent, currentPage, resultsPerPage, searchType, searchValue]);
+  const content = data?.content || [];
+  const articles = content.map((article) => ({
+    ...article,
+    previewContentNode: processContent(
+      DOMPurify.sanitize(article.previewContent),
+    ),
+  }));
+  const totalPages = data?.totalPages || 0;
+  const totalElements = data?.totalElements || 0;
 
   useEffect(() => {
     if (window.location.hash === '#search-input' && searchInputRef.current) {
@@ -169,7 +159,7 @@ export default function Page() {
           <SearchIcon />
         </IconButton>
       </Paper>
-      <Articles articles={articles} loading={loading} />
+      <Articles articles={articles} loading={isPending} />
       {totalPages < minPages ? null : (
         <Stack
           spacing={2}

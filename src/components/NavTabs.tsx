@@ -25,7 +25,7 @@ const NavTabs: React.FC<NavTabsProps> = ({ tabs = linkTabs }) => {
 
   const shouldShowNavTabs = tabs.some((tab) => {
     const basePath = tab.href;
-    return pathname.startsWith(basePath) && pathname === basePath;
+    return pathname?.startsWith(basePath) && pathname === basePath;
   });
 
   if (!shouldShowNavTabs) return null;

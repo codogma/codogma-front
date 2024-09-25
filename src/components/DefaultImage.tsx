@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { Box, BoxProps } from '@mui/material';
+import { Box, BoxProps, Typography } from '@mui/material';
 import Image from 'next/image';
 import clsx from 'clsx';
 
@@ -14,7 +14,7 @@ interface DefaultImageProps extends BoxProps {
 
 export const DefaultImage: FC<DefaultImageProps> = ({
   src,
-  alt = 'image',
+  alt = '',
   priority = true,
   quality = 80,
   width = '100%',
@@ -23,7 +23,7 @@ export const DefaultImage: FC<DefaultImageProps> = ({
   ...props
 }) => {
   return (
-    <Box {...props} width={width} height={height}>
+    <Box {...props} width={width} height={height} textAlign='center'>
       <Image
         src={src}
         alt={alt}
@@ -32,6 +32,11 @@ export const DefaultImage: FC<DefaultImageProps> = ({
         quality={quality}
         className={clsx('object-cover', className)}
       />
+      {alt && (
+        <Typography variant='body1' color='textSecondary' mt={1} mb={1}>
+          {alt}
+        </Typography>
+      )}
     </Box>
   );
 };

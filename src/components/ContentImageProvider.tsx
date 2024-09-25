@@ -24,7 +24,7 @@ export const ContentImageProvider: FC<{ children: ReactNode }> = ({
           return (
             <DefaultImage
               src={domNode.attribs.src}
-              alt='content image'
+              alt={domNode.attribs.alt}
               className='content-image'
               quality={70}
               position='relative'
