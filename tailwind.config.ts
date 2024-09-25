@@ -27,6 +27,7 @@ const config: Config = {
         'woodsmoke-rgba': 'rgba(13,13,13,0.80)',
         loblolly: '#BBCDD6',
         cerulean: '#49ADDF',
+        'vida-loca': '#548221',
       },
     },
   },

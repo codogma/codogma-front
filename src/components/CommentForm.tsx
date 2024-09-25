@@ -25,7 +25,6 @@ const CommentForm: React.FC<CommentFormProps> = ({
   onCancelEdit,
 }) => {
   const [content, setContent] = useState<string>('');
-  const [anchorEl, setAnchorEl] = React.useState<HTMLElement | null>(null);
   const { state } = useAuth();
 
   useEffect(() => {
@@ -48,16 +47,6 @@ const CommentForm: React.FC<CommentFormProps> = ({
     setContent('');
     onCommentAdded();
   };
-
-  const handlePopoverOpen = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorEl(event.currentTarget);
-  };
-
-  const handlePopoverClose = () => {
-    setAnchorEl(null);
-  };
-
-  const open = Boolean(anchorEl);
 
   return (
     <Box
@@ -94,7 +83,7 @@ const CommentForm: React.FC<CommentFormProps> = ({
           </Box>
         </>
       ) : (
-        <Card>
+        <Card className='card-with-line'>
           <CardContent>
             <Typography variant='body2'>
               <Link
