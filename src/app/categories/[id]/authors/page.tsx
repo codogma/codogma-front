@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import { User } from '@/types';
 import { getAuthors } from '@/helpers/userApi';
-import Authors from '@/components/Authors';
+import Users from '@/components/Users';
 import { devConsole } from '@/helpers/devConsole';
 
 type PageParams = {
@@ -36,7 +36,7 @@ function Page({ params }: PageProps) {
 
   return (
     <>
-      <Authors users={users} loading={loading} />
+      <Users users={users} loading={loading} />
     </>
   );
 }

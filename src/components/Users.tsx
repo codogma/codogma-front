@@ -10,9 +10,10 @@ import { User } from '@/types';
 type AuthorsProps = {
   users: User[];
   loading?: boolean;
+  isAuthor?: boolean;
 };
 
-export default function Authors({ users, loading }: AuthorsProps) {
+export default function Users({ users, loading, isAuthor }: AuthorsProps) {
   return (
     <>
       {loading ? (
@@ -52,22 +53,24 @@ export default function Authors({ users, loading }: AuthorsProps) {
               <Link href={`/users/${user.username}`} className='user-nickname'>
                 @{user.username}
               </Link>
-              <div className='user-description'>{user.bio}</div>
-              <div className='user-item_categories'>
-                Пишет в категориях:
-                <div className='user-tags'>
-                  {user.categories?.map((category) => (
-                    <span className='user-tag-item' key={category.id}>
-                      <Link
-                        className='tag-name'
-                        href={`/categories/${category.id}`}
-                      >
-                        {category.name}
-                      </Link>
-                    </span>
-                  ))}
+              <div className='user-description'>{user.shortInfo}</div>
+              {isAuthor && user.categories?.length > 0 && (
+                <div className='user-item_categories'>
+                  Пишет в категориях:
+                  <div className='user-tags'>
+                    {user.categories?.map((category) => (
+                      <span className='user-tag-item' key={category.id}>
+                        <Link
+                          className='tag-name'
+                          href={`/categories/${category.id}`}
+                        >
+                          {category.name}
+                        </Link>
+                      </span>
+                    ))}
+                  </div>
                 </div>
-              </div>
+              )}
             </CardContent>
           </Card>
         ))

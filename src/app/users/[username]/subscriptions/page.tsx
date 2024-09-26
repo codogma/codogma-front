@@ -33,37 +33,30 @@ const Page = ({ params }: PageProps) => {
     fetchData();
   }, [username]);
 
-  return (
-    <>
-      {subscriptions &&
-        subscriptions?.map((user) => (
-          <Card key={user.username} variant='outlined' className='card'>
-            <CardContent className='card-content'>
-              <Box className='meta-container'>
-                <>
-                  <AvatarImage
-                    className='article-user-avatar'
-                    src={user.avatarUrl}
-                    alt={user.username}
-                    variant='rounded'
-                    size={32}
-                  />
-                  <Link
-                    href={`/users/${user.username}`}
-                    className='subscriptions-user-name'
-                  >
-                    @{user.username}
-                  </Link>
-                </>
-                <div className='subscriptions-user-description'>
-                  {user.shortInfo}
-                </div>
-              </Box>
-            </CardContent>
-          </Card>
-        ))}
-    </>
-  );
+  return subscriptions?.map((user) => (
+    <Card key={user.username} variant='outlined' className='card'>
+      <CardContent className='card-content'>
+        <Box className='meta-container'>
+          <>
+            <AvatarImage
+              className='article-user-avatar'
+              src={user.avatarUrl}
+              alt={user.username}
+              variant='rounded'
+              size={32}
+            />
+            <Link
+              href={`/users/${user.username}`}
+              className='subscriptions-user-name'
+            >
+              @{user.username}
+            </Link>
+          </>
+          <div className='subscriptions-user-description'>{user.shortInfo}</div>
+        </Box>
+      </CardContent>
+    </Card>
+  ));
 };
 
 export default Page;

@@ -27,7 +27,7 @@ export default function Layout({ params, children }: PageProps) {
 
   const tabs: LinkTabProps[] = [
     { label: 'Articles', href: `/categories/${categoryId}/articles` },
-    { label: 'Authors', href: `/categories/${categoryId}/authors` },
+    { label: 'Users', href: `/categories/${categoryId}/authors` },
   ];
 
   // useEffect(() => {
