@@ -8,6 +8,7 @@ import { devConsole } from '@/helpers/devConsole';
 function Page() {
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
+  const [isAuthor, setIsAuthor] = useState(false);
 
   useEffect(() => {
     async function fetchData() {
@@ -15,6 +16,7 @@ function Page() {
         const allUsers = await getAuthors();
         devConsole(allUsers);
         setUsers(allUsers);
+        setIsAuthor(true);
       } catch (error) {
         console.error('Error fetching data:', error);
       } finally {
@@ -27,7 +29,7 @@ function Page() {
 
   return (
     <>
-      <Users users={users} loading={loading} />
+      <Users users={users} loading={loading} isAuthor={isAuthor} />
     </>
   );
 }

@@ -17,6 +17,7 @@ function Page({ params }: PageProps) {
   const categoryId = params.id;
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
+  const [isAuthor, setIsAuthor] = useState(false);
 
   useEffect(() => {
     async function fetchData() {
@@ -24,6 +25,7 @@ function Page({ params }: PageProps) {
         const allUsers = await getAuthors(categoryId);
         devConsole(allUsers);
         setUsers(allUsers);
+        setIsAuthor(true);
       } catch (error) {
         console.error('Error fetching data:', error);
       } finally {
@@ -36,7 +38,7 @@ function Page({ params }: PageProps) {
 
   return (
     <>
-      <Users users={users} loading={loading} />
+      <Users users={users} loading={loading} isAuthor={isAuthor} />
     </>
   );
 }

@@ -5,7 +5,8 @@ import { Skeleton } from '@mui/material';
 import Card from '@mui/material/Card';
 import { AvatarImage } from '@/components/AvatarImage';
 import Link from 'next/link';
-import { User } from '@/types';
+import { User, UserRole } from '@/types';
+import { useAuth } from '@/components/AuthProvider';
 
 type AuthorsProps = {
   users: User[];
@@ -14,6 +15,8 @@ type AuthorsProps = {
 };
 
 export default function Users({ users, loading, isAuthor }: AuthorsProps) {
+  const { state } = useAuth();
+
   return (
     <>
       {loading ? (
@@ -54,23 +57,25 @@ export default function Users({ users, loading, isAuthor }: AuthorsProps) {
                 @{user.username}
               </Link>
               <div className='user-description'>{user.shortInfo}</div>
-              {isAuthor && user.categories?.length > 0 && (
-                <div className='user-item_categories'>
-                  Пишет в категориях:
-                  <div className='user-tags'>
-                    {user.categories?.map((category) => (
-                      <span className='user-tag-item' key={category.id}>
-                        <Link
-                          className='tag-name'
-                          href={`/categories/${category.id}`}
-                        >
-                          {category.name}
-                        </Link>
-                      </span>
-                    ))}
+              {isAuthor &&
+                state.user?.role === UserRole.ROLE_AUTHOR &&
+                user.categories?.length > 0 && (
+                  <div className='user-item_categories'>
+                    Пишет в категориях:
+                    <div className='user-tags'>
+                      {user.categories?.map((category) => (
+                        <span className='user-tag-item' key={category.id}>
+                          <Link
+                            className='tag-name'
+                            href={`/categories/${category.id}`}
+                          >
+                            {category.name}
+                          </Link>
+                        </span>
+                      ))}
+                    </div>
                   </div>
-                </div>
-              )}
+                )}
             </CardContent>
           </Card>
         ))
