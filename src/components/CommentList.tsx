@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import CommentForm from './CommentForm';
 import { deleteComment, getCommentsByArticleId } from '@/helpers/commentAPI';
-import { GetComment } from '@/types';
+import { GetComment, UserRole } from '@/types';
 import { Box, Button, Card, CardContent, Typography } from '@mui/material';
 import Link from 'next/link';
 import { TimeAgo } from '@/components/TimeAgo';
@@ -88,42 +88,43 @@ export const CommentList: React.FC<CommentListProps> = ({
           ) : (
             <>
               <Typography variant='body1'>{comment.content}</Typography>
-              {state.isAuthenticated && (
-                <Box sx={{ display: 'flex', gap: 1, marginTop: 1 }}>
-                  {state.user &&
-                    state.user.username !== comment.user.username && (
-                      <Button
-                        variant='outlined'
-                        size='small'
-                        onClick={() => handleReply(comment.id)}
-                      >
-                        Reply
-                      </Button>
-                    )}
-                  {state.user &&
-                    state.user.username === comment.user.username && (
-                      <Button
-                        color='secondary'
-                        variant='outlined'
-                        size='small'
-                        onClick={() => handleEdit(comment)}
-                      >
-                        Edit
-                      </Button>
-                    )}
-                  {state.user &&
-                    state.user.username === comment.user.username && (
-                      <Button
-                        color='error'
-                        variant='outlined'
-                        size='small'
-                        onClick={() => handleDelete(comment.id)}
-                      >
-                        Delete
-                      </Button>
-                    )}
-                </Box>
-              )}
+              {state.isAuthenticated &&
+                state.user?.role === UserRole.ROLE_ADMIN && (
+                  <Box sx={{ display: 'flex', gap: 1, marginTop: 1 }}>
+                    {state.user &&
+                      state.user.username !== comment.user.username && (
+                        <Button
+                          variant='outlined'
+                          size='small'
+                          onClick={() => handleReply(comment.id)}
+                        >
+                          Reply
+                        </Button>
+                      )}
+                    {state.user &&
+                      state.user.username === comment.user.username && (
+                        <Button
+                          color='secondary'
+                          variant='outlined'
+                          size='small'
+                          onClick={() => handleEdit(comment)}
+                        >
+                          Edit
+                        </Button>
+                      )}
+                    {state.user &&
+                      state.user.username === comment.user.username && (
+                        <Button
+                          color='error'
+                          variant='outlined'
+                          size='small'
+                          onClick={() => handleDelete(comment.id)}
+                        >
+                          Delete
+                        </Button>
+                      )}
+                  </Box>
+                )}
               {replyToCommentId === comment.id && (
                 <Box sx={{ marginTop: 2 }}>
                   <CommentForm
