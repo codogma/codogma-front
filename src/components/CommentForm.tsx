@@ -1,4 +1,3 @@
-'use client';
 import React, { useEffect, useState } from 'react';
 import { CreateComment, GetComment, UpdateComment } from '@/types';
 import { createComment, updateComment } from '@/helpers/commentAPI';
