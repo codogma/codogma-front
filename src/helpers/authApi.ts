@@ -2,7 +2,6 @@ import { axiosInstance } from '@/helpers/axiosInstance';
 import { User } from '@/types';
 import Cookies from 'js-cookie';
 import axios, { AxiosError } from 'axios';
-import { generateAvatarUrl } from '@/helpers/generateAvatar';
 
 export type SignUp = {
   username: string;
@@ -87,12 +86,7 @@ export const currentUser = async (): Promise<User | null> => {
   try {
     const response = await axiosInstance.get('/auth/current-user');
     if (response.data) {
-      const user: User = {
-        ...response.data,
-        avatarUrl: response.data.avatarUrl
-          ? `${process.env.NEXT_PUBLIC_BASE_URL}${response.data.avatarUrl}?t=${new Date().getTime()}`
-          : await generateAvatarUrl(response.data.username, 200),
-      };
+      const user: User = response.data;
       Cookies.set('user', JSON.stringify(user), {
         secure: true,
         sameSite: 'strict',

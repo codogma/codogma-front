@@ -3,315 +3,314 @@
 @tailwind utilities;
 
 @layer utilities {
-    .text-balance {
-        text-wrap: balance;
-    }
+  .text-balance {
+    text-wrap: balance;
+  }
 }
 
 @layer app {
-    html,
-    body {
-        scroll-behavior: smooth;
+  html,
+  body {
+    scroll-behavior: smooth;
+  }
+
+  .card-with-line {
+    @apply relative !important;
+  }
+
+  .card-with-line::before {
+    @apply absolute -inset-y-px left-0 w-3 bg-vida-loca content-[""] !important;
+  }
+
+  #search-input {
+    @apply scroll-mt-96;
+  }
+
+  body {
+    @apply bg-seashell dark:bg-cod-gray !important;
+  }
+
+  .reload-spinner {
+    @apply h-screen bg-mine-shaft !important;
+  }
+
+  .global-spinner {
+    @apply flex min-h-[50vh] flex-col items-center justify-center;
+  }
+
+  .gradient-circular-progress {
+    .first-stop {
+      stop-color: #f39d0b;
     }
 
-    .card-with-line {
-        @apply relative !important;
+    .second-stop {
+      stop-color: #ed4444;
     }
+  }
 
-    .card-with-line::before {
-        @apply content-[""] absolute w-3 left-0 -inset-y-px bg-vida-loca !important;
+  .your-interest {
+    .your-interest-h3 {
+      @apply m-0 mb-2 text-[1.6019rem] font-semibold leading-[1.0925] tracking-[0.005em] text-[#302f2a] !important;
     }
+  }
 
-    #search-input {
-        @apply scroll-mt-96;
+  .tox-promotion,
+  .tox-statusbar__branding {
+    @apply hidden !important;
+  }
+
+  .nav-app-bar {
+    @apply sticky bg-limed-spruce-rgba shadow-none backdrop-blur-md dark:bg-woodsmoke-rgba !important;
+  }
+
+  .nav-tabs {
+    @apply mb-2 bg-white dark:bg-bunker;
+
+    .tabs {
+      @apply pl-5 pr-5;
     }
+  }
 
-    body {
-        @apply bg-seashell dark:bg-cod-gray !important;
+  .card {
+    @apply mb-4 bg-white pb-4 pl-5 pr-5 pt-4 text-mine-shaft dark:bg-bunker !important;
+  }
+
+  .card-content {
+    @apply p-0 !important;
+  }
+
+  .meta-container {
+    @apply mb-2 flex flex-nowrap items-start gap-1;
+  }
+
+  .article-user-avatar {
+    @apply h-8 w-8 rounded-[3px] !important;
+  }
+
+  .article-user-name {
+    @apply text-[0.8125rem] font-bold leading-[0.9375rem] no-underline dark:text-alto !important;
+  }
+
+  .article-user-name:hover {
+    @apply text-horizon dark:text-deepsky-blue !important;
+  }
+
+  .article-datetime {
+    @apply m-0 inline-block align-middle text-[0.8125rem] font-medium leading-[0.9375rem] text-mountain-mist no-underline;
+  }
+
+  .article-title {
+    @apply font-[inherit] text-xl leading-[1.3] text-mine-shaft no-underline dark:text-alto !important;
+  }
+
+  .article-title:visited {
+    @apply text-horizon !important;
+  }
+
+  .article-title:hover {
+    @apply text-horizon !important;
+  }
+
+  .article-title-h1 {
+    @apply mx-0 mb-2 mt-0 overflow-x-auto text-2xl font-medium leading-[1.3] text-mine-shaft dark:text-alto !important;
+  }
+
+  .article-title em {
+    @apply transition-none;
+  }
+
+  .article-category {
+    @apply relative text-[0.8125rem] font-medium leading-6 text-rolling-stone no-underline dark:text-shady-lady;
+  }
+
+  .article-category:hover {
+    @apply text-horizon dark:text-deepsky-blue;
+  }
+
+  .content-image {
+    @apply relative !important;
+  }
+
+  .category-item::after {
+    content: ', ';
+  }
+
+  .category-item:last-child::after {
+    content: '';
+  }
+
+  .tag-item::after {
+    content: ', ';
+  }
+
+  .tag-item:last-child::after {
+    content: '';
+  }
+
+  .subscribers-user-name {
+    @apply text-sm leading-none text-horizon dark:text-deepsky-blue !important;
+  }
+
+  .subscribers-user-description {
+    @apply text-[0.8125rem] leading-4 text-mountain-mist dark:text-shady-lady !important;
+  }
+
+  .subscriptions-user-name {
+    @apply text-sm leading-none text-horizon dark:text-deepsky-blue !important;
+  }
+
+  .subscriptions-user-description {
+    @apply text-[0.8125rem] leading-4 text-mountain-mist dark:text-shady-lady !important;
+  }
+
+  .footer {
+    @apply mt-auto bg-shark p-4 text-white shadow !important;
+  }
+
+  .article-content {
+    @apply mb-4 dark:text-alto;
+  }
+
+  .article-btn {
+    @apply inline-flex h-auto min-h-[36px] cursor-pointer items-center rounded-sm border border-solid border-horizon bg-transparent px-3 py-0 text-[0.8125rem] leading-[1.6875rem] text-horizon no-underline dark:border-deepsky-blue dark:text-deepsky-blue !important;
+  }
+
+  .article-btn:hover {
+    @apply border border-solid border-transparent bg-astral text-white dark:bg-deepsky-blue !important;
+  }
+
+  .article-presenter-meta {
+    @apply mx-0 my-6 box-border grid max-w-[780px] gap-6 text-base leading-[180%] text-horizon;
+  }
+
+  .article-category-pm {
+    @apply mr-1 font-bold text-mine-shaft;
+  }
+
+  .category-link {
+    @apply inline-flex text-base font-medium leading-7 text-horizon no-underline !important;
+  }
+
+  .article-tag-pm {
+    @apply mr-1 font-bold text-mine-shaft;
+
+    .tag-link {
+      @apply inline-flex text-base font-medium leading-7 text-horizon no-underline !important;
     }
-
-    .reload-spinner {
-        @apply h-screen bg-mine-shaft !important;
-    }
-
-    .global-spinner {
-        @apply flex min-h-[50vh] flex-col items-center justify-center;
-    }
-
-    .gradient-circular-progress {
-        .first-stop {
-            stop-color: #f39d0b;
-        }
-
-        .second-stop {
-            stop-color: #ed4444;
-        }
-    }
-
-    .your-interest {
-        .your-interest-h3 {
-            @apply m-0 mb-2 text-[1.6019rem] font-semibold leading-[1.0925] tracking-[0.005em] text-[#302f2a] !important;
-        }
-    }
-
-    .tox-promotion,
-    .tox-statusbar__branding {
-        @apply hidden !important;
-    }
-
-    .nav-app-bar {
-        @apply sticky bg-limed-spruce-rgba shadow-none backdrop-blur-md dark:bg-woodsmoke-rgba !important;
-    }
-
-    .nav-tabs {
-        @apply mb-2 bg-white dark:bg-bunker;
-
-        .tabs {
-            @apply pl-5 pr-5;
-        }
-    }
-
-    .card {
-        @apply mb-4 bg-white pb-4 pl-5 pr-5 pt-4 text-mine-shaft dark:bg-bunker !important;
-    }
-
-
-    .card-content {
-        @apply p-0 !important;
-    }
-
-    .meta-container {
-        @apply mb-2 flex flex-nowrap items-start gap-1;
-    }
-
-    .article-user-avatar {
-        @apply h-8 w-8 rounded-[3px] !important;
-    }
-
-    .article-user-name {
-        @apply text-[0.8125rem] font-bold leading-[0.9375rem] no-underline dark:text-alto !important;
-    }
-
-    .article-user-name:hover {
-        @apply text-horizon dark:text-deepsky-blue !important;
-    }
-
-    .article-datetime {
-        @apply m-0 inline-block align-middle text-[0.8125rem] font-medium leading-[0.9375rem] text-mountain-mist no-underline;
-    }
-
-    .article-title {
-        @apply font-[inherit] text-xl leading-[1.3] text-mine-shaft no-underline dark:text-alto !important;
-    }
-
-    .article-title:visited {
-        @apply text-horizon !important;
-    }
-
-    .article-title:hover {
-        @apply text-horizon !important;
-    }
-
-    .article-title-h1 {
-        @apply mx-0 mb-2 mt-0 overflow-x-auto text-2xl font-medium leading-[1.3] text-mine-shaft dark:text-alto !important;
-    }
-
-    .article-title em {
-        @apply transition-none;
-    }
-
-    .article-category {
-        @apply relative text-[0.8125rem] font-medium leading-6 text-rolling-stone no-underline dark:text-shady-lady;
-    }
-
-    .article-category:hover {
-        @apply text-horizon dark:text-deepsky-blue;
-    }
-
-    .content-image {
-        @apply relative !important;
-    }
-
-    .category-item::after {
-        content: ', ';
-    }
-
-    .category-item:last-child::after {
-        content: '';
-    }
-
-    .tag-item::after {
-        content: ', ';
-    }
-
-    .tag-item:last-child::after {
-        content: '';
-    }
-
-    .subscribers-user-name {
-        @apply text-sm leading-none text-horizon dark:text-deepsky-blue !important;
-    }
-
-    .subscribers-user-description {
-        @apply text-[0.8125rem] leading-4 text-mountain-mist dark:text-shady-lady !important;
-    }
-
-    .subscriptions-user-name {
-        @apply text-sm leading-none text-horizon dark:text-deepsky-blue !important;
-    }
-
-    .subscriptions-user-description {
-        @apply text-[0.8125rem] leading-4 text-mountain-mist dark:text-shady-lady !important;
-    }
-
-    .footer {
-        @apply mt-auto bg-shark p-4 text-white shadow !important;
-    }
-
-    .article-content {
-        @apply mb-4 dark:text-alto;
-    }
-
-    .article-btn {
-        @apply inline-flex h-auto min-h-[36px] cursor-pointer items-center rounded-sm border border-solid border-horizon bg-transparent px-3 py-0 text-[0.8125rem] leading-[1.6875rem] text-horizon no-underline dark:border-deepsky-blue dark:text-deepsky-blue !important;
-    }
-
-    .article-btn:hover {
-        @apply border border-solid border-transparent bg-astral text-white dark:bg-deepsky-blue !important;
-    }
-
-    .article-presenter-meta {
-        @apply mx-0 my-6 box-border grid max-w-[780px] gap-6 text-base leading-[180%] text-horizon;
-    }
-
-    .article-category-pm {
-        @apply mr-1 font-bold text-mine-shaft;
-    }
-
-    .category-link {
-        @apply inline-flex text-base font-medium leading-7 text-horizon no-underline !important;
-    }
-
-    .article-tag-pm {
-        @apply mr-1 font-bold text-mine-shaft;
-
-        .tag-link {
-            @apply inline-flex text-base font-medium leading-7 text-horizon no-underline !important;
-        }
-    }
+  }
 }
 
 .category-img {
-    @apply relative top-0.5 mr-2 block h-12 w-12 flex-none overflow-hidden rounded-[3px] !important;
+  @apply relative top-0.5 mr-2 block h-12 w-12 flex-none overflow-hidden rounded-[3px] !important;
 }
 
 .category-card-name {
-    @apply m-0 text-[1.24375rem] font-bold leading-7 text-mine-shaft no-underline dark:text-alto !important;
+  @apply m-0 text-[1.24375rem] font-bold leading-7 text-mine-shaft no-underline dark:text-alto !important;
 }
 
 .category-card-shortInfo {
-    @apply m-0 mt-1 text-sm leading-5 text-mine-shaft dark:text-alto !important;
+  @apply m-0 mt-1 text-sm leading-5 text-mine-shaft dark:text-alto !important;
 }
 
 .category-card-description {
-    @apply m-0 mt-1 text-sm leading-5 text-mine-shaft !important;
+  @apply m-0 mt-1 text-sm leading-5 text-mine-shaft !important;
 }
 
 .category-name {
-    @apply mb-2 text-[0.9375rem] font-medium leading-4 text-mine-shaft no-underline dark:text-alto !important;
+  @apply mb-2 text-[0.9375rem] font-medium leading-4 text-mine-shaft no-underline dark:text-alto !important;
 }
 
 .category-name:visited {
-    @apply text-horizon;
+  @apply text-horizon;
 }
 
 .category-name:hover {
-    @apply text-horizon dark:text-deepsky-blue !important;
+  @apply text-horizon dark:text-deepsky-blue !important;
 }
 
 .category-description {
-    @apply mt-2 text-[0.8125rem] leading-4 text-mountain-mist;
+  @apply mt-2 text-[0.8125rem] leading-4 text-mountain-mist;
 }
 
 .category-tags {
-    @apply mt-2 pr-2;
+  @apply mt-2 pr-2;
 }
 
 .tag-item::after {
-    content: ', ';
+  content: ', ';
 }
 
 .tag-item:last-child::after {
-    content: '';
+  content: '';
 }
 
 .tag-name {
-    @apply text-[0.8125rem] leading-[1.125rem] text-horizon no-underline dark:text-deepsky-blue !important;
+  @apply text-[0.8125rem] leading-[1.125rem] text-horizon no-underline dark:text-deepsky-blue !important;
 }
 
 .user-profile-description {
-    @apply mx-0 mb-[15px] mt-0 block text-sm font-bold leading-[1.15] text-mine-shaft dark:text-alto !important;
+  @apply mx-0 mb-[15px] mt-0 block text-sm font-bold leading-[1.15] text-mine-shaft dark:text-alto !important;
 }
 
 .user-profile-content {
-    @apply mx-0 -mt-1 mb-0 min-w-0 text-[0.9375rem] leading-6 text-mine-shaft dark:text-alto !important;
+  @apply mx-0 -mt-1 mb-0 min-w-0 text-[0.9375rem] leading-6 text-mine-shaft dark:text-alto !important;
 }
 
 .user-categories-profile {
-    @apply mx-0 mb-[15px] mt-0 block text-sm font-bold leading-[1.15] text-mine-shaft dark:text-alto !important;
+  @apply mx-0 mb-[15px] mt-0 block text-sm font-bold leading-[1.15] text-mine-shaft dark:text-alto !important;
 }
 
 .user-tags {
-    @apply inline-flex min-h-[1.75rem] items-center rounded-[3px] bg-solitude px-[13px] py-0 align-middle text-[0.8125rem] leading-[1.125rem] text-horizon no-underline dark:bg-elephant dark:text-deepsky-blue !important;
+  @apply inline-flex min-h-[1.75rem] items-center rounded-[3px] bg-solitude px-[13px] py-0 align-middle text-[0.8125rem] leading-[1.125rem] text-horizon no-underline dark:bg-elephant dark:text-deepsky-blue !important;
 }
 
 .itb-user {
-    @apply mb-4 bg-white pb-4 pl-5 pr-5 pt-4 text-mine-shaft dark:bg-bunker;
+  @apply mb-4 bg-white pb-4 pl-5 pr-5 pt-4 text-mine-shaft dark:bg-bunker;
 
-    .user-meta-container {
-        @apply mb-2 flex flex-nowrap items-center gap-1;
-    }
+  .user-meta-container {
+    @apply mb-2 flex flex-nowrap items-center gap-1;
+  }
 
-    .user-avatar {
-        @apply h-6 w-6 rounded-[3px] !important;
-    }
+  .user-avatar {
+    @apply h-6 w-6 rounded-[3px] !important;
+  }
 
-    .user-title {
-        @apply mb-2 text-[0.9375rem] leading-4 text-mine-shaft dark:text-alto !important;
-    }
+  .user-title {
+    @apply mb-2 text-[0.9375rem] leading-4 text-mine-shaft dark:text-alto !important;
+  }
 
-    .user-title:hover {
-        @apply text-horizon dark:text-deepsky-blue !important;
-    }
+  .user-title:hover {
+    @apply text-horizon dark:text-deepsky-blue !important;
+  }
 
-    .user-nickname {
-        @apply text-sm leading-none text-horizon dark:text-deepsky-blue !important;
-    }
+  .user-nickname {
+    @apply text-sm leading-none text-horizon dark:text-deepsky-blue !important;
+  }
 
-    .user-description {
-        @apply mt-2 text-[0.8125rem] leading-4 text-mountain-mist dark:text-shady-lady !important;
-    }
+  .user-description {
+    @apply mt-2 text-[0.8125rem] leading-4 text-mountain-mist dark:text-shady-lady !important;
+  }
 
-    .user-item_categories {
-        @apply text-[0.8125rem] font-normal leading-4 text-mountain-mist dark:text-shady-lady !important;
-    }
+  .user-item_categories {
+    @apply text-[0.8125rem] font-normal leading-4 text-mountain-mist dark:text-shady-lady !important;
+  }
 
-    .user-tags {
-        @apply text-[0.8125rem] font-normal leading-4 text-horizon dark:text-deepsky-blue !important;
-    }
+  .user-tags {
+    @apply text-[0.8125rem] font-normal leading-4 text-horizon dark:text-deepsky-blue !important;
+  }
 
-    .user-tag-item::after {
-        content: ', ';
-    }
+  .user-tag-item::after {
+    content: ', ';
+  }
 
-    .user-tag-item:last-child::after {
-        content: '';
-    }
+  .user-tag-item:last-child::after {
+    content: '';
+  }
 }
 
 .swiper {
-    --swiper-navigation-size: 44px;
-    --swiper-navigation-top-offset: 90%;
-    --swiper-navigation-sides-offset: 10px;
-    --swiper-navigation-color: #1976d2;
+  --swiper-navigation-size: 44px;
+  --swiper-navigation-top-offset: 90%;
+  --swiper-navigation-sides-offset: 10px;
+  --swiper-navigation-color: #1976d2;
 }

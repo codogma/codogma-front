@@ -44,10 +44,7 @@ export const updateCategory = async (
 export const getCategories = async (): Promise<Category[]> => {
   try {
     const response = await axiosInstance.get('/categories');
-    return response.data.map((category: Category) => ({
-      ...category,
-      imageUrl: `${process.env.NEXT_PUBLIC_BASE_URL}${category.imageUrl}?t=${new Date().getTime()}`,
-    }));
+    return response.data;
   } catch (error) {
     console.error('Error fetching categories:', error);
     throw error;
@@ -57,11 +54,7 @@ export const getCategories = async (): Promise<Category[]> => {
 export const getCategoryById = async (id: number): Promise<Category> => {
   try {
     const response = await axiosInstance.get(`/categories/${id}`);
-    const category: Category = response.data;
-    return {
-      ...category,
-      imageUrl: `${process.env.NEXT_PUBLIC_BASE_URL}${category.imageUrl}?t=${new Date().getTime()}`,
-    };
+    return response.data;
   } catch (error) {
     console.error('Error fetching category:', error);
     throw error;

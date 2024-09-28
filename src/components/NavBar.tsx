@@ -106,11 +106,10 @@ const NavBar = () => {
                   sx={{ p: 0 }}
                 >
                   <AvatarImage
-                    alt={state.user?.username}
                     key={new Date().getTime()}
                     variant='rounded'
-                    src={undefined}
                     size={40}
+                    type='avatar'
                   />
                 </IconButton>
                 <Menu

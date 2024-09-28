@@ -1,6 +1,5 @@
 import { axiosInstance } from '@/helpers/axiosInstance';
 import { Article } from '@/types';
-import { generateAvatarUrl } from '@/helpers/generateAvatar';
 
 export type CreateArticleDTO = {
   categoryIds: number[];
@@ -68,20 +67,7 @@ export const getArticles = async (
         username,
       },
     });
-    return {
-      totalPages: response.data.totalPages,
-      totalElements: response.data.totalElements,
-      content: await Promise.all(
-        response.data.content.map(async (article: Article) => {
-          return {
-            ...article,
-            authorAvatarUrl: article.authorAvatarUrl
-              ? `${process.env.NEXT_PUBLIC_BASE_URL}${article.authorAvatarUrl}?t=${new Date().getTime()}`
-              : await generateAvatarUrl(article.username, 32),
-          };
-        }),
-      ),
-    };
+    return response.data;
   } catch (error) {
     console.error('Error fetching profile:', error);
     throw error;
@@ -91,13 +77,7 @@ export const getArticles = async (
 export const getArticleById = async (id: number): Promise<Article> => {
   try {
     const response = await axiosInstance.get(`/articles/${id}`);
-    const article: Article = response.data;
-    return {
-      ...article,
-      authorAvatarUrl: article.authorAvatarUrl
-        ? `${process.env.NEXT_PUBLIC_BASE_URL}${article.authorAvatarUrl}?t=${new Date().getTime()}`
-        : await generateAvatarUrl(article.username, 32),
-    };
+    return response.data;
   } catch (error) {
     console.error('Error fetching article:', error);
     throw error;

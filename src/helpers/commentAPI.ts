@@ -1,35 +1,12 @@
 import { axiosInstance } from '@/helpers/axiosInstance';
 import { CreateComment, GetComment, UpdateComment } from '@/types';
-import { generateAvatarUrl } from '@/helpers/generateAvatar';
-
-const updateAvatarUrls = async (
-  comments: GetComment[],
-): Promise<GetComment[]> => {
-  return Promise.all(
-    comments.map(async (comment) => {
-      const avatarUrl = comment.user.avatarUrl
-        ? `${process.env.NEXT_PUBLIC_BASE_URL}${comment.user.avatarUrl}`
-        : await generateAvatarUrl(comment.user.username, 32);
-
-      return {
-        ...comment,
-        user: {
-          ...comment.user,
-          avatarUrl,
-        },
-        replies: comment.replies ? await updateAvatarUrls(comment.replies) : [],
-      };
-    }),
-  );
-};
 
 export const getCommentsByArticleId = async (
   articleId: number,
 ): Promise<GetComment[]> => {
   try {
     const response = await axiosInstance.get(`comments/article/${articleId}`);
-    const comments: GetComment[] = response.data;
-    return await updateAvatarUrls(comments);
+    return response.data;
   } catch (error) {
     console.error('Error fetching comments by article ID:', error);
     throw error;
@@ -41,8 +18,7 @@ export const getCommentsByUsername = async (
 ): Promise<GetComment[]> => {
   try {
     const response = await axiosInstance.get(`/comments/user/${username}`);
-    const comments: GetComment[] = response.data;
-    return await updateAvatarUrls(comments);
+    return response.data;
   } catch (error) {
     console.error('Error fetching comments by username:', error);
     throw error;

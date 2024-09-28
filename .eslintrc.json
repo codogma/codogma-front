@@ -5,10 +5,7 @@
     "plugin:tailwindcss/recommended",
     "prettier"
   ],
-  "plugins": [
-    "prettier",
-    "tailwindcss"
-  ],
+  "plugins": ["prettier", "tailwindcss"],
   "rules": {
     "prettier/prettier": [
       "error",
