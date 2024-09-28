@@ -7,7 +7,7 @@ import Typography from '@mui/material/Typography';
 import { useAuth } from '@/components/AuthProvider';
 import CardContent from '@mui/material/CardContent';
 import Card from '@mui/material/Card';
-import { router } from 'next/client';
+import { useRouter } from 'next/navigation';
 
 interface CommentFormProps {
   articleId: number;
@@ -17,7 +17,7 @@ interface CommentFormProps {
   onCancelEdit?: () => void;
 }
 
-const CommentForm: React.FC<CommentFormProps> = ({
+export const CommentForm: React.FC<CommentFormProps> = ({
   articleId,
   parentCommentId,
   comment,
@@ -26,6 +26,7 @@ const CommentForm: React.FC<CommentFormProps> = ({
 }) => {
   const [content, setContent] = useState<string>('');
   const { state } = useAuth();
+  const router = useRouter();
 
   useEffect(() => {
     if (comment) {
@@ -103,5 +104,3 @@ const CommentForm: React.FC<CommentFormProps> = ({
     </Box>
   );
 };
-
-export default CommentForm;

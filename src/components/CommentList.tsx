@@ -1,6 +1,6 @@
 'use client';
 import React, { useEffect, useState } from 'react';
-import CommentForm from './CommentForm';
+import { CommentForm } from './CommentForm';
 import { deleteComment, getCommentsByArticleId } from '@/helpers/commentAPI';
 import { GetComment, UserRole } from '@/types';
 import { Box, Button, Card, CardContent, Typography } from '@mui/material';
@@ -166,5 +166,3 @@ export const CommentList: React.FC<CommentListProps> = ({
     </Box>
   );
 };
-
-export default CommentList;

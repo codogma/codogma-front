@@ -9,7 +9,7 @@ import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import { useAuth } from '@/components/AuthProvider';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
-import CommentList from '@/components/CommentList';
+import { CommentList } from '@/components/CommentList';
 import Typography from '@mui/material/Typography';
 import { AvatarImage } from '@/components/AvatarImage';
 import { useContentImageContext } from '@/components/ContentImageProvider';
