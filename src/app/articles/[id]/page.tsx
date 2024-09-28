@@ -43,7 +43,6 @@ export default function Page() {
               className='article-datetime'
             />
           </div>
-          <h1 className='article-title'>{article.title}</h1>
           <div className='article-category'>
             {article.categories?.map((category) => (
               <span className='category-item' key={category.id}>

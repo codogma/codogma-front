@@ -30,6 +30,18 @@
     @apply bg-seashell dark:bg-cod-gray !important;
   }
 
+  .breadcrumb {
+    @apply mb-2 flex h-12 bg-white pl-5 pr-5 text-xl dark:bg-bunker !important;
+  }
+
+  .breadcrumb-item {
+    @apply text-horizon hover:text-deepsky-blue !important;
+  }
+
+  .breadcrumb-last-item {
+    @apply text-xl text-mine-shaft !important;
+  }
+
   .reload-spinner {
     @apply h-screen bg-mine-shaft !important;
   }
@@ -100,7 +112,7 @@
   }
 
   .article-title {
-    @apply font-[inherit] text-xl leading-[1.3] text-mine-shaft no-underline dark:text-alto !important;
+    @apply mb-4 mt-3 flex space-x-2 font-[inherit] text-xl leading-[1.3] text-mine-shaft no-underline dark:text-alto !important;
   }
 
   .article-title:visited {
@@ -108,7 +120,7 @@
   }
 
   .article-title:hover {
-    @apply text-horizon !important;
+    @apply text-deepsky-blue !important;
   }
 
   .article-title-h1 {
@@ -120,11 +132,11 @@
   }
 
   .article-category {
-    @apply relative text-[0.8125rem] font-medium leading-6 text-rolling-stone no-underline dark:text-shady-lady;
+    @apply relative text-xs font-medium leading-6 text-rolling-stone no-underline dark:text-shady-lady !important;
   }
 
   .article-category:hover {
-    @apply text-horizon dark:text-deepsky-blue;
+    @apply text-deepsky-blue dark:text-deepsky-blue !important;
   }
 
   .content-image {

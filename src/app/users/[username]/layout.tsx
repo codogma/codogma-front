@@ -65,7 +65,6 @@ export default function Layout({ params, children }: PageProps) {
                 size={48}
               />
             </Badge>
-
             <ButtonWithPopover username={username} />
             <div>
               <h1 className='category-card-name'>

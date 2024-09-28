@@ -103,7 +103,13 @@ function Page() {
               </IconButton>
             }
           >
-            <AvatarImage variant='rounded' src={imageUrl} size={112} />
+            <AvatarImage
+              type='image'
+              variant='rounded'
+              src={imageUrl}
+              size={112}
+              fontSize='large'
+            />
           </Badge>
           <FormInput
             name='description'

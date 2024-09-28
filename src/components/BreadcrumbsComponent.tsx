@@ -1,0 +1,40 @@
+'use client';
+import { usePathname } from 'next/navigation';
+import Link from 'next/link';
+import { Breadcrumbs, Typography } from '@mui/material';
+
+interface BreadcrumbsComponentProps {
+  title: string;
+}
+
+const segmentNames: Record<string, string> = {
+  articles: 'Articles',
+  categories: 'Categories',
+};
+
+export const BreadcrumbsComponent = ({ title }: BreadcrumbsComponentProps) => {
+  const pathname = usePathname();
+  const pathSegments = pathname.split('/').filter((segment) => segment);
+
+  return (
+    <Breadcrumbs aria-label='breadcrumb' className='breadcrumb'>
+      {pathSegments.map((segment, index) => {
+        const href = '/' + pathSegments.slice(0, index + 1).join('/');
+        const isLastSegment = index === pathSegments.length - 1;
+        const displayName = isLastSegment
+          ? title
+          : segmentNames[segment] || segment;
+
+        return isLastSegment ? (
+          <Typography key={href} className='breadcrumb-last-item'>
+            {displayName}
+          </Typography>
+        ) : (
+          <Link key={href} href={href} className='breadcrumb-item'>
+            {displayName}
+          </Link>
+        );
+      })}
+    </Breadcrumbs>
+  );
+};

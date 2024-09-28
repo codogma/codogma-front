@@ -1,6 +1,6 @@
 import { AppRouterCacheProvider } from '@mui/material-nextjs/v14-appRouter';
 import { Box, CssBaseline, StyledEngineProvider } from '@mui/material';
-import type { Metadata } from 'next';
+import { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import './globals.css';
 import NavBar from '@/components/NavBar';
@@ -27,7 +27,7 @@ export const metadata: Metadata = {
   },
   title: {
     template: '%s | CODOGMA',
-    default: 'CODOGMA',
+    default: 'Main | CODOGMA',
   },
   description: 'Main page of CODOGMA',
   applicationName: 'CODOGMA',

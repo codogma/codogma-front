@@ -5,6 +5,7 @@ import { getArticleById } from '@/helpers/articleApi';
 import { Article } from '@/types';
 import { ArticleProvider } from '@/components/ArticleProvider';
 import { convertHtmlToText } from '@/helpers/convertHtmlToText';
+import { BreadcrumbsComponent } from '@/components/BreadcrumbsComponent';
 
 type LayoutProps = {
   children: ReactNode;
@@ -45,5 +46,10 @@ export async function generateMetadata(
 export default async function Layout({ children, params }: LayoutProps) {
   const articleId = params.id;
   const article = await fetchArticleById(articleId);
-  return <ArticleProvider article={article}>{children}</ArticleProvider>;
+  return (
+    <ArticleProvider article={article}>
+      <BreadcrumbsComponent title={article.title} />
+      {children}
+    </ArticleProvider>
+  );
 }

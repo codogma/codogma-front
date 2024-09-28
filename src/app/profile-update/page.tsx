@@ -164,7 +164,7 @@ function Users() {
             anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
             badgeContent={
               <IconButton component='label' color='inherit' sx={{ p: 0 }}>
-                {user?.avatarUrl && <ModeEditOutlineOutlined color='primary' />}
+                <ModeEditOutlineOutlined color='primary' />
                 <VisuallyHiddenInput
                   id='avatar'
                   name='avatar'

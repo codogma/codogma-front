@@ -5,9 +5,10 @@ import Link from 'next/link';
 import { TimeAgo } from '@/components/TimeAgo';
 import { GetComment } from '@/types';
 import Card from '@mui/material/Card';
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { getCommentsByUsername } from '@/helpers/commentAPI';
 import { AvatarImage } from '@/components/AvatarImage';
+import { useQuery } from '@tanstack/react-query';
 
 type PageParams = {
   username: string;
@@ -15,27 +16,23 @@ type PageParams = {
 
 type PageProps = {
   params: PageParams;
-  loading: boolean;
 };
 
 export default function Page({ params }: PageProps) {
   const username: string = params.username;
-  const [comments, setComments] = useState<GetComment[]>([]);
-  const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const getData = async () => {
-      return await getCommentsByUsername(username);
-    };
-    getData()
-      .then((response) => setComments(response))
-      .catch((error) => console.error(error))
-      .finally(() => setLoading(false));
-  }, [username]);
+  const {
+    data: comments,
+    isPending,
+    error,
+  } = useQuery<GetComment[]>({
+    queryKey: ['comments', username],
+    queryFn: () => getCommentsByUsername(username),
+  });
 
   return (
     <>
-      {loading ? (
+      {isPending ? (
         <Card variant='outlined' className='card'>
           <CardContent className='card-content'>
             <Skeleton variant='text' width={250} />
@@ -49,7 +46,7 @@ export default function Page({ params }: PageProps) {
           </CardContent>
         </Card>
       ) : (
-        comments.map((comment) => (
+        comments?.map((comment) => (
           <Card key={comment.id} variant='outlined' className='card'>
             <CardContent className='card-content'>
               <Link
