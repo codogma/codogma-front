@@ -2,9 +2,7 @@
 import React, { memo } from 'react';
 import { Box, Container, Divider, Link, Typography } from '@mui/material';
 import Grid from '@mui/material/Grid2';
-import FacebookIcon from '@mui/icons-material/Facebook';
 import XIcon from '@mui/icons-material/X';
-import YouTubeIcon from '@mui/icons-material/YouTube';
 import TelegramIcon from '@mui/icons-material/Telegram';
 
 function Footer() {
@@ -141,16 +139,10 @@ function Footer() {
             </Link>
           </Box>
           <Box mt={2} display='flex' justifyContent='center'>
-            <Link href='#' color='inherit'>
-              <FacebookIcon />
-            </Link>
-            <Link href='#' color='inherit'>
+            <Link href='#' color='inherit' title='X'>
               <XIcon />
             </Link>
-            <Link href='#' color='inherit'>
-              <YouTubeIcon />
-            </Link>
-            <Link href='#' color='inherit'>
+            <Link href='#' color='inherit' title='Telegram'>
               <TelegramIcon />
             </Link>
           </Box>

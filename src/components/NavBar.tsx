@@ -11,10 +11,8 @@ import Container from '@mui/material/Container';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import SearchIcon from '@mui/icons-material/Search';
-import LanguageIcon from '@mui/icons-material/Language';
 import Link from 'next/link';
 import { useAuth } from '@/components/AuthProvider';
-import { ThemeToggleButton } from '@/components/ThemeContext';
 import { ButtonGroup } from '@mui/material';
 import { logout } from '@/helpers/authApi';
 import { UserRole } from '@/types';
@@ -26,6 +24,8 @@ import PersonIcon from '@mui/icons-material/Person';
 import LogoutIcon from '@mui/icons-material/Logout';
 import LoginIcon from '@mui/icons-material/Login';
 import PersonAddAltRoundedIcon from '@mui/icons-material/PersonAddAltRounded';
+import { ThemeToggleButton } from '@/components/ThemeContext';
+import LanguageIcon from '@mui/icons-material/Language';
 
 const NavBar = () => {
   const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
@@ -87,15 +87,23 @@ const NavBar = () => {
               color: 'inherit',
             }}
           >
-            <Link href='/articles/#search-input'>
-              <IconButton color='inherit'>
-                <SearchIcon />
+            <Tooltip title='Search'>
+              <Link href='/articles/#search-input'>
+                <IconButton color='inherit'>
+                  <SearchIcon />
+                </IconButton>
+              </Link>
+            </Tooltip>
+            <Tooltip title='Language'>
+              <IconButton color='inherit' sx={{ p: 0 }}>
+                <LanguageIcon />
               </IconButton>
-            </Link>
-            <IconButton color='inherit'>
-              <LanguageIcon />
-            </IconButton>
-            <ThemeToggleButton sx={{ color: 'inherit' }} />
+            </Tooltip>
+            <Tooltip title='Theme mode'>
+              <IconButton color='inherit' sx={{ p: 0 }}>
+                <ThemeToggleButton sx={{ color: 'inherit' }} />
+              </IconButton>
+            </Tooltip>
           </ButtonGroup>
           <Box sx={{ flexGrow: 0 }}>
             {!state.isAuthenticated && (
