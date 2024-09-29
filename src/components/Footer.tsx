@@ -4,8 +4,14 @@ import { Box, Container, Divider, Link, Typography } from '@mui/material';
 import Grid from '@mui/material/Grid2';
 import XIcon from '@mui/icons-material/X';
 import TelegramIcon from '@mui/icons-material/Telegram';
+import IconButton from '@mui/material/IconButton';
+import Tooltip from '@mui/material/Tooltip';
 
-function Footer() {
+type FooterProps = {
+  title: string;
+};
+
+function Footer({ title }: FooterProps) {
   return (
     <Box className='bg-limed-spruce py-6 text-white dark:bg-woodsmoke'>
       <Container maxWidth='lg'>
@@ -139,12 +145,20 @@ function Footer() {
             </Link>
           </Box>
           <Box mt={2} display='flex' justifyContent='center'>
-            <Link href='#' color='inherit' title='X'>
-              <XIcon />
-            </Link>
-            <Link href='#' color='inherit' title='Telegram'>
-              <TelegramIcon />
-            </Link>
+            <Tooltip title={title}>
+              <IconButton color='inherit'>
+                <Link href='#' color='inherit' title='X'>
+                  <XIcon />
+                </Link>
+              </IconButton>
+            </Tooltip>
+            <Tooltip title={title}>
+              <IconButton color='inherit'>
+                <Link href='#' color='inherit' title='Telegram'>
+                  <TelegramIcon />
+                </Link>
+              </IconButton>
+            </Tooltip>
           </Box>
         </Box>
       </Container>
