@@ -106,36 +106,38 @@ const NavBar = () => {
             </Tooltip>
           </ButtonGroup>
           <Box sx={{ flexGrow: 0 }}>
-            {!state.isAuthenticated && (
-              <>
-                <IconButton
-                  onClick={handleOpenUserMenu}
-                  color='inherit'
-                  sx={{ p: 0 }}
-                >
-                  <AvatarImage
-                    key={new Date().getTime()}
-                    variant='rounded'
-                    size={40}
-                    type='avatar'
-                  />
-                </IconButton>
-                <Menu
-                  sx={{ mt: '45px' }}
-                  id='menu-appbar'
-                  anchorEl={anchorElUser}
-                  anchorOrigin={{
-                    vertical: 'top',
-                    horizontal: 'right',
-                  }}
-                  keepMounted
-                  transformOrigin={{
-                    vertical: 'top',
-                    horizontal: 'right',
-                  }}
-                  open={Boolean(anchorElUser)}
-                  onClose={handleCloseUserMenu}
-                >
+            <Tooltip title='Open settings'>
+              <IconButton
+                onClick={handleOpenUserMenu}
+                color='inherit'
+                sx={{ p: 0 }}
+              >
+                <AvatarImage
+                  key={new Date().getTime()}
+                  variant='rounded'
+                  size={40}
+                  type='avatar'
+                />
+              </IconButton>
+            </Tooltip>
+            <Menu
+              sx={{ mt: '45px' }}
+              id='menu-appbar'
+              anchorEl={anchorElUser}
+              anchorOrigin={{
+                vertical: 'top',
+                horizontal: 'right',
+              }}
+              keepMounted
+              transformOrigin={{
+                vertical: 'top',
+                horizontal: 'right',
+              }}
+              open={Boolean(anchorElUser)}
+              onClose={handleCloseUserMenu}
+            >
+              {!state.isAuthenticated && (
+                <>
                   <MenuItem onClick={() => handleClickMenuItem(`/sign-up`)}>
                     <Typography textAlign='center'>
                       <PersonAddAltRoundedIcon
@@ -151,42 +153,10 @@ const NavBar = () => {
                       Sign in
                     </Typography>
                   </MenuItem>
-                </Menu>
-              </>
-            )}
-            {state.isAuthenticated && (
-              <>
-                <Tooltip title='Open settings'>
-                  <IconButton
-                    onClick={handleOpenUserMenu}
-                    color='inherit'
-                    sx={{ p: 0 }}
-                  >
-                    <AvatarImage
-                      alt={state.user?.username}
-                      key={new Date().getTime()}
-                      variant='rounded'
-                      src={state.user?.avatarUrl}
-                      size={40}
-                    />
-                  </IconButton>
-                </Tooltip>
-                <Menu
-                  sx={{ mt: '45px' }}
-                  id='menu-appbar'
-                  anchorEl={anchorElUser}
-                  anchorOrigin={{
-                    vertical: 'top',
-                    horizontal: 'right',
-                  }}
-                  keepMounted
-                  transformOrigin={{
-                    vertical: 'top',
-                    horizontal: 'right',
-                  }}
-                  open={Boolean(anchorElUser)}
-                  onClose={handleCloseUserMenu}
-                >
+                </>
+              )}
+              {state.isAuthenticated && (
+                <>
                   <MenuItem
                     onClick={() =>
                       handleClickMenuItem(`/users/${state.user?.username}`)
@@ -223,9 +193,9 @@ const NavBar = () => {
                       Log out
                     </Typography>
                   </MenuItem>
-                </Menu>
-              </>
-            )}
+                </>
+              )}
+            </Menu>
           </Box>
         </Toolbar>
       </Container>
