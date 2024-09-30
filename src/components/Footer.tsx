@@ -8,7 +8,7 @@ import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
 
 type FooterProps = {
-  title: string;
+  title?: string;
 };
 
 function Footer({ title }: FooterProps) {
