@@ -18,7 +18,13 @@ import { useContentImageContext } from '@/components/ContentImageProvider';
 import { useQuery } from '@tanstack/react-query';
 import DOMPurify from 'dompurify';
 
-export default function Page() {
+type PageProps = {
+  params: {
+    lng: string;
+  };
+};
+
+export default function Page({ params: { lng } }: PageProps) {
   const resultsPerPage10 = 10;
   const resultsPerPage20 = 20;
   const resultsPerPage30 = 30;
@@ -159,7 +165,7 @@ export default function Page() {
           <SearchIcon />
         </IconButton>
       </Paper>
-      <Articles articles={articles} loading={isPending} />
+      <Articles lang={lng} articles={articles} loading={isPending} />
       {totalPages < minPages ? null : (
         <Stack
           spacing={2}

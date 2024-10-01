@@ -5,22 +5,16 @@ import Link from 'next/link';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 
-export interface LinkTabProps {
+export interface TabProps {
   label: string;
   href: string;
 }
 
 type NavTabsProps = {
-  tabs?: LinkTabProps[];
+  tabs: TabProps[];
 };
 
-const linkTabs: LinkTabProps[] = [
-  { label: 'Articles', href: '/articles' },
-  { label: 'Categories', href: '/categories' },
-  { label: 'Users', href: '/users' },
-];
-
-const NavTabs: React.FC<NavTabsProps> = ({ tabs = linkTabs }) => {
+const NavTabs: React.FC<NavTabsProps> = ({ tabs }) => {
   const pathname = usePathname();
 
   const shouldShowNavTabs = tabs.some((tab) => {

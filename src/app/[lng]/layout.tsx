@@ -8,11 +8,12 @@ import { AuthProvider } from '@/components/AuthProvider';
 import { ColorModeProvider } from '@/components/ThemeContext';
 import Container from '@mui/material/Container';
 import React, { ReactNode, Suspense } from 'react';
-import NavTabs from '@/components/NavTabs';
+import NavTabs, { TabProps } from '@/components/NavTabs';
 import Footer from '@/components/Footer';
 import { ReactQueryProvider } from '@/components/ReactQueryProvider';
-import Spinner from '@/app/loading';
 import { ContentImageProvider } from '@/components/ContentImageProvider';
+import { Spinner } from '@/components/Spinner';
+import { useTranslation } from '@/app/i18n';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -49,9 +50,24 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({ children }: { children: ReactNode }) {
+type RootLayoutProps = {
+  children: ReactNode;
+  params: { lng: string };
+};
+
+export default async function RootLayout({
+  children,
+  params: { lng },
+}: RootLayoutProps) {
+  const { t } = await useTranslation(lng);
+  const tabs: TabProps[] = [
+    { label: `${t('articles')}`, href: `/${lng}/articles` },
+    { label: `${t('categories')}`, href: `/${lng}/categories` },
+    { label: `${t('users')}`, href: `/${lng}/users` },
+  ];
+
   return (
-    <html lang='en'>
+    <html lang={lng}>
       <body className={inter.className}>
         <StyledEngineProvider injectFirst>
           <AppRouterCacheProvider>
@@ -60,9 +76,9 @@ export default function RootLayout({ children }: { children: ReactNode }) {
                 <AuthProvider>
                   <CssBaseline />
                   <Box className='flex min-h-screen flex-col'>
-                    <NavBar />
+                    <NavBar lang={lng} />
                     <Container maxWidth='lg' className='relative flex-auto'>
-                      <NavTabs />
+                      <NavTabs tabs={tabs} />
                       <Suspense fallback={<Spinner />}>
                         <ContentImageProvider>{children}</ContentImageProvider>
                       </Suspense>

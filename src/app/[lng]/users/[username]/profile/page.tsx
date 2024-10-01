@@ -19,8 +19,7 @@ type PageProps = {
   params: PageParams;
 };
 
-export default function Page({ params }: PageProps) {
-  const username: string = params.username;
+export default function Page({ params: { username } }: PageProps) {
   const [user, setUser] = useState<User>();
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
   const [currentCategory, setCurrentCategory] = useState<number | null>(null);

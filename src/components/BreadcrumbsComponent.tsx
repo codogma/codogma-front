@@ -2,6 +2,7 @@
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
 import { Breadcrumbs, Typography } from '@mui/material';
+import { languages } from '@/app/i18n/settings';
 
 interface BreadcrumbsComponentProps {
   title: string;
@@ -14,7 +15,9 @@ const segmentNames: Record<string, string> = {
 
 export const BreadcrumbsComponent = ({ title }: BreadcrumbsComponentProps) => {
   const pathname = usePathname();
-  const pathSegments = pathname.split('/').filter((segment) => segment);
+  const pathSegments = pathname
+    .split('/')
+    .filter((segment) => segment && !languages.includes(segment));
 
   return (
     <Breadcrumbs aria-label='breadcrumb' className='breadcrumb'>

@@ -1,21 +1,28 @@
-'use client';
-
 import Typography from '@mui/material/Typography';
-import NavTabs, { LinkTabProps } from '@/components/NavTabs';
+import NavTabs, { TabProps } from '@/components/NavTabs';
 import React from 'react';
 import Banner from '@/components/Banner';
 import Carousel from '@/components/Carousel';
+import { useTranslation } from '@/app/i18n';
 
-export default function Page() {
-  const tabs: LinkTabProps[] = [
+type PageProps = {
+  params: { lng: string };
+};
+
+export default async function Page({ params: { lng } }: PageProps) {
+  const tabs: TabProps[] = [
     { label: 'History', href: `/` },
     { label: 'Bookmarks', href: `/` },
     { label: 'Subscriptions', href: `/` },
   ];
 
+  const { t } = await useTranslation(lng, 'main');
+
   return (
     <section>
-      <Banner />
+      <Banner
+        bannerData={{ welcome: t('welcome'), subWelcome: t('subWelcome') }}
+      />
       <section className='your-interest'>
         <Typography variant='h3' className='your-interest-h3'>
           Your interest

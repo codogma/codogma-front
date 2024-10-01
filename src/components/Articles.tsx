@@ -11,14 +11,17 @@ import CardContent from '@mui/material/CardContent';
 import CardActions from '@mui/material/CardActions';
 import { useAuth } from '@/components/AuthProvider';
 import { AvatarImage } from '@/components/AvatarImage';
+import { useTranslation } from '@/app/i18n/client';
 
 type ArticlesProps = {
+  lang: string;
   articles: Article[];
   loading: boolean;
 };
 
-export default function Articles({ articles, loading }: ArticlesProps) {
+export default function Articles({ lang, articles, loading }: ArticlesProps) {
   const { state } = useAuth();
+  const { t } = useTranslation(lang);
 
   return (
     <>
@@ -86,7 +89,7 @@ export default function Articles({ articles, loading }: ArticlesProps) {
               <Stack direction='row' spacing={2}>
                 <Link href={`/articles/${article.id}`}>
                   <Button className='article-btn' variant='outlined'>
-                    Read More
+                    {t('readMoreBtn')}
                   </Button>
                 </Link>
                 {state.user?.username === article.username &&
@@ -97,7 +100,7 @@ export default function Articles({ articles, loading }: ArticlesProps) {
                         variant='outlined'
                         startIcon={<EditOutlinedIcon />}
                       >
-                        Edit
+                        {t('editBtn')}
                       </Button>
                     </Link>
                   )}

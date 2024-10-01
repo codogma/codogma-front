@@ -5,7 +5,14 @@ import Grid from '@mui/material/Grid2';
 import Box from '@mui/material/Box';
 import { DefaultImage } from '@/components/DefaultImage';
 
-const Banner = () => {
+type BannerProps = {
+  bannerData: {
+    welcome: string;
+    subWelcome: string;
+  };
+};
+
+const Banner = ({ bannerData: { welcome, subWelcome } }: BannerProps) => {
   return (
     <Paper
       sx={{
@@ -40,10 +47,10 @@ const Banner = () => {
       >
         <Grid size={{ xs: 12, md: 3 }}>
           <Typography variant='h4' component='h1' gutterBottom>
-            Welcome!
+            {welcome}
           </Typography>
           <Typography variant='body1' gutterBottom>
-            Let us introduce you to our learning platform.
+            {subWelcome}
           </Typography>
         </Grid>
 

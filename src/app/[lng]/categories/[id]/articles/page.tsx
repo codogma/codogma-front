@@ -18,14 +18,15 @@ import Articles from '@/components/Articles';
 
 type PageParams = {
   id: number;
+  lng: string;
 };
 
 type PageProps = {
   params: PageParams;
 };
 
-export default function Layout({ params }: PageProps) {
-  const categoryId = params.id;
+export default function Layout({ params: { id, lng } }: PageProps) {
+  const categoryId = id;
   const resultsPerPage10 = 10;
   const resultsPerPage20 = 20;
   const resultsPerPage30 = 30;
@@ -147,7 +148,7 @@ export default function Layout({ params }: PageProps) {
           <SearchIcon />
         </IconButton>
       </Paper>
-      <Articles articles={articles} loading={isPending} />
+      <Articles lang={lng} articles={articles} loading={isPending} />
       {totalPages < minPages ? null : (
         <Stack
           spacing={2}

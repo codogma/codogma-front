@@ -1,7 +1,7 @@
 'use client';
 import React from 'react';
 import { Category } from '@/types';
-import NavTabs, { LinkTabProps } from '@/components/NavTabs';
+import NavTabs, { TabProps } from '@/components/NavTabs';
 import { getCategoryById } from '@/helpers/categoryApi';
 import CardContent from '@mui/material/CardContent';
 import { Badge } from '@mui/material';
@@ -13,6 +13,7 @@ import { useQuery } from '@tanstack/react-query';
 
 type PageParams = {
   id: number;
+  lng: string;
 };
 
 type PageProps = {
@@ -20,14 +21,14 @@ type PageProps = {
   children: React.ReactNode;
 };
 
-export default function Layout({ params, children }: PageProps) {
-  const categoryId = params.id;
+export default function Layout({ params: { id, lng }, children }: PageProps) {
+  const categoryId = id;
   const router = useRouter();
   // const [category, setCategory] = useState<Category>({} as Category);
 
-  const tabs: LinkTabProps[] = [
-    { label: 'Articles', href: `/categories/${categoryId}/articles` },
-    { label: 'Users', href: `/categories/${categoryId}/authors` },
+  const tabs: TabProps[] = [
+    { label: 'Articles', href: `/${lng}/categories/${categoryId}/articles` },
+    { label: 'Users', href: `/${lng}/categories/${categoryId}/authors` },
   ];
 
   // useEffect(() => {

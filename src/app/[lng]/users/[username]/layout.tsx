@@ -1,7 +1,7 @@
 'use client';
 import React, { useEffect, useState } from 'react';
 import { User } from '@/types';
-import NavTabs, { LinkTabProps } from '@/components/NavTabs';
+import NavTabs, { TabProps } from '@/components/NavTabs';
 import CardContent from '@mui/material/CardContent';
 import { Badge } from '@mui/material';
 import Card from '@mui/material/Card';
@@ -12,6 +12,7 @@ import { ButtonWithPopover } from '@/components/ButtonWithPopover';
 
 type PageParams = {
   username: string;
+  lng: string;
 };
 
 type PageProps = {
@@ -19,16 +20,18 @@ type PageProps = {
   children: React.ReactNode;
 };
 
-export default function Layout({ params, children }: PageProps) {
-  const username: string = params.username;
+export default function Layout({
+  params: { lng, username },
+  children,
+}: PageProps) {
   const [user, setUser] = useState<User>();
 
-  const tabs: LinkTabProps[] = [
-    { label: 'Profile', href: `/users/${username}/profile` },
-    { label: 'Articles', href: `/users/${username}/articles` },
-    { label: 'Subscribers', href: `/users/${username}/subscribers` },
-    { label: 'Subscriptions', href: `/users/${username}/subscriptions` },
-    { label: 'Comments', href: `/users/${username}/comments` },
+  const tabs: TabProps[] = [
+    { label: 'Profile', href: `/${lng}/users/${username}/profile` },
+    { label: 'Articles', href: `/${lng}/users/${username}/articles` },
+    { label: 'Subscribers', href: `/${lng}/users/${username}/subscribers` },
+    { label: 'Subscriptions', href: `/${lng}/users/${username}/subscriptions` },
+    { label: 'Comments', href: `/${lng}/users/${username}/comments` },
   ];
 
   useEffect(() => {
