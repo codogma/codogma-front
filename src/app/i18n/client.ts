@@ -8,7 +8,7 @@ import {
 import Cookies from 'js-cookie';
 import resourcesToBackend from 'i18next-resources-to-backend';
 import LanguageDetector from 'i18next-browser-languagedetector';
-import { cookieName, getOptions } from './settings';
+import { getOptions, intlCookie } from './settings';
 
 i18next
   .use(initReactI18next)
@@ -52,9 +52,9 @@ export function useTranslation(
   }, [activeLng, i18n.resolvedLanguage]);
 
   useEffect(() => {
-    const cookieLng = Cookies.get(cookieName);
+    const cookieLng = Cookies.get(intlCookie);
     if (cookieLng !== lng) {
-      Cookies.set(cookieName, lng, { path: '/' });
+      Cookies.set(intlCookie, lng, { path: '/' });
     }
   }, [lng]);
 

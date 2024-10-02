@@ -22,28 +22,13 @@ type PageProps = {
 };
 
 export default function Layout({ params: { id, lng }, children }: PageProps) {
-  const categoryId = id;
   const router = useRouter();
   // const [category, setCategory] = useState<Category>({} as Category);
 
   const tabs: TabProps[] = [
-    { label: 'Articles', href: `/${lng}/categories/${categoryId}/articles` },
-    { label: 'Users', href: `/${lng}/categories/${categoryId}/authors` },
+    { label: 'Articles', href: `/${lng}/categories/${id}/articles` },
+    { label: 'Users', href: `/${lng}/categories/${id}/authors` },
   ];
-
-  // useEffect(() => {
-  //     async function fetchData() {
-  //         try {
-  //             const categoryData = await getCategoryById(categoryId);
-  //             setCategory(categoryData);
-  //         } catch (error) {
-  //             console.error('Error fetching data:', error);
-  //             router.push('/');
-  //         }
-  //     }
-  //
-  //     fetchData();
-  // }, [categoryId]);
 
   const {
     data: category,
@@ -51,8 +36,8 @@ export default function Layout({ params: { id, lng }, children }: PageProps) {
     isError,
     error,
   } = useQuery<Category>({
-    queryKey: ['category', categoryId],
-    queryFn: () => getCategoryById(categoryId),
+    queryKey: ['category', id],
+    queryFn: () => getCategoryById(id),
   });
 
   if (isError) {

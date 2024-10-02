@@ -30,7 +30,13 @@ const SignUpScheme = z.object({
 
 export type OAuthProvider = 'github' | 'gitlab';
 
-export default function Page() {
+type PageProps = {
+  params: {
+    lng: string;
+  };
+};
+
+export default function Page({ params: { lng } }: PageProps) {
   const router = useRouter();
   const [serverError, setServerError] = useState('');
 
@@ -65,7 +71,7 @@ export default function Page() {
       const file = await generateAvatar(username, 200);
       const requestData = { ...formData, avatar: file };
       await signUp(requestData);
-      router.push('/signup-success');
+      router.push(`/${lng}/sign-up/success`);
     } catch (error: AxiosError | any) {
       const message =
         error?.response?.data || 'An error occurred during registration.';

@@ -17,7 +17,7 @@ const initI18next = async (lng: string, ns: string): Promise<i18n> => {
   return i18nInstance;
 };
 
-export async function useTranslation(
+export async function initTranslation(
   lng: string,
   ns?: string | string[],
   options: { keyPrefix?: string } = {},

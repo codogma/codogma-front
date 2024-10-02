@@ -1,4 +1,6 @@
 {
+  "title": "Main",
+  "description": "Main page of CODOGMA",
   "welcome": "Welcome!",
   "subWelcome": "This is the sub-welcome message!"
 }

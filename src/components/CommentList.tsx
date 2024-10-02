@@ -89,7 +89,7 @@ export const CommentList: React.FC<CommentListProps> = ({
             <>
               <Typography variant='body1'>{comment.content}</Typography>
               {state.isAuthenticated &&
-                state.user?.role === UserRole.ROLE_ADMIN && (
+                state.user?.role !== UserRole.ROLE_ADMIN && (
                   <Box sx={{ display: 'flex', gap: 1, marginTop: 1 }}>
                     {state.user &&
                       state.user.username !== comment.user.username && (

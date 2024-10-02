@@ -19,14 +19,14 @@ import Articles from '@/components/Articles';
 
 type PageParams = {
   username: string;
+  lng: string;
 };
 
 type PageProps = {
   params: PageParams;
 };
 
-export default function Layout({ params }: PageProps) {
-  const username = params.username;
+export default function Layout({ params: { lng, username } }: PageProps) {
   const resultsPerPage10 = 10;
   const resultsPerPage20 = 20;
   const resultsPerPage30 = 30;
@@ -161,7 +161,7 @@ export default function Layout({ params }: PageProps) {
           <SearchIcon />
         </IconButton>
       </Paper>
-      <Articles articles={articles} loading={loading} />
+      <Articles lang={lng} articles={articles} loading={loading} />
       {totalPages < minPages ? null : (
         <Stack
           spacing={2}

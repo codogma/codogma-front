@@ -26,7 +26,7 @@ import LoginIcon from '@mui/icons-material/Login';
 import PersonAddAltRoundedIcon from '@mui/icons-material/PersonAddAltRounded';
 import { ThemeToggleButton } from '@/components/ThemeContext';
 import LanguageIcon from '@mui/icons-material/Language';
-import { cookieName } from '@/app/i18n/settings';
+import { intlCookie } from '@/app/i18n/settings';
 import Cookies from 'js-cookie';
 
 type NavBarProps = {
@@ -43,7 +43,7 @@ const NavBar = ({ lang }: NavBarProps) => {
   const { state } = useAuth();
 
   const handleLogout = () => {
-    logout().then(() => router.push(`/${lang}/articles`));
+    logout().then(() => router.push(`/${lang}`));
     handleCloseUserMenu();
   };
 
@@ -69,7 +69,7 @@ const NavBar = ({ lang }: NavBarProps) => {
   };
 
   const handleChangeLanguage = (lng: string) => {
-    Cookies.set(cookieName, lng);
+    Cookies.set(intlCookie, lng);
     const newPath = pathname.replace(/\/(en|ru)/, `/${lng}`);
     router.push(newPath);
     handleCloseLanguageMenu();
@@ -120,11 +120,7 @@ const NavBar = ({ lang }: NavBarProps) => {
               </Link>
             </Tooltip>
             <Tooltip title='Language'>
-              <IconButton
-                color='inherit'
-                sx={{ p: 0 }}
-                onClick={handleOpenLanguageMenu}
-              >
+              <IconButton color='inherit' onClick={handleOpenLanguageMenu}>
                 <LanguageIcon />
               </IconButton>
             </Tooltip>

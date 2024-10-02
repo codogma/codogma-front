@@ -13,53 +13,58 @@ import Footer from '@/components/Footer';
 import { ReactQueryProvider } from '@/components/ReactQueryProvider';
 import { ContentImageProvider } from '@/components/ContentImageProvider';
 import { Spinner } from '@/components/Spinner';
-import { useTranslation } from '@/app/i18n';
+import { initTranslation } from '@/app/i18n';
 
 const inter = Inter({ subsets: ['latin'] });
-
-export const metadata: Metadata = {
-  metadataBase: new URL('https://codogma.com'),
-  alternates: {
-    canonical: `/`,
-    languages: {
-      en: `/en`,
-      ru: `/ru`,
-    },
-  },
-  title: {
-    template: '%s | CODOGMA',
-    default: 'Main | CODOGMA',
-  },
-  description: 'Main page of CODOGMA',
-  applicationName: 'CODOGMA',
-  appLinks: {
-    web: {
-      url: 'https://codogma.com',
-      should_fallback: true,
-    },
-  },
-  robots: {
-    index: true,
-    follow: true,
-    nocache: true,
-  },
-  formatDetection: {
-    email: false,
-    address: false,
-    telephone: false,
-  },
-};
 
 type RootLayoutProps = {
   children: ReactNode;
   params: { lng: string };
 };
 
+export async function generateMetadata({
+  params: { lng },
+}: RootLayoutProps): Promise<Metadata> {
+  const { t } = await initTranslation(lng, 'main');
+  return {
+    metadataBase: new URL('https://codogma.com'),
+    alternates: {
+      canonical: `/`,
+      languages: {
+        en: `/en`,
+        ru: `/ru`,
+      },
+    },
+    title: {
+      template: '%s | CODOGMA',
+      default: `${t('title')} | CODOGMA`,
+    },
+    description: t('description'),
+    applicationName: 'CODOGMA',
+    appLinks: {
+      web: {
+        url: 'https://codogma.com',
+        should_fallback: true,
+      },
+    },
+    robots: {
+      index: true,
+      follow: true,
+      nocache: true,
+    },
+    formatDetection: {
+      email: false,
+      address: false,
+      telephone: false,
+    },
+  };
+}
+
 export default async function RootLayout({
   children,
   params: { lng },
 }: RootLayoutProps) {
-  const { t } = await useTranslation(lng);
+  const { t } = await initTranslation(lng);
   const tabs: TabProps[] = [
     { label: `${t('articles')}`, href: `/${lng}/articles` },
     { label: `${t('categories')}`, href: `/${lng}/categories` },

@@ -3,7 +3,7 @@ import NavTabs, { TabProps } from '@/components/NavTabs';
 import React from 'react';
 import Banner from '@/components/Banner';
 import Carousel from '@/components/Carousel';
-import { useTranslation } from '@/app/i18n';
+import { initTranslation } from '@/app/i18n';
 
 type PageProps = {
   params: { lng: string };
@@ -16,7 +16,7 @@ export default async function Page({ params: { lng } }: PageProps) {
     { label: 'Subscriptions', href: `/` },
   ];
 
-  const { t } = await useTranslation(lng, 'main');
+  const { t } = await initTranslation(lng, 'main');
 
   return (
     <section>

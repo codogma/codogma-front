@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { CreateComment, GetComment, UpdateComment } from '@/types';
+import { CreateComment, GetComment, UpdateComment, UserRole } from '@/types';
 import { createComment, updateComment } from '@/helpers/commentAPI';
 import { Box, Button, Link, TextField } from '@mui/material';
 import Typography from '@mui/material/Typography';
@@ -64,10 +64,15 @@ export const CommentForm: React.FC<CommentFormProps> = ({
             placeholder='Write your comment...'
             variant='outlined'
             fullWidth
-            disabled={!state.isAuthenticated}
+            disabled={state.user?.role === UserRole.ROLE_ADMIN}
           />
           <Box sx={{ display: 'flex', gap: 1 }}>
-            <Button type='submit' variant='outlined' size='small'>
+            <Button
+              type='submit'
+              variant='outlined'
+              size='small'
+              disabled={state.user?.role === UserRole.ROLE_ADMIN}
+            >
               {comment ? 'Update Comment' : 'Add Comment'}
             </Button>
             {onCancelEdit && (
