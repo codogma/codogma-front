@@ -75,7 +75,6 @@ export const logout = async (): Promise<void> => {
   try {
     await axiosInstance.post('/auth/logout');
     console.log('User logged out successfully');
-    Cookies.remove('user');
     window.dispatchEvent(new Event('storage'));
   } catch (error: any) {
     console.error('Error logging out user: ' + error.message);
@@ -91,9 +90,9 @@ export const currentUser = async (): Promise<User | null> => {
         secure: true,
         sameSite: 'strict',
       });
+      window.dispatchEvent(new Event('storage'));
       return user;
     }
-    Cookies.remove('user');
     window.dispatchEvent(new Event('storage'));
     return null;
   } catch {
