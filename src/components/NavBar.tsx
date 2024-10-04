@@ -28,6 +28,7 @@ import { ThemeToggleButton } from '@/components/ThemeContext';
 import LanguageIcon from '@mui/icons-material/Language';
 import { intlCookie } from '@/app/i18n/settings';
 import Cookies from 'js-cookie';
+import { useTranslation } from '@/app/i18n/client';
 
 type NavBarProps = {
   lang: string;
@@ -41,6 +42,7 @@ const NavBar = ({ lang }: NavBarProps) => {
   const router = useRouter();
   const pathname = usePathname();
   const { state } = useAuth();
+  const { t } = useTranslation(lang);
 
   const handleLogout = () => {
     logout().then(() => router.push(`/${lang}`));
@@ -112,7 +114,7 @@ const NavBar = ({ lang }: NavBarProps) => {
               color: 'inherit',
             }}
           >
-            <Tooltip title='Search'>
+            <Tooltip title={t('search')}>
               <Link href={`/${lang}/articles/#search-input`}>
                 <IconButton color='inherit'>
                   <SearchIcon />

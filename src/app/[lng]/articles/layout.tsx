@@ -1,12 +1,17 @@
 'use server';
 import { ReactNode } from 'react';
 import { Metadata } from 'next';
+import { initTranslation } from '@/app/i18n';
 
 type LayoutProps = {
   children: ReactNode;
+  params: { lng: string };
 };
 
-export async function generateMetadata(): Promise<Metadata> {
+export async function generateMetadata({
+  params: { lng },
+}: LayoutProps): Promise<Metadata> {
+  const { t } = await initTranslation(lng);
   return {
     alternates: {
       canonical: `/articles/`,
@@ -17,9 +22,9 @@ export async function generateMetadata(): Promise<Metadata> {
     },
     title: {
       template: '%s | CODOGMA',
-      default: 'Articles',
+      default: t('articles'),
     },
-    description: `Articles of CODOGMA`,
+    description: t('articlesDescription'),
   };
 }
 

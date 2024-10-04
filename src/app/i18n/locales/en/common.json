@@ -1,7 +1,9 @@
 {
   "articles": "Articles",
+  "articlesDescription": "Articles of CODOGMA",
   "categories": "Categories",
   "users": "Users",
   "readMoreBtn": "Read more",
-  "editBtn": "Edit"
+  "editBtn": "Edit",
+  "search": "Search"
 }
