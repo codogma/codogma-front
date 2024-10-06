@@ -5,5 +5,9 @@
   "users": "Users",
   "readMoreBtn": "Read more",
   "editBtn": "Edit",
-  "search": "Search"
+  "search": "Search",
+  "language": "Language",
+  "theme": "Theme",
+  "settings": "Open settings",
+  "paginationPages": "View Results"
 }

@@ -64,6 +64,7 @@ export default function Articles({ lang, articles, loading }: ArticlesProps) {
                 <TimeAgo
                   datetime={article.createdAt}
                   className='article-datetime'
+                  lang={lang}
                 />
               </div>
               <Link href={`/articles/${article.id}`} className='article-title'>

@@ -17,6 +17,7 @@ import Articles from '@/components/Articles';
 import { useContentImageContext } from '@/components/ContentImageProvider';
 import { useQuery } from '@tanstack/react-query';
 import DOMPurify from 'dompurify';
+import { useTranslation } from '@/app/i18n/client';
 
 type PageProps = {
   params: {
@@ -37,6 +38,8 @@ export default function Page({ params: { lng } }: PageProps) {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [searchType, setSearchType] = useState<'content' | 'tag'>('content');
   const { processContent } = useContentImageContext();
+  const { t: tArt } = useTranslation(lng, 'articles');
+  const { t: tCom } = useTranslation(lng);
 
   const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -150,12 +153,14 @@ export default function Page({ params: { lng } }: PageProps) {
           onClose={() => handleMenuClose(searchType)}
         >
           <MenuItem onClick={() => handleMenuClose('content')}>
-            By content
+            {tArt(`searchContent`)}
           </MenuItem>
-          <MenuItem onClick={() => handleMenuClose('tag')}>By tag</MenuItem>
+          <MenuItem onClick={() => handleMenuClose('tag')}>
+            {tArt(`searchTags`)}
+          </MenuItem>
         </Menu>
         <TextField
-          label={`Search articles by ${searchType}`}
+          label={`${tArt('articlesSearchBy')}${tArt(searchType)}`}
           id='search-input'
           sx={{ ml: 1, flex: 1 }}
           size='small'
@@ -197,11 +202,11 @@ export default function Page({ params: { lng } }: PageProps) {
             onChange={handlePageChangeInput}
           />
           <FormControl
-            sx={{ width: 100 }}
+            sx={{ width: 150 }}
             size='small'
             disabled={totalElements <= resultsPerPage10}
           >
-            <InputLabel id='select-label'>View Results</InputLabel>
+            <InputLabel id='select-label'>{tCom(`paginationPages`)}</InputLabel>
             <Select
               labelId='select-label'
               id='simple-select'

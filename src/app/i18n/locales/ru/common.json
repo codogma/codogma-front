@@ -1,9 +1,12 @@
 {
   "articles": "Статьи",
-  "articlesDescription": "Статьи CODOGMA",
   "categories": "Категории",
   "users": "Пользователи",
   "readMoreBtn": "Читать далее",
   "editBtn": "Редактировать",
-  "search": "Поиск"
+  "search": "Поиск",
+  "language": "Язык",
+  "theme": "Тема",
+  "settings": "Открыть настройки",
+  "paginationPages": "Показать результаты"
 }

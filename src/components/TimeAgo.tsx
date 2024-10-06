@@ -1,24 +1,42 @@
 import React, { useEffect, useState } from 'react';
 import { format, formatDistanceToNow } from 'date-fns';
+import { enUS, Locale, ru } from 'date-fns/locale';
 
 interface TimeAgoProps {
   datetime: Date;
   className?: string | undefined;
+  lang: string;
 }
 
-export const TimeAgo: React.FC<TimeAgoProps> = ({ datetime, className }) => {
+export const TimeAgo: React.FC<TimeAgoProps> = ({
+  datetime,
+  className,
+  lang,
+}) => {
   const [timeAgo, setTimeAgo] = useState<string>('');
+  const [locale, setLocale] = useState<Locale>(enUS);
 
   useEffect(() => {
     const updateTime = () => {
-      setTimeAgo(formatDistanceToNow(datetime, { addSuffix: true }));
+      setTimeAgo(formatDistanceToNow(datetime, { addSuffix: true, locale }));
     };
     updateTime();
     const interval = setInterval(updateTime, 60000);
     return () => clearInterval(interval);
-  }, [datetime]);
+  }, [datetime, locale]);
 
-  const formattedDate = format(datetime, 'yyyy-MM-dd, HH:mm');
+  useEffect(() => {
+    if (lang === 'en') {
+      setLocale(enUS);
+    }
+    if (lang === 'ru') {
+      setLocale(ru);
+    }
+  }, [lang]);
+
+  const formattedDate = format(datetime, 'yyyy-MM-dd, HH:mm', {
+    locale,
+  });
 
   return (
     <time

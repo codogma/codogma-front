@@ -121,7 +121,7 @@ const NavBar = ({ lang }: NavBarProps) => {
                 </IconButton>
               </Link>
             </Tooltip>
-            <Tooltip title='Language'>
+            <Tooltip title={t('language')}>
               <IconButton color='inherit' onClick={handleOpenLanguageMenu}>
                 <LanguageIcon />
               </IconButton>
@@ -147,14 +147,14 @@ const NavBar = ({ lang }: NavBarProps) => {
                 <Typography textAlign='center'>Русский</Typography>
               </MenuItem>
             </Menu>
-            <Tooltip title='Theme mode'>
+            <Tooltip title={t('theme')}>
               <IconButton color='inherit' sx={{ p: 0 }}>
                 <ThemeToggleButton sx={{ color: 'inherit' }} />
               </IconButton>
             </Tooltip>
           </ButtonGroup>
           <Box sx={{ flexGrow: 0 }}>
-            <Tooltip title='Open settings'>
+            <Tooltip title={t('settings')}>
               <IconButton
                 onClick={handleOpenUserMenu}
                 color='inherit'
