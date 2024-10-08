@@ -14,14 +14,21 @@ import Link from 'next/link';
 import { Category, UserRole } from '@/types';
 import React from 'react';
 import { useAuth } from '@/components/AuthProvider';
+import { useTranslation } from '@/app/i18n/client';
 
 type CategoriesProps = {
   categories: Category[];
   loading: boolean;
+  lang: string;
 };
 
-export default function Categories({ categories, loading }: CategoriesProps) {
+export default function Categories({
+  categories,
+  loading,
+  lang,
+}: CategoriesProps) {
   const { state } = useAuth();
+  const { t } = useTranslation(lang);
 
   return (
     <>
@@ -105,7 +112,7 @@ export default function Categories({ categories, loading }: CategoriesProps) {
                   {state.user?.role === UserRole.ROLE_ADMIN && (
                     <Link href={`/categories/edit/${category.id}`}>
                       <Button className='article-btn' variant='outlined'>
-                        Update
+                        {t('updateBtn')}
                       </Button>
                     </Link>
                   )}

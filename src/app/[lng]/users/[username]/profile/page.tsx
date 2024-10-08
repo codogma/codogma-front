@@ -17,6 +17,7 @@ type PageParams = {
 
 type PageProps = {
   params: PageParams;
+  lang: string;
 };
 
 export default function Page({ params: { username } }: PageProps) {

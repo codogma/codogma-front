@@ -9,6 +9,7 @@ import { getUserByUsername } from '@/helpers/userApi';
 import IconButton from '@mui/material/IconButton';
 import { AvatarImage } from '@/components/AvatarImage';
 import { ButtonWithPopover } from '@/components/ButtonWithPopover';
+import { useTranslation } from '@/app/i18n/client';
 
 type PageParams = {
   username: string;
@@ -24,14 +25,21 @@ export default function Layout({
   params: { lng, username },
   children,
 }: PageProps) {
+  const { t } = useTranslation(lng);
   const [user, setUser] = useState<User>();
 
   const tabs: TabProps[] = [
-    { label: 'Profile', href: `/${lng}/users/${username}/profile` },
-    { label: 'Articles', href: `/${lng}/users/${username}/articles` },
-    { label: 'Subscribers', href: `/${lng}/users/${username}/subscribers` },
-    { label: 'Subscriptions', href: `/${lng}/users/${username}/subscriptions` },
-    { label: 'Comments', href: `/${lng}/users/${username}/comments` },
+    { label: `${t('profile')}`, href: `/${lng}/users/${username}/profile` },
+    { label: `${t('articles')}`, href: `/${lng}/users/${username}/articles` },
+    {
+      label: `${t('subscribers')}`,
+      href: `/${lng}/users/${username}/subscribers`,
+    },
+    {
+      label: `${t('subscriptions')}`,
+      href: `/${lng}/users/${username}/subscriptions`,
+    },
+    { label: `${t('comments')}`, href: `/${lng}/users/${username}/comments` },
   ];
 
   useEffect(() => {
@@ -68,7 +76,7 @@ export default function Layout({
                 size={48}
               />
             </Badge>
-            <ButtonWithPopover username={username} />
+            <ButtonWithPopover username={username} lang={lng} />
             <div>
               <h1 className='category-card-name'>
                 {user?.firstName} {user?.lastName}

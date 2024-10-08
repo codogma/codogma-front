@@ -194,13 +194,13 @@ const NavBar = ({ lang }: NavBarProps) => {
                         className='mr-2'
                         fontSize='small'
                       />
-                      Sign up
+                      {t('signUpBtn')}
                     </Typography>
                   </MenuItem>
                   <MenuItem onClick={() => handleClickMenuItem(`/sign-in`)}>
                     <Typography textAlign='center'>
                       <LoginIcon className='mr-2' fontSize='small' />
-                      Sign in
+                      {t('signInBtn')}
                     </Typography>
                   </MenuItem>
                 </>
@@ -214,7 +214,7 @@ const NavBar = ({ lang }: NavBarProps) => {
                   >
                     <Typography textAlign='center'>
                       <PersonIcon className='mr-2' fontSize='small' />
-                      Profile
+                      {t('profile')}
                     </Typography>
                   </MenuItem>
                   {state.user?.role === UserRole.ROLE_AUTHOR && (
@@ -223,7 +223,7 @@ const NavBar = ({ lang }: NavBarProps) => {
                     >
                       <Typography textAlign='center'>
                         <CreateIcon className='mr-2' fontSize='small' />
-                        Create article
+                        {t('createArticleBtn')}
                       </Typography>
                     </MenuItem>
                   )}
@@ -233,14 +233,14 @@ const NavBar = ({ lang }: NavBarProps) => {
                     >
                       <Typography textAlign='center'>
                         <CategoryIcon className='mr-2' fontSize='small' />
-                        Create category
+                        {t('createCategoryBtn')}
                       </Typography>
                     </MenuItem>
                   )}
                   <MenuItem onClick={handleLogout}>
                     <Typography textAlign='center'>
                       <LogoutIcon className='mr-2' fontSize='small' />
-                      Log out
+                      {t('logoutBtn')}
                     </Typography>
                   </MenuItem>
                 </>

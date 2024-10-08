@@ -38,6 +38,7 @@ export default function Page({ params: { lng } }: PageProps) {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [searchType, setSearchType] = useState<'content' | 'tag'>('content');
   const { processContent } = useContentImageContext();
+  const { t } = useTranslation(lng);
   const { t: tArt } = useTranslation(lng, 'articles');
   const { t: tCom } = useTranslation(lng);
 
@@ -193,7 +194,7 @@ export default function Page({ params: { lng } }: PageProps) {
             shape='rounded'
           />
           <TextField
-            label='Layout'
+            label={t('layout')}
             id='page'
             size='small'
             defaultValue={currentPage + 1}

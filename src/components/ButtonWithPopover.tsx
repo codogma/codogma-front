@@ -8,15 +8,18 @@ import {
   subscribeToUser,
   unsubscribeToUser,
 } from '@/helpers/userApi';
+import { useTranslation } from '@/app/i18n/client';
 
 interface CustomPopoverProps {
   destination?: string;
   username: string;
+  lang: string;
 }
 
 export const ButtonWithPopover: React.FC<CustomPopoverProps> = ({
   destination = 'to subscribe to a user',
   username,
+  lang,
 }) => {
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(
     null,
@@ -24,6 +27,7 @@ export const ButtonWithPopover: React.FC<CustomPopoverProps> = ({
   const [isSubscribed, setIsSubscribed] = useState(false);
   const { state } = useAuth();
   const router = useRouter();
+  const { t } = useTranslation(lang, 'users');
   const open = Boolean(anchorEl);
   const id = open ? 'simple-popover' : undefined;
 
@@ -73,7 +77,7 @@ export const ButtonWithPopover: React.FC<CustomPopoverProps> = ({
     <>
       {isSubscribed ? (
         <Button className='article-btn' onClick={handleUnsubscribe}>
-          Following
+          {t('followingBtn')}
         </Button>
       ) : (
         <Button
@@ -81,7 +85,7 @@ export const ButtonWithPopover: React.FC<CustomPopoverProps> = ({
           className='article-btn'
           onClick={handleSubscribe}
         >
-          Follow
+          {t('followBtn')}
         </Button>
       )}
       {!state.isAuthenticated && (

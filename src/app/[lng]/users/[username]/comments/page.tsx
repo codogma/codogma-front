@@ -12,15 +12,14 @@ import { useQuery } from '@tanstack/react-query';
 
 type PageParams = {
   username: string;
+  lng: string;
 };
 
 type PageProps = {
   params: PageParams;
 };
 
-export default function Page({ params }: PageProps) {
-  const username: string = params.username;
-
+export default function Page({ params: { username, lng } }: PageProps) {
   const {
     data: comments,
     isPending,
@@ -75,6 +74,7 @@ export default function Page({ params }: PageProps) {
                 <TimeAgo
                   datetime={comment.createdAt}
                   className='article-datetime'
+                  lang={lng}
                 />
               </Box>
               <Typography variant='body1'>{comment.content}</Typography>

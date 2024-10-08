@@ -8,5 +8,16 @@
   "language": "Язык",
   "theme": "Тема",
   "settings": "Открыть настройки",
-  "paginationPages": "Показать результаты"
+  "paginationPages": "Показать результаты",
+  "layout": "Страница",
+  "updateBtn": "Обновить",
+  "profile": "Профиль",
+  "subscribers": "Подписчики",
+  "subscriptions": "Подписки",
+  "comments": "Комментарии",
+  "signInBtn": "Войти",
+  "signUpBtn": "Зарегистрироваться",
+  "createArticleBtn": "Создать статью",
+  "createCategoryBtn": "Создать категорию",
+  "logoutBtn": "Выйти"
 }

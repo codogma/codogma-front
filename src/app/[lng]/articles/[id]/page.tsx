@@ -15,7 +15,15 @@ import { AvatarImage } from '@/components/AvatarImage';
 import { useContentImageContext } from '@/components/ContentImageProvider';
 import { useArticle } from '@/components/ArticleProvider';
 
-export default function Page() {
+type PageParams = {
+  lng: string;
+};
+
+type PageProps = {
+  params: PageParams;
+};
+
+export default function Page({ params: { lng } }: PageProps) {
   const { article } = useArticle();
   const { state } = useAuth();
   const { processContent } = useContentImageContext();
@@ -41,6 +49,7 @@ export default function Page() {
             <TimeAgo
               datetime={article.createdAt}
               className='article-datetime'
+              lang={lng}
             />
           </div>
           <div className='article-category'>
@@ -96,7 +105,7 @@ export default function Page() {
         </CardContent>
       </Card>
       <Typography component='div'>Comments:</Typography>
-      <CommentList articleId={article.id} />
+      <CommentList articleId={article.id} lang={lng} />
     </>
   );
 }

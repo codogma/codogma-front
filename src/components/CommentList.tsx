@@ -8,20 +8,24 @@ import Link from 'next/link';
 import { TimeAgo } from '@/components/TimeAgo';
 import { useAuth } from '@/components/AuthProvider';
 import { AvatarImage } from '@/components/AvatarImage';
+import { useTranslation } from '@/app/i18n/client';
 
 interface CommentListProps {
   articleId: number;
   comments?: GetComment[];
+  lang: string;
 }
 
 export const CommentList: React.FC<CommentListProps> = ({
   articleId,
   comments: initialComments,
+  lang,
 }) => {
   const [comments, setComments] = useState<GetComment[]>(initialComments || []);
   const [editingComment, setEditingComment] = useState<GetComment | null>(null);
   const [replyToCommentId, setReplyToCommentId] = useState<number | null>(null);
   const { state } = useAuth();
+  const { t } = useTranslation(lang);
 
   useEffect(() => {
     if (!initialComments) {
@@ -70,6 +74,7 @@ export const CommentList: React.FC<CommentListProps> = ({
             <TimeAgo
               datetime={comment.createdAt}
               className='article-datetime'
+              lang={lang}
             />
           </Box>
           {editingComment && editingComment.id === comment.id ? (

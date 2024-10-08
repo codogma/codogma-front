@@ -1,6 +1,5 @@
 {
   "articles": "Articles",
-  "articlesDescription": "Articles of CODOGMA",
   "categories": "Categories",
   "users": "Users",
   "readMoreBtn": "Read more",
@@ -9,5 +8,16 @@
   "language": "Language",
   "theme": "Theme",
   "settings": "Open settings",
-  "paginationPages": "View Results"
+  "paginationPages": "View Results",
+  "layout": "Layout",
+  "updateBtn": "Update",
+  "profile": "Profile",
+  "subscribers": "Subscribers",
+  "subscriptions": "Subscriptions",
+  "comments": "Comments",
+  "signInBtn": "Sign in",
+  "signUpBtn": "Sign up",
+  "createArticleBtn": "Create article",
+  "createCategoryBtn": "Create category",
+  "logoutBtn": "Logout"
 }
