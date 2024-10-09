@@ -19,5 +19,8 @@
   "signUpBtn": "Зарегистрироваться",
   "createArticleBtn": "Создать статью",
   "createCategoryBtn": "Создать категорию",
-  "logoutBtn": "Выйти"
+  "logoutBtn": "Выйти",
+  "deleteBtn": "Удалить",
+  "replyBtn": "Ответить",
+  "cancelBtn": "Отмена"
 }

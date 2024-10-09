@@ -19,5 +19,8 @@
   "signUpBtn": "Sign up",
   "createArticleBtn": "Create article",
   "createCategoryBtn": "Create category",
-  "logoutBtn": "Logout"
+  "logoutBtn": "Logout",
+  "deleteBtn": "Delete",
+  "replyBtn": "Reply",
+  "cancelBtn": "Cancel"
 }

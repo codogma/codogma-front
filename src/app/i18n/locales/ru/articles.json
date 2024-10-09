@@ -4,5 +4,9 @@
   "content": "содержанию",
   "tag": "тегу",
   "searchContent": "По содержанию",
-  "searchTags": "По тегу"
+  "searchTags": "По тегу",
+  "addCommentBtn": "Добавить комментарий",
+  "updateCommentBtn": "Обновить комментарий",
+  "writeComment": "Напишите комментарий...",
+  "comments": "Комментарий"
 }

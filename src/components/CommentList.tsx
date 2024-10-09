@@ -103,7 +103,7 @@ export const CommentList: React.FC<CommentListProps> = ({
                           size='small'
                           onClick={() => handleReply(comment.id)}
                         >
-                          Reply
+                          {t('replyBtn')}
                         </Button>
                       )}
                     {state.user &&
@@ -114,7 +114,7 @@ export const CommentList: React.FC<CommentListProps> = ({
                           size='small'
                           onClick={() => handleEdit(comment)}
                         >
-                          Edit
+                          {t('editBtn')}
                         </Button>
                       )}
                     {state.user &&
@@ -125,7 +125,7 @@ export const CommentList: React.FC<CommentListProps> = ({
                           size='small'
                           onClick={() => handleDelete(comment.id)}
                         >
-                          Delete
+                          {t('deleteBtn')}
                         </Button>
                       )}
                   </Box>

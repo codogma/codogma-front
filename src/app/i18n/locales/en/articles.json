@@ -4,5 +4,9 @@
   "content": "content",
   "tag": "tag",
   "searchContent": "By content",
-  "searchTags": "By tag"
+  "searchTags": "By tag",
+  "addCommentBtn": "Add Comment",
+  "updateCommentBtn": "Update Comment",
+  "writeComment": "Write your comment...",
+  "comments": "Comments"
 }

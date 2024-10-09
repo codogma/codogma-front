@@ -14,6 +14,7 @@ import Typography from '@mui/material/Typography';
 import { AvatarImage } from '@/components/AvatarImage';
 import { useContentImageContext } from '@/components/ContentImageProvider';
 import { useArticle } from '@/components/ArticleProvider';
+import { useTranslation } from '@/app/i18n/client';
 
 type PageParams = {
   lng: string;
@@ -27,6 +28,7 @@ export default function Page({ params: { lng } }: PageProps) {
   const { article } = useArticle();
   const { state } = useAuth();
   const { processContent } = useContentImageContext();
+  const { t } = useTranslation(lng);
   const content = processContent(DOMPurify.sanitize(article.content));
   return (
     <>
@@ -98,13 +100,13 @@ export default function Page({ params: { lng } }: PageProps) {
                   variant='outlined'
                   startIcon={<EditOutlinedIcon />}
                 >
-                  Edit
+                  {t('editBtn')}
                 </Button>
               </Link>
             )}
         </CardContent>
       </Card>
-      <Typography component='div'>Comments:</Typography>
+      <Typography component='div'>{t('comments')}:</Typography>
       <CommentList articleId={article.id} lang={lng} />
     </>
   );
