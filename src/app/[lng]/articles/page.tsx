@@ -18,6 +18,7 @@ import { useContentImageContext } from '@/components/ContentImageProvider';
 import { useQuery } from '@tanstack/react-query';
 import DOMPurify from 'dompurify';
 import { useTranslation } from '@/app/i18n/client';
+import { contlCookie } from '@/constants/i18n';
 
 type PageProps = {
   params: {
@@ -51,7 +52,7 @@ export default function Page({ params: { lng } }: PageProps) {
     setAnchorEl(null);
   };
 
-  const { data, isPending, isError } = useQuery<GetArticlesDTO>({
+  const { data, isFetching, isError, refetch } = useQuery<GetArticlesDTO>({
     queryKey: [
       'articles',
       currentPage,
@@ -84,6 +85,7 @@ export default function Page({ params: { lng } }: PageProps) {
   const totalElements = data?.totalElements || 0;
 
   useEffect(() => {
+    window.addEventListener(contlCookie, () => refetch());
     if (window.location.hash === '#search-input' && searchInputRef.current) {
       searchInputRef.current.scrollIntoView({
         behavior: 'smooth',
@@ -91,7 +93,7 @@ export default function Page({ params: { lng } }: PageProps) {
       });
       searchInputRef.current.focus();
     }
-  }, []);
+  }, [refetch]);
 
   const handleSearchSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -171,7 +173,7 @@ export default function Page({ params: { lng } }: PageProps) {
           <SearchIcon />
         </IconButton>
       </Paper>
-      <Articles lang={lng} articles={articles} loading={isPending} />
+      <Articles lang={lng} articles={articles} loading={isFetching} />
       {totalPages < minPages ? null : (
         <Stack
           spacing={2}

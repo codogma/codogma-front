@@ -8,8 +8,16 @@ import {
   useForm,
 } from 'react-hook-form';
 import React, { useEffect, useState } from 'react';
-import { Category, Tag } from '@/types';
-import { Autocomplete, Box, Button, Chip, TextField } from '@mui/material';
+import { Category, Language, Tag } from '@/types';
+import {
+  Autocomplete,
+  Box,
+  Button,
+  Chip,
+  MenuItem,
+  TextField,
+  Typography,
+} from '@mui/material';
 import FormInput from '@/components/FormInput';
 import { getCategories } from '@/helpers/categoryApi';
 import { TinyMCEEditor } from '@/components/TinyMCEEditor';
@@ -17,7 +25,7 @@ import { WithAuth } from '@/components/WithAuth';
 import { useRouter } from 'next/navigation';
 import { getTagsByName } from '@/helpers/tagApi';
 import { createArticle } from '@/helpers/articleApi';
-import Typography from '@mui/material/Typography';
+import { languageMenuItems } from '@/constants/i18n';
 
 const ArticleScheme = z.object({
   categoryIds: z.array(z.number()).min(1, 'Выберите хотя бы одну категорию.'),
@@ -28,6 +36,7 @@ const ArticleScheme = z.object({
   previewContent: z.string().min(1, 'Краткое описание не может быть пустым.'),
   content: z.string().min(1, 'Основная статья не может быть пустой.'),
   tags: z.array(z.string()).optional(),
+  language: z.nativeEnum(Language).optional(),
 });
 
 function Articles() {
@@ -76,6 +85,7 @@ function Articles() {
       previewContent: '',
       content: '',
       tags: [],
+      language: Language.EN,
     },
   });
 
@@ -94,8 +104,12 @@ function Articles() {
   }, [isSubmitSuccessful, reset, errors, zodForm]);
 
   const onSubmit: SubmitHandler<z.infer<typeof ArticleScheme>> = (formData) => {
-    // console.log(formData);
-    createArticle(formData).then((article) =>
+    const requestData = {
+      ...formData,
+      language: formData.language?.toUpperCase(),
+    };
+    console.log(requestData);
+    createArticle(requestData).then((article) =>
       route.push(`/articles/${article.id}`),
     );
   };
@@ -106,7 +120,6 @@ function Articles() {
         <Box
           component='form'
           noValidate
-          // sx={{m: 1, ml: '20ch', mr: '20ch'}}
           autoComplete='off'
           onSubmit={handleSubmit(onSubmit)}
         >
@@ -138,6 +151,27 @@ function Articles() {
                   />
                 )}
               />
+            )}
+          />
+          <Controller
+            name='language'
+            control={control}
+            render={({ field }) => (
+              <TextField
+                select
+                label='Language'
+                variant='standard'
+                value={field.value}
+                onChange={field.onChange}
+                error={Boolean(errors.language?.message)}
+                helperText={errors.language?.message}
+              >
+                {languageMenuItems.map(({ value, label }) => (
+                  <MenuItem key={value} value={value}>
+                    {label}
+                  </MenuItem>
+                ))}
+              </TextField>
             )}
           />
           <Controller

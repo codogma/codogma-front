@@ -6,6 +6,11 @@ export enum UserRole {
   ROLE_ADMIN = 'ROLE_ADMIN',
 }
 
+export enum Language {
+  EN = 'en',
+  RU = 'ru',
+}
+
 export type User = {
   username: string;
   email: string;

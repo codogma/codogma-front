@@ -4,7 +4,13 @@ import { Category } from '@/types';
 import { getCategories } from '@/helpers/categoryApi';
 import Categories from '@/components/Categories';
 
-export default function Page() {
+type PageProps = {
+  params: {
+    lng: string;
+  };
+};
+
+export default function Page({ params: { lng } }: PageProps) {
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -23,9 +29,5 @@ export default function Page() {
     fetchData();
   }, []);
 
-  return (
-    <>
-      <Categories categories={categories} loading={loading} />
-    </>
-  );
+  return <Categories lang={lng} categories={categories} loading={loading} />;
 }

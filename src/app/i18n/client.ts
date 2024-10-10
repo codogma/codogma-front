@@ -8,7 +8,8 @@ import {
 import Cookies from 'js-cookie';
 import resourcesToBackend from 'i18next-resources-to-backend';
 import LanguageDetector from 'i18next-browser-languagedetector';
-import { getOptions, intlCookie } from './settings';
+import { getOptions } from './settings';
+import { intlCookie } from '@/constants/i18n';
 
 i18next
   .use(initReactI18next)

@@ -1,7 +1,4 @@
-export const fallbackLng: string = 'en';
-export const languages: string[] = [fallbackLng, 'ru'];
-export const defaultNS: string = 'common';
-export const intlCookie: string = 'intl';
+import { defaultNS, fallbackLng, languages } from '@/constants/i18n';
 
 export function getOptions(lng: string = fallbackLng, ns: string = defaultNS) {
   return {

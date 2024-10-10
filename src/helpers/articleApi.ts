@@ -4,6 +4,7 @@ import { Article } from '@/types';
 export type CreateArticleDTO = {
   categoryIds: number[];
   title: string;
+  language?: string;
   previewContent: string;
   content: string;
   tags?: string[];

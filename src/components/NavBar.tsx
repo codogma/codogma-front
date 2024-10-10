@@ -16,7 +16,7 @@ import { useAuth } from '@/components/AuthProvider';
 import { ButtonGroup } from '@mui/material';
 import { logout } from '@/helpers/authApi';
 import { UserRole } from '@/types';
-import { usePathname, useRouter } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { AvatarImage } from '@/components/AvatarImage';
 import CreateIcon from '@mui/icons-material/Create';
 import CategoryIcon from '@mui/icons-material/Category';
@@ -25,10 +25,8 @@ import LogoutIcon from '@mui/icons-material/Logout';
 import LoginIcon from '@mui/icons-material/Login';
 import PersonAddAltRoundedIcon from '@mui/icons-material/PersonAddAltRounded';
 import { ThemeToggleButton } from '@/components/ThemeContext';
-import LanguageIcon from '@mui/icons-material/Language';
-import { intlCookie } from '@/app/i18n/settings';
-import Cookies from 'js-cookie';
 import { useTranslation } from '@/app/i18n/client';
+import { LocalizationDialog } from '@/components/LocalizationDialog';
 
 type NavBarProps = {
   lang: string;
@@ -36,11 +34,7 @@ type NavBarProps = {
 
 const NavBar = ({ lang }: NavBarProps) => {
   const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
-  const [anchorElLanguage, setAnchorElLanguage] = useState<null | HTMLElement>(
-    null,
-  );
   const router = useRouter();
-  const pathname = usePathname();
   const { state } = useAuth();
   const { t } = useTranslation(lang);
 
@@ -60,21 +54,6 @@ const NavBar = ({ lang }: NavBarProps) => {
 
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
-  };
-
-  const handleOpenLanguageMenu = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorElLanguage(event.currentTarget);
-  };
-
-  const handleCloseLanguageMenu = () => {
-    setAnchorElLanguage(null);
-  };
-
-  const handleChangeLanguage = (lng: string) => {
-    Cookies.set(intlCookie, lng);
-    const newPath = pathname.replace(/\/(en|ru)/, `/${lng}`);
-    router.push(newPath);
-    handleCloseLanguageMenu();
   };
 
   return (
@@ -121,32 +100,7 @@ const NavBar = ({ lang }: NavBarProps) => {
                 </IconButton>
               </Link>
             </Tooltip>
-            <Tooltip title={t('language')}>
-              <IconButton color='inherit' onClick={handleOpenLanguageMenu}>
-                <LanguageIcon />
-              </IconButton>
-            </Tooltip>
-            <Menu
-              anchorEl={anchorElLanguage}
-              anchorOrigin={{
-                vertical: 'top',
-                horizontal: 'right',
-              }}
-              transformOrigin={{
-                vertical: 'top',
-                horizontal: 'right',
-              }}
-              open={Boolean(anchorElLanguage)}
-              onClose={handleCloseLanguageMenu}
-              sx={{ mt: '45px' }}
-            >
-              <MenuItem onClick={() => handleChangeLanguage('en')}>
-                <Typography textAlign='center'>English</Typography>
-              </MenuItem>
-              <MenuItem onClick={() => handleChangeLanguage('ru')}>
-                <Typography textAlign='center'>Русский</Typography>
-              </MenuItem>
-            </Menu>
+            <LocalizationDialog lang={lang} />
             <Tooltip title={t('theme')}>
               <IconButton color='inherit' sx={{ p: 0 }}>
                 <ThemeToggleButton sx={{ color: 'inherit' }} />
