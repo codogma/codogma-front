@@ -4,7 +4,7 @@ import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import React, { useEffect, useState } from 'react';
 import { createCategory } from '@/helpers/categoryApi';
-import { Badge, Box, Button } from '@mui/material';
+import { Badge, Box, Button, FormHelperText } from '@mui/material';
 import FormInput from '@/components/FormInput';
 import { WithAuth } from '@/components/WithAuth';
 import { styled } from '@mui/material/styles';
@@ -17,7 +17,9 @@ const CategoryScheme = z.object({
     .string()
     .min(2, 'Название категории не может содержать менее 2 символов.')
     .max(50, 'Название категории не может содержать более 50 символов.'),
-  image: z.optional(z.instanceof(File)),
+  image: z.instanceof(File, {
+    message: 'Изображение обязательно для загрузки.',
+  }),
   description: z.optional(z.string()),
 });
 
@@ -49,6 +51,8 @@ function Page() {
   const {
     reset,
     handleSubmit,
+    setValue,
+    trigger,
     formState: { isSubmitSuccessful, errors },
   } = zodForm;
 
@@ -71,6 +75,8 @@ function Page() {
     if (file) {
       setImageFile(file);
       setImageUrl(URL.createObjectURL(file));
+      setValue('image', file);
+      trigger('image');
     }
   };
 
@@ -111,6 +117,11 @@ function Page() {
               fontSize='large'
             />
           </Badge>
+          {errors.image && (
+            <FormHelperText id='image-text' error={!!errors.image}>
+              {errors?.image.message}
+            </FormHelperText>
+          )}
           <FormInput
             name='description'
             label='Description'

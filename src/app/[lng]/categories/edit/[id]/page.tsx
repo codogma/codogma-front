@@ -96,7 +96,6 @@ function Categories({ params }: PageProps) {
   const {
     reset,
     handleSubmit,
-    register,
     formState: { isSubmitSuccessful, errors },
   } = zodForm;
 
@@ -121,7 +120,7 @@ function Categories({ params }: PageProps) {
   ) => {
     const requestData = { ...formData, image: imageFile };
     updateCategory(categoryId, requestData)
-      .then((response) => {
+      .then(() => {
         setAlertSeverity('success');
         setAlertText('Category updated successfully');
         setOpen(true);
@@ -167,14 +166,11 @@ function Categories({ params }: PageProps) {
             onSubmit={handleSubmit(onSubmit)}
           >
             <Badge
-              className='items-start'
               overlap='circular'
               anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
               badgeContent={
                 <IconButton component='label' color='inherit' sx={{ p: 0 }}>
-                  {category?.imageUrl && (
-                    <ModeEditOutlineOutlined color='primary' />
-                  )}
+                  <ModeEditOutlineOutlined color='primary' />
                   <VisuallyHiddenInput
                     id='image'
                     name='image'
@@ -186,10 +182,10 @@ function Categories({ params }: PageProps) {
             >
               <AvatarImage
                 alt={category?.name}
-                className='category-img'
                 variant='rounded'
                 src={category?.imageUrl}
-                size={48}
+                size={112}
+                fontSize='large'
               />
             </Badge>
             <FormInput
