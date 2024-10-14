@@ -1,15 +1,17 @@
 'use client';
+import { Badge } from '@mui/material';
+import Card from '@mui/material/Card';
+import CardContent from '@mui/material/CardContent';
+import IconButton from '@mui/material/IconButton';
+import { useQuery } from '@tanstack/react-query';
+import { useRouter } from 'next/navigation';
 import React from 'react';
-import { Category } from '@/types';
+
+import { AvatarImage } from '@/components/AvatarImage';
 import NavTabs, { TabProps } from '@/components/NavTabs';
 import { getCategoryById } from '@/helpers/categoryApi';
-import CardContent from '@mui/material/CardContent';
-import { Badge } from '@mui/material';
-import IconButton from '@mui/material/IconButton';
-import Card from '@mui/material/Card';
-import { AvatarImage } from '@/components/AvatarImage';
-import { useRouter } from 'next/navigation';
-import { useQuery } from '@tanstack/react-query';
+import { devConsoleError } from '@/helpers/devConsoleLog';
+import { Category } from '@/types';
 
 type PageParams = {
   id: number;
@@ -32,7 +34,6 @@ export default function Layout({ params: { id, lng }, children }: PageProps) {
 
   const {
     data: category,
-    isPending,
     isError,
     error,
   } = useQuery<Category>({
@@ -41,7 +42,7 @@ export default function Layout({ params: { id, lng }, children }: PageProps) {
   });
 
   if (isError) {
-    console.error('Error fetching data:', error);
+    devConsoleError('Error fetching data:', error);
     router.push('/');
   }
 

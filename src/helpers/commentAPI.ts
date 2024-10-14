@@ -1,64 +1,40 @@
 import { axiosInstance } from '@/helpers/axiosInstance';
+import { devConsoleLog } from '@/helpers/devConsoleLog';
 import { CreateComment, GetComment, UpdateComment } from '@/types';
 
 export const getCommentsByArticleId = async (
   articleId: number,
 ): Promise<GetComment[]> => {
-  try {
-    const response = await axiosInstance.get(`comments/article/${articleId}`);
-    return response.data;
-  } catch (error) {
-    console.error('Error fetching comments by article ID:', error);
-    throw error;
-  }
+  const response = await axiosInstance.get(`comments/article/${articleId}`);
+  return response.data;
 };
 
 export const getCommentsByUsername = async (
   username: string,
 ): Promise<GetComment[]> => {
-  try {
-    const response = await axiosInstance.get(`/comments/user/${username}`);
-    return response.data;
-  } catch (error) {
-    console.error('Error fetching comments by username:', error);
-    throw error;
-  }
+  const response = await axiosInstance.get(`/comments/user/${username}`);
+  return response.data;
 };
 
 export const createComment = async (
   createComment: CreateComment,
 ): Promise<GetComment> => {
-  try {
-    const response = await axiosInstance.post('/comments', createComment);
-    return response.data;
-  } catch (error) {
-    console.error('Error creating comment:', error);
-    throw error;
-  }
+  const response = await axiosInstance.post('/comments', createComment);
+  return response.data;
 };
 
 export const updateComment = async (
   commentId: number,
   updateComment: UpdateComment,
 ): Promise<GetComment> => {
-  try {
-    const response = await axiosInstance.put(
-      `/comments/${commentId}`,
-      updateComment,
-    );
-    return response.data;
-  } catch (error) {
-    console.error('Error updating comment:', error);
-    throw error;
-  }
+  const response = await axiosInstance.put(
+    `/comments/${commentId}`,
+    updateComment,
+  );
+  return response.data;
 };
 
 export const deleteComment = async (commentId: number): Promise<void> => {
-  try {
-    await axiosInstance.delete(`/comments/${commentId}`);
-    console.log('Comment deleted successfully');
-  } catch (error) {
-    console.error('Error deleting comment:', error);
-    throw error;
-  }
+  await axiosInstance.delete(`/comments/${commentId}`);
+  devConsoleLog('Comment deleted successfully');
 };

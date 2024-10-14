@@ -1,20 +1,21 @@
 'use client';
-import React from 'react';
-import { UserRole } from '@/types';
-import Link from 'next/link';
-import DOMPurify from 'dompurify';
-import { TimeAgo } from '@/components/TimeAgo';
-import { Button } from '@mui/material';
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
-import { useAuth } from '@/components/AuthProvider';
+import { Button } from '@mui/material';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
-import { CommentList } from '@/components/CommentList';
 import Typography from '@mui/material/Typography';
-import { AvatarImage } from '@/components/AvatarImage';
-import { useContentImageContext } from '@/components/ContentImageProvider';
-import { useArticle } from '@/components/ArticleProvider';
+import DOMPurify from 'dompurify';
+import Link from 'next/link';
+import React from 'react';
+
 import { useTranslation } from '@/app/i18n/client';
+import { useArticle } from '@/components/ArticleProvider';
+import { useAuth } from '@/components/AuthProvider';
+import { AvatarImage } from '@/components/AvatarImage';
+import { CommentList } from '@/components/CommentList';
+import { useContentImageContext } from '@/components/ContentImageProvider';
+import { TimeAgo } from '@/components/TimeAgo';
+import { UserRole } from '@/types';
 
 type PageParams = {
   lng: string;

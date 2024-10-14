@@ -1,12 +1,14 @@
 'use client';
-import React, { useEffect, useState } from 'react';
-import { User } from '@/types';
-import Link from 'next/link';
+import { Box, Skeleton } from '@mui/material';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
-import { Box, Skeleton } from '@mui/material';
+import Link from 'next/link';
+import React, { useEffect, useState } from 'react';
+
 import { AvatarImage } from '@/components/AvatarImage';
+import { devConsoleError } from '@/helpers/devConsoleLog';
 import { getUserByUsername } from '@/helpers/userApi';
+import { User } from '@/types';
 
 type PageParams = {
   username: string;
@@ -28,7 +30,7 @@ const Page = ({ params }: PageProps) => {
         setSubscribers(user.subscribers);
         setLoading(false);
       } catch (error) {
-        console.error('Error fetching data:', error);
+        devConsoleError('Error fetching data:', error);
       }
     }
 

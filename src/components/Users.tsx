@@ -1,12 +1,13 @@
 'use client';
-import React from 'react';
-import CardContent from '@mui/material/CardContent';
 import { Skeleton } from '@mui/material';
 import Card from '@mui/material/Card';
-import { AvatarImage } from '@/components/AvatarImage';
+import CardContent from '@mui/material/CardContent';
 import Link from 'next/link';
-import { User, UserRole } from '@/types';
+import React from 'react';
+
 import { useAuth } from '@/components/AuthProvider';
+import { AvatarImage } from '@/components/AvatarImage';
+import { User, UserRole } from '@/types';
 
 type AuthorsProps = {
   users: User[];

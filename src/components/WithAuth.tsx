@@ -1,6 +1,7 @@
 'use client';
-import { FC, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { FC, useEffect, useState } from 'react';
+
 import { useAuth } from '@/components/AuthProvider';
 import { Spinner } from '@/components/Spinner';
 

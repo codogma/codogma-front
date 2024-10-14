@@ -1,11 +1,11 @@
 'use client';
+import { Box, Card, CardContent, Typography } from '@mui/material';
 import React from 'react';
-import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay, Navigation, Pagination } from 'swiper/modules';
+import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
-import { Box, Card, CardContent, Typography } from '@mui/material';
 
 interface DataItem {
   type: string;
@@ -80,7 +80,7 @@ const data: DataItem[] = [
   },
 ];
 
-const Carousel: React.FC = (props) => {
+const Carousel: React.FC = () => {
   return (
     <Box
       sx={{ width: '100%', maxWidth: 1200, margin: 'auto', padding: '20px 0' }}

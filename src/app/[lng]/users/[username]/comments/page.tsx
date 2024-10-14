@@ -1,14 +1,15 @@
 'use client';
-import CardContent from '@mui/material/CardContent';
 import { Box, Divider, Skeleton, Typography } from '@mui/material';
-import Link from 'next/link';
-import { TimeAgo } from '@/components/TimeAgo';
-import { GetComment } from '@/types';
 import Card from '@mui/material/Card';
-import React from 'react';
-import { getCommentsByUsername } from '@/helpers/commentAPI';
-import { AvatarImage } from '@/components/AvatarImage';
+import CardContent from '@mui/material/CardContent';
 import { useQuery } from '@tanstack/react-query';
+import Link from 'next/link';
+import React from 'react';
+
+import { AvatarImage } from '@/components/AvatarImage';
+import { TimeAgo } from '@/components/TimeAgo';
+import { getCommentsByUsername } from '@/helpers/commentAPI';
+import { GetComment } from '@/types';
 
 type PageParams = {
   username: string;
@@ -20,11 +21,7 @@ type PageProps = {
 };
 
 export default function Page({ params: { username, lng } }: PageProps) {
-  const {
-    data: comments,
-    isPending,
-    error,
-  } = useQuery<GetComment[]>({
+  const { data: comments, isPending } = useQuery<GetComment[]>({
     queryKey: ['comments', username],
     queryFn: () => getCommentsByUsername(username),
   });

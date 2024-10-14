@@ -9,12 +9,13 @@ import {
   Skeleton,
   Stack,
 } from '@mui/material';
-import { AvatarImage } from '@/components/AvatarImage';
 import Link from 'next/link';
-import { Category, UserRole } from '@/types';
 import React from 'react';
-import { useAuth } from '@/components/AuthProvider';
+
 import { useTranslation } from '@/app/i18n/client';
+import { useAuth } from '@/components/AuthProvider';
+import { AvatarImage } from '@/components/AvatarImage';
+import { Category, UserRole } from '@/types';
 
 type CategoriesProps = {
   categories: Category[];

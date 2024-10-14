@@ -1,26 +1,28 @@
 'use client';
-import { z } from 'zod';
-import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { ModeEditOutlineOutlined } from '@mui/icons-material';
+import { Badge, Box, Button } from '@mui/material';
+import Alert from '@mui/material/Alert';
+import IconButton from '@mui/material/IconButton';
+import Snackbar, { SnackbarCloseReason } from '@mui/material/Snackbar';
+import { styled } from '@mui/material/styles';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
-import { Category, UserRole } from '@/types';
+import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
+import { z } from 'zod';
+
+import { useAuth } from '@/components/AuthProvider';
+import { AvatarImage } from '@/components/AvatarImage';
+import FormInput from '@/components/FormInput';
+import { WithAuth } from '@/components/WithAuth';
 import {
   deleteCategory,
   getCategoryById,
   updateCategory,
 } from '@/helpers/categoryApi';
-import { Badge, Box, Button } from '@mui/material';
-import FormInput from '@/components/FormInput';
-import { WithAuth } from '@/components/WithAuth';
-import Snackbar, { SnackbarCloseReason } from '@mui/material/Snackbar';
-import Alert from '@mui/material/Alert';
-import Link from 'next/link';
-import { useAuth } from '@/components/AuthProvider';
-import { useRouter } from 'next/navigation';
-import IconButton from '@mui/material/IconButton';
-import { ModeEditOutlineOutlined } from '@mui/icons-material';
-import { styled } from '@mui/material/styles';
-import { AvatarImage } from '@/components/AvatarImage';
+import { devConsoleError } from '@/helpers/devConsoleLog';
+import { Category, UserRole } from '@/types';
 
 const CategoryScheme = z.object({
   name: z.optional(
@@ -86,7 +88,7 @@ function Categories({ params }: PageProps) {
           image: undefined,
         });
       } catch (error) {
-        console.error('Error fetching data: ' + error);
+        devConsoleError('Error fetching data: ' + error);
       }
     }
 
@@ -96,7 +98,7 @@ function Categories({ params }: PageProps) {
   const {
     reset,
     handleSubmit,
-    formState: { isSubmitSuccessful, errors },
+    formState: { isSubmitSuccessful },
   } = zodForm;
 
   useEffect(() => {

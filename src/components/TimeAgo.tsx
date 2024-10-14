@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react';
 import { format, formatDistanceToNow } from 'date-fns';
 import { enUS, Locale, ru } from 'date-fns/locale';
+import React, { useEffect, useState } from 'react';
 
 interface TimeAgoProps {
   datetime: Date;

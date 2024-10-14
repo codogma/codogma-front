@@ -1,11 +1,27 @@
 {
   "extends": [
     "next/core-web-vitals",
+    "next/typescript",
+    "eslint:recommended",
+    "prettier",
     "plugin:prettier/recommended",
     "plugin:tailwindcss/recommended",
-    "prettier"
+    "plugin:react/recommended",
+    "plugin:jsx-a11y/recommended",
+    "plugin:import/errors",
+    "plugin:import/warnings",
+    "plugin:import/typescript",
+    "plugin:@tanstack/eslint-plugin-query/recommended"
   ],
-  "plugins": ["prettier", "tailwindcss"],
+  "plugins": [
+    "prettier",
+    "tailwindcss",
+    "react",
+    "jsx-a11y",
+    "import",
+    "unused-imports",
+    "@tanstack/query"
+  ],
   "rules": {
     "prettier/prettier": [
       "error",
@@ -13,6 +29,59 @@
         "endOfLine": "auto"
       }
     ],
-    "tailwindcss/classnames-order": "off"
+    "@tanstack/query/exhaustive-deps": "warn",
+    "tailwindcss/classnames-order": "off",
+    "react/react-in-jsx-scope": "off",
+    "react/prop-types": "off",
+    "react/no-unescaped-entities": "off",
+    "react/jsx-uses-react": "off",
+    "import/no-unresolved": "error",
+    "import/no-duplicates": "error",
+    "import/order": [
+      "error",
+      {
+        "groups": [
+          ["builtin", "external"],
+          "internal",
+          "parent",
+          "sibling",
+          "index"
+        ],
+        "newlines-between": "always",
+        "alphabetize": {
+          "order": "asc",
+          "caseInsensitive": true
+        },
+        "distinctGroup": true
+      }
+    ],
+    "unused-imports/no-unused-imports": "error",
+    "unused-imports/no-unused-vars": [
+      "warn",
+      {
+        "vars": "all",
+        "varsIgnorePattern": "^_",
+        "args": "after-used",
+        "argsIgnorePattern": "^_"
+      }
+    ],
+    "jsx-a11y/anchor-is-valid": "off",
+    "no-restricted-imports": "error",
+    "no-console": "warn",
+    "no-debugger": "warn"
+  },
+  "settings": {
+    "react": {
+      "version": "detect"
+    },
+    "import/resolver": {
+      "node": {
+        "extensions": [".js", ".jsx", ".ts", ".tsx"]
+      },
+      "typescript": {
+        "alwaysTryTypes": true,
+        "project": "./tsconfig.json"
+      }
+    }
   }
 }

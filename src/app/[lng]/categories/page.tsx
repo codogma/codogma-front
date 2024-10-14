@@ -1,8 +1,10 @@
 'use client';
 import React, { useEffect, useState } from 'react';
-import { Category } from '@/types';
-import { getCategories } from '@/helpers/categoryApi';
+
 import Categories from '@/components/Categories';
+import { getCategories } from '@/helpers/categoryApi';
+import { devConsoleError } from '@/helpers/devConsoleLog';
+import { Category } from '@/types';
 
 type PageProps = {
   params: {
@@ -20,7 +22,7 @@ export default function Page({ params: { lng } }: PageProps) {
         const allCategories = await getCategories();
         setCategories(allCategories);
       } catch (error) {
-        console.error('Error fetching data:', error);
+        devConsoleError('Error fetching data:', error);
       } finally {
         setLoading(false);
       }

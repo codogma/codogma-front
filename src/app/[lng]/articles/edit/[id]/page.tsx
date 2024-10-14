@@ -1,16 +1,23 @@
 'use client';
-import { z } from 'zod';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { Box, Button, Chip, TextField } from '@mui/material';
+import Autocomplete from '@mui/material/Autocomplete';
+import Typography from '@mui/material/Typography';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import React, { useEffect, useState } from 'react';
 import {
   Controller,
   FormProvider,
   SubmitHandler,
   useForm,
 } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import React, { useEffect, useState } from 'react';
-import { Article, Category, Tag } from '@/types';
+import { z } from 'zod';
+
+import { useAuth } from '@/components/AuthProvider';
 import FormInput from '@/components/FormInput';
-import { Box, Button, Chip, TextField } from '@mui/material';
+import { TinyMCEEditor } from '@/components/TinyMCEEditor';
+import { WithAuth } from '@/components/WithAuth';
 import {
   deleteArticle,
   getArticleById,
@@ -18,14 +25,9 @@ import {
   UpdateArticleDTO,
 } from '@/helpers/articleApi';
 import { getCategories } from '@/helpers/categoryApi';
-import Autocomplete from '@mui/material/Autocomplete';
-import { TinyMCEEditor } from '@/components/TinyMCEEditor';
-import { useRouter } from 'next/navigation';
-import Link from 'next/link';
+import { devConsoleError } from '@/helpers/devConsoleLog';
 import { getTagsByName } from '@/helpers/tagApi';
-import { useAuth } from '@/components/AuthProvider';
-import Typography from '@mui/material/Typography';
-import { WithAuth } from '@/components/WithAuth';
+import { Article, Category, Tag } from '@/types';
 
 const ArticleScheme = z.object({
   categoryIds: z.array(z.number()),
@@ -87,7 +89,7 @@ const Page = ({ params }: PageProps) => {
         });
       } catch (error) {
         router.push('/not-found');
-        console.error('Error fetching data:', error);
+        devConsoleError('Error fetching data:', error);
       }
     }
 
@@ -106,7 +108,7 @@ const Page = ({ params }: PageProps) => {
         const tagNames = tagObjects.map((tag) => tag.name);
         setAvailableTags(tagNames);
       } catch (error) {
-        console.error('Error fetching tags:', error);
+        devConsoleError('Error fetching tags:', error);
       }
     };
 
@@ -117,7 +119,7 @@ const Page = ({ params }: PageProps) => {
     reset,
     handleSubmit,
     control,
-    formState: { isSubmitSuccessful, errors },
+    formState: { isSubmitSuccessful },
   } = zodForm;
 
   useEffect(() => {
@@ -129,7 +131,7 @@ const Page = ({ params }: PageProps) => {
 
   const onSubmit: SubmitHandler<z.infer<typeof ArticleScheme>> = (formData) => {
     const requestData: UpdateArticleDTO = { ...formData };
-    console.log(requestData);
+    devConsoleError(requestData);
     updateArticle(articleId, requestData).then(() =>
       router.push(`/articles/${articleId}`),
     );

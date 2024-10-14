@@ -1,25 +1,26 @@
 'use client';
+import { zodResolver } from '@hookform/resolvers/zod';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
-import Checkbox from '@mui/material/Checkbox';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Divider from '@mui/material/Divider';
-import Typography from '@mui/material/Typography';
 import Card from '@mui/material/Card';
+import Checkbox from '@mui/material/Checkbox';
 import Container from '@mui/material/Container';
+import Divider from '@mui/material/Divider';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import Stack from '@mui/material/Stack';
+import Typography from '@mui/material/Typography';
+import { AxiosError } from 'axios';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
+import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
+import { z } from 'zod';
+
+import { useAuth } from '@/components/AuthProvider';
 import { GithubIcon, GitlabIcon } from '@/components/CustomIcons';
 import ForgotPassword from '@/components/ForgotPassword';
-import Link from 'next/link';
-import Stack from '@mui/material/Stack';
-import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
-import { useRouter } from 'next/navigation';
-import { z } from 'zod';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { signIn } from '@/helpers/authApi';
-import { AxiosError } from 'axios';
-import { useAuth } from '@/components/AuthProvider';
 import FormInput from '@/components/FormInput';
+import { signIn } from '@/helpers/authApi';
 
 const SignInScheme = z.object({
   usernameOrEmail: z.string().min(1, { message: 'Name is required' }),
@@ -55,9 +56,7 @@ export default function Page() {
   const {
     reset,
     handleSubmit,
-    register,
-    setValue,
-    formState: { isSubmitSuccessful, errors },
+    formState: { isSubmitSuccessful },
   } = zodForm;
 
   useEffect(() => {
@@ -73,10 +72,12 @@ export default function Page() {
       const loggedInUser = await signIn(formData);
       dispatch({ type: 'LOGIN', user: loggedInUser });
       router.push('/');
-    } catch (error: AxiosError | any) {
-      const message =
-        error?.response?.data || 'An error occurred during sign in.';
-      setServerError(message);
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        const message =
+          error?.response?.data || 'An error occurred during sign in.';
+        setServerError(message);
+      }
     }
   };
 

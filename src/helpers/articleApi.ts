@@ -1,4 +1,5 @@
 import { axiosInstance } from '@/helpers/axiosInstance';
+import { devConsoleLog } from '@/helpers/devConsoleLog';
 import { Article } from '@/types';
 
 export type CreateArticleDTO = {
@@ -27,26 +28,16 @@ export type GetArticlesDTO = {
 export const createArticle = async (
   requestData: CreateArticleDTO,
 ): Promise<Article> => {
-  try {
-    const response = await axiosInstance.post('/articles', requestData);
-    return response.data;
-  } catch (error: any) {
-    console.error('Error creating article: ' + error.message);
-    throw error;
-  }
+  const response = await axiosInstance.post('/articles', requestData);
+  return response.data;
 };
 
 export const updateArticle = async (
   id: number,
   requestData: UpdateArticleDTO,
 ): Promise<Article> => {
-  try {
-    const response = await axiosInstance.put(`/articles/${id}`, requestData);
-    return response.data;
-  } catch (error: any) {
-    console.error('Error updating article: ' + error.message);
-    throw error;
-  }
+  const response = await axiosInstance.put(`/articles/${id}`, requestData);
+  return response.data;
 };
 
 export const getArticles = async (
@@ -57,39 +48,25 @@ export const getArticles = async (
   content?: string,
   username?: string,
 ): Promise<GetArticlesDTO> => {
-  try {
-    const response = await axiosInstance.get('/articles', {
-      params: {
-        tag,
-        content,
-        categoryId,
-        page,
-        size,
-        username,
-      },
-    });
-    return response.data;
-  } catch (error) {
-    console.error('Error fetching profile:', error);
-    throw error;
-  }
+  const response = await axiosInstance.get('/articles', {
+    params: {
+      tag,
+      content,
+      categoryId,
+      page,
+      size,
+      username,
+    },
+  });
+  return response.data;
 };
 
 export const getArticleById = async (id: number): Promise<Article> => {
-  try {
-    const response = await axiosInstance.get(`/articles/${id}`);
-    return response.data;
-  } catch (error) {
-    console.error('Error fetching article:', error);
-    throw error;
-  }
+  const response = await axiosInstance.get(`/articles/${id}`);
+  return response.data;
 };
 
 export const deleteArticle = async (id: number): Promise<void> => {
-  try {
-    await axiosInstance.delete(`/articles/${id}`);
-  } catch (error) {
-    console.error('Error deleting article:', error);
-    throw error;
-  }
+  await axiosInstance.delete(`/articles/${id}`);
+  devConsoleLog('Article deleted successfully');
 };

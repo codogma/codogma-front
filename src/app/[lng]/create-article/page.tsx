@@ -1,14 +1,5 @@
 'use client';
-import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
-import {
-  Controller,
-  FormProvider,
-  SubmitHandler,
-  useForm,
-} from 'react-hook-form';
-import React, { useEffect, useState } from 'react';
-import { Category, Language, Tag } from '@/types';
 import {
   Autocomplete,
   Box,
@@ -18,14 +9,25 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
+import { useRouter } from 'next/navigation';
+import React, { useEffect, useState } from 'react';
+import {
+  Controller,
+  FormProvider,
+  SubmitHandler,
+  useForm,
+} from 'react-hook-form';
+import { z } from 'zod';
+
 import FormInput from '@/components/FormInput';
-import { getCategories } from '@/helpers/categoryApi';
 import { TinyMCEEditor } from '@/components/TinyMCEEditor';
 import { WithAuth } from '@/components/WithAuth';
-import { useRouter } from 'next/navigation';
-import { getTagsByName } from '@/helpers/tagApi';
-import { createArticle } from '@/helpers/articleApi';
 import { languageMenuItems } from '@/constants/i18n';
+import { createArticle } from '@/helpers/articleApi';
+import { getCategories } from '@/helpers/categoryApi';
+import { devConsoleError } from '@/helpers/devConsoleLog';
+import { getTagsByName } from '@/helpers/tagApi';
+import { Category, Language, Tag } from '@/types';
 
 const ArticleScheme = z.object({
   categoryIds: z.array(z.number()).min(1, 'Выберите хотя бы одну категорию.'),
@@ -51,7 +53,7 @@ function Articles() {
         const allCategories = await getCategories();
         setCategories(allCategories);
       } catch (error) {
-        console.error('Error fetching data:', error);
+        devConsoleError('Error fetching data:', error);
       }
     }
 
@@ -70,7 +72,7 @@ function Articles() {
         const tagNames = tagObjects.map((tag) => tag.name);
         setAvailableTags(tagNames);
       } catch (error) {
-        console.error('Error fetching tags:', error);
+        devConsoleError('Error fetching tags:', error);
       }
     };
 
@@ -97,7 +99,7 @@ function Articles() {
   } = zodForm;
 
   useEffect(() => {
-    console.log(errors);
+    devConsoleError(errors);
     if (isSubmitSuccessful) {
       reset(zodForm.getValues());
     }
@@ -108,7 +110,7 @@ function Articles() {
       ...formData,
       language: formData.language?.toUpperCase(),
     };
-    console.log(requestData);
+    devConsoleError(requestData);
     createArticle(requestData).then((article) =>
       route.push(`/articles/${article.id}`),
     );

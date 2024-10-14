@@ -1,6 +1,4 @@
 'use client';
-import React, { useEffect, useState } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
 import {
   Alert,
   Box,
@@ -9,6 +7,9 @@ import {
   Container,
   Typography,
 } from '@mui/material';
+import { useRouter, useSearchParams } from 'next/navigation';
+import React, { useEffect, useState } from 'react';
+
 import { confirmEmail } from '@/helpers/authApi';
 
 export default function Page() {

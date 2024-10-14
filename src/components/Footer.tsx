@@ -1,11 +1,11 @@
 'use client';
-import React, { memo } from 'react';
+import TelegramIcon from '@mui/icons-material/Telegram';
+import XIcon from '@mui/icons-material/X';
 import { Box, Container, Divider, Link, Typography } from '@mui/material';
 import Grid from '@mui/material/Grid2';
-import XIcon from '@mui/icons-material/X';
-import TelegramIcon from '@mui/icons-material/Telegram';
 import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
+import React, { memo } from 'react';
 
 type FooterProps = {
   title?: string;

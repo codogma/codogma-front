@@ -1,6 +1,7 @@
 'use server';
-import { ReactNode } from 'react';
 import { Metadata } from 'next';
+import { ReactNode } from 'react';
+
 import { initTranslation } from '@/app/i18n';
 
 type LayoutProps = {

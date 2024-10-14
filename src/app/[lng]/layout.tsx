@@ -1,19 +1,24 @@
+import {
+  Box,
+  Container,
+  CssBaseline,
+  StyledEngineProvider,
+} from '@mui/material';
 import { AppRouterCacheProvider } from '@mui/material-nextjs/v14-appRouter';
-import { Box, CssBaseline, StyledEngineProvider } from '@mui/material';
 import { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import './globals.css';
-import NavBar from '@/components/NavBar';
-import { AuthProvider } from '@/components/AuthProvider';
-import { ColorModeProvider } from '@/components/ThemeContext';
-import Container from '@mui/material/Container';
 import React, { ReactNode, Suspense } from 'react';
-import NavTabs, { TabProps } from '@/components/NavTabs';
-import Footer from '@/components/Footer';
-import { ReactQueryProvider } from '@/components/ReactQueryProvider';
-import { ContentImageProvider } from '@/components/ContentImageProvider';
-import { Spinner } from '@/components/Spinner';
+
 import { initTranslation } from '@/app/i18n';
+import { AuthProvider } from '@/components/AuthProvider';
+import { ContentImageProvider } from '@/components/ContentImageProvider';
+import Footer from '@/components/Footer';
+import NavBar from '@/components/NavBar';
+import NavTabs, { TabProps } from '@/components/NavTabs';
+import { ReactQueryProvider } from '@/components/ReactQueryProvider';
+import { Spinner } from '@/components/Spinner';
+import { ColorModeProvider } from '@/components/ThemeContext';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -63,7 +68,7 @@ export async function generateMetadata({
 export default async function RootLayout({
   children,
   params: { lng },
-}: RootLayoutProps) {
+}: Readonly<RootLayoutProps>) {
   const { t } = await initTranslation(lng);
   const tabs: TabProps[] = [
     { label: `${t('articles')}`, href: `/${lng}/articles` },

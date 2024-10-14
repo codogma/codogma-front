@@ -1,9 +1,9 @@
 'use client';
-import * as React from 'react';
-import { createTheme, ThemeProvider, useTheme } from '@mui/material/styles';
-import IconButton from '@mui/material/IconButton';
 import Brightness4Icon from '@mui/icons-material/Brightness4';
 import Brightness7Icon from '@mui/icons-material/Brightness7';
+import IconButton from '@mui/material/IconButton';
+import { createTheme, ThemeProvider, useTheme } from '@mui/material/styles';
+import * as React from 'react';
 
 const ColorModeContext = React.createContext({
   toggleColorMode: () => {},

@@ -1,21 +1,23 @@
 'use client';
-import React, { FormEvent, useEffect, useState } from 'react';
-import { getArticles } from '@/helpers/articleApi';
-import { Article } from '@/types';
-import DOMPurify from 'dompurify';
-import Pagination from '@mui/material/Pagination';
-import Stack from '@mui/material/Stack';
-import InputLabel from '@mui/material/InputLabel';
-import TextField from '@mui/material/TextField';
-import MenuItem from '@mui/material/MenuItem';
-import FormControl from '@mui/material/FormControl';
-import Select, { SelectChangeEvent } from '@mui/material/Select';
-import Paper from '@mui/material/Paper';
-import IconButton from '@mui/material/IconButton';
-import SearchIcon from '@mui/icons-material/Search';
 import MenuIcon from '@mui/icons-material/Menu';
+import SearchIcon from '@mui/icons-material/Search';
+import FormControl from '@mui/material/FormControl';
+import IconButton from '@mui/material/IconButton';
+import InputLabel from '@mui/material/InputLabel';
 import Menu from '@mui/material/Menu';
+import MenuItem from '@mui/material/MenuItem';
+import Pagination from '@mui/material/Pagination';
+import Paper from '@mui/material/Paper';
+import Select, { SelectChangeEvent } from '@mui/material/Select';
+import Stack from '@mui/material/Stack';
+import TextField from '@mui/material/TextField';
+import DOMPurify from 'dompurify';
+import React, { FormEvent, useEffect, useState } from 'react';
+
 import Articles from '@/components/Articles';
+import { getArticles } from '@/helpers/articleApi';
+import { devConsoleError } from '@/helpers/devConsoleLog';
+import { Article } from '@/types';
 
 type PageParams = {
   username: string;
@@ -77,7 +79,7 @@ export default function Layout({ params: { lng, username } }: PageProps) {
         setTotalPages(totalPages);
         setTotalElements(totalElements);
       } catch (error) {
-        console.error('Error fetching data:', error);
+        devConsoleError('Error fetching data:', error);
       } finally {
         setLoading(false);
       }

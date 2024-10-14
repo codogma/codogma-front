@@ -1,16 +1,18 @@
 'use client';
-import { z } from 'zod';
-import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import React, { useEffect, useState } from 'react';
-import { createCategory } from '@/helpers/categoryApi';
+import { ModeEditOutlineOutlined } from '@mui/icons-material';
 import { Badge, Box, Button, FormHelperText } from '@mui/material';
+import IconButton from '@mui/material/IconButton';
+import { styled } from '@mui/material/styles';
+import React, { useEffect, useState } from 'react';
+import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
+import { z } from 'zod';
+
+import { AvatarImage } from '@/components/AvatarImage';
 import FormInput from '@/components/FormInput';
 import { WithAuth } from '@/components/WithAuth';
-import { styled } from '@mui/material/styles';
-import IconButton from '@mui/material/IconButton';
-import { ModeEditOutlineOutlined } from '@mui/icons-material';
-import { AvatarImage } from '@/components/AvatarImage';
+import { createCategory } from '@/helpers/categoryApi';
+import { devConsoleError } from '@/helpers/devConsoleLog';
 
 const CategoryScheme = z.object({
   name: z
@@ -66,7 +68,7 @@ function Page() {
     formData,
   ) => {
     const requestData = { ...formData, image: imageFile };
-    console.log(requestData);
+    devConsoleError(requestData);
     createCategory(requestData);
   };
 

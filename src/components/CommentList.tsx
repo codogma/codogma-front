@@ -1,14 +1,16 @@
 'use client';
-import React, { useEffect, useState } from 'react';
-import { CommentForm } from './CommentForm';
-import { deleteComment, getCommentsByArticleId } from '@/helpers/commentAPI';
-import { GetComment, UserRole } from '@/types';
 import { Box, Button, Card, CardContent, Typography } from '@mui/material';
 import Link from 'next/link';
-import { TimeAgo } from '@/components/TimeAgo';
+import React, { useEffect, useState } from 'react';
+
+import { useTranslation } from '@/app/i18n/client';
 import { useAuth } from '@/components/AuthProvider';
 import { AvatarImage } from '@/components/AvatarImage';
-import { useTranslation } from '@/app/i18n/client';
+import { TimeAgo } from '@/components/TimeAgo';
+import { deleteComment, getCommentsByArticleId } from '@/helpers/commentAPI';
+import { GetComment, UserRole } from '@/types';
+
+import { CommentForm } from './CommentForm';
 
 interface CommentListProps {
   articleId: number;

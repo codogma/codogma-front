@@ -1,12 +1,13 @@
-import React, { useEffect, useState } from 'react';
-import { Avatar, AvatarProps, SvgIconOwnProps } from '@mui/material';
-import Image from 'next/image';
-import { generateAvatarUrl } from '@/helpers/generateAvatar';
 import {
   BrokenImage,
   Image as ImageIcon,
   SensorOccupied,
 } from '@mui/icons-material';
+import { Avatar, AvatarProps, SvgIconOwnProps } from '@mui/material';
+import Image from 'next/image';
+import React, { useEffect, useState } from 'react';
+
+import { generateAvatarUrl } from '@/helpers/generateAvatar';
 
 interface AvatarImageProps extends AvatarProps {
   size: number;

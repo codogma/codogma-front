@@ -1,13 +1,14 @@
 'use client';
-import React, { createContext, useContext } from 'react';
-import { Article } from '@/types';
 import { useRouter } from 'next/navigation';
+import React, { createContext, useContext } from 'react';
 
-interface ArticleProvider {
+import { Article } from '@/types';
+
+interface ArticleContextType {
   article: Article;
 }
 
-const ArticleContext = createContext<ArticleProvider>({
+const ArticleContext = createContext<ArticleContextType>({
   article: {} as Article,
 });
 

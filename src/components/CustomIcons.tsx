@@ -1,5 +1,5 @@
-import * as React from 'react';
 import SvgIcon from '@mui/material/SvgIcon';
+import * as React from 'react';
 
 export function GithubIcon() {
   return (
@@ -13,9 +13,9 @@ export function GithubIcon() {
       >
         <path
           fill='#161514'
-          fill-rule='evenodd'
+          fillRule='evenodd'
           d='M8 1C4.133 1 1 4.13 1 7.993c0 3.09 2.006 5.71 4.787 6.635.35.064.478-.152.478-.337 0-.166-.006-.606-.01-1.19-1.947.423-2.357-.937-2.357-.937-.319-.808-.778-1.023-.778-1.023-.635-.434.048-.425.048-.425.703.05 1.073.72 1.073.72.624 1.07 1.638.76 2.037.582.063-.452.244-.76.444-.935-1.554-.176-3.188-.776-3.188-3.456 0-.763.273-1.388.72-1.876-.072-.177-.312-.888.07-1.85 0 0 .586-.189 1.924.716A6.711 6.711 0 018 4.381c.595.003 1.194.08 1.753.236 1.336-.905 1.923-.717 1.923-.717.382.963.142 1.674.07 1.85.448.49.72 1.114.72 1.877 0 2.686-1.638 3.278-3.197 3.45.251.216.475.643.475 1.296 0 .934-.009 1.688-.009 1.918 0 .187.127.404.482.336A6.996 6.996 0 0015 7.993 6.997 6.997 0 008 1z'
-          clip-rule='evenodd'
+          clipRule='evenodd'
         />
       </svg>
     </SvgIcon>
@@ -72,9 +72,9 @@ export function BitbucketIcon() {
       >
         <path
           fill='#2684FF'
-          fill-rule='evenodd'
+          fillRule='evenodd'
           d='M1.403 2.15A.43.43 0 011.73 2l12.54.002a.43.43 0 01.424.496l-1.81 11.135a.43.43 0 01-.425.36H3.693a.585.585 0 01-.568-.478l-1.82-11.02a.425.425 0 01.098-.345zm5.203 7.814H9.41l.677-3.93H5.859l.747 3.93z'
-          clip-rule='evenodd'
+          clipRule='evenodd'
         />
         <path
           fill='url(#bitbucket-color-16__paint0_linear_707_135)'
@@ -89,8 +89,8 @@ export function BitbucketIcon() {
             y2='11.282'
             gradientUnits='userSpaceOnUse'
           >
-            <stop offset='.18' stop-color='#0052CC' />
-            <stop offset='1' stop-color='#2684FF' />
+            <stop offset='.18' stopColor='#0052CC' />
+            <stop offset='1' stopColor='#2684FF' />
           </linearGradient>
         </defs>
       </svg>

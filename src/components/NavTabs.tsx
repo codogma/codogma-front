@@ -1,9 +1,9 @@
 'use client';
-import React from 'react';
-import { usePathname } from 'next/navigation';
-import Link from 'next/link';
-import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
+import Tabs from '@mui/material/Tabs';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+import React from 'react';
 
 export interface TabProps {
   label: string;

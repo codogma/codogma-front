@@ -1,18 +1,19 @@
 'use client';
+import { use } from 'i18next';
+import LanguageDetector from 'i18next-browser-languagedetector';
+import resourcesToBackend from 'i18next-resources-to-backend';
+import Cookies from 'js-cookie';
 import { useEffect, useState } from 'react';
-import i18next from 'i18next';
 import {
   initReactI18next,
   useTranslation as useTranslationOrg,
 } from 'react-i18next';
-import Cookies from 'js-cookie';
-import resourcesToBackend from 'i18next-resources-to-backend';
-import LanguageDetector from 'i18next-browser-languagedetector';
-import { getOptions } from './settings';
+
 import { intlCookie } from '@/constants/i18n';
 
-i18next
-  .use(initReactI18next)
+import { getOptions } from './settings';
+
+use(initReactI18next)
   .use(LanguageDetector)
   .use(
     resourcesToBackend(

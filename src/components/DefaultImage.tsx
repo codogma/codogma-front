@@ -1,7 +1,7 @@
-import React, { FC } from 'react';
 import { Box, BoxProps, Typography } from '@mui/material';
-import Image from 'next/image';
 import clsx from 'clsx';
+import Image from 'next/image';
+import React, { FC } from 'react';
 
 interface DefaultImageProps extends BoxProps {
   src: string;

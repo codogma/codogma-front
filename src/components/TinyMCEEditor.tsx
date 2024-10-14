@@ -1,7 +1,9 @@
-import React from 'react';
 import { Editor } from '@tinymce/tinymce-react';
+import React from 'react';
+import { v4 as uuid } from 'uuid';
+
+import { devConsoleError } from '@/helpers/devConsoleLog';
 import { uploadImage } from '@/helpers/imageUploadApi';
-import { v4 as uuidv4 } from 'uuid';
 
 interface TinyMCEEditorProps {
   defaultValue?: string;
@@ -14,7 +16,7 @@ export const TinyMCEEditor = ({
   value,
   onChange,
 }: TinyMCEEditorProps) => {
-  const generateImageId = () => `content-image-${uuidv4()}`;
+  const generateImageId = () => `content-image-${uuid()}`;
   return (
     <Editor
       tinymceScriptSrc='/tinymce/tinymce.min.js'
@@ -63,7 +65,7 @@ export const TinyMCEEditor = ({
                 resolve(url);
               })
               .catch((error) => {
-                console.error('Failed to upload image:', error);
+                devConsoleError('Failed to upload image:', error);
                 reject('Failed to upload image');
               });
           });

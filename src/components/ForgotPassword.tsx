@@ -1,4 +1,3 @@
-import { FormEvent } from 'react';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
@@ -6,6 +5,7 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import OutlinedInput from '@mui/material/OutlinedInput';
+import { FormEvent } from 'react';
 
 interface ForgotPasswordProps {
   open: boolean;
@@ -15,7 +15,7 @@ interface ForgotPasswordProps {
 export default function ForgotPassword({
   open,
   handleClose,
-}: ForgotPasswordProps) {
+}: Readonly<ForgotPasswordProps>) {
   return (
     <Dialog
       open={open}
@@ -37,7 +37,6 @@ export default function ForgotPassword({
           link to reset your password.
         </DialogContentText>
         <OutlinedInput
-          autoFocus
           required
           margin='dense'
           id='email'

@@ -1,11 +1,12 @@
 'use server';
-import { ReactNode } from 'react';
 import { Metadata, ResolvingMetadata } from 'next';
-import { getArticleById } from '@/helpers/articleApi';
-import { Article } from '@/types';
+import { ReactNode } from 'react';
+
 import { ArticleProvider } from '@/components/ArticleProvider';
-import { convertHtmlToText } from '@/helpers/convertHtmlToText';
 import { BreadcrumbsComponent } from '@/components/BreadcrumbsComponent';
+import { getArticleById } from '@/helpers/articleApi';
+import { convertHtmlToText } from '@/helpers/convertHtmlToText';
+import { Article } from '@/types';
 
 type LayoutProps = {
   children: ReactNode;

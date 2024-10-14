@@ -1,4 +1,6 @@
 'use client';
+import { useQuery } from '@tanstack/react-query';
+import Cookies from 'js-cookie';
 import {
   createContext,
   Dispatch,
@@ -8,11 +10,10 @@ import {
   useEffect,
   useReducer,
 } from 'react';
-import { useQuery } from '@tanstack/react-query';
+
+import { Spinner } from '@/components/Spinner';
 import { currentUser, refreshToken } from '@/helpers/authApi';
 import { User } from '@/types';
-import Cookies from 'js-cookie';
-import { Spinner } from '@/components/Spinner';
 
 interface AuthState {
   isAuthenticated: boolean;

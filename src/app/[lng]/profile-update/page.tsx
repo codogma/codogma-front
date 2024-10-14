@@ -1,10 +1,19 @@
 'use client';
-import React, { MouseEvent, useEffect, useState } from 'react';
-import { z } from 'zod';
-import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { User } from '@/types';
+import { ModeEditOutlineOutlined } from '@mui/icons-material';
 import { Badge, Box, Button } from '@mui/material';
+import IconButton from '@mui/material/IconButton';
+import { styled } from '@mui/material/styles';
+import Link from 'next/link';
+import React, { MouseEvent, useEffect, useState } from 'react';
+import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
+import { z } from 'zod';
+
+import { useAuth } from '@/components/AuthProvider';
+import { AvatarImage } from '@/components/AvatarImage';
+import FormInput from '@/components/FormInput';
+import { WithAuth } from '@/components/WithAuth';
+import { devConsoleError } from '@/helpers/devConsoleLog';
 import {
   deleteUser,
   getAuthors,
@@ -12,14 +21,7 @@ import {
   updateUser,
   UserUpdate,
 } from '@/helpers/userApi';
-import { ModeEditOutlineOutlined } from '@mui/icons-material';
-import { styled } from '@mui/material/styles';
-import FormInput from '@/components/FormInput';
-import IconButton from '@mui/material/IconButton';
-import { WithAuth } from '@/components/WithAuth';
-import Link from 'next/link';
-import { AvatarImage } from '@/components/AvatarImage';
-import { useAuth } from '@/components/AuthProvider';
+import { User } from '@/types';
 
 const UserScheme = z.object({
   username: z.optional(
@@ -77,11 +79,7 @@ function Users() {
     },
   });
 
-  const {
-    handleSubmit,
-    register,
-    formState: { errors },
-  } = zodForm;
+  const { handleSubmit } = zodForm;
 
   useEffect(() => {
     async function fetchData() {
@@ -101,7 +99,7 @@ function Users() {
           shortInfo: userData.shortInfo,
         });
       } catch (error) {
-        console.error('Error fetching data: ' + error);
+        devConsoleError('Error fetching data: ' + error);
       }
     }
 
@@ -114,7 +112,7 @@ function Users() {
         const allUsers = await getAuthors();
         setUsers(allUsers);
       } catch (error) {
-        console.error('Error fetching data:', error);
+        devConsoleError('Error fetching data:', error);
       }
     }
 
@@ -136,7 +134,7 @@ function Users() {
       ...formData,
       avatar: avatarFile,
     };
-    console.log(updatedUserData);
+    devConsoleError(updatedUserData);
     updateUser(updatedUserData);
   };
 

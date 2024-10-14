@@ -1,14 +1,15 @@
 'use client';
-import React, { useEffect, useState } from 'react';
-import { useAuth } from '@/components/AuthProvider';
-import { useRouter } from 'next/navigation';
 import { Button, Link, Popover, Typography } from '@mui/material';
+import { useRouter } from 'next/navigation';
+import React, { useEffect, useState } from 'react';
+
+import { useTranslation } from '@/app/i18n/client';
+import { useAuth } from '@/components/AuthProvider';
 import {
   checkSubscription,
   subscribeToUser,
   unsubscribeToUser,
 } from '@/helpers/userApi';
-import { useTranslation } from '@/app/i18n/client';
 
 interface CustomPopoverProps {
   destination?: string;
@@ -33,22 +34,18 @@ export const ButtonWithPopover: React.FC<CustomPopoverProps> = ({
 
   useEffect(() => {
     const check = async (username: string) => {
-      await checkSubscription(username)
-        .then((response) => setIsSubscribed(response))
-        .catch((error) => console.error('Error checking subscription:', error));
+      await checkSubscription(username).then((response) =>
+        setIsSubscribed(response),
+      );
     };
     if (state.isAuthenticated) {
       check(username);
     }
   }, [state.isAuthenticated, username]);
 
-  const handleUnsubscribe = async (
-    event: React.MouseEvent<HTMLButtonElement>,
-  ) => {
+  const handleUnsubscribe = async () => {
     if (state.isAuthenticated) {
-      await unsubscribeToUser(username)
-        .then(() => setIsSubscribed(false))
-        .catch((error) => console.error('Error unsubscribing:', error));
+      await unsubscribeToUser(username).then(() => setIsSubscribed(false));
     }
   };
 
@@ -56,9 +53,7 @@ export const ButtonWithPopover: React.FC<CustomPopoverProps> = ({
     event: React.MouseEvent<HTMLButtonElement>,
   ) => {
     if (state.isAuthenticated) {
-      await subscribeToUser(username)
-        .then(() => setIsSubscribed(true))
-        .catch((error) => console.error('Error subscribing:', error));
+      await subscribeToUser(username).then(() => setIsSubscribed(true));
     } else {
       setAnchorEl(event.currentTarget);
     }

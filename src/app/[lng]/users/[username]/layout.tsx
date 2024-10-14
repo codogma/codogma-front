@@ -1,15 +1,17 @@
 'use client';
-import React, { useEffect, useState } from 'react';
-import { User } from '@/types';
-import NavTabs, { TabProps } from '@/components/NavTabs';
-import CardContent from '@mui/material/CardContent';
 import { Badge } from '@mui/material';
 import Card from '@mui/material/Card';
-import { getUserByUsername } from '@/helpers/userApi';
+import CardContent from '@mui/material/CardContent';
 import IconButton from '@mui/material/IconButton';
+import React, { useEffect, useState } from 'react';
+
+import { useTranslation } from '@/app/i18n/client';
 import { AvatarImage } from '@/components/AvatarImage';
 import { ButtonWithPopover } from '@/components/ButtonWithPopover';
-import { useTranslation } from '@/app/i18n/client';
+import NavTabs, { TabProps } from '@/components/NavTabs';
+import { devConsoleError } from '@/helpers/devConsoleLog';
+import { getUserByUsername } from '@/helpers/userApi';
+import { User } from '@/types';
 
 type PageParams = {
   username: string;
@@ -48,7 +50,7 @@ export default function Layout({
         const userData = await getUserByUsername(username);
         setUser(userData);
       } catch (error) {
-        console.error('Error fetching data:', error);
+        devConsoleError('Error fetching data:', error);
       }
     }
 

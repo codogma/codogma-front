@@ -1,20 +1,21 @@
 'use client';
-import React, { FormEvent, useState } from 'react';
-import { getArticles, GetArticlesDTO } from '@/helpers/articleApi';
-import { useQuery } from '@tanstack/react-query';
-import Pagination from '@mui/material/Pagination';
-import Stack from '@mui/material/Stack';
-import InputLabel from '@mui/material/InputLabel';
-import TextField from '@mui/material/TextField';
-import MenuItem from '@mui/material/MenuItem';
-import FormControl from '@mui/material/FormControl';
-import Select, { SelectChangeEvent } from '@mui/material/Select';
-import Paper from '@mui/material/Paper';
-import IconButton from '@mui/material/IconButton';
-import SearchIcon from '@mui/icons-material/Search';
 import MenuIcon from '@mui/icons-material/Menu';
+import SearchIcon from '@mui/icons-material/Search';
+import FormControl from '@mui/material/FormControl';
+import IconButton from '@mui/material/IconButton';
+import InputLabel from '@mui/material/InputLabel';
 import Menu from '@mui/material/Menu';
+import MenuItem from '@mui/material/MenuItem';
+import Pagination from '@mui/material/Pagination';
+import Paper from '@mui/material/Paper';
+import Select, { SelectChangeEvent } from '@mui/material/Select';
+import Stack from '@mui/material/Stack';
+import TextField from '@mui/material/TextField';
+import { useQuery } from '@tanstack/react-query';
+import React, { FormEvent, useState } from 'react';
+
 import Articles from '@/components/Articles';
+import { getArticles, GetArticlesDTO } from '@/helpers/articleApi';
 
 type PageParams = {
   id: number;
@@ -47,7 +48,7 @@ export default function Layout({ params: { id, lng } }: PageProps) {
     setAnchorEl(null);
   };
 
-  const { data, isPending, isError } = useQuery<GetArticlesDTO>({
+  const { data, isPending } = useQuery<GetArticlesDTO>({
     queryKey: [
       'articles',
       categoryId,

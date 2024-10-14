@@ -1,7 +1,8 @@
 'use client';
-import React from 'react';
-import { useRouter } from 'next/navigation';
 import { Button, Container, Typography } from '@mui/material';
+import { useRouter } from 'next/navigation';
+import React from 'react';
+
 import { useTranslation } from '@/app/i18n/client';
 
 type PageProps = {

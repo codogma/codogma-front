@@ -1,5 +1,5 @@
-import { Parser } from 'htmlparser2';
 import { decodeHTML } from 'entities';
+import { Parser } from 'htmlparser2';
 
 export function convertHtmlToText(html: string): string {
   let text: string = '';

@@ -1,4 +1,5 @@
 'use client';
+import { zodResolver } from '@hookform/resolvers/zod';
 import {
   Box,
   Button,
@@ -8,17 +9,17 @@ import {
   Stack,
   Typography,
 } from '@mui/material';
-import { GithubIcon, GitlabIcon } from '@/components/CustomIcons';
-import Link from 'next/link';
-import React, { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { signUp } from '@/helpers/authApi';
-import { z } from 'zod';
-import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { generateAvatar } from '@/helpers/generateAvatar';
-import FormInput from '@/components/FormInput';
 import { AxiosError } from 'axios';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import React, { useEffect, useState } from 'react';
+import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
+import { z } from 'zod';
+
+import { GithubIcon, GitlabIcon } from '@/components/CustomIcons';
+import FormInput from '@/components/FormInput';
+import { signUp } from '@/helpers/authApi';
+import { generateAvatar } from '@/helpers/generateAvatar';
 
 const SignUpScheme = z.object({
   username: z.string().min(1, { message: 'Name is required' }),
@@ -52,9 +53,7 @@ export default function Page({ params: { lng } }: PageProps) {
   const {
     reset,
     handleSubmit,
-    register,
-    setValue,
-    formState: { isSubmitSuccessful, errors },
+    formState: { isSubmitSuccessful },
   } = zodForm;
 
   useEffect(() => {
@@ -72,10 +71,12 @@ export default function Page({ params: { lng } }: PageProps) {
       const requestData = { ...formData, avatar: file };
       await signUp(requestData);
       router.push(`/${lng}/sign-up/success`);
-    } catch (error: AxiosError | any) {
-      const message =
-        error?.response?.data || 'An error occurred during registration.';
-      setServerError(message);
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        const message =
+          error?.response?.data || 'An error occurred during registration.';
+        setServerError(message);
+      }
     }
   };
 

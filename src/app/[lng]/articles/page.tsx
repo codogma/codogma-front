@@ -1,24 +1,25 @@
 'use client';
-import React, { FormEvent, useEffect, useRef, useState } from 'react';
-import { getArticles, GetArticlesDTO } from '@/helpers/articleApi';
-import Pagination from '@mui/material/Pagination';
-import Stack from '@mui/material/Stack';
-import InputLabel from '@mui/material/InputLabel';
-import TextField from '@mui/material/TextField';
-import MenuItem from '@mui/material/MenuItem';
-import FormControl from '@mui/material/FormControl';
-import Select, { SelectChangeEvent } from '@mui/material/Select';
-import Paper from '@mui/material/Paper';
-import IconButton from '@mui/material/IconButton';
-import SearchIcon from '@mui/icons-material/Search';
 import MenuIcon from '@mui/icons-material/Menu';
+import SearchIcon from '@mui/icons-material/Search';
+import FormControl from '@mui/material/FormControl';
+import IconButton from '@mui/material/IconButton';
+import InputLabel from '@mui/material/InputLabel';
 import Menu from '@mui/material/Menu';
-import Articles from '@/components/Articles';
-import { useContentImageContext } from '@/components/ContentImageProvider';
+import MenuItem from '@mui/material/MenuItem';
+import Pagination from '@mui/material/Pagination';
+import Paper from '@mui/material/Paper';
+import Select, { SelectChangeEvent } from '@mui/material/Select';
+import Stack from '@mui/material/Stack';
+import TextField from '@mui/material/TextField';
 import { useQuery } from '@tanstack/react-query';
 import DOMPurify from 'dompurify';
+import React, { FormEvent, useEffect, useRef, useState } from 'react';
+
 import { useTranslation } from '@/app/i18n/client';
+import Articles from '@/components/Articles';
+import { useContentImageContext } from '@/components/ContentImageProvider';
 import { contlCookie } from '@/constants/i18n';
+import { getArticles, GetArticlesDTO } from '@/helpers/articleApi';
 
 type PageProps = {
   params: {
@@ -52,7 +53,7 @@ export default function Page({ params: { lng } }: PageProps) {
     setAnchorEl(null);
   };
 
-  const { data, isFetching, isError, refetch } = useQuery<GetArticlesDTO>({
+  const { data, isFetching, refetch } = useQuery<GetArticlesDTO>({
     queryKey: [
       'articles',
       currentPage,

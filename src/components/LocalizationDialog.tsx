@@ -1,5 +1,11 @@
 'use client';
-import React, { useEffect, useState } from 'react';
+import { zodResolver } from '@hookform/resolvers/zod';
+import {
+  CheckBox as CheckBoxIcon,
+  CheckBoxOutlineBlank as CheckBoxOutlineBlankIcon,
+  Close as CloseIcon,
+  Language as LanguageIcon,
+} from '@mui/icons-material';
 import {
   Autocomplete,
   Box,
@@ -15,24 +21,20 @@ import {
   Tooltip,
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
-import { useTranslation } from '@/app/i18n/client';
-import { contlCookie, intlCookie, languageMenuItems } from '@/constants/i18n';
+import Cookies from 'js-cookie';
 import { usePathname, useRouter } from 'next/navigation';
-import {
-  CheckBox as CheckBoxIcon,
-  CheckBoxOutlineBlank as CheckBoxOutlineBlankIcon,
-  Close as CloseIcon,
-  Language as LanguageIcon,
-} from '@mui/icons-material';
-import { z } from 'zod';
+import React, { useEffect, useState } from 'react';
 import {
   Controller,
   FormProvider,
   SubmitHandler,
   useForm,
 } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import Cookies from 'js-cookie';
+import { z } from 'zod';
+
+import { useTranslation } from '@/app/i18n/client';
+import { contlCookie, intlCookie, languageMenuItems } from '@/constants/i18n';
+import { devConsoleError } from '@/helpers/devConsoleLog';
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   '& .MuiDialogContent-root': {
@@ -86,7 +88,7 @@ export const LocalizationDialog = ({ lang }: LocalizationDialogProps) => {
   } = zodForm;
 
   useEffect(() => {
-    console.log(errors);
+    devConsoleError(errors);
     if (isSubmitSuccessful) {
       reset(zodForm.getValues());
     }
@@ -216,9 +218,7 @@ export const LocalizationDialog = ({ lang }: LocalizationDialogProps) => {
                   />
                 )}
               />
-              <Button autoFocus type='submit'>
-                Save changes
-              </Button>
+              <Button type='submit'>Save changes</Button>
             </Box>
           </FormProvider>
         </DialogContent>

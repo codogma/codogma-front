@@ -1,7 +1,8 @@
 'use client';
-import { usePathname } from 'next/navigation';
-import Link from 'next/link';
 import { Breadcrumbs, Typography } from '@mui/material';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+
 import { languages } from '@/constants/i18n';
 import { Language } from '@/types';
 

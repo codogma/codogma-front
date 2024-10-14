@@ -1,7 +1,8 @@
 'use client';
+import parse, { DOMNode, Element } from 'html-react-parser';
 import React, { createContext, FC, ReactNode, useContext } from 'react';
+
 import { DefaultImage } from '@/components/DefaultImage';
-import parse from 'html-react-parser';
 
 interface ContentImageContextType {
   processContent: (content: string) => ReactNode | null;
@@ -16,8 +17,9 @@ export const ContentImageProvider: FC<{ children: ReactNode }> = ({
     if (!content) return null;
 
     return parse(content, {
-      replace: (domNode: any) => {
+      replace: (domNode: DOMNode) => {
         if (
+          domNode instanceof Element &&
           domNode.name === 'img' &&
           domNode.attribs?.id?.startsWith('content-image')
         ) {

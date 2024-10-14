@@ -1,9 +1,10 @@
 'use client';
 import React, { useEffect, useState } from 'react';
-import { User } from '@/types';
-import { getAuthors } from '@/helpers/userApi';
+
 import Users from '@/components/Users';
-import { devConsole } from '@/helpers/devConsole';
+import { devConsoleError, devConsoleLog } from '@/helpers/devConsoleLog';
+import { getAuthors } from '@/helpers/userApi';
+import { User } from '@/types';
 
 type PageParams = {
   id: number;
@@ -23,11 +24,11 @@ function Page({ params }: PageProps) {
     async function fetchData() {
       try {
         const allUsers = await getAuthors(categoryId);
-        devConsole(allUsers);
+        devConsoleLog(allUsers);
         setUsers(allUsers);
         setIsAuthor(true);
       } catch (error) {
-        console.error('Error fetching data:', error);
+        devConsoleError('Error fetching data:', error);
       } finally {
         setLoading(false);
       }

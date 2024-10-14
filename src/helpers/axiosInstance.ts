@@ -1,4 +1,6 @@
-import axios from 'axios';
+import axios, { isAxiosError } from 'axios';
+
+import { devConsoleError } from '@/helpers/devConsoleLog';
 
 export const axiosInstance = axios.create({
   baseURL: `${process.env.NEXT_PUBLIC_BASE_URL}/api`,
@@ -16,7 +18,7 @@ axiosInstance.interceptors.request.use(
     return config;
   },
   (error) => {
-    // Обработка ошибок запроса
+    devConsoleError('Request error:', error.message);
     return Promise.reject(error);
   },
 );
@@ -27,7 +29,14 @@ axiosInstance.interceptors.response.use(
     return response;
   },
   (error) => {
-    // Обработка ошибок ответа
+    if (isAxiosError(error)) {
+      const serverMessage = error.response?.data || 'An unknown error occurred';
+      devConsoleError('Axios error: ' + serverMessage);
+    } else if (error instanceof Error) {
+      devConsoleError('An unexpected error occurred: ' + error.message);
+    } else {
+      devConsoleError('An unexpected error occurred');
+    }
     return Promise.reject(error);
   },
 );

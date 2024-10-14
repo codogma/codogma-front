@@ -1,9 +1,10 @@
 import Typography from '@mui/material/Typography';
-import NavTabs, { TabProps } from '@/components/NavTabs';
 import React from 'react';
+
+import { initTranslation } from '@/app/i18n';
 import Banner from '@/components/Banner';
 import Carousel from '@/components/Carousel';
-import { initTranslation } from '@/app/i18n';
+import NavTabs, { TabProps } from '@/components/NavTabs';
 
 type PageProps = {
   params: { lng: string };
