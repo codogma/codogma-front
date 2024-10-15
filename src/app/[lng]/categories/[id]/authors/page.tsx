@@ -11,7 +11,7 @@ type PageParams = {
 };
 
 type PageProps = {
-  params: PageParams;
+  readonly params: PageParams;
 };
 
 function Page({ params }: PageProps) {

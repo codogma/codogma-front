@@ -32,7 +32,7 @@ const SignUpScheme = z.object({
 export type OAuthProvider = 'github' | 'gitlab';
 
 type PageProps = {
-  params: {
+  readonly params: {
     lng: string;
   };
 };

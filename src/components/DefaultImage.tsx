@@ -4,12 +4,12 @@ import Image from 'next/image';
 import React, { FC } from 'react';
 
 interface DefaultImageProps extends BoxProps {
-  src: string;
-  alt?: string;
-  priority?: boolean;
-  quality?: number;
-  width?: BoxProps['width'];
-  height?: BoxProps['height'];
+  readonly src: string;
+  readonly alt?: string;
+  readonly priority?: boolean;
+  readonly quality?: number;
+  readonly width?: BoxProps['width'];
+  readonly height?: BoxProps['height'];
 }
 
 export const DefaultImage: FC<DefaultImageProps> = ({

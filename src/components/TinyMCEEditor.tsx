@@ -6,9 +6,9 @@ import { devConsoleError } from '@/helpers/devConsoleLog';
 import { uploadImage } from '@/helpers/imageUploadApi';
 
 interface TinyMCEEditorProps {
-  defaultValue?: string;
-  value?: string;
-  onChange: (content: string) => void;
+  readonly defaultValue?: string;
+  readonly value?: string;
+  readonly onChange: (content: string) => void;
 }
 
 export const TinyMCEEditor = ({

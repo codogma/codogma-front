@@ -34,7 +34,6 @@ import { z } from 'zod';
 
 import { useTranslation } from '@/app/i18n/client';
 import { contlCookie, intlCookie, languageMenuItems } from '@/constants/i18n';
-import { devConsoleError } from '@/helpers/devConsoleLog';
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   '& .MuiDialogContent-root': {
@@ -49,7 +48,7 @@ const icon = <CheckBoxOutlineBlankIcon fontSize='small' />;
 const checkedIcon = <CheckBoxIcon fontSize='small' />;
 
 type LocalizationDialogProps = {
-  lang: string;
+  readonly lang: string;
 };
 
 const LocalizationDialogScheme = z.object({
@@ -65,7 +64,7 @@ export const LocalizationDialog = ({ lang }: LocalizationDialogProps) => {
   const contlCookieVal = Cookies.get(contlCookie);
 
   const defaultCheckedLanguages: string[] = contlCookieVal
-    ? contlCookieVal!.split(',')
+    ? contlCookieVal.split(',')
     : [lang];
 
   if (!contlCookieVal) {
@@ -88,7 +87,6 @@ export const LocalizationDialog = ({ lang }: LocalizationDialogProps) => {
   } = zodForm;
 
   useEffect(() => {
-    devConsoleError(errors);
     if (isSubmitSuccessful) {
       reset(zodForm.getValues());
     }
@@ -157,6 +155,7 @@ export const LocalizationDialog = ({ lang }: LocalizationDialogProps) => {
                   control={control}
                   render={({ field }) => (
                     <TextField
+                      id='language-textfield'
                       select
                       label='Interface language'
                       value={field.value}
@@ -179,7 +178,7 @@ export const LocalizationDialog = ({ lang }: LocalizationDialogProps) => {
                 render={({ field }) => (
                   <Autocomplete
                     multiple
-                    id='checkedLanguages'
+                    id='checkedLanguages-autocomplete'
                     options={languageMenuItems}
                     disableCloseOnSelect
                     value={field.value.map(
@@ -209,6 +208,7 @@ export const LocalizationDialog = ({ lang }: LocalizationDialogProps) => {
                     renderInput={(params) => (
                       <TextField
                         {...params}
+                        id='checkedLanguages-textfield'
                         label='Content languages'
                         error={Boolean(errors.checkedLanguages?.message)}
                         helperText={errors.checkedLanguages?.message}

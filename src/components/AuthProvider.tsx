@@ -50,7 +50,7 @@ const AuthContext = createContext<{
 }>({ state: initialState, dispatch: () => null });
 
 interface AuthProviderProps {
-  children: ReactNode;
+  readonly children: ReactNode;
 }
 
 export const AuthProvider: FC<AuthProviderProps> = ({ children }) => {

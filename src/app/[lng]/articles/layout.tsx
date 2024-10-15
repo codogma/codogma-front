@@ -5,8 +5,8 @@ import { ReactNode } from 'react';
 import { initTranslation } from '@/app/i18n';
 
 type LayoutProps = {
-  children: ReactNode;
-  params: { lng: string };
+  readonly children: ReactNode;
+  readonly params: { lng: string };
 };
 
 export async function generateMetadata({

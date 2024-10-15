@@ -25,7 +25,7 @@ type PageParams = {
 };
 
 type PageProps = {
-  params: PageParams;
+  readonly params: PageParams;
 };
 
 export default function Layout({ params: { lng, username } }: PageProps) {

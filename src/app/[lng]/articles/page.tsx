@@ -22,7 +22,7 @@ import { contlCookie } from '@/constants/i18n';
 import { getArticles, GetArticlesDTO } from '@/helpers/articleApi';
 
 type PageProps = {
-  params: {
+  readonly params: {
     lng: string;
   };
 };

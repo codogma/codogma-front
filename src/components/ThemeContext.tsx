@@ -3,6 +3,7 @@ import Brightness4Icon from '@mui/icons-material/Brightness4';
 import Brightness7Icon from '@mui/icons-material/Brightness7';
 import IconButton from '@mui/material/IconButton';
 import { createTheme, ThemeProvider, useTheme } from '@mui/material/styles';
+import Tooltip from '@mui/material/Tooltip';
 import * as React from 'react';
 
 const ColorModeContext = React.createContext({
@@ -12,7 +13,7 @@ const ColorModeContext = React.createContext({
 export const ColorModeProvider = ({
   children,
 }: {
-  children: React.ReactNode;
+  readonly children: React.ReactNode;
 }) => {
   const [mode, setMode] = React.useState<'light' | 'dark'>(() => {
     if (typeof window !== 'undefined') {
@@ -59,20 +60,26 @@ export const ColorModeProvider = ({
 export const useColorMode = () => React.useContext(ColorModeContext);
 
 interface ThemeToggleButtonProps {
-  sx?: object;
+  readonly sx?: object;
+  readonly title?: string;
 }
 
-export const ThemeToggleButton: React.FC<ThemeToggleButtonProps> = ({ sx }) => {
+export const ThemeToggleButton: React.FC<ThemeToggleButtonProps> = ({
+  sx,
+  title,
+}) => {
   const theme = useTheme();
   const colorMode = useColorMode();
 
   return (
-    <IconButton sx={sx} onClick={colorMode.toggleColorMode}>
-      {theme.palette.mode === 'dark' ? (
-        <Brightness7Icon />
-      ) : (
-        <Brightness4Icon />
-      )}
-    </IconButton>
+    <Tooltip title={title}>
+      <IconButton sx={sx} color='inherit' onClick={colorMode.toggleColorMode}>
+        {theme.palette.mode === 'dark' ? (
+          <Brightness7Icon />
+        ) : (
+          <Brightness4Icon />
+        )}
+      </IconButton>
+    </Tooltip>
   );
 };

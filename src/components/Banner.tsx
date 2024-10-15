@@ -7,7 +7,7 @@ import React from 'react';
 import { DefaultImage } from '@/components/DefaultImage';
 
 type BannerProps = {
-  bannerData: {
+  readonly bannerData: {
     welcome: string;
     subWelcome: string;
   };

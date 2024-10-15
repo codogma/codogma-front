@@ -15,9 +15,9 @@ import { TimeAgo } from '@/components/TimeAgo';
 import { Article, UserRole } from '@/types';
 
 type ArticlesProps = {
-  lang: string;
-  articles: Article[];
-  loading: boolean;
+  readonly lang: string;
+  readonly articles: Article[];
+  readonly loading: boolean;
 };
 
 export default function Articles({ lang, articles, loading }: ArticlesProps) {

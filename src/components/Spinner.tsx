@@ -6,7 +6,7 @@ import * as React from 'react';
 import { FC } from 'react';
 
 interface SpinnerProps {
-  className?: string;
+  readonly className?: string;
 }
 
 function GradientCircularProgress() {

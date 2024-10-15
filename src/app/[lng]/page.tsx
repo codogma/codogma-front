@@ -7,7 +7,7 @@ import Carousel from '@/components/Carousel';
 import NavTabs, { TabProps } from '@/components/NavTabs';
 
 type PageProps = {
-  params: { lng: string };
+  readonly params: { lng: string };
 };
 
 export default async function Page({ params: { lng } }: PageProps) {

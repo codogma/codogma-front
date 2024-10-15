@@ -3,7 +3,7 @@ import { FC } from 'react';
 import { Controller, FieldError, useFormContext } from 'react-hook-form';
 
 type IFormInputProps = {
-  name: string;
+  readonly name: string;
 } & TextFieldProps;
 
 const FormInput: FC<IFormInputProps> = ({ name, ...otherProps }) => {

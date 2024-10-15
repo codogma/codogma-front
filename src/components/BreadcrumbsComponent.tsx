@@ -7,7 +7,7 @@ import { languages } from '@/constants/i18n';
 import { Language } from '@/types';
 
 interface BreadcrumbsComponentProps {
-  title: string;
+  readonly title: string;
 }
 
 const segmentNames: Record<string, string> = {

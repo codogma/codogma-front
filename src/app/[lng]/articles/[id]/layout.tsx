@@ -9,8 +9,8 @@ import { convertHtmlToText } from '@/helpers/convertHtmlToText';
 import { Article } from '@/types';
 
 type LayoutProps = {
-  children: ReactNode;
-  params: { id: number };
+  readonly children: ReactNode;
+  readonly params: { id: number };
 };
 
 async function fetchArticleById(id: number): Promise<Article> {

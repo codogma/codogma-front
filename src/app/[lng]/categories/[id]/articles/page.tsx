@@ -23,7 +23,7 @@ type PageParams = {
 };
 
 type PageProps = {
-  params: PageParams;
+  readonly params: PageParams;
 };
 
 export default function Layout({ params: { id, lng } }: PageProps) {

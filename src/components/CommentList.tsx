@@ -13,9 +13,9 @@ import { GetComment, UserRole } from '@/types';
 import { CommentForm } from './CommentForm';
 
 interface CommentListProps {
-  articleId: number;
-  comments?: GetComment[];
-  lang: string;
+  readonly articleId: number;
+  readonly comments?: GetComment[];
+  readonly lang: string;
 }
 
 export const CommentList: React.FC<CommentListProps> = ({

@@ -10,9 +10,9 @@ import React, { useEffect, useState } from 'react';
 import { generateAvatarUrl } from '@/helpers/generateAvatar';
 
 interface AvatarImageProps extends AvatarProps {
-  size: number;
-  type?: 'avatar' | 'image';
-  fontSize?: SvgIconOwnProps['fontSize'];
+  readonly size: number;
+  readonly type?: 'avatar' | 'image';
+  readonly fontSize?: SvgIconOwnProps['fontSize'];
 }
 
 export const AvatarImage: React.FC<AvatarImageProps> = ({

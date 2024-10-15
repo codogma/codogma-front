@@ -3,9 +3,9 @@ import { enUS, Locale, ru } from 'date-fns/locale';
 import React, { useEffect, useState } from 'react';
 
 interface TimeAgoProps {
-  datetime: Date;
-  className?: string | undefined;
-  lang: string;
+  readonly datetime: Date;
+  readonly className?: string | undefined;
+  readonly lang: string;
 }
 
 export const TimeAgo: React.FC<TimeAgoProps> = ({

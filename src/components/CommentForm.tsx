@@ -10,11 +10,11 @@ import { createComment, updateComment } from '@/helpers/commentAPI';
 import { CreateComment, GetComment, UpdateComment, UserRole } from '@/types';
 
 interface CommentFormProps {
-  articleId: number;
-  parentCommentId?: number;
-  comment?: GetComment | null;
-  onCommentAdded: () => void;
-  onCancelEdit?: () => void;
+  readonly articleId: number;
+  readonly parentCommentId?: number;
+  readonly comment?: GetComment | null;
+  readonly onCommentAdded: () => void;
+  readonly onCancelEdit?: () => void;
 }
 
 export const CommentForm: React.FC<CommentFormProps> = ({

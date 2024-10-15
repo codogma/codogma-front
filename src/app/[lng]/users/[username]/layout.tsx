@@ -19,8 +19,8 @@ type PageParams = {
 };
 
 type PageProps = {
-  params: PageParams;
-  children: React.ReactNode;
+  readonly params: PageParams;
+  readonly children: React.ReactNode;
 };
 
 export default function Layout({

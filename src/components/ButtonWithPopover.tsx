@@ -12,9 +12,9 @@ import {
 } from '@/helpers/userApi';
 
 interface CustomPopoverProps {
-  destination?: string;
-  username: string;
-  lang: string;
+  readonly destination?: string;
+  readonly username: string;
+  readonly lang: string;
 }
 
 export const ButtonWithPopover: React.FC<CustomPopoverProps> = ({

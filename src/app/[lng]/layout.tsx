@@ -23,8 +23,8 @@ import { ColorModeProvider } from '@/components/ThemeContext';
 const inter = Inter({ subsets: ['latin'] });
 
 type RootLayoutProps = {
-  children: ReactNode;
-  params: { lng: string };
+  readonly children: ReactNode;
+  readonly params: { lng: string };
 };
 
 export async function generateMetadata({
@@ -68,7 +68,7 @@ export async function generateMetadata({
 export default async function RootLayout({
   children,
   params: { lng },
-}: Readonly<RootLayoutProps>) {
+}: RootLayoutProps) {
   const { t } = await initTranslation(lng);
   const tabs: TabProps[] = [
     { label: `${t('articles')}`, href: `/${lng}/articles` },

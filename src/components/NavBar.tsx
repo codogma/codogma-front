@@ -6,7 +6,7 @@ import LogoutIcon from '@mui/icons-material/Logout';
 import PersonIcon from '@mui/icons-material/Person';
 import PersonAddAltRoundedIcon from '@mui/icons-material/PersonAddAltRounded';
 import SearchIcon from '@mui/icons-material/Search';
-import { ButtonGroup } from '@mui/material';
+import { ButtonGroup, MenuList } from '@mui/material';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
@@ -30,7 +30,7 @@ import { logout } from '@/helpers/authApi';
 import { UserRole } from '@/types';
 
 type NavBarProps = {
-  lang: string;
+  readonly lang: string;
 };
 
 const NavBar = ({ lang }: NavBarProps) => {
@@ -102,11 +102,7 @@ const NavBar = ({ lang }: NavBarProps) => {
               </Link>
             </Tooltip>
             <LocalizationDialog lang={lang} />
-            <Tooltip title={t('theme')}>
-              <IconButton color='inherit' sx={{ p: 0 }}>
-                <ThemeToggleButton sx={{ color: 'inherit' }} />
-              </IconButton>
-            </Tooltip>
+            <ThemeToggleButton title={t('theme')} />
           </ButtonGroup>
           <Box sx={{ flexGrow: 0 }}>
             <Tooltip title={t('settings')}>
@@ -141,8 +137,8 @@ const NavBar = ({ lang }: NavBarProps) => {
               open={Boolean(anchorElUser)}
               onClose={handleCloseUserMenu}
             >
-              {!state.isAuthenticated && (
-                <>
+              {!state.isAuthenticated ? (
+                <MenuList className='nav-menu-list'>
                   <MenuItem onClick={() => handleClickMenuItem(`/sign-up`)}>
                     <Typography textAlign='center'>
                       <PersonAddAltRoundedIcon
@@ -158,10 +154,9 @@ const NavBar = ({ lang }: NavBarProps) => {
                       {t('signInBtn')}
                     </Typography>
                   </MenuItem>
-                </>
-              )}
-              {state.isAuthenticated && (
-                <>
+                </MenuList>
+              ) : (
+                <MenuList className='nav-menu-list'>
                   <MenuItem
                     onClick={() =>
                       handleClickMenuItem(`/users/${state.user?.username}`)
@@ -198,7 +193,7 @@ const NavBar = ({ lang }: NavBarProps) => {
                       {t('logoutBtn')}
                     </Typography>
                   </MenuItem>
-                </>
+                </MenuList>
               )}
             </Menu>
           </Box>

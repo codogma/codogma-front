@@ -40,7 +40,7 @@ type PageParams = {
 };
 
 type PageProps = {
-  params: PageParams;
+  readonly params: PageParams;
 };
 
 const VisuallyHiddenInput = styled('input')({

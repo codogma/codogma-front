@@ -8,7 +8,7 @@ import Tooltip from '@mui/material/Tooltip';
 import React, { memo } from 'react';
 
 type FooterProps = {
-  title?: string;
+  readonly title?: string;
 };
 
 function Footer({ title }: FooterProps) {

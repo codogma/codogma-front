@@ -45,7 +45,7 @@ type PageParams = {
 };
 
 type PageProps = {
-  params: PageParams;
+  readonly params: PageParams;
 };
 
 const Page = ({ params }: PageProps) => {

@@ -10,7 +10,7 @@ interface ContentImageContextType {
 
 const ContentImageContext = createContext<ContentImageContextType | null>(null);
 
-export const ContentImageProvider: FC<{ children: ReactNode }> = ({
+export const ContentImageProvider: FC<{ readonly children: ReactNode }> = ({
   children,
 }) => {
   const replaceImagesInContent = (content: string) => {

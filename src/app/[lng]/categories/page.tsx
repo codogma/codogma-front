@@ -7,7 +7,7 @@ import { devConsoleError } from '@/helpers/devConsoleLog';
 import { Category } from '@/types';
 
 type PageProps = {
-  params: {
+  readonly params: {
     lng: string;
   };
 };

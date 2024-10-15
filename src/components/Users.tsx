@@ -10,9 +10,9 @@ import { AvatarImage } from '@/components/AvatarImage';
 import { User, UserRole } from '@/types';
 
 type AuthorsProps = {
-  users: User[];
-  loading?: boolean;
-  isAuthor?: boolean;
+  readonly users: User[];
+  readonly loading?: boolean;
+  readonly isAuthor?: boolean;
 };
 
 export default function Users({ users, loading, isAuthor }: AuthorsProps) {

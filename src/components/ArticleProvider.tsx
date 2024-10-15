@@ -18,8 +18,8 @@ export const ArticleProvider = ({
   children,
   article,
 }: {
-  children: React.ReactNode;
-  article: Article;
+  readonly children: React.ReactNode;
+  readonly article: Article;
 }) => {
   const router = useRouter();
   if (!article) {

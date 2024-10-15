@@ -11,7 +11,7 @@ export interface TabProps {
 }
 
 type NavTabsProps = {
-  tabs: TabProps[];
+  readonly tabs: TabProps[];
 };
 
 const NavTabs: React.FC<NavTabsProps> = ({ tabs }) => {

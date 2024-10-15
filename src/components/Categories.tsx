@@ -18,9 +18,9 @@ import { AvatarImage } from '@/components/AvatarImage';
 import { Category, UserRole } from '@/types';
 
 type CategoriesProps = {
-  categories: Category[];
-  loading: boolean;
-  lang: string;
+  readonly categories: Category[];
+  readonly loading: boolean;
+  readonly lang: string;
 };
 
 export default function Categories({
