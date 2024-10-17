@@ -10,7 +10,7 @@ import { Article } from '@/types';
 
 type LayoutProps = {
   readonly children: ReactNode;
-  readonly params: { id: number };
+  readonly params: { id: number; lng: string };
 };
 
 async function fetchArticleById(id: number): Promise<Article> {
@@ -44,12 +44,14 @@ export async function generateMetadata(
   };
 }
 
-export default async function Layout({ children, params }: LayoutProps) {
-  const articleId = params.id;
-  const article = await fetchArticleById(articleId);
+export default async function Layout({
+  children,
+  params: { id, lng },
+}: LayoutProps) {
+  const article = await fetchArticleById(id);
   return (
     <ArticleProvider article={article}>
-      <BreadcrumbsComponent title={article.title} />
+      <BreadcrumbsComponent title={article.title} lang={lng} depth={3} />
       {children}
     </ArticleProvider>
   );

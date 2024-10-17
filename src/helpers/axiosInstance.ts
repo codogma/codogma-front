@@ -8,13 +8,11 @@ export const axiosInstance = axios.create({
   headers: {
     'Content-Type': 'application/json',
   },
-  withCredentials: true, // Включение поддержки куки
+  withCredentials: true,
 });
 
-// Обработка запросов
 axiosInstance.interceptors.request.use(
   (config) => {
-    // Добавление логики перед запросом, если необходимо
     return config;
   },
   (error) => {
@@ -23,7 +21,6 @@ axiosInstance.interceptors.request.use(
   },
 );
 
-// Обработка ответов
 axiosInstance.interceptors.response.use(
   (response) => {
     return response;

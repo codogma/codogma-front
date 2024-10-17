@@ -9,13 +9,13 @@ const nextConfig = {
   redirects: async () => {
     return [
       {
-        source: '/categories/:id',
-        destination: '/categories/:id/articles',
+        source: '/:lng/categories/:id',
+        destination: '/:lng/categories/:id/articles',
         permanent: true,
       },
       {
-        source: '/users/:username',
-        destination: '/users/:username/profile',
+        source: '/:lng/users/:username',
+        destination: '/:lng/users/:username/profile',
         permanent: true,
       },
     ];

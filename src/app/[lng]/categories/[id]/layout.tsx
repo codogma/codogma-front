@@ -4,13 +4,12 @@ import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import IconButton from '@mui/material/IconButton';
 import { useQuery } from '@tanstack/react-query';
-import { useRouter } from 'next/navigation';
 import React from 'react';
 
 import { AvatarImage } from '@/components/AvatarImage';
+import { BreadcrumbsComponent } from '@/components/BreadcrumbsComponent';
 import NavTabs, { TabProps } from '@/components/NavTabs';
 import { getCategoryById } from '@/helpers/categoryApi';
-import { devConsoleError } from '@/helpers/devConsoleLog';
 import { Category } from '@/types';
 
 type PageParams = {
@@ -24,27 +23,15 @@ type PageProps = {
 };
 
 export default function Layout({ params: { id, lng }, children }: PageProps) {
-  const router = useRouter();
-  // const [category, setCategory] = useState<Category>({} as Category);
-
   const tabs: TabProps[] = [
     { label: 'Articles', href: `/${lng}/categories/${id}/articles` },
     { label: 'Users', href: `/${lng}/categories/${id}/authors` },
   ];
 
-  const {
-    data: category,
-    isError,
-    error,
-  } = useQuery<Category>({
+  const { data: category } = useQuery<Category>({
     queryKey: ['category', id],
     queryFn: () => getCategoryById(id),
   });
-
-  if (isError) {
-    devConsoleError('Error fetching data:', error);
-    router.push('/');
-  }
 
   return (
     <section>
@@ -76,6 +63,7 @@ export default function Layout({ params: { id, lng }, children }: PageProps) {
           </div>
         </CardContent>
       </Card>
+      <BreadcrumbsComponent title={category?.name} lang={lng} depth={3} />
       <NavTabs tabs={tabs} />
       {children}
     </section>

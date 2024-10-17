@@ -50,17 +50,14 @@ export const logout = async (): Promise<void> => {
 
 export const currentUser = async (): Promise<User | null> => {
   const response = await axiosInstance.get('/auth/current-user');
-  if (response.data) {
-    const user: User = response.data;
+  const user: User = response.data;
+  if (user) {
     Cookies.set('user', JSON.stringify(user), {
       secure: true,
       sameSite: 'strict',
     });
-    window.dispatchEvent(new Event('storage'));
-    return user;
   }
-  window.dispatchEvent(new Event('storage'));
-  return null;
+  return user;
 };
 
 export const refreshToken = async (): Promise<void> => {

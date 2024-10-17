@@ -3,40 +3,39 @@ import { Breadcrumbs, Typography } from '@mui/material';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
-import { languages } from '@/constants/i18n';
-import { Language } from '@/types';
+import { useTranslation } from '@/app/i18n/client';
 
 interface BreadcrumbsComponentProps {
-  readonly title: string;
+  readonly title?: string;
+  readonly lang: string;
+  readonly depth: number;
 }
 
-const segmentNames: Record<string, string> = {
-  articles: 'Articles',
-  categories: 'Categories',
-};
-
-export const BreadcrumbsComponent = ({ title }: BreadcrumbsComponentProps) => {
+export const BreadcrumbsComponent = ({
+  title,
+  lang,
+  depth,
+}: BreadcrumbsComponentProps) => {
   const pathname = usePathname();
+  const { t } = useTranslation(lang);
   const pathSegments = pathname
     .split('/')
-    .filter((segment) => segment && !languages.includes(segment as Language));
+    .slice(2, depth)
+    .filter((segment) => segment);
 
+  if (title) pathSegments.push(title);
   return (
     <Breadcrumbs aria-label='breadcrumb' className='breadcrumb'>
       {pathSegments.map((segment, index) => {
-        const href = '/' + pathSegments.slice(0, index + 1).join('/');
+        const href = `/${lang}/${segment}/`;
         const isLastSegment = index === pathSegments.length - 1;
-        const displayName = isLastSegment
-          ? title
-          : segmentNames[segment] || segment;
-
         return isLastSegment ? (
           <Typography key={href} className='breadcrumb-last-item'>
-            {displayName}
+            {t(segment)}
           </Typography>
         ) : (
           <Link key={href} href={href} className='breadcrumb-item'>
-            {displayName}
+            {t(segment)}
           </Link>
         );
       })}
