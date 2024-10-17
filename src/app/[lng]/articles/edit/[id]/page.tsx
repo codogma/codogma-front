@@ -1,6 +1,6 @@
 'use client';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Box, Button, Chip, TextField } from '@mui/material';
+import { Box, Button, Chip, MenuItem, TextField } from '@mui/material';
 import Autocomplete from '@mui/material/Autocomplete';
 import Typography from '@mui/material/Typography';
 import Link from 'next/link';
@@ -18,6 +18,7 @@ import { useAuth } from '@/components/AuthProvider';
 import FormInput from '@/components/FormInput';
 import { TinyMCEEditor } from '@/components/TinyMCEEditor';
 import { WithAuth } from '@/components/WithAuth';
+import { languageMenuItems } from '@/constants/i18n';
 import {
   deleteArticle,
   getArticleById,
@@ -27,7 +28,7 @@ import {
 import { getCategories } from '@/helpers/categoryApi';
 import { devConsoleError } from '@/helpers/devConsoleLog';
 import { getTagsByName } from '@/helpers/tagApi';
-import { Article, Category, Tag } from '@/types';
+import { Article, Category, Language, Tag } from '@/types';
 
 const ArticleScheme = z.object({
   categoryIds: z.array(z.number()),
@@ -38,6 +39,7 @@ const ArticleScheme = z.object({
   content: z.string(),
   previewContent: z.string(),
   tags: z.array(z.string()).optional(),
+  language: z.nativeEnum(Language).optional(),
 });
 
 type PageParams = {
@@ -65,6 +67,7 @@ const Page = ({ params }: PageProps) => {
       content: '',
       tags: [],
       previewContent: '',
+      language: Language.EN,
     },
   });
 
@@ -119,7 +122,7 @@ const Page = ({ params }: PageProps) => {
     reset,
     handleSubmit,
     control,
-    formState: { isSubmitSuccessful },
+    formState: { isSubmitSuccessful, errors },
   } = zodForm;
 
   useEffect(() => {
@@ -127,10 +130,13 @@ const Page = ({ params }: PageProps) => {
     if (isSubmitSuccessful) {
       reset(zodForm.getValues());
     }
-  }, [isSubmitSuccessful, reset, zodForm]);
+  }, [isSubmitSuccessful, reset, errors, zodForm]);
 
   const onSubmit: SubmitHandler<z.infer<typeof ArticleScheme>> = (formData) => {
-    const requestData: UpdateArticleDTO = { ...formData };
+    const requestData: UpdateArticleDTO = {
+      ...formData,
+      language: formData.language?.toUpperCase(),
+    };
     devConsoleError(requestData);
     updateArticle(articleId, requestData).then(() =>
       router.push(`/articles/${articleId}`),
@@ -183,6 +189,27 @@ const Page = ({ params }: PageProps) => {
                   />
                 )}
               />
+            )}
+          />
+          <Controller
+            name='language'
+            control={control}
+            render={({ field }) => (
+              <TextField
+                select
+                label='Language'
+                variant='standard'
+                value={field.value}
+                onChange={field.onChange}
+                error={Boolean(errors.language?.message)}
+                helperText={errors.language?.message}
+              >
+                {languageMenuItems.map(({ value, label }) => (
+                  <MenuItem key={value} value={value}>
+                    {label}
+                  </MenuItem>
+                ))}
+              </TextField>
             )}
           />
           <Controller

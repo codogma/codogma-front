@@ -4,6 +4,7 @@ import CardContent from '@mui/material/CardContent';
 import Typography from '@mui/material/Typography';
 import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
+import { z } from 'zod';
 
 import { useAuth } from '@/components/AuthProvider';
 import { createComment, updateComment } from '@/helpers/commentAPI';
@@ -16,6 +17,17 @@ interface CommentFormProps {
   readonly onCommentAdded: () => void;
   readonly onCancelEdit?: () => void;
 }
+
+const CommentFormScheme = z.object({
+  articleId: z.number(),
+  parentCommentId: z.optional(z.number()),
+  content: z.array(
+    z
+      .string()
+      .min(10, 'Текст комментариев не может содержать менее 10 символов.')
+      .max(1000, 'Текст комментариев не может содержать более 1000 символов.'),
+  ),
+});
 
 export const CommentForm: React.FC<CommentFormProps> = ({
   articleId,

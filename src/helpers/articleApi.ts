@@ -13,6 +13,7 @@ export type CreateArticleDTO = {
 
 export type UpdateArticleDTO = {
   title: string;
+  language?: string;
   previewContent: string;
   content: string;
   categoryIds: number[];
