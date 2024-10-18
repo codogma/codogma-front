@@ -13,6 +13,7 @@ import { useArticle } from '@/components/ArticleProvider';
 import { useAuth } from '@/components/AuthProvider';
 import { AvatarImage } from '@/components/AvatarImage';
 // import { CommentList } from '@/components/CommentList';
+import { CommentList } from '@/components/CommentList';
 import { useContentImageContext } from '@/components/ContentImageProvider';
 import { TimeAgo } from '@/components/TimeAgo';
 import { UserRole } from '@/types';
@@ -108,7 +109,7 @@ export default function Page({ params: { lng } }: PageProps) {
         </CardContent>
       </Card>
       <Typography component='div'>{t('comments')}:</Typography>
-      {/*<CommentList articleId={article.id} lang={lng} />*/}
+      <CommentList articleId={article.id} lang={lng} />
     </>
   );
 }

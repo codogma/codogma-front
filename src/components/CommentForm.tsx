@@ -1,13 +1,16 @@
+import { zodResolver } from '@hookform/resolvers/zod';
 import { Box, Button, Link, TextField } from '@mui/material';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import Typography from '@mui/material/Typography';
 import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
+import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
 import { useAuth } from '@/components/AuthProvider';
 import { createComment, updateComment } from '@/helpers/commentAPI';
+import { devConsoleError } from '@/helpers/devConsoleLog';
 import { CreateComment, GetComment, UpdateComment, UserRole } from '@/types';
 
 interface CommentFormProps {
@@ -21,12 +24,10 @@ interface CommentFormProps {
 const CommentFormScheme = z.object({
   articleId: z.number(),
   parentCommentId: z.optional(z.number()),
-  content: z.array(
-    z
-      .string()
-      .min(10, 'Текст комментариев не может содержать менее 10 символов.')
-      .max(1000, 'Текст комментариев не может содержать более 1000 символов.'),
-  ),
+  content: z
+    .string()
+    .min(10, 'Текст комментариев не может содержать менее 10 символов.')
+    .max(1000, 'Текст комментариев не может содержать более 1000 символов.'),
 });
 
 export const CommentForm: React.FC<CommentFormProps> = ({
@@ -40,11 +41,40 @@ export const CommentForm: React.FC<CommentFormProps> = ({
   const { state } = useAuth();
   const router = useRouter();
 
+  const zodForm = useForm<z.infer<typeof CommentFormScheme>>({
+    resolver: zodResolver(CommentFormScheme),
+    defaultValues: {
+      articleId,
+      parentCommentId,
+      content: '',
+    },
+  });
+
+  const {
+    reset,
+    formState: { isSubmitSuccessful, errors },
+  } = zodForm;
+
+  useEffect(() => {
+    devConsoleError(errors);
+    if (isSubmitSuccessful) {
+      reset(zodForm.getValues());
+    }
+  }, [isSubmitSuccessful, reset, errors, zodForm]);
+
   useEffect(() => {
     if (comment) {
       setContent(comment.content);
     }
   }, [comment]);
+
+  // const onSubmit: SubmitHandler<z.infer<typeof CommentFormScheme>> = (
+  //   formData,
+  // ) => {
+  //   const requestData = { ...formData };
+  //   devConsoleError(requestData);
+  //   createComment(requestData);
+  // };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
