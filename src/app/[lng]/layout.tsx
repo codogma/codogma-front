@@ -15,6 +15,7 @@ import { AuthProvider } from '@/components/AuthProvider';
 import { ContentImageProvider } from '@/components/ContentImageProvider';
 import Footer from '@/components/Footer';
 import NavBar from '@/components/NavBar';
+import { NavPanel } from '@/components/NavPanel';
 import NavTabs, { TabProps } from '@/components/NavTabs';
 import { ReactQueryProvider } from '@/components/ReactQueryProvider';
 import { Spinner } from '@/components/Spinner';
@@ -87,11 +88,16 @@ export default async function RootLayout({
                   <CssBaseline />
                   <Box className='flex min-h-screen flex-col'>
                     <NavBar lang={lng} />
-                    <Container maxWidth='lg' className='relative flex-auto'>
-                      <NavTabs tabs={tabs} />
-                      <Suspense fallback={<Spinner />}>
-                        <ContentImageProvider>{children}</ContentImageProvider>
-                      </Suspense>
+                    <Container maxWidth='xl' className='flex'>
+                      <NavPanel />
+                      <main className='grow px-3'>
+                        <NavTabs tabs={tabs} />
+                        <Suspense fallback={<Spinner />}>
+                          <ContentImageProvider>
+                            {children}
+                          </ContentImageProvider>
+                        </Suspense>
+                      </main>
                     </Container>
                     <Footer />
                   </Box>

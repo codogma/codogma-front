@@ -59,7 +59,7 @@ const NavBar = ({ lang }: NavBarProps) => {
 
   return (
     <AppBar className='nav-app-bar'>
-      <Container maxWidth='lg'>
+      <Container maxWidth='xl'>
         <Toolbar
           disableGutters
           sx={{

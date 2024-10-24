@@ -14,7 +14,7 @@ type FooterProps = {
 function Footer({ title }: FooterProps) {
   return (
     <Box className='bg-limed-spruce py-6 text-white dark:bg-woodsmoke'>
-      <Container maxWidth='lg'>
+      <Container maxWidth='xl'>
         <Grid container spacing={4}>
           <Grid size={{ xs: 12, sm: 3 }}>
             <Typography variant='h6' gutterBottom>
