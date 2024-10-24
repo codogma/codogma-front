@@ -12,6 +12,7 @@ import React, { ReactNode, Suspense } from 'react';
 
 import { initTranslation } from '@/app/i18n';
 import { AuthProvider } from '@/components/AuthProvider';
+import ButtomNavigation from '@/components/BottomNavigation';
 import { ContentImageProvider } from '@/components/ContentImageProvider';
 import Footer from '@/components/Footer';
 import NavBar from '@/components/NavBar';
@@ -100,6 +101,7 @@ export default async function RootLayout({
                       </main>
                     </Container>
                     <Footer />
+                    <ButtomNavigation />
                   </Box>
                 </AuthProvider>
               </ReactQueryProvider>

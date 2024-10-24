@@ -1,6 +1,6 @@
 'use client';
-import MailIcon from '@mui/icons-material/Mail';
-import InboxIcon from '@mui/icons-material/MoveToInbox';
+import ArticleIcon from '@mui/icons-material/Article';
+import CategoryIcon from '@mui/icons-material/Category';
 import { useMediaQuery } from '@mui/material';
 import Box from '@mui/material/Box';
 import Drawer from '@mui/material/Drawer';
@@ -10,6 +10,8 @@ import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import { useTheme } from '@mui/material/styles';
+import Tooltip from '@mui/material/Tooltip';
+import Link from 'next/link';
 
 export const NavPanel = () => {
   const theme = useTheme();
@@ -39,7 +41,7 @@ export const NavPanel = () => {
         open
       >
         <List>
-          {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
+          {['Articles', 'Categories'].map((text, index) => (
             <ListItem key={text} disablePadding sx={{ display: 'block' }}>
               <ListItemButton
                 sx={[
@@ -71,7 +73,19 @@ export const NavPanel = () => {
                         },
                   ]}
                 >
-                  {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
+                  {index % 2 === 0 ? (
+                    <Tooltip title={'Articles'}>
+                      <Link href={`/articles`}>
+                        <ArticleIcon />
+                      </Link>
+                    </Tooltip>
+                  ) : (
+                    <Tooltip title={'Categories'}>
+                      <Link href={`/categories`}>
+                        <CategoryIcon />
+                      </Link>
+                    </Tooltip>
+                  )}
                 </ListItemIcon>
                 <ListItemText
                   primary={text}
