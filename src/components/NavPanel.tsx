@@ -10,7 +10,6 @@ import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import { useTheme } from '@mui/material/styles';
-import Tooltip from '@mui/material/Tooltip';
 import Link from 'next/link';
 
 export const NavPanel = () => {
@@ -74,17 +73,13 @@ export const NavPanel = () => {
                   ]}
                 >
                   {index % 2 === 0 ? (
-                    <Tooltip title={'Articles'}>
-                      <Link href={`/articles`}>
-                        <ArticleIcon />
-                      </Link>
-                    </Tooltip>
+                    <Link href={`/articles`}>
+                      <ArticleIcon />
+                    </Link>
                   ) : (
-                    <Tooltip title={'Categories'}>
-                      <Link href={`/categories`}>
-                        <CategoryIcon />
-                      </Link>
-                    </Tooltip>
+                    <Link href={`/categories`}>
+                      <CategoryIcon />
+                    </Link>
                   )}
                 </ListItemIcon>
                 <ListItemText
