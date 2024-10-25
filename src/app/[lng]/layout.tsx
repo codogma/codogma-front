@@ -12,7 +12,8 @@ import React, { ReactNode, Suspense } from 'react';
 
 import { initTranslation } from '@/app/i18n';
 import { AuthProvider } from '@/components/AuthProvider';
-import ButtomNavigation from '@/components/BottomNavigation';
+import BottomNavigation from '@/components/BottomNavigation';
+import ButtonBackToTop from '@/components/ButtonBackToTop';
 import { ContentImageProvider } from '@/components/ContentImageProvider';
 import Footer from '@/components/Footer';
 import NavBar from '@/components/NavBar';
@@ -91,17 +92,19 @@ export default async function RootLayout({
                     <NavBar lang={lng} />
                     <Container maxWidth='xl' className='flex'>
                       <NavPanel />
-                      <main className='grow px-3'>
-                        <NavTabs tabs={tabs} />
-                        <Suspense fallback={<Spinner />}>
-                          <ContentImageProvider>
-                            {children}
-                          </ContentImageProvider>
-                        </Suspense>
-                      </main>
+                      <ButtonBackToTop>
+                        <main className='grow px-3'>
+                          <NavTabs tabs={tabs} />
+                          <Suspense fallback={<Spinner />}>
+                            <ContentImageProvider>
+                              {children}
+                            </ContentImageProvider>
+                          </Suspense>
+                        </main>
+                      </ButtonBackToTop>
                     </Container>
                     <Footer />
-                    <ButtomNavigation />
+                    <BottomNavigation />
                   </Box>
                 </AuthProvider>
               </ReactQueryProvider>
