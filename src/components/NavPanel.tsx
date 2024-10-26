@@ -1,21 +1,46 @@
 'use client';
 import ArticleIcon from '@mui/icons-material/Article';
 import CategoryIcon from '@mui/icons-material/Category';
-import { useMediaQuery } from '@mui/material';
+import { ListItemText, useMediaQuery } from '@mui/material';
 import Box from '@mui/material/Box';
 import Drawer from '@mui/material/Drawer';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
-import ListItemText from '@mui/material/ListItemText';
 import { useTheme } from '@mui/material/styles';
+import Tooltip from '@mui/material/Tooltip';
 import Link from 'next/link';
 
 export const NavPanel = () => {
   const theme = useTheme();
   const isMin = useMediaQuery(theme.breakpoints.down('lg'));
+  const isMediumOrSmall = useMediaQuery(theme.breakpoints.down('md'));
   const drawerWidth = isMin ? `calc(${theme.spacing(7)} + 1px)` : 200;
+
+  const articleLink = isMediumOrSmall ? (
+    <Tooltip title='Articles' placement='right'>
+      <Link href={`/articles`}>
+        <ArticleIcon />
+      </Link>
+    </Tooltip>
+  ) : (
+    <Link href={`/articles`}>
+      <ArticleIcon />
+    </Link>
+  );
+
+  const categoryLink = isMediumOrSmall ? (
+    <Tooltip title='Categories' placement='right'>
+      <Link href={`/categories`}>
+        <CategoryIcon />
+      </Link>
+    </Tooltip>
+  ) : (
+    <Link href={`/categories`}>
+      <CategoryIcon />
+    </Link>
+  );
 
   return (
     <Box
@@ -72,15 +97,7 @@ export const NavPanel = () => {
                         },
                   ]}
                 >
-                  {index % 2 === 0 ? (
-                    <Link href={`/articles`}>
-                      <ArticleIcon />
-                    </Link>
-                  ) : (
-                    <Link href={`/categories`}>
-                      <CategoryIcon />
-                    </Link>
-                  )}
+                  {index % 2 === 0 ? articleLink : categoryLink}
                 </ListItemIcon>
                 <ListItemText
                   primary={text}
