@@ -67,51 +67,53 @@ export const NavPanel = () => {
         <List>
           {['Articles', 'Categories'].map((text, index) => (
             <ListItem key={text} disablePadding sx={{ display: 'block' }}>
-              <ListItemButton
-                sx={[
-                  {
-                    minHeight: 48,
-                    px: 2.5,
-                  },
-                  !isMin
-                    ? {
-                        justifyContent: 'initial',
-                      }
-                    : {
-                        justifyContent: 'center',
-                      },
-                ]}
-              >
-                <ListItemIcon
+              <Link href={index % 2 === 0 ? '/articles' : '/categories'}>
+                <ListItemButton
                   sx={[
                     {
-                      minWidth: 0,
-                      justifyContent: 'center',
+                      minHeight: 48,
+                      px: 2.5,
                     },
                     !isMin
                       ? {
-                          mr: 3,
+                          justifyContent: 'initial',
                         }
                       : {
-                          mr: 'auto',
+                          justifyContent: 'center',
                         },
                   ]}
                 >
-                  {index % 2 === 0 ? articleLink : categoryLink}
-                </ListItemIcon>
-                <ListItemText
-                  primary={text}
-                  sx={[
-                    !isMin
-                      ? {
-                          opacity: 1,
-                        }
-                      : {
-                          opacity: 0,
-                        },
-                  ]}
-                />
-              </ListItemButton>
+                  <ListItemIcon
+                    sx={[
+                      {
+                        minWidth: 0,
+                        justifyContent: 'center',
+                      },
+                      !isMin
+                        ? {
+                            mr: 3,
+                          }
+                        : {
+                            mr: 'auto',
+                          },
+                    ]}
+                  >
+                    {index % 2 === 0 ? articleLink : categoryLink}
+                  </ListItemIcon>
+                  <ListItemText
+                    primary={text}
+                    sx={[
+                      !isMin
+                        ? {
+                            opacity: 1,
+                          }
+                        : {
+                            opacity: 0,
+                          },
+                    ]}
+                  />
+                </ListItemButton>
+              </Link>
             </ListItem>
           ))}
         </List>
