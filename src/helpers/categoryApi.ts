@@ -40,8 +40,15 @@ export const getCategories = async (): Promise<Category[]> => {
   return response.data;
 };
 
-export const getCategoryById = async (id: number): Promise<Category> => {
-  const response = await axiosInstance.get(`/categories/${id}`);
+export const getCategoryById = async (
+  id: number,
+  lang?: string,
+): Promise<Category> => {
+  const response = await axiosInstance.get(`/categories/${id}`, {
+    headers: {
+      Cookie: `intl=${lang}`,
+    },
+  });
   return response.data;
 };
 

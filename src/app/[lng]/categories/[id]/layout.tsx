@@ -7,7 +7,6 @@ import { useQuery } from '@tanstack/react-query';
 import React from 'react';
 
 import { AvatarImage } from '@/components/AvatarImage';
-import { BreadcrumbsComponent } from '@/components/BreadcrumbsComponent';
 import NavTabs, { TabProps } from '@/components/NavTabs';
 import { getCategoryById } from '@/helpers/categoryApi';
 import { Category } from '@/types';
@@ -63,7 +62,6 @@ export default function Layout({ params: { id, lng }, children }: PageProps) {
           </div>
         </CardContent>
       </Card>
-      <BreadcrumbsComponent title={category?.name} lang={lng} depth={3} />
       <NavTabs tabs={tabs} />
       {children}
     </section>

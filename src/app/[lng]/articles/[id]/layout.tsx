@@ -3,7 +3,6 @@ import { Metadata, ResolvingMetadata } from 'next';
 import { ReactNode } from 'react';
 
 import { ArticleProvider } from '@/components/ArticleProvider';
-import { BreadcrumbsComponent } from '@/components/BreadcrumbsComponent';
 import { getArticleById } from '@/helpers/articleApi';
 import { convertHtmlToText } from '@/helpers/convertHtmlToText';
 import { Article } from '@/types';
@@ -18,18 +17,17 @@ async function fetchArticleById(id: number): Promise<Article> {
 }
 
 export async function generateMetadata(
-  { params }: LayoutProps,
+  { params: { id } }: LayoutProps,
   parent: ResolvingMetadata,
 ): Promise<Metadata> {
-  const articleId = params.id;
-  const article = await fetchArticleById(articleId);
+  const article = await fetchArticleById(id);
   const metadataBase = (await parent).metadataBase;
   return {
     alternates: {
-      canonical: `/articles/${articleId}`,
+      canonical: `/articles/${id}`,
       languages: {
-        en: `/en/articles/${articleId}`,
-        ru: `/ru/articles/${articleId}`,
+        en: `/en/articles/${id}`,
+        ru: `/ru/articles/${id}`,
       },
     },
     title: article.title,
@@ -46,13 +44,8 @@ export async function generateMetadata(
 
 export default async function Layout({
   children,
-  params: { id, lng },
+  params: { id },
 }: LayoutProps) {
   const article = await fetchArticleById(id);
-  return (
-    <ArticleProvider article={article}>
-      <BreadcrumbsComponent title={article.title} lang={lng} depth={3} />
-      {children}
-    </ArticleProvider>
-  );
+  return <ArticleProvider article={article}>{children}</ArticleProvider>;
 }
