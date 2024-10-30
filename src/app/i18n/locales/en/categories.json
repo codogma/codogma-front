@@ -1,5 +1,5 @@
 {
-  "categoriesDescription": "Categories CODOGMA",
-  "ArticlesInCategory": "Articles in category",
-  "AuthorsInCategory": "Authors in category"
+  "categoriesDescription": "List of categories",
+  "articlesInCategory": "Articles in category",
+  "authorsInCategory": "Authors in category"
 }

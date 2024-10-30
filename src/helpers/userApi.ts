@@ -47,8 +47,15 @@ export const getAuthors = async (categoryId?: number): Promise<User[]> => {
   return response.data;
 };
 
-export const getUserByUsername = async (username?: string): Promise<User> => {
-  const response = await axiosInstance.get(`/users/${username}`);
+export const getUserByUsername = async (
+  username?: string,
+  lang?: string,
+): Promise<User> => {
+  const response = await axiosInstance.get(`/users/${username}`, {
+    headers: {
+      Cookie: `intl=${lang}`,
+    },
+  });
   return response.data;
 };
 

@@ -17,15 +17,15 @@ export async function generateMetadata({
   const { t } = await initTranslation(lng, 'categories');
   return {
     alternates: {
-      canonical: `/categories/${id}`,
+      canonical: `/categories/${id}/articles`,
       languages: {
-        en: `/en/categories/${id}`,
-        ru: `/ru/categories/${id}`,
+        en: `/en/categories/${id}/articles`,
+        ru: `/ru/categories/${id}/articles`,
       },
     },
     title: {
       template: '%s | CODOGMA',
-      default: t('ArticlesInCategory') + ' ' + category.name,
+      default: t('articlesInCategory') + ' ' + category.name,
     },
     description: category.description,
     keywords: category.tags.map((tag) => tag.name),

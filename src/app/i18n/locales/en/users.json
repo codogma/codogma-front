@@ -1,4 +1,10 @@
 {
+  "articlesByUser": "Articles by author",
+  "profileByUser": "Profile by author",
+  "commentsByUser": "Comments by author",
+  "subscribersByUser": "Subscribers by author",
+  "subscriptionsByUser": "Subscriptions by user",
+  "usersDescription": "Users CODOGMA",
   "followBtn": "Follow",
   "followingBtn": "Following"
 }

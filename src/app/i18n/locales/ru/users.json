@@ -1,4 +1,10 @@
 {
+  "articlesByUser": "Статьи автора",
+  "profileByUser": "Профиль автора",
+  "commentsByUser": "Комментарии автора",
+  "subscribersByUser": "Подписчики автора",
+  "subscriptionsByUser": "Подписки автора",
+  "usersDescription": "Пользователи CODOGMA",
   "followBtn": "Подписаться",
   "followingBtn": "Отписаться"
 }
