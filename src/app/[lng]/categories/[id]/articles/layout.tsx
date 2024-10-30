@@ -2,6 +2,7 @@
 import { Metadata } from 'next';
 import { ReactNode } from 'react';
 
+import { initTranslation } from '@/app/i18n';
 import { getCategoryById } from '@/helpers/categoryApi';
 
 type LayoutProps = {
@@ -13,6 +14,7 @@ export async function generateMetadata({
   params: { id, lng },
 }: LayoutProps): Promise<Metadata> {
   const category = await getCategoryById(id, lng);
+  const { t } = await initTranslation(lng, 'categories');
   return {
     alternates: {
       canonical: `/categories/${id}`,
@@ -23,7 +25,7 @@ export async function generateMetadata({
     },
     title: {
       template: '%s | CODOGMA',
-      default: `Articles in category ${category.name}`,
+      default: t('ArticlesInCategory') + ' ' + category.name,
     },
     description: category.description,
     keywords: category.tags.map((tag) => tag.name),
