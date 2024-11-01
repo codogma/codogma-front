@@ -1,4 +1,15 @@
 {
   "signUp": "Зарегистрироваться",
-  "signUpDescription": "Зарегистрироваться CODOGMA"
+  "signUpDescription": "Зарегистрироваться CODOGMA",
+  "createAccount": "Создайте аккаунт",
+  "username": "Имя пользователя",
+  "email": "Почта",
+  "password": "Пароль",
+  "signUpBtn": "Зарегистрироваться",
+  "signInBtn": "Войти",
+  "signingUpBtn": "Регистрация...",
+  "alreadyAccount": "У вас уже есть аккаунт?",
+  "or": "или",
+  "githubBtn": "Войти через GitHub",
+  "gitlabBtn": "Войти через GitLab"
 }

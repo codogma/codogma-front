@@ -1,5 +1,16 @@
 {
   "signUp": "Sign up",
-  "signUpDescription": "Sign up CODOGMA"
+  "signUpDescription": "Sign up CODOGMA",
+  "createAccount": "Create an account",
+  "username": "Username",
+  "email": "Email",
+  "password": "Password",
+  "signUpBtn": "Sign up",
+  "signInBtn": "Sign in",
+  "signingUpBtn": "Signing up...",
+  "alreadyAccount": "Already have an account?",
+  "or": "or",
+  "githubBtn": "Sign in with GitHub",
+  "gitlabBtn": "Sign in with GitLab"
 }
 

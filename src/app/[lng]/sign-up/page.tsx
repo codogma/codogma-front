@@ -16,6 +16,7 @@ import React, { useEffect, useState } from 'react';
 import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
 import { z } from 'zod';
 
+import { useTranslation } from '@/app/i18n/client';
 import { GithubIcon, GitlabIcon } from '@/components/CustomIcons';
 import FormInput from '@/components/FormInput';
 import { signUp } from '@/helpers/authApi';
@@ -40,6 +41,7 @@ type PageProps = {
 export default function Page({ params: { lng } }: PageProps) {
   const router = useRouter();
   const [serverError, setServerError] = useState('');
+  const { t } = useTranslation(lng, 'signUp');
 
   const zodForm = useForm<z.infer<typeof SignUpScheme>>({
     resolver: zodResolver(SignUpScheme),
@@ -108,7 +110,7 @@ export default function Page({ params: { lng } }: PageProps) {
               fontSize: 'clamp(1.25rem, 10vw, 1.5rem)',
             }}
           >
-            Create an account
+            {t('createAccount')}
           </Typography>
           <FormProvider {...zodForm}>
             <Box
@@ -119,7 +121,7 @@ export default function Page({ params: { lng } }: PageProps) {
               <FormInput
                 id='username'
                 name='username'
-                label='Username'
+                label={t('username')}
                 fullWidth
                 variant='standard'
                 autoComplete='off'
@@ -127,7 +129,7 @@ export default function Page({ params: { lng } }: PageProps) {
               <FormInput
                 id='email'
                 name='email'
-                label='Email'
+                label={t('email')}
                 fullWidth
                 variant='standard'
                 autoComplete='off'
@@ -135,7 +137,7 @@ export default function Page({ params: { lng } }: PageProps) {
               <FormInput
                 id='password'
                 name='password'
-                label='Password'
+                label={t('password')}
                 fullWidth
                 type='password'
                 variant='standard'
@@ -152,18 +154,18 @@ export default function Page({ params: { lng } }: PageProps) {
                 variant='contained'
                 disabled={isSubmitSuccessful}
               >
-                {isSubmitSuccessful ? 'Signing up...' : 'Sign up'}
+                {isSubmitSuccessful ? t('signingUpBtn') : t('signUpBtn')}
               </Button>
               <Typography sx={{ textAlign: 'center' }}>
-                Already have an account?{' '}
+                {t('alreadyAccount')}{' '}
                 <span>
-                  <Link href='/sign-in'>Sign in</Link>
+                  <Link href='/sign-in'>{t('signInBtn')}</Link>
                 </span>
               </Typography>
             </Box>
           </FormProvider>
           <Divider>
-            <Typography sx={{ color: 'text.secondary' }}>or</Typography>
+            <Typography sx={{ color: 'text.secondary' }}>{t('or')}</Typography>
           </Divider>
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
             <Button
@@ -172,7 +174,7 @@ export default function Page({ params: { lng } }: PageProps) {
               onClick={() => handleOAuth2Redirect('github')}
               startIcon={<GithubIcon />}
             >
-              Sign up with Github
+              {t('githubBtn')}
             </Button>
             <Button
               fullWidth
@@ -180,7 +182,7 @@ export default function Page({ params: { lng } }: PageProps) {
               onClick={() => handleOAuth2Redirect('gitlab')}
               startIcon={<GitlabIcon />}
             >
-              Sign up with Gitlab
+              {t('gitlabBtn')}
             </Button>
           </Box>
         </Card>
