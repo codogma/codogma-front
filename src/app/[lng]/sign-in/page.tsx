@@ -16,6 +16,7 @@ import { useEffect, useState } from 'react';
 import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
 import { z } from 'zod';
 
+import { useTranslation } from '@/app/i18n/client';
 import { useAuth } from '@/components/AuthProvider';
 import { GithubIcon, GitlabIcon } from '@/components/CustomIcons';
 import ForgotPassword from '@/components/ForgotPassword';
@@ -29,12 +30,21 @@ const SignInScheme = z.object({
     .min(6, { message: 'Password must be at least 6 characters long' }),
 });
 
+type PageParams = {
+  lng: string;
+};
+
+type PageProps = {
+  readonly params: PageParams;
+};
+
 export type OAuthProvider = 'github' | 'gitlab';
 
-export default function Page() {
+export default function Page({ params: { lng } }: PageProps) {
   const router = useRouter();
   const { dispatch } = useAuth();
   const [serverError, setServerError] = useState('');
+  const { t } = useTranslation(lng, 'signIn');
   const [open, setOpen] = useState(false);
 
   const handleClickOpen = () => {
@@ -107,7 +117,7 @@ export default function Page() {
               fontSize: 'clamp(1.25rem, 10vw, 1.5rem)',
             }}
           >
-            Sign in
+            {t('signIn')}
           </Typography>
           <FormProvider {...zodForm}>
             <Box
@@ -122,20 +132,20 @@ export default function Page() {
               <FormInput
                 id='usernameOrEmail'
                 name='usernameOrEmail'
-                label='Username/Email'
+                label={t('usernameOrEmail')}
                 fullWidth
                 variant='standard'
                 autoComplete='off'
               />
               <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
                 <Link href='#' onClick={handleClickOpen}>
-                  Forgot your password?
+                  {t('forgotPassword')}
                 </Link>
               </Box>
               <FormInput
                 id='password'
                 name='password'
-                label='Password'
+                label={t('password')}
                 fullWidth
                 type='password'
                 variant='standard'
@@ -143,7 +153,7 @@ export default function Page() {
               />
               <FormControlLabel
                 control={<Checkbox value='remember' color='primary' />}
-                label='Remember me'
+                label={t('rememberMe')}
               />
               <ForgotPassword open={open} handleClose={handleClose} />
               {serverError && (
@@ -157,17 +167,17 @@ export default function Page() {
                 variant='contained'
                 disabled={isSubmitSuccessful}
               >
-                {isSubmitSuccessful ? 'Signing in...' : 'Sign in'}
+                {isSubmitSuccessful ? t('signingInBtn') : t('signInBtn')}
               </Button>
               <Typography sx={{ textAlign: 'center' }}>
-                Don&apos;t have an account?{' '}
+                {t('haveAccount')}{' '}
                 <span>
-                  <Link href='/sign-up'>Sign up</Link>
+                  <Link href='/sign-up'>{t('signUpBtn')}</Link>
                 </span>
               </Typography>
             </Box>
           </FormProvider>
-          <Divider>or</Divider>
+          <Divider>{t('or')}</Divider>
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
             <Button
               type='submit'
@@ -176,7 +186,7 @@ export default function Page() {
               onClick={() => handleOAuth2Redirect('github')}
               startIcon={<GithubIcon />}
             >
-              Sign in with Github
+              {t('githubBtn')}
             </Button>
             <Button
               type='submit'
@@ -185,7 +195,7 @@ export default function Page() {
               onClick={() => handleOAuth2Redirect('gitlab')}
               startIcon={<GitlabIcon />}
             >
-              Sign in with Gitlab
+              {t('gitlabBtn')}
             </Button>
           </Box>
         </Card>

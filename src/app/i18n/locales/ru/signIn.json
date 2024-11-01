@@ -1,4 +1,15 @@
 {
   "signIn": "Войти",
-  "signInDescription": "Войти CODOGMA"
+  "signInDescription": "Войти CODOGMA",
+  "usernameOrEmail": "Имя пользователя или почта",
+  "password": "Пароль",
+  "rememberMe": "Запомнить меня",
+  "signInBtn": "Войти",
+  "signUpBtn": "Зарегистрироваться",
+  "signingInBtn": "Вход в систему...",
+  "forgotPassword": "Забыли пароль?",
+  "haveAccount": "У вас нет аккаунта?",
+  "or": "или",
+  "githubBtn": "Войти через GitHub",
+  "gitlabBtn": "Войти через GitLab"
 }

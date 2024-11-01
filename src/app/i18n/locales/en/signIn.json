@@ -1,4 +1,15 @@
 {
   "signIn": "Sign in",
-  "signInDescription": "Sign in CODOGMA"
+  "signInDescription": "Sign in CODOGMA",
+  "usernameOrEmail": "Username/Email",
+  "password": "Password",
+  "rememberMe": "Remember me",
+  "signInBtn": "Sign in",
+  "signingInBtn": "Signing in...",
+  "signUpBtn": "Sign up",
+  "forgotPassword": "Forgot your password?",
+  "haveAccount": "Don't have an account?",
+  "or": "or",
+  "githubBtn": "Sign in with GitHub",
+  "gitlabBtn": "Sign in with GitLab"
 }
