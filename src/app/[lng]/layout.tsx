@@ -91,7 +91,7 @@ export default async function RootLayout({
                   <Box className='flex min-h-screen flex-col'>
                     <NavBar lang={lng} />
                     <Container maxWidth='xl' className='flex'>
-                      <NavPanel />
+                      <NavPanel lang={lng} />
                       <ButtonBackToTop>
                         <main className='grow px-3'>
                           <NavTabs tabs={tabs} />
@@ -104,7 +104,7 @@ export default async function RootLayout({
                       </ButtonBackToTop>
                     </Container>
                     <Footer />
-                    <BottomNavigation />
+                    <BottomNavigation lang={lng} />
                   </Box>
                 </AuthProvider>
               </ReactQueryProvider>

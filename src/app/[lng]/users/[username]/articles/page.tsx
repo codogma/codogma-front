@@ -14,6 +14,7 @@ import TextField from '@mui/material/TextField';
 import DOMPurify from 'dompurify';
 import React, { FormEvent, useEffect, useState } from 'react';
 
+import { useTranslation } from '@/app/i18n/client';
 import Articles from '@/components/Articles';
 import { getArticles } from '@/helpers/articleApi';
 import { devConsoleError } from '@/helpers/devConsoleLog';
@@ -43,6 +44,7 @@ export default function Layout({ params: { lng, username } }: PageProps) {
   const [searchValue, setSearchValue] = useState<string>();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [searchType, setSearchType] = useState<'content' | 'tag'>('content');
+  const { t } = useTranslation(lng, 'articles');
 
   const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -148,12 +150,14 @@ export default function Layout({ params: { lng, username } }: PageProps) {
           onClose={() => handleMenuClose(searchType)}
         >
           <MenuItem onClick={() => handleMenuClose('content')}>
-            By content
+            {t(`searchContent`)}
           </MenuItem>
-          <MenuItem onClick={() => handleMenuClose('tag')}>By tag</MenuItem>
+          <MenuItem onClick={() => handleMenuClose('tag')}>
+            {t(`searchTags`)}
+          </MenuItem>
         </Menu>
         <TextField
-          label={`Search articles by ${searchType}`}
+          label={`${t('articlesSearchBy')}${t(searchType)}`}
           id='search-input'
           sx={{ ml: 1, flex: 1 }}
           size='small'

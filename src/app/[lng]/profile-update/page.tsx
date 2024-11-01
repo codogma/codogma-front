@@ -9,6 +9,7 @@ import React, { MouseEvent, useEffect, useState } from 'react';
 import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
 import { z } from 'zod';
 
+import { useTranslation } from '@/app/i18n/client';
 import { useAuth } from '@/components/AuthProvider';
 import { AvatarImage } from '@/components/AvatarImage';
 import FormInput from '@/components/FormInput';
@@ -57,12 +58,17 @@ const VisuallyHiddenInput = styled('input')({
   width: 1,
 });
 
-function Users() {
+type UsersProps = {
+  readonly lang: string;
+};
+
+function Users({ lang }: UsersProps) {
   const { state } = useAuth();
   const username: string | undefined = state.user?.username;
   const [user, setUser] = useState<User>();
   const [avatarFile, setAvatarFile] = useState<File>();
   const [users, setUsers] = useState<User[]>([]);
+  const { t } = useTranslation(lang);
 
   const zodForm = useForm<z.infer<typeof UserScheme>>({
     resolver: zodResolver(UserScheme),
@@ -228,10 +234,10 @@ function Users() {
             type='password'
             variant='standard'
           />
-          <Button type='submit'>Update</Button>
+          <Button type='submit'>{t('updateBtn')}</Button>
           <Link href={`/users`}>
             <Button id={user?.username} onClick={handleDelete}>
-              Delete
+              {t('deleteBtn')}
             </Button>
           </Link>
         </Box>

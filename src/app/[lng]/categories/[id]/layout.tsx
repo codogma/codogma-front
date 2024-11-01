@@ -6,6 +6,7 @@ import IconButton from '@mui/material/IconButton';
 import { useQuery } from '@tanstack/react-query';
 import React from 'react';
 
+import { useTranslation } from '@/app/i18n/client';
 import { AvatarImage } from '@/components/AvatarImage';
 import NavTabs, { TabProps } from '@/components/NavTabs';
 import { getCategoryById } from '@/helpers/categoryApi';
@@ -22,9 +23,10 @@ type PageProps = {
 };
 
 export default function Layout({ params: { id, lng }, children }: PageProps) {
+  const { t } = useTranslation(lng);
   const tabs: TabProps[] = [
-    { label: 'Articles', href: `/${lng}/categories/${id}/articles` },
-    { label: 'Users', href: `/${lng}/categories/${id}/authors` },
+    { label: t('articles'), href: `/${lng}/categories/${id}/articles` },
+    { label: t('users'), href: `/${lng}/categories/${id}/authors` },
   ];
 
   const { data: category } = useQuery<Category>({

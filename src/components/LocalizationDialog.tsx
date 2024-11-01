@@ -157,7 +157,7 @@ export const LocalizationDialog = ({ lang }: LocalizationDialogProps) => {
                     <TextField
                       id='language-textfield'
                       select
-                      label='Interface language'
+                      label={t('interfaceLanguage')}
                       value={field.value}
                       onChange={field.onChange}
                       error={Boolean(errors.language?.message)}
@@ -209,16 +209,16 @@ export const LocalizationDialog = ({ lang }: LocalizationDialogProps) => {
                       <TextField
                         {...params}
                         id='checkedLanguages-textfield'
-                        label='Content languages'
+                        label={t('contentLanguages')}
                         error={Boolean(errors.checkedLanguages?.message)}
                         helperText={errors.checkedLanguages?.message}
-                        placeholder='Select languages'
+                        placeholder={t('selectLanguages')}
                       />
                     )}
                   />
                 )}
               />
-              <Button type='submit'>Save changes</Button>
+              <Button type='submit'>{t('saveChangesBtn')}</Button>
             </Box>
           </FormProvider>
         </DialogContent>

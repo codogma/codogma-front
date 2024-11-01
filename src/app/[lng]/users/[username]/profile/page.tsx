@@ -8,6 +8,7 @@ import Stack from '@mui/material/Stack';
 import Link from 'next/link';
 import React, { useEffect, useState } from 'react';
 
+import { useTranslation } from '@/app/i18n/client';
 import { useAuth } from '@/components/AuthProvider';
 import { devConsoleError } from '@/helpers/devConsoleLog';
 import { getUserByUsername } from '@/helpers/userApi';
@@ -15,16 +16,18 @@ import { User } from '@/types';
 
 type PageParams = {
   username: string;
+  lng: string;
 };
 
 type PageProps = {
   readonly params: PageParams;
 };
 
-export default function Page({ params: { username } }: PageProps) {
+export default function Page({ params: { lng, username } }: PageProps) {
   const [user, setUser] = useState<User>();
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
   const [currentCategory, setCurrentCategory] = useState<number | null>(null);
+  const { t } = useTranslation(lng);
   const { state } = useAuth();
 
   useEffect(() => {
@@ -118,7 +121,7 @@ export default function Page({ params: { username } }: PageProps) {
           </div>
           {state.user?.username === username && (
             <Link href='/profile-update'>
-              <Button type='submit'>Update</Button>
+              <Button type='submit'>{t('updateBtn')}</Button>
             </Link>
           )}
         </div>
