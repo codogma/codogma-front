@@ -12,14 +12,20 @@ import { useTheme } from '@mui/material/styles';
 import Tooltip from '@mui/material/Tooltip';
 import Link from 'next/link';
 
-export const NavPanel = () => {
+import { useTranslation } from '@/app/i18n/client';
+
+type NavPanelProps = {
+  readonly lang: string;
+};
+export const NavPanel = ({ lang }: NavPanelProps) => {
   const theme = useTheme();
   const isMin = useMediaQuery(theme.breakpoints.down('lg'));
   const isMediumOrSmall = useMediaQuery(theme.breakpoints.down('md'));
+  const { t } = useTranslation(lang);
   const drawerWidth = isMin ? `calc(${theme.spacing(7)} + 1px)` : 200;
 
   const articleLink = isMediumOrSmall ? (
-    <Tooltip title='Articles' placement='right'>
+    <Tooltip title={t('articles')} placement='right'>
       <Link href={`/articles`}>
         <ArticleIcon />
       </Link>
@@ -31,7 +37,7 @@ export const NavPanel = () => {
   );
 
   const categoryLink = isMediumOrSmall ? (
-    <Tooltip title='Categories' placement='right'>
+    <Tooltip title={t('categories')} placement='right'>
       <Link href={`/categories`}>
         <CategoryIcon />
       </Link>
@@ -65,7 +71,7 @@ export const NavPanel = () => {
         open
       >
         <List>
-          {['Articles', 'Categories'].map((text, index) => (
+          {[t('articles'), t('categories')].map((text, index) => (
             <ListItem key={text} disablePadding sx={{ display: 'block' }}>
               <Link href={index % 2 === 0 ? '/articles' : '/categories'}>
                 <ListItemButton

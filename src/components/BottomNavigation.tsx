@@ -10,7 +10,16 @@ import Tooltip from '@mui/material/Tooltip';
 import Link from 'next/link';
 import * as React from 'react';
 
-export default function FixedBottomNavigation() {
+import { useTranslation } from '@/app/i18n/client';
+
+type FixedBottomNavigationProps = {
+  readonly lang: string;
+};
+export default function FixedBottomNavigation({
+  lang,
+}: FixedBottomNavigationProps) {
+  const { t } = useTranslation(lang);
+
   return (
     <Box sx={{ pb: 7 }}>
       <Drawer
@@ -34,7 +43,7 @@ export default function FixedBottomNavigation() {
           elevation={3}
         >
           <BottomNavigation>
-            <Tooltip title={'Articles'}>
+            <Tooltip title={t('articles')}>
               <Link href={`/articles`}>
                 <BottomNavigationAction
                   label='Articles'
@@ -42,7 +51,7 @@ export default function FixedBottomNavigation() {
                 />
               </Link>
             </Tooltip>
-            <Tooltip title={'Categories'}>
+            <Tooltip title={t('categories')}>
               <Link href={`/categories`}>
                 <BottomNavigationAction
                   label='Categories'
