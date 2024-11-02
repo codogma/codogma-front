@@ -46,7 +46,7 @@ export default function Page({ params: { lng } }: PageProps) {
             />
             <Link
               className='article-user-name'
-              href={`/users/${article.username}`}
+              href={`${lng}/users/${article.username}`}
             >
               {article.username}
             </Link>
@@ -61,7 +61,7 @@ export default function Page({ params: { lng } }: PageProps) {
               <span className='category-item' key={category.id}>
                 <Link
                   className='category-link'
-                  href={`/categories/${category.id}`}
+                  href={`${lng}/categories/${category.id}`}
                 >
                   {category.name}
                 </Link>
@@ -76,7 +76,7 @@ export default function Page({ params: { lng } }: PageProps) {
                 <span className='category-item' key={category.id}>
                   <Link
                     className='category-link'
-                    href={`/categories/${category.id}`}
+                    href={`${lng}/categories/${category.id}`}
                   >
                     {category.name}
                   </Link>
@@ -87,7 +87,10 @@ export default function Page({ params: { lng } }: PageProps) {
               Теги:{' '}
               {article.tags?.map((tag) => (
                 <span className='tag-item' key={tag.id}>
-                  <Link className='tag-link' href={`/categories/${tag.id}`}>
+                  <Link
+                    className='tag-link'
+                    href={`${lng}/categories/${tag.id}`}
+                  >
                     {tag.name}
                   </Link>
                 </span>
@@ -96,7 +99,7 @@ export default function Page({ params: { lng } }: PageProps) {
           </div>
           {state.user?.username === article.username &&
             state.user?.role === UserRole.ROLE_AUTHOR && (
-              <Link href={`/articles/edit/${article.id}`}>
+              <Link href={`${lng}/articles/edit/${article.id}`}>
                 <Button
                   className='article-btn'
                   variant='outlined'

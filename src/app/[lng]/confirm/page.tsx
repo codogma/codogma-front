@@ -12,7 +12,13 @@ import React, { useEffect, useState } from 'react';
 
 import { confirmEmail } from '@/helpers/authApi';
 
-export default function Page() {
+type PageProps = {
+  readonly params: {
+    lng: string;
+  };
+};
+
+export default function Page({ params: { lng } }: PageProps) {
   const searchParams = useSearchParams();
   const token = searchParams?.get('token');
   const [confirmationStatus, setConfirmationStatus] = useState<
@@ -46,7 +52,7 @@ export default function Page() {
   }, [token]);
 
   const handleRedirect = () => {
-    router.push('/sign-in');
+    router.push(`/${lng}/sign-in`);
   };
 
   return (

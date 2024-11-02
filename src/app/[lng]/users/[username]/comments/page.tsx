@@ -46,7 +46,7 @@ export default function Page({ params: { username, lng } }: PageProps) {
           <Card key={comment.id} variant='outlined' className='card'>
             <CardContent className='card-content'>
               <Link
-                href={`/articles/${comment.article.id}`}
+                href={`${lng}/articles/${comment.article.id}`}
                 className='article-title'
               >
                 {comment.article.title}
@@ -64,7 +64,7 @@ export default function Page({ params: { username, lng } }: PageProps) {
                 />
                 <Link
                   className='article-user-name'
-                  href={`/users/${comment.user.username}`}
+                  href={`${lng}/users/${comment.user.username}`}
                 >
                   {comment.user.username}
                 </Link>

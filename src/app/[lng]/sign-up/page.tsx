@@ -159,7 +159,7 @@ export default function Page({ params: { lng } }: PageProps) {
               <Typography sx={{ textAlign: 'center' }}>
                 {t('alreadyAccount')}{' '}
                 <span>
-                  <Link href='/sign-in'>{t('signInBtn')}</Link>
+                  <Link href={`${lng}/sign-in`}>{t('signInBtn')}</Link>
                 </span>
               </Typography>
             </Box>
