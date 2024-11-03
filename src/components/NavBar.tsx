@@ -45,7 +45,7 @@ const NavBar = ({ lang }: NavBarProps) => {
   };
 
   const handleClickMenuItem = (url: string) => {
-    router.push(url);
+    router.push(`/${lang}/${url}`);
     handleCloseUserMenu();
   };
 
@@ -169,7 +169,7 @@ const NavBar = ({ lang }: NavBarProps) => {
                   </MenuItem>
                   {state.user?.role === UserRole.ROLE_AUTHOR && (
                     <MenuItem
-                      onClick={() => handleClickMenuItem(`/create-article`)}
+                      onClick={() => handleClickMenuItem(`/article-editor`)}
                     >
                       <Typography textAlign='center'>
                         <CreateIcon className='mr-2' fontSize='small' />

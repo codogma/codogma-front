@@ -1,7 +1,7 @@
 import Cookies from 'js-cookie';
 
 import { axiosInstance } from '@/helpers/axiosInstance';
-import { devConsoleLog } from '@/helpers/devConsoleLog';
+import { devConsoleInfo } from '@/helpers/devConsoleLogs';
 import { User, UserRole } from '@/types';
 
 export type UserUpdate = {
@@ -28,7 +28,7 @@ export const updateUser = async (requestData: UserUpdate): Promise<User> => {
     sameSite: 'strict',
   });
   window.dispatchEvent(new Event('storage'));
-  devConsoleLog('User updated successfully');
+  devConsoleInfo('User updated successfully');
   return user;
 };
 
@@ -47,15 +47,8 @@ export const getAuthors = async (categoryId?: number): Promise<User[]> => {
   return response.data;
 };
 
-export const getUserByUsername = async (
-  username?: string,
-  lang?: string,
-): Promise<User> => {
-  const response = await axiosInstance.get(`/users/${username}`, {
-    headers: {
-      Cookie: `intl=${lang}`,
-    },
-  });
+export const getUserByUsername = async (username?: string): Promise<User> => {
+  const response = await axiosInstance.get(`/users/${username}`);
   return response.data;
 };
 
@@ -63,7 +56,7 @@ export const deleteUser = async (username: string): Promise<void> => {
   await axiosInstance.delete(`/users/${username}`);
   Cookies.remove('user');
   window.dispatchEvent(new Event('storage'));
-  devConsoleLog('User deleted successfully');
+  devConsoleInfo('User deleted successfully');
 };
 
 export const checkSubscription = async (username: string): Promise<boolean> => {

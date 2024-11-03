@@ -10,7 +10,7 @@ import { z } from 'zod';
 
 import { useAuth } from '@/components/AuthProvider';
 import { createComment, updateComment } from '@/helpers/commentAPI';
-import { devConsoleError } from '@/helpers/devConsoleLog';
+import { devConsoleError } from '@/helpers/devConsoleLogs';
 import { CreateComment, GetComment, UpdateComment, UserRole } from '@/types';
 
 interface CommentFormProps {

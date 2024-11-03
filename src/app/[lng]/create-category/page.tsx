@@ -12,7 +12,7 @@ import { AvatarImage } from '@/components/AvatarImage';
 import FormInput from '@/components/FormInput';
 import { WithAuth } from '@/components/WithAuth';
 import { createCategory } from '@/helpers/categoryApi';
-import { devConsoleError } from '@/helpers/devConsoleLog';
+import { devConsoleError } from '@/helpers/devConsoleLogs';
 
 const CategoryScheme = z.object({
   name: z

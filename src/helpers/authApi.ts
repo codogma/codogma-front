@@ -1,7 +1,7 @@
 import Cookies from 'js-cookie';
 
 import { axiosInstance } from '@/helpers/axiosInstance';
-import { devConsoleLog } from '@/helpers/devConsoleLog';
+import { devConsoleInfo } from '@/helpers/devConsoleLogs';
 import { User } from '@/types';
 
 export type SignUp = {
@@ -22,7 +22,7 @@ export const signUp = async (requestData: SignUp): Promise<string> => {
       'Content-Type': 'multipart/form-data',
     },
   });
-  devConsoleLog('User registered successfully:', response.data);
+  devConsoleInfo('User registered successfully:', response.data);
   return response.data;
 };
 
@@ -44,7 +44,7 @@ export const signIn = async (requestData: SignIn): Promise<User | null> => {
 
 export const logout = async (): Promise<void> => {
   await axiosInstance.post('/auth/logout');
-  devConsoleLog('User logged out successfully');
+  devConsoleInfo('User logged out successfully');
   window.dispatchEvent(new Event('storage'));
 };
 

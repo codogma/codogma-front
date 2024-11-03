@@ -1,23 +1,30 @@
 import { axiosInstance } from '@/helpers/axiosInstance';
-import { devConsoleLog } from '@/helpers/devConsoleLog';
-import { Article } from '@/types';
+import { devConsoleInfo } from '@/helpers/devConsoleLogs';
+import { Article, Language } from '@/types';
 
-export type CreateArticleDTO = {
-  categoryIds: number[];
+export type CreateDraftArticleDTO = {
   title: string;
-  language?: string;
-  previewContent: string;
-  content: string;
-  tags?: string[];
+  content?: string | null;
+};
+
+export type UpdateDraftArticleDTO = {
+  language?: Language | null;
+  originalArticleId?: number | null;
+  title?: string | null;
+  previewContent?: string | null;
+  content?: string | null;
+  categoryIds?: number[] | null;
+  tags?: string[] | null;
 };
 
 export type UpdateArticleDTO = {
+  language: Language;
+  originalArticleId?: number | null;
   title: string;
-  language?: string;
   previewContent: string;
   content: string;
   categoryIds: number[];
-  tags?: string[];
+  tags: string[];
 };
 
 export type GetArticlesDTO = {
@@ -26,15 +33,22 @@ export type GetArticlesDTO = {
   content: Article[];
 };
 
-export const createArticle = async (
-  requestData: CreateArticleDTO,
+export const createDraftArticle = async (
+  requestData: CreateDraftArticleDTO,
 ): Promise<Article> => {
-  const response = await axiosInstance.post('/articles', requestData);
+  const response = await axiosInstance.post('/articles/drafts', requestData);
   return response.data;
 };
 
+export const updateDraftArticle = async (
+  id: number | undefined,
+  requestData: UpdateDraftArticleDTO,
+): Promise<void> => {
+  await axiosInstance.patch(`/articles/drafts/${id}`, requestData);
+};
+
 export const updateArticle = async (
-  id: number,
+  id: number | undefined,
   requestData: UpdateArticleDTO,
 ): Promise<Article> => {
   const response = await axiosInstance.put(`/articles/${id}`, requestData);
@@ -62,6 +76,11 @@ export const getArticles = async (
   return response.data;
 };
 
+export const getDraftArticles = async (): Promise<Article[]> => {
+  const response = await axiosInstance.get('/articles/drafts');
+  return response.data;
+};
+
 export const getArticleById = async (id: number): Promise<Article> => {
   const response = await axiosInstance.get(`/articles/${id}`);
   return response.data;
@@ -69,5 +88,5 @@ export const getArticleById = async (id: number): Promise<Article> => {
 
 export const deleteArticle = async (id: number): Promise<void> => {
   await axiosInstance.delete(`/articles/${id}`);
-  devConsoleLog('Article deleted successfully');
+  devConsoleInfo('Article deleted successfully');
 };

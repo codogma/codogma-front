@@ -14,7 +14,7 @@ import { useAuth } from '@/components/AuthProvider';
 import { AvatarImage } from '@/components/AvatarImage';
 import FormInput from '@/components/FormInput';
 import { WithAuth } from '@/components/WithAuth';
-import { devConsoleError } from '@/helpers/devConsoleLog';
+import { devConsoleError } from '@/helpers/devConsoleLogs';
 import {
   deleteUser,
   getAuthors,

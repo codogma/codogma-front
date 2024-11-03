@@ -1,5 +1,5 @@
 import { axiosInstance } from '@/helpers/axiosInstance';
-import { devConsoleLog } from '@/helpers/devConsoleLog';
+import { devConsoleInfo } from '@/helpers/devConsoleLogs';
 import { Category } from '@/types';
 
 export type CategoryCreate = {
@@ -16,7 +16,7 @@ export const createCategory = async (
       'Content-Type': 'multipart/form-data',
     },
   });
-  devConsoleLog('Category created successfully');
+  devConsoleInfo('Category created successfully');
 };
 
 export const updateCategory = async (
@@ -40,19 +40,12 @@ export const getCategories = async (): Promise<Category[]> => {
   return response.data;
 };
 
-export const getCategoryById = async (
-  id: number,
-  lang?: string,
-): Promise<Category> => {
-  const response = await axiosInstance.get(`/categories/${id}`, {
-    headers: {
-      Cookie: `intl=${lang}`,
-    },
-  });
+export const getCategoryById = async (id: number): Promise<Category> => {
+  const response = await axiosInstance.get(`/categories/${id}`);
   return response.data;
 };
 
 export const deleteCategory = async (id: number): Promise<void> => {
   await axiosInstance.delete(`/categories/${id}`);
-  devConsoleLog('Category deleted successfully');
+  devConsoleInfo('Category deleted successfully');
 };

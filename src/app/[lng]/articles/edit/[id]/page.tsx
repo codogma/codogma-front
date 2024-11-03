@@ -26,7 +26,7 @@ import {
   UpdateArticleDTO,
 } from '@/helpers/articleApi';
 import { getCategories } from '@/helpers/categoryApi';
-import { devConsoleError } from '@/helpers/devConsoleLog';
+import { devConsoleError } from '@/helpers/devConsoleLogs';
 import { getTagsByName } from '@/helpers/tagApi';
 import { Article, Category, Language, Tag } from '@/types';
 

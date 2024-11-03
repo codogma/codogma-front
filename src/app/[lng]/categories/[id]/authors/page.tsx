@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from 'react';
 
 import Users from '@/components/Users';
-import { devConsoleError, devConsoleLog } from '@/helpers/devConsoleLog';
+import { devConsoleError, devConsoleInfo } from '@/helpers/devConsoleLogs';
 import { getAuthors } from '@/helpers/userApi';
 import { User } from '@/types';
 
@@ -24,7 +24,7 @@ function Page({ params }: PageProps) {
     async function fetchData() {
       try {
         const allUsers = await getAuthors(categoryId);
-        devConsoleLog(allUsers);
+        devConsoleInfo(allUsers);
         setUsers(allUsers);
         setIsAuthor(true);
       } catch (error) {
@@ -37,11 +37,7 @@ function Page({ params }: PageProps) {
     fetchData();
   }, [categoryId]);
 
-  return (
-    <>
-      <Users users={users} loading={loading} isAuthor={isAuthor} />
-    </>
-  );
+  return <Users users={users} loading={loading} isAuthor={isAuthor} />;
 }
 
 export default Page;

@@ -19,6 +19,7 @@ export const DefaultImage: FC<DefaultImageProps> = ({
   quality = 80,
   width = '100%',
   height = '100%',
+  style,
   className,
   ...props
 }) => {
@@ -27,9 +28,12 @@ export const DefaultImage: FC<DefaultImageProps> = ({
       <Image
         src={src}
         alt={alt}
-        fill={true}
+        width={Number(width)}
+        height={Number(height)}
+        fill={isNaN(Number(width)) || isNaN(Number(height))}
         priority={priority}
         quality={quality}
+        style={style}
         className={clsx('object-cover', className)}
       />
       {alt && (

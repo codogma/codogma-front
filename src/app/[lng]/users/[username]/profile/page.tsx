@@ -10,7 +10,7 @@ import React, { useEffect, useState } from 'react';
 
 import { useTranslation } from '@/app/i18n/client';
 import { useAuth } from '@/components/AuthProvider';
-import { devConsoleError } from '@/helpers/devConsoleLog';
+import { devConsoleError } from '@/helpers/devConsoleLogs';
 import { getUserByUsername } from '@/helpers/userApi';
 import { User } from '@/types';
 

@@ -1,5 +1,5 @@
 import { axiosInstance } from '@/helpers/axiosInstance';
-import { devConsoleLog } from '@/helpers/devConsoleLog';
+import { devConsoleInfo } from '@/helpers/devConsoleLogs';
 import { CreateComment, GetComment, UpdateComment } from '@/types';
 
 export const getCommentsByArticleId = async (
@@ -36,5 +36,5 @@ export const updateComment = async (
 
 export const deleteComment = async (commentId: number): Promise<void> => {
   await axiosInstance.delete(`/comments/${commentId}`);
-  devConsoleLog('Comment deleted successfully');
+  devConsoleInfo('Comment deleted successfully');
 };

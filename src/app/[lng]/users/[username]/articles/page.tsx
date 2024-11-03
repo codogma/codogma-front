@@ -17,7 +17,7 @@ import React, { FormEvent, useEffect, useState } from 'react';
 import { useTranslation } from '@/app/i18n/client';
 import Articles from '@/components/Articles';
 import { getArticles } from '@/helpers/articleApi';
-import { devConsoleError } from '@/helpers/devConsoleLog';
+import { devConsoleError } from '@/helpers/devConsoleLogs';
 import { Article } from '@/types';
 
 type PageParams = {

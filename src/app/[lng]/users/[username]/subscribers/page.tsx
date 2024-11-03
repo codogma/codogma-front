@@ -6,7 +6,7 @@ import Link from 'next/link';
 import React, { useEffect, useState } from 'react';
 
 import { AvatarImage } from '@/components/AvatarImage';
-import { devConsoleError } from '@/helpers/devConsoleLog';
+import { devConsoleError } from '@/helpers/devConsoleLogs';
 import { getUserByUsername } from '@/helpers/userApi';
 import { User } from '@/types';
 

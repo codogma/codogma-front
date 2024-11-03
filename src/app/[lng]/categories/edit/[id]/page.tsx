@@ -21,7 +21,7 @@ import {
   getCategoryById,
   updateCategory,
 } from '@/helpers/categoryApi';
-import { devConsoleError } from '@/helpers/devConsoleLog';
+import { devConsoleError } from '@/helpers/devConsoleLogs';
 import { Category, UserRole } from '@/types';
 
 const CategoryScheme = z.object({

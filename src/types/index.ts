@@ -42,6 +42,8 @@ export type Category = {
 export type Article = {
   id: number;
   title: string;
+  language: Language;
+  originalArticleId: number;
   previewContent: string;
   previewContentNode?: ReactNode;
   content: string;

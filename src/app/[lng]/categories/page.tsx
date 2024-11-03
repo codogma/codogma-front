@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 
 import Categories from '@/components/Categories';
 import { getCategories } from '@/helpers/categoryApi';
-import { devConsoleError } from '@/helpers/devConsoleLog';
+import { devConsoleError } from '@/helpers/devConsoleLogs';
 import { Category } from '@/types';
 
 type PageProps = {
