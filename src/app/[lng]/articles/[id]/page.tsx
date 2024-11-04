@@ -1,6 +1,4 @@
 'use client';
-import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
-import { Button } from '@mui/material';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import Typography from '@mui/material/Typography';
@@ -11,8 +9,8 @@ import React from 'react';
 import { useTranslation } from '@/app/i18n/client';
 import { useArticle } from '@/components/ArticleProvider';
 import { useAuth } from '@/components/AuthProvider';
-import { AvatarImage } from '@/components/AvatarImage';
-// import { CommentList } from '@/components/CommentList';
+import { AvatarImage } from '@/components/AvatarImage'; // import { CommentList } from '@/components/CommentList';
+import ButtonAlertDialog from '@/components/ButtonAlertDialog';
 import { CommentList } from '@/components/CommentList';
 import { useContentImageContext } from '@/components/ContentImageProvider';
 import { TimeAgo } from '@/components/TimeAgo';
@@ -32,6 +30,7 @@ export default function Page({ params: { lng } }: PageProps) {
   const { processContent } = useContentImageContext();
   const { t } = useTranslation(lng);
   const content = processContent(DOMPurify.sanitize(article.content));
+
   return (
     <>
       <Card key={article.id} variant='outlined' className='card'>
@@ -99,15 +98,7 @@ export default function Page({ params: { lng } }: PageProps) {
           </div>
           {state.user?.username === article.username &&
             state.user?.role === UserRole.ROLE_AUTHOR && (
-              <Link href={`${lng}/articles/edit/${article.id}`}>
-                <Button
-                  className='article-btn'
-                  variant='outlined'
-                  startIcon={<EditOutlinedIcon />}
-                >
-                  {t('editBtn')}
-                </Button>
-              </Link>
+              <ButtonAlertDialog lang={lng} />
             )}
         </CardContent>
       </Card>

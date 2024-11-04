@@ -8,5 +8,9 @@
   "addCommentBtn": "Add Comment",
   "updateCommentBtn": "Update Comment",
   "writeComment": "Write your comment...",
-  "comments": "Comments"
+  "comments": "Comments",
+  "dialogTitle": "Do you agree to these terms and wish to proceed?",
+  "dialogDescription": "Attention! When the author navigates to the article editing page,the article status will be set to 'Draft.' To republish the article, it will need to undergo moderation again.",
+  "disagreeBtn": "Disagree",
+  "agreeBtn": "Agree"
 }

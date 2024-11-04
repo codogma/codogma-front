@@ -5,7 +5,6 @@ import LoginIcon from '@mui/icons-material/Login';
 import LogoutIcon from '@mui/icons-material/Logout';
 import PersonIcon from '@mui/icons-material/Person';
 import PersonAddAltRoundedIcon from '@mui/icons-material/PersonAddAltRounded';
-import SearchIcon from '@mui/icons-material/Search';
 import { ButtonGroup, MenuList } from '@mui/material';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
@@ -94,13 +93,6 @@ const NavBar = ({ lang }: NavBarProps) => {
               color: 'inherit',
             }}
           >
-            <Tooltip title={t('search')}>
-              <Link href={`/${lang}/articles/#search-input`}>
-                <IconButton color='inherit'>
-                  <SearchIcon />
-                </IconButton>
-              </Link>
-            </Tooltip>
             <LocalizationDialog lang={lang} />
             <ThemeToggleButton title={t('theme')} />
           </ButtonGroup>
