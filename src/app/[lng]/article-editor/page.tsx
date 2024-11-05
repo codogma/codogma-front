@@ -17,8 +17,8 @@ import {
 } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import { useMutation, useQuery } from '@tanstack/react-query';
-import { useRouter } from 'next/navigation';
-import React, { useEffect, useState } from 'react';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import React, { useCallback, useEffect, useState } from 'react';
 import {
   Controller,
   FormProvider,
@@ -37,13 +37,14 @@ import {
   CreateDraftArticleDTO,
   deleteArticle,
   getDraftArticles,
+  getDraftedArticleById,
   updateArticle,
   UpdateArticleDTO,
   updateDraftArticle,
   UpdateDraftArticleDTO,
 } from '@/helpers/articleApi';
 import { getCategories } from '@/helpers/categoryApi';
-import { devConsoleError, devConsoleInfo } from '@/helpers/devConsoleLogs';
+import { devConsoleError } from '@/helpers/devConsoleLogs';
 import { getTagsByName } from '@/helpers/tagApi';
 import { Article, Category, Language, Tag } from '@/types';
 
@@ -91,21 +92,26 @@ const CustomStepIcon = (props: StepIconProps) => {
 };
 
 const Page = ({ params: { lng } }: PageParams) => {
+  const STEP_ONE_DATA = 'step-one-data';
+  const STEP_TWO_DATA = 'step-two-data';
+  const ARTICLE_ID = 'article-id';
+  const PARAM_ID = 'id';
   const route = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const paramId = searchParams.get(PARAM_ID);
+  const id = Number(paramId);
   const [stepOneData, setStepOneData] = useState<CreateDraftArticleDTO | null>(
     null,
   );
   const [reset, setReset] = useState<boolean>(false);
   const [stepTwoData, setStepTwoData] = useState(null);
   const [activeStep, setActiveStep] = useState<number>(0);
-  const [articleId, setArticleId] = useState<number | undefined>();
+  const [articleId, setArticleId] = useState<number>(0);
   const [draftArticles, setDraftArticles] = useState<Article[]>([]);
   const [inputTagValue, setInputTagValue] = useState<string>('');
   const [availableTags, setAvailableTags] = useState<string[]>([]);
   const [prevData, setPrevData] = useState<UpdateDraftArticleDTO | null>(null);
-  const STEP_ONE_DATA = 'step-one-data';
-  const STEP_TWO_DATA = 'step-two-data';
-  const ARTICLE_ID = 'article-id';
 
   const zodStepOneForm = useForm<z.infer<typeof StepOneScheme>>({
     resolver: zodResolver(StepOneScheme),
@@ -131,7 +137,7 @@ const Page = ({ params: { lng } }: PageParams) => {
     defaultValues: {
       language: lng,
       originalArticleId: null,
-      previewContent: undefined,
+      previewContent: '',
       categoryIds: [],
       tags: [],
     },
@@ -160,6 +166,18 @@ const Page = ({ params: { lng } }: PageParams) => {
     queryFn: () => getDraftArticles(),
   });
 
+  const isValidId = (validatingId: number) => {
+    return !isNaN(validatingId) && validatingId > 0;
+  };
+
+  const { data: article } = useQuery<Article>({
+    queryKey: ['article', id],
+    queryFn: () => getDraftedArticleById(id),
+    enabled: () => {
+      return isValidId(id);
+    },
+  });
+
   useEffect(() => {
     if (Array.isArray(draftArticlesData)) {
       setDraftArticles(draftArticlesData);
@@ -174,16 +192,16 @@ const Page = ({ params: { lng } }: PageParams) => {
         }
       });
       if (id === articleId) {
+        setArticleId(0);
         resetStepOne({ title: '', content: '' });
         resetStepTwo({
           language: lng,
           originalArticleId: null,
-          previewContent: undefined,
+          previewContent: '',
           categoryIds: [],
           tags: [],
         });
         setReset(true);
-        setArticleId(undefined);
         setPrevData(null);
         setActiveStep(0);
         setStepOneData(null);
@@ -195,20 +213,37 @@ const Page = ({ params: { lng } }: PageParams) => {
     });
   };
 
+  const setArticleData = useCallback(
+    (article: Article) => {
+      if (isValidId(article.id)) setArticleId(article.id);
+      localStorage.setItem(ARTICLE_ID, String(article.id));
+      resetStepOne({ title: article.title, content: article.content });
+      resetStepTwo({
+        language: article.language || lng,
+        originalArticleId: article.originalArticleId,
+        previewContent: article.previewContent,
+        categoryIds: article.categories.map((category) => category.id),
+        tags: article.tags.map((tag) => tag.name),
+      });
+    },
+    [resetStepOne, resetStepTwo, lng],
+  );
+
   const handleSelectArticle = (article: Article) => {
-    setArticleId(article.id);
-    localStorage.setItem(ARTICLE_ID, String(article.id));
-    resetStepOne({ title: article.title, content: article.content });
-    resetStepTwo({
-      language: article.language || lng,
-      originalArticleId: article.originalArticleId,
-      previewContent: article.previewContent,
-      categoryIds: article.categories.map((category) => category.id),
-      tags: article.tags.map((tag) => tag.name),
-    });
+    setArticleData(article);
   };
 
   useEffect(() => {
+    if (article) {
+      setArticleData(article);
+    } else {
+      const lsArticleId = Number(localStorage.getItem(ARTICLE_ID));
+      if (isValidId(lsArticleId)) {
+        setArticleId(lsArticleId);
+      } else {
+        setArticleId(0);
+      }
+    }
     const lsStepOneData = localStorage.getItem(STEP_ONE_DATA);
     if (lsStepOneData) {
       const parsedStepOneData = JSON.parse(lsStepOneData);
@@ -219,9 +254,8 @@ const Page = ({ params: { lng } }: PageParams) => {
       const parsedStepTwoData = JSON.parse(lsStepTwoData);
       resetStepTwo(parsedStepTwoData);
     }
-    const draftArticleId = Number(localStorage.getItem(ARTICLE_ID));
-    setArticleId(draftArticleId);
-  }, [resetStepOne, resetStepTwo]);
+    route.replace(pathname);
+  }, [article, pathname, resetStepOne, resetStepTwo, route, setArticleData]);
 
   useEffect(() => {
     if (inputTagValue === '') {
@@ -260,14 +294,12 @@ const Page = ({ params: { lng } }: PageParams) => {
     if (!isSubmitSuccessfulStepTwo) {
       const subscriptionStepOne = watchStepOne((data) => {
         if (data.title) {
-          devConsoleInfo(data);
           setStepOneData(data);
           localStorage.setItem(STEP_ONE_DATA, JSON.stringify(data));
         }
       });
       const subscriptionStepTwo = watchStepTwo((data) => {
         if (data) {
-          devConsoleInfo(data);
           setStepTwoData(data);
           localStorage.setItem(STEP_TWO_DATA, JSON.stringify(data));
         }
@@ -297,10 +329,10 @@ const Page = ({ params: { lng } }: PageParams) => {
           setDraftArticles(response.data);
         }
       });
-      const draftArticleId = data?.id;
-      setArticleId(draftArticleId);
+      const draftArticleId = Number(data?.id);
+      if (isValidId(draftArticleId)) setArticleId(draftArticleId);
       if (draftArticleId) {
-        localStorage.setItem(ARTICLE_ID, draftArticleId);
+        localStorage.setItem(ARTICLE_ID, String(draftArticleId));
       }
     },
   });
@@ -325,14 +357,14 @@ const Page = ({ params: { lng } }: PageParams) => {
   useEffect(() => {
     const lsStepOneData = localStorage.getItem(STEP_ONE_DATA);
     const parsedStepOneData = JSON.parse(lsStepOneData);
-    if (parsedStepOneData && stepOneData?.title && !articleId) {
+    if (parsedStepOneData && stepOneData?.title && !isValidId(articleId)) {
       const timer = setTimeout(() => {
         createDraftArticleMutate(zodStepOneForm.getValues());
       }, 1000);
 
       return () => clearTimeout(timer);
     }
-    if (articleId) {
+    if (isValidId(articleId)) {
       const currentData = {
         ...stepOneData,
         ...stepTwoData,
@@ -341,7 +373,7 @@ const Page = ({ params: { lng } }: PageParams) => {
         const timer = setTimeout(() => {
           updateDraftArticleMutate(currentData);
           setPrevData(currentData);
-        }, 2000);
+        }, 5000);
         return () => clearTimeout(timer);
       }
     }
@@ -632,5 +664,4 @@ const Page = ({ params: { lng } }: PageParams) => {
     </section>
   );
 };
-
 export default WithAuth(Page);

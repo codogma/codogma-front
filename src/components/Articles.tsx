@@ -1,5 +1,4 @@
 'use client';
-import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import { Button, Skeleton } from '@mui/material';
 import Card from '@mui/material/Card';
 import CardActions from '@mui/material/CardActions';
@@ -11,6 +10,7 @@ import React from 'react';
 import { useTranslation } from '@/app/i18n/client';
 import { useAuth } from '@/components/AuthProvider';
 import { AvatarImage } from '@/components/AvatarImage';
+import ButtonAlertDialog from '@/components/ButtonAlertDialog';
 import { TimeAgo } from '@/components/TimeAgo';
 import { Article, UserRole } from '@/types';
 
@@ -96,15 +96,7 @@ export default function Articles({ lang, articles, loading }: ArticlesProps) {
                 </Link>
                 {state.user?.username === article.username &&
                   state.user.role === UserRole.ROLE_AUTHOR && (
-                    <Link href={`/articles/edit/${article.id}`}>
-                      <Button
-                        className='article-btn'
-                        variant='outlined'
-                        startIcon={<EditOutlinedIcon />}
-                      >
-                        {t('editBtn')}
-                      </Button>
-                    </Link>
+                    <ButtonAlertDialog lang={lang} />
                   )}
               </Stack>
             </CardActions>

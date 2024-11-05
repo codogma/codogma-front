@@ -81,7 +81,16 @@ export const getDraftArticles = async (): Promise<Article[]> => {
   return response.data;
 };
 
-export const getArticleById = async (id: number): Promise<Article> => {
+export const getDraftedArticleById = async (
+  id: number | undefined,
+): Promise<Article> => {
+  const response = await axiosInstance.get(`/articles/drafts/${id}`);
+  return response.data;
+};
+
+export const getArticleById = async (
+  id: number | undefined,
+): Promise<Article> => {
   const response = await axiosInstance.get(`/articles/${id}`);
   return response.data;
 };

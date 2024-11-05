@@ -6,17 +6,18 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
-import Link from 'next/link';
 import React, { useState } from 'react';
 
 import { useTranslation } from '@/app/i18n/client';
-import { useArticle } from '@/components/ArticleProvider';
 
 type ButtonAlertDialogProps = {
   readonly lang: string;
+  readonly id: number;
 };
-export default function ButtonAlertDialog({ lang }: ButtonAlertDialogProps) {
-  const { article } = useArticle();
+export default function ButtonAlertDialog({
+  lang,
+  id,
+}: ButtonAlertDialogProps) {
   const [open, setOpen] = useState(false);
   const { t } = useTranslation(lang, 'articles');
 
@@ -53,7 +54,9 @@ export default function ButtonAlertDialog({ lang }: ButtonAlertDialogProps) {
         <DialogActions>
           <Button onClick={handleClose}>{t('disagreeBtn')}</Button>
           <Button onClick={handleClose} autoFocus>
-            <Link href={`/articles/edit/${article.id}`}>{t('agreeBtn')}</Link>
+            {/*<Link href={`/${lang}/article-editor?id=${article.id}`}>*/}
+            {t('agreeBtn')}
+            {/*</Link>*/}
           </Button>
         </DialogActions>
       </Dialog>
