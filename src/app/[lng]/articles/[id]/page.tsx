@@ -45,7 +45,7 @@ export default function Page({ params: { lng } }: PageProps) {
             />
             <Link
               className='article-user-name'
-              href={`${lng}/users/${article.username}`}
+              href={`/users/${article.username}`}
             >
               {article.username}
             </Link>
@@ -60,7 +60,7 @@ export default function Page({ params: { lng } }: PageProps) {
               <span className='category-item' key={category.id}>
                 <Link
                   className='category-link'
-                  href={`${lng}/categories/${category.id}`}
+                  href={`/categories/${category.id}`}
                 >
                   {category.name}
                 </Link>
@@ -75,7 +75,7 @@ export default function Page({ params: { lng } }: PageProps) {
                 <span className='category-item' key={category.id}>
                   <Link
                     className='category-link'
-                    href={`${lng}/categories/${category.id}`}
+                    href={`/categories/${category.id}`}
                   >
                     {category.name}
                   </Link>
@@ -88,7 +88,7 @@ export default function Page({ params: { lng } }: PageProps) {
                 <span className='tag-item' key={tag.id}>
                   <Link
                     className='tag-link'
-                    href={`${lng}/categories/${tag.id}`}
+                    href={`/categories/${tag.id}`}
                   >
                     {tag.name}
                   </Link>
@@ -98,7 +98,7 @@ export default function Page({ params: { lng } }: PageProps) {
           </div>
           {state.user?.username === article.username &&
             state.user?.role === UserRole.ROLE_AUTHOR && (
-              <ButtonAlertDialog id={article.id} lang={lng} />
+              <ButtonAlertDialog articleId={article.id} lang={lng} />
             )}
         </CardContent>
       </Card>

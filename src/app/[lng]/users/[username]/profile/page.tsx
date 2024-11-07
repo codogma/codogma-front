@@ -71,7 +71,7 @@ export default function Page({ params: { lng, username } }: PageProps) {
                 <span className='user-tag-item' key={category.id}>
                   <Link
                     className='tag-name'
-                    href={`${lng}/categories/${category.id}`}
+                    href={`/categories/${category.id}`}
                   >
                     <Stack direction='row' spacing={1}>
                       <Chip
@@ -120,7 +120,7 @@ export default function Page({ params: { lng, username } }: PageProps) {
             </div>
           </div>
           {state.user?.username === username && (
-            <Link href={`${lng}/profile-update`}>
+            <Link href={`/profile-update`}>
               <Button type='submit'>{t('updateBtn')}</Button>
             </Link>
           )}

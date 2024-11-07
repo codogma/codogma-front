@@ -81,7 +81,7 @@ export default function Page({ params: { lng } }: PageProps) {
     try {
       const loggedInUser = await signIn(formData);
       dispatch({ type: 'LOGIN', user: loggedInUser });
-      router.push(`/${lng}`);
+      router.push(`/`);
     } catch (error) {
       if (error instanceof AxiosError) {
         const message =
@@ -172,7 +172,7 @@ export default function Page({ params: { lng } }: PageProps) {
               <Typography sx={{ textAlign: 'center' }}>
                 {t('haveAccount')}{' '}
                 <span>
-                  <Link href={`${lng}/sign-up`}>{t('signUpBtn')}</Link>
+                  <Link href={`/sign-up`}>{t('signUpBtn')}</Link>
                 </span>
               </Typography>
             </Box>

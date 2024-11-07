@@ -52,7 +52,7 @@ export default function Page({ params: { lng } }: PageProps) {
   }, [token]);
 
   const handleRedirect = () => {
-    router.push(`/${lng}/sign-in`);
+    router.push(`/sign-in`);
   };
 
   return (

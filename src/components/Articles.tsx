@@ -96,7 +96,7 @@ export default function Articles({ lang, articles, loading }: ArticlesProps) {
                 </Link>
                 {state.user?.username === article.username &&
                   state.user.role === UserRole.ROLE_AUTHOR && (
-                    <ButtonAlertDialog lang={lang} />
+                    <ButtonAlertDialog articleId={article.id} lang={lang} />
                   )}
               </Stack>
             </CardActions>
