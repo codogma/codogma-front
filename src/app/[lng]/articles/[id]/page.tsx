@@ -86,10 +86,7 @@ export default function Page({ params: { lng } }: PageProps) {
               Теги:{' '}
               {article.tags?.map((tag) => (
                 <span className='tag-item' key={tag.id}>
-                  <Link
-                    className='tag-link'
-                    href={`/categories/${tag.id}`}
-                  >
+                  <Link className='tag-link' href={`/categories/${tag.id}`}>
                     {tag.name}
                   </Link>
                 </span>
