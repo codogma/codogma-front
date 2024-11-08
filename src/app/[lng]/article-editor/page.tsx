@@ -211,7 +211,9 @@ const Page = ({ params: { lng } }: PageParams) => {
           setDraftArticles(response.data);
         }
       });
-      deleteArticleData();
+      if (id === articleId) {
+        deleteArticleData();
+      }
     });
   };
 
@@ -646,9 +648,12 @@ const Page = ({ params: { lng } }: PageParams) => {
               display: 'flex',
               flexDirection: 'row',
               pt: 2,
-              justifyContent: 'flex-end',
+              justifyContent: 'space-between',
             }}
           >
+            <Button type='submit' onClick={() => handleNewArticle()}>
+              New article
+            </Button>
             <Button type='button' onClick={onSubmit}>
               Open created article
             </Button>
