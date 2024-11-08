@@ -184,6 +184,26 @@ const Page = ({ params: { lng } }: PageParams) => {
     }
   }, [draftArticlesData]);
 
+  const deleteArticleData = useCallback(() => {
+    setArticleId(0);
+    resetStepOne({ title: '', content: '' });
+    resetStepTwo({
+      language: lng,
+      originalArticleId: null,
+      previewContent: '',
+      categoryIds: [],
+      tags: [],
+    });
+    setReset(true);
+    setPrevData(null);
+    setActiveStep(0);
+    setStepOneData(null);
+    setStepTwoData(null);
+    localStorage.removeItem(STEP_ONE_DATA);
+    localStorage.removeItem(STEP_TWO_DATA);
+    localStorage.removeItem(ARTICLE_ID);
+  }, [resetStepOne, resetStepTwo, lng]);
+
   const handleDeleteArticle = (id: number) => {
     deleteArticle(id).then(() => {
       refetch().then((response) => {
@@ -192,23 +212,7 @@ const Page = ({ params: { lng } }: PageParams) => {
         }
       });
       if (id === articleId) {
-        setArticleId(0);
-        resetStepOne({ title: '', content: '' });
-        resetStepTwo({
-          language: lng,
-          originalArticleId: null,
-          previewContent: '',
-          categoryIds: [],
-          tags: [],
-        });
-        setReset(true);
-        setPrevData(null);
-        setActiveStep(0);
-        setStepOneData(null);
-        setStepTwoData(null);
-        localStorage.removeItem(STEP_ONE_DATA);
-        localStorage.removeItem(STEP_TWO_DATA);
-        localStorage.removeItem(ARTICLE_ID);
+        deleteArticleData();
       }
     });
   };
@@ -231,6 +235,10 @@ const Page = ({ params: { lng } }: PageParams) => {
 
   const handleSelectArticle = (article: Article) => {
     setArticleData(article);
+  };
+
+  const handleNewArticle = () => {
+    deleteArticleData();
   };
 
   useEffect(() => {
@@ -462,9 +470,12 @@ const Page = ({ params: { lng } }: PageParams) => {
                 display: 'flex',
                 flexDirection: 'row',
                 pt: 2,
-                justifyContent: 'flex-end',
+                justifyContent: 'space-between',
               }}
             >
+              <Button type='submit' onClick={() => handleNewArticle()}>
+                New article
+              </Button>
               <Button type='submit'>Proceed to settings</Button>
             </Box>
           </Box>
@@ -637,9 +648,12 @@ const Page = ({ params: { lng } }: PageParams) => {
               display: 'flex',
               flexDirection: 'row',
               pt: 2,
-              justifyContent: 'flex-end',
+              justifyContent: 'space-between',
             }}
           >
+            <Button type='submit' onClick={() => handleNewArticle()}>
+              New article
+            </Button>
             <Button type='button' onClick={onSubmit}>
               Open created article
             </Button>

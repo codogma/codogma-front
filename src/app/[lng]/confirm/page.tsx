@@ -12,13 +12,7 @@ import React, { useEffect, useState } from 'react';
 
 import { confirmEmail } from '@/helpers/authApi';
 
-type PageProps = {
-  readonly params: {
-    lng: string;
-  };
-};
-
-export default function Page({ params: { lng } }: PageProps) {
+export default function Page() {
   const searchParams = useSearchParams();
   const token = searchParams?.get('token');
   const [confirmationStatus, setConfirmationStatus] = useState<
