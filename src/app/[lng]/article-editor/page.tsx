@@ -1,6 +1,6 @@
 'use client';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { CloudDone } from '@mui/icons-material';
+import {zodResolver} from '@hookform/resolvers/zod';
+import {CloudDone} from '@mui/icons-material';
 import {
   Autocomplete,
   Box,
@@ -15,23 +15,18 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import { useTheme } from '@mui/material/styles';
-import { useMutation, useQuery } from '@tanstack/react-query';
-import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import React, { useCallback, useEffect, useState } from 'react';
-import {
-  Controller,
-  FormProvider,
-  SubmitHandler,
-  useForm,
-} from 'react-hook-form';
-import { z } from 'zod';
+import {useTheme} from '@mui/material/styles';
+import {useMutation, useQuery} from '@tanstack/react-query';
+import {usePathname, useRouter, useSearchParams} from 'next/navigation';
+import React, {useCallback, useEffect, useState} from 'react';
+import {Controller, FormProvider, SubmitHandler, useForm,} from 'react-hook-form';
+import {z} from 'zod';
 
 import FormInput from '@/components/FormInput';
-import { LinkWithPopover } from '@/components/LinkWithPopover';
-import { TinyMCEEditor } from '@/components/TinyMCEEditor';
-import { WithAuth } from '@/components/WithAuth';
-import { languageMenuItems } from '@/constants/i18n';
+import {LinkWithPopover} from '@/components/LinkWithPopover';
+import {TinyMCEEditor} from '@/components/TinyMCEEditor';
+import {WithAuth} from '@/components/WithAuth';
+import {languageMenuItems} from '@/constants/i18n';
 import {
   createDraftArticle,
   CreateDraftArticleDTO,
@@ -43,10 +38,10 @@ import {
   updateDraftArticle,
   UpdateDraftArticleDTO,
 } from '@/helpers/articleApi';
-import { getCategories } from '@/helpers/categoryApi';
-import { devConsoleError } from '@/helpers/devConsoleLogs';
-import { getTagsByName } from '@/helpers/tagApi';
-import { Article, Category, Language, Tag } from '@/types';
+import {getCategories} from '@/helpers/categoryApi';
+import {devConsoleError} from '@/helpers/devConsoleLogs';
+import {getTagsByName} from '@/helpers/tagApi';
+import {Article, Category, Language, Tag} from '@/types';
 
 type PageParams = {
   readonly params: { lng: Language };
@@ -60,9 +55,9 @@ type StepType = {
 
 const StepOneScheme = z.object({
   title: z
-    .string()
-    .min(1, 'Название статьи не может быть пустой.')
-    .max(300, 'Название статьи не может содержать более 300 символов.'),
+  .string()
+  .min(1, 'Название статьи не может быть пустой.')
+  .max(300, 'Название статьи не может содержать более 300 символов.'),
   content: z.string().min(1, 'Основная статья не может быть пустой.'),
 });
 
@@ -75,23 +70,23 @@ const StepTwoScheme = z.object({
 });
 
 const CustomStepIcon = (props: StepIconProps) => {
-  const { active, icon } = props;
+  const {active, icon} = props;
   const theme = useTheme();
 
   const isLastStep = icon === 3;
 
   const iconColor = active
-    ? theme.palette.success.main
-    : theme.palette.grey[500];
+      ? theme.palette.success.main
+      : theme.palette.grey[500];
 
   return isLastStep ? (
-    <CloudDone style={{ color: iconColor }} />
+      <CloudDone style={{color: iconColor}}/>
   ) : (
-    <StepIcon {...props} />
+      <StepIcon {...props} />
   );
 };
 
-const Page = ({ params: { lng } }: PageParams) => {
+const Page = ({params: {lng}}: PageParams) => {
   const STEP_ONE_DATA = 'step-one-data';
   const STEP_TWO_DATA = 'step-two-data';
   const ARTICLE_ID = 'article-id';
@@ -102,7 +97,7 @@ const Page = ({ params: { lng } }: PageParams) => {
   const paramId = searchParams.get(PARAM_ID);
   const id = Number(paramId);
   const [stepOneData, setStepOneData] = useState<CreateDraftArticleDTO | null>(
-    null,
+      null,
   );
   const [reset, setReset] = useState<boolean>(false);
   const [stepTwoData, setStepTwoData] = useState(null);
@@ -154,14 +149,14 @@ const Page = ({ params: { lng } }: PageParams) => {
     watch: watchStepTwo,
   } = zodStepTwoForm;
 
-  const { data: categoriesData } = useQuery<Category[]>({
+  const {data: categoriesData} = useQuery<Category[]>({
     queryKey: ['categories'],
     queryFn: () => getCategories(),
   });
 
   const categories: Category[] = (categoriesData as Category[]) || [];
 
-  const { data: draftArticlesData, refetch } = useQuery<Article[]>({
+  const {data: draftArticlesData, refetch} = useQuery<Article[]>({
     queryKey: ['draftArticles'],
     queryFn: () => getDraftArticles(),
   });
@@ -170,7 +165,7 @@ const Page = ({ params: { lng } }: PageParams) => {
     return !isNaN(validatingId) && validatingId > 0;
   };
 
-  const { data: article } = useQuery<Article>({
+  const {data: article} = useQuery<Article>({
     queryKey: ['article', id],
     queryFn: () => getDraftedArticleById(id),
     enabled: () => {
@@ -184,16 +179,9 @@ const Page = ({ params: { lng } }: PageParams) => {
     }
   }, [draftArticlesData]);
 
-  const handleDeleteArticle = (id: number) => {
-    deleteArticle(id).then(() => {
-      refetch().then((response) => {
-        if (Array.isArray(response.data)) {
-          setDraftArticles(response.data);
-        }
-      });
-      if (id === articleId) {
+  const deleteArticleData = useCallback(() => {
         setArticleId(0);
-        resetStepOne({ title: '', content: '' });
+        resetStepOne({title: '', content: ''});
         resetStepTwo({
           language: lng,
           originalArticleId: null,
@@ -209,28 +197,40 @@ const Page = ({ params: { lng } }: PageParams) => {
         localStorage.removeItem(STEP_ONE_DATA);
         localStorage.removeItem(STEP_TWO_DATA);
         localStorage.removeItem(ARTICLE_ID);
-      }
+      },
+      [resetStepOne, resetStepTwo, lng],
+  );
+
+  const handleDeleteArticle = (id: number) => {
+    deleteArticle(id).then(() => {
+      refetch().then((response) => {
+        if (Array.isArray(response.data)) {
+          setDraftArticles(response.data);
+        }
+      });
+      deleteArticleData();
     });
   };
 
   const setArticleData = useCallback(
-    (article: Article) => {
-      if (isValidId(article.id)) setArticleId(article.id);
-      localStorage.setItem(ARTICLE_ID, String(article.id));
-      resetStepOne({ title: article.title, content: article.content });
-      resetStepTwo({
-        language: article.language || lng,
-        originalArticleId: article.originalArticleId,
-        previewContent: article.previewContent,
-        categoryIds: article.categories.map((category) => category.id),
-        tags: article.tags.map((tag) => tag.name),
-      });
-    },
-    [resetStepOne, resetStepTwo, lng],
+      (article: Article) => {
+        if (isValidId(article.id)) setArticleId(article.id);
+        localStorage.setItem(ARTICLE_ID, String(article.id));
+        resetStepOne({title: article.title, content: article.content});
+        resetStepTwo({
+          language: article.language || lng,
+          originalArticleId: article.originalArticleId,
+          previewContent: article.previewContent,
+          categoryIds: article.categories.map((category) => category.id),
+          tags: article.tags.map((tag) => tag.name),
+        });
+      },
+      [resetStepOne, resetStepTwo, lng],
   );
 
   const handleSelectArticle = (article: Article) => {
     setArticleData(article);
+    deleteArticleData();
   };
 
   useEffect(() => {
@@ -320,9 +320,9 @@ const Page = ({ params: { lng } }: PageParams) => {
     setActiveStep((prevActiveStep) => prevActiveStep - 1);
   };
 
-  const { mutate: createDraftArticleMutate } = useMutation({
+  const {mutate: createDraftArticleMutate} = useMutation({
     mutationFn: (requestData: CreateDraftArticleDTO) =>
-      createDraftArticle(requestData),
+        createDraftArticle(requestData),
     onSuccess: (data) => {
       refetch().then((response) => {
         if (Array.isArray(response.data)) {
@@ -337,9 +337,9 @@ const Page = ({ params: { lng } }: PageParams) => {
     },
   });
 
-  const { mutate: updateDraftArticleMutate } = useMutation({
+  const {mutate: updateDraftArticleMutate} = useMutation({
     mutationFn: (requestData: UpdateDraftArticleDTO) =>
-      updateDraftArticle(articleId, requestData),
+        updateDraftArticle(articleId, requestData),
     onSuccess: () => {
       refetch().then((response) => {
         if (Array.isArray(response.data)) {
@@ -349,9 +349,9 @@ const Page = ({ params: { lng } }: PageParams) => {
     },
   });
 
-  const { mutate: updateArticleMutate } = useMutation({
+  const {mutate: updateArticleMutate} = useMutation({
     mutationFn: (requestData: UpdateArticleDTO) =>
-      updateArticle(articleId, requestData),
+        updateArticle(articleId, requestData),
   });
 
   useEffect(() => {
@@ -388,14 +388,14 @@ const Page = ({ params: { lng } }: PageParams) => {
   ]);
 
   const onStepOneSubmit: SubmitHandler<z.infer<typeof StepOneScheme>> = (
-    formData,
+      formData,
   ) => {
-    setStepOneData({ ...formData });
+    setStepOneData({...formData});
     handleNext();
   };
 
   const onStepTwoSubmit: SubmitHandler<z.infer<typeof StepTwoScheme>> = (
-    formData,
+      formData,
   ) => {
     if (stepOneData && formData) {
       const requestData: UpdateArticleDTO = {
@@ -418,250 +418,260 @@ const Page = ({ params: { lng } }: PageParams) => {
     {
       label: 'Main content',
       stepContent: (
-        <FormProvider {...zodStepOneForm}>
-          <Box
-            component='form'
-            noValidate
-            autoComplete='off'
-            onSubmit={handleSubmitStepOne(onStepOneSubmit)}
-          >
-            <Box alignItems='center' display='flex' alignContent='center'>
-              <FormInput
-                className='w-full flex-1'
-                name='title'
-                label='Title'
-                variant='standard'
-              />
-              {draftArticles.length > 0 && (
-                <LinkWithPopover
-                  draftArticles={draftArticles}
-                  onDeleteArticle={handleDeleteArticle}
-                  onSelectArticle={handleSelectArticle}
-                />
-              )}
-            </Box>
-            <Typography className='my-4'>Основная статья:</Typography>
-            {errorsStepOne.content?.message && (
-              <Typography variant='body2' color='error'>
-                {errorsStepOne.content?.message}
-              </Typography>
-            )}
-            <Controller
-              name='content'
-              control={controlStepOne}
-              render={({ field }) => (
-                <TinyMCEEditor
-                  reset={reset}
-                  value={field.value}
-                  onChange={field.onChange}
-                />
-              )}
-            />
+          <FormProvider {...zodStepOneForm}>
             <Box
-              sx={{
-                display: 'flex',
-                flexDirection: 'row',
-                pt: 2,
-                justifyContent: 'flex-end',
-              }}
+                component='form'
+                noValidate
+                autoComplete='off'
+                onSubmit={handleSubmitStepOne(onStepOneSubmit)}
             >
-              <Button type='submit'>Proceed to settings</Button>
+              <Box alignItems='center' display='flex' alignContent='center'>
+                <FormInput
+                    className='w-full flex-1'
+                    name='title'
+                    label='Title'
+                    variant='standard'
+                />
+                {draftArticles.length > 0 && (
+                    <LinkWithPopover
+                        draftArticles={draftArticles}
+                        onDeleteArticle={handleDeleteArticle}
+                        onSelectArticle={handleSelectArticle}
+                    />
+                )}
+              </Box>
+              <Typography className='my-4'>Основная статья:</Typography>
+              {errorsStepOne.content?.message && (
+                  <Typography variant='body2' color='error'>
+                    {errorsStepOne.content?.message}
+                  </Typography>
+              )}
+              <Controller
+                  name='content'
+                  control={controlStepOne}
+                  render={({field}) => (
+                      <TinyMCEEditor
+                          reset={reset}
+                          value={field.value}
+                          onChange={field.onChange}
+                      />
+                  )}
+              />
+              <Box
+                  sx={{
+                    display: 'flex',
+                    flexDirection: 'row',
+                    pt: 2,
+                    justifyContent: 'flex-start',
+                  }}
+              >
+                <Button type='submit'>New article</Button>
+              </Box>
+              <Box
+                  sx={{
+                    display: 'flex',
+                    flexDirection: 'row',
+                    pt: 2,
+                    justifyContent: 'flex-end',
+                  }}
+              >
+                <Button type='submit'>Proceed to settings</Button>
+              </Box>
             </Box>
-          </Box>
-        </FormProvider>
+          </FormProvider>
       ),
       error: Object.keys(errorsStepOne).length > 0,
     },
     {
       label: 'Settings and preview content',
       stepContent: (
-        <FormProvider {...zodStepTwoForm}>
-          <Box
-            component='form'
-            noValidate
-            autoComplete='off'
-            onSubmit={handleSubmitStepTwo(onStepTwoSubmit)}
-          >
-            <Controller
-              name='categoryIds'
-              control={controlStepTwo}
-              render={({ field }) => (
-                <Autocomplete
-                  multiple
-                  id='categoryIds'
-                  options={categories}
-                  getOptionLabel={(category) => category?.name}
-                  filterSelectedOptions
-                  value={categories.filter((category) =>
-                    field.value?.includes(category.id),
-                  )}
-                  isOptionEqualToValue={(option, value) =>
-                    option.id === value.id
-                  }
-                  onChange={(_, newValue) =>
-                    field.onChange(newValue.map((category) => category.id))
-                  }
-                  renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      label='Categories'
-                      variant='standard'
-                      placeholder='Select categories'
-                      error={Boolean(errorsStepTwo.categoryIds?.message)}
-                      helperText={errorsStepTwo.categoryIds?.message}
-                    />
-                  )}
-                />
-              )}
-            />
-            <Controller
-              name='language'
-              control={controlStepTwo}
-              render={({ field }) => (
-                <TextField
-                  select
-                  label='Language'
-                  variant='standard'
-                  value={field.value}
-                  onChange={field.onChange}
-                  error={Boolean(errorsStepTwo.language?.message)}
-                  helperText={errorsStepTwo.language?.message}
-                >
-                  {languageMenuItems.map(({ value, label }) => (
-                    <MenuItem key={value} value={value}>
-                      {label}
-                    </MenuItem>
-                  ))}
-                </TextField>
-              )}
-            />
-            <Controller
-              name='tags'
-              control={controlStepTwo}
-              render={({ field }) => (
-                <Autocomplete
-                  multiple
-                  id='tags'
-                  options={availableTags.filter(
-                    (tag) =>
-                      !field.value?.some(
-                        (value) => value.toLowerCase() === tag.toLowerCase(),
-                      ),
-                  )}
-                  freeSolo
-                  value={field.value}
-                  onChange={(_, newValue) => {
-                    const normalizedValue = newValue.map((value) => {
-                      const existingTag = availableTags.find(
-                        (tag) => tag.toLowerCase() === value.toLowerCase(),
-                      );
-                      return existingTag || value;
-                    });
-
-                    const uniqueTags = new Set<string>();
-                    normalizedValue.forEach((tag) => {
-                      uniqueTags.add(tag);
-                    });
-
-                    field.onChange(Array.from(uniqueTags));
-                  }}
-                  onInputChange={(_, newInputValue) =>
-                    setInputTagValue(newInputValue)
-                  }
-                  renderTags={(value: string[], getTagProps) =>
-                    value.map((option: string, index: number) => {
-                      const { key, ...tagProps } = getTagProps({ index });
-                      return (
-                        <Chip
-                          variant='outlined'
-                          label={option}
-                          key={key}
-                          {...tagProps}
-                        />
-                      );
-                    })
-                  }
-                  renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      variant='standard'
-                      label='Tags'
-                      placeholder='Select or create tags'
-                    />
-                  )}
-                />
-              )}
-            />
-            <Typography className='my-4'>Краткое описание:</Typography>
-            {errorsStepTwo.previewContent?.message && (
-              <Typography variant='body2' color='error'>
-                {errorsStepTwo.previewContent?.message}
-              </Typography>
-            )}
-            <Controller
-              name='previewContent'
-              control={controlStepTwo}
-              render={({ field }) => (
-                <TinyMCEEditor
-                  reset={reset}
-                  value={field.value}
-                  onChange={field.onChange}
-                />
-              )}
-            />
+          <FormProvider {...zodStepTwoForm}>
             <Box
-              sx={{
-                display: 'flex',
-                flexDirection: 'row',
-                pt: 2,
-                justifyContent: 'space-between',
-              }}
+                component='form'
+                noValidate
+                autoComplete='off'
+                onSubmit={handleSubmitStepTwo(onStepTwoSubmit)}
             >
-              <Button color='inherit' onClick={handleBack}>
-                Back to publication
-              </Button>
-              <Button type='submit'>Send to moderate</Button>
+              <Controller
+                  name='categoryIds'
+                  control={controlStepTwo}
+                  render={({field}) => (
+                      <Autocomplete
+                          multiple
+                          id='categoryIds'
+                          options={categories}
+                          getOptionLabel={(category) => category?.name}
+                          filterSelectedOptions
+                          value={categories.filter((category) =>
+                              field.value?.includes(category.id),
+                          )}
+                          isOptionEqualToValue={(option, value) =>
+                              option.id === value.id
+                          }
+                          onChange={(_, newValue) =>
+                              field.onChange(newValue.map((category) => category.id))
+                          }
+                          renderInput={(params) => (
+                              <TextField
+                                  {...params}
+                                  label='Categories'
+                                  variant='standard'
+                                  placeholder='Select categories'
+                                  error={Boolean(errorsStepTwo.categoryIds?.message)}
+                                  helperText={errorsStepTwo.categoryIds?.message}
+                              />
+                          )}
+                      />
+                  )}
+              />
+              <Controller
+                  name='language'
+                  control={controlStepTwo}
+                  render={({field}) => (
+                      <TextField
+                          select
+                          label='Language'
+                          variant='standard'
+                          value={field.value}
+                          onChange={field.onChange}
+                          error={Boolean(errorsStepTwo.language?.message)}
+                          helperText={errorsStepTwo.language?.message}
+                      >
+                        {languageMenuItems.map(({value, label}) => (
+                            <MenuItem key={value} value={value}>
+                              {label}
+                            </MenuItem>
+                        ))}
+                      </TextField>
+                  )}
+              />
+              <Controller
+                  name='tags'
+                  control={controlStepTwo}
+                  render={({field}) => (
+                      <Autocomplete
+                          multiple
+                          id='tags'
+                          options={availableTags.filter(
+                              (tag) =>
+                                  !field.value?.some(
+                                      (value) => value.toLowerCase() === tag.toLowerCase(),
+                                  ),
+                          )}
+                          freeSolo
+                          value={field.value}
+                          onChange={(_, newValue) => {
+                            const normalizedValue = newValue.map((value) => {
+                              const existingTag = availableTags.find(
+                                  (tag) => tag.toLowerCase() === value.toLowerCase(),
+                              );
+                              return existingTag || value;
+                            });
+
+                            const uniqueTags = new Set<string>();
+                            normalizedValue.forEach((tag) => {
+                              uniqueTags.add(tag);
+                            });
+
+                            field.onChange(Array.from(uniqueTags));
+                          }}
+                          onInputChange={(_, newInputValue) =>
+                              setInputTagValue(newInputValue)
+                          }
+                          renderTags={(value: string[], getTagProps) =>
+                              value.map((option: string, index: number) => {
+                                const {key, ...tagProps} = getTagProps({index});
+                                return (
+                                    <Chip
+                                        variant='outlined'
+                                        label={option}
+                                        key={key}
+                                        {...tagProps}
+                                    />
+                                );
+                              })
+                          }
+                          renderInput={(params) => (
+                              <TextField
+                                  {...params}
+                                  variant='standard'
+                                  label='Tags'
+                                  placeholder='Select or create tags'
+                              />
+                          )}
+                      />
+                  )}
+              />
+              <Typography className='my-4'>Краткое описание:</Typography>
+              {errorsStepTwo.previewContent?.message && (
+                  <Typography variant='body2' color='error'>
+                    {errorsStepTwo.previewContent?.message}
+                  </Typography>
+              )}
+              <Controller
+                  name='previewContent'
+                  control={controlStepTwo}
+                  render={({field}) => (
+                      <TinyMCEEditor
+                          reset={reset}
+                          value={field.value}
+                          onChange={field.onChange}
+                      />
+                  )}
+              />
+              <Box
+                  sx={{
+                    display: 'flex',
+                    flexDirection: 'row',
+                    pt: 2,
+                    justifyContent: 'space-between',
+                  }}
+              >
+                <Button color='inherit' onClick={handleBack}>
+                  Back to publication
+                </Button>
+                <Button type='submit'>Send to moderate</Button>
+              </Box>
             </Box>
-          </Box>
-        </FormProvider>
+          </FormProvider>
       ),
       error: Object.keys(errorsStepTwo).length > 0,
     },
     {
       label: 'Success',
       stepContent: (
-        <>
-          Article created successfully!
-          <Box
-            sx={{
-              display: 'flex',
-              flexDirection: 'row',
-              pt: 2,
-              justifyContent: 'flex-end',
-            }}
-          >
-            <Button type='button' onClick={onSubmit}>
-              Open created article
-            </Button>
-          </Box>
-        </>
+          <>
+            Article created successfully!
+            <Box
+                sx={{
+                  display: 'flex',
+                  flexDirection: 'row',
+                  pt: 2,
+                  justifyContent: 'flex-end',
+                }}
+            >
+              <Button type='button' onClick={onSubmit}>
+                Open created article
+              </Button>
+            </Box>
+          </>
       ),
     },
   ];
 
   return (
-    <section className='my-10'>
-      <Stepper activeStep={activeStep} alternativeLabel>
-        {steps.map((step, index) => (
-          <Step key={index}>
-            <StepLabel error={step.error} StepIconComponent={CustomStepIcon}>
-              {step.label}
-            </StepLabel>
-          </Step>
-        ))}
-      </Stepper>
-      {steps[activeStep].stepContent}
-    </section>
+      <section className='my-10'>
+        <Stepper activeStep={activeStep} alternativeLabel>
+          {steps.map((step, index) => (
+              <Step key={index}>
+                <StepLabel error={step.error} StepIconComponent={CustomStepIcon}>
+                  {step.label}
+                </StepLabel>
+              </Step>
+          ))}
+        </Stepper>
+        {steps[activeStep].stepContent}
+      </section>
   );
 };
 export default WithAuth(Page);
