@@ -233,6 +233,9 @@ const Page = ({ params: { lng } }: PageParams) => {
 
   const handleSelectArticle = (article: Article) => {
     setArticleData(article);
+  };
+
+  const handleNewArticle = () => {
     deleteArticleData();
   };
 
@@ -465,19 +468,12 @@ const Page = ({ params: { lng } }: PageParams) => {
                 display: 'flex',
                 flexDirection: 'row',
                 pt: 2,
-                justifyContent: 'flex-start',
+                justifyContent: 'space-between',
               }}
             >
-              <Button type='submit'>New article</Button>
-            </Box>
-            <Box
-              sx={{
-                display: 'flex',
-                flexDirection: 'row',
-                pt: 2,
-                justifyContent: 'flex-end',
-              }}
-            >
+              <Button type='submit' onClick={() => handleNewArticle()}>
+                New article
+              </Button>
               <Button type='submit'>Proceed to settings</Button>
             </Box>
           </Box>
