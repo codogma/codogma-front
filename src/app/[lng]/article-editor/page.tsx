@@ -473,7 +473,7 @@ const Page = ({ params: { lng } }: PageParams) => {
                 justifyContent: 'space-between',
               }}
             >
-              <Button type='submit' onClick={() => handleNewArticle()}>
+              <Button onClick={() => handleNewArticle()}>
                 New article
               </Button>
               <Button type='submit'>Proceed to settings</Button>
@@ -651,7 +651,7 @@ const Page = ({ params: { lng } }: PageParams) => {
               justifyContent: 'space-between',
             }}
           >
-            <Button type='submit' onClick={() => handleNewArticle()}>
+            <Button onClick={() => handleNewArticle()}>
               New article
             </Button>
             <Button type='button' onClick={onSubmit}>
