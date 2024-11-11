@@ -12,8 +12,8 @@ import IconButton from '@mui/material/IconButton';
 import Popover from '@mui/material/Popover';
 import * as React from 'react';
 
+import { useTranslation } from '@/app/i18n/client';
 import { Article } from '@/types';
-import {useTranslation} from "@/app/i18n/client";
 
 type LinkWithPopoverProps = {
   readonly draftArticles: Article[];
@@ -26,7 +26,7 @@ export const LinkWithPopover = ({
   draftArticles,
   onDeleteArticle,
   onSelectArticle,
-  lang
+  lang,
 }: LinkWithPopoverProps) => {
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(
     null,
