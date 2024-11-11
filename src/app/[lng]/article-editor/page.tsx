@@ -27,6 +27,7 @@ import {
 } from 'react-hook-form';
 import { z } from 'zod';
 
+import { useTranslation } from '@/app/i18n/client';
 import FormInput from '@/components/FormInput';
 import { LinkWithPopover } from '@/components/LinkWithPopover';
 import { TinyMCEEditor } from '@/components/TinyMCEEditor';
@@ -112,6 +113,7 @@ const Page = ({ params: { lng } }: PageParams) => {
   const [inputTagValue, setInputTagValue] = useState<string>('');
   const [availableTags, setAvailableTags] = useState<string[]>([]);
   const [prevData, setPrevData] = useState<UpdateDraftArticleDTO | null>(null);
+  const { t } = useTranslation(lng, 'articleEditor');
 
   const zodStepOneForm = useForm<z.infer<typeof StepOneScheme>>({
     resolver: zodResolver(StepOneScheme),
@@ -427,7 +429,7 @@ const Page = ({ params: { lng } }: PageParams) => {
 
   const steps: StepType[] = [
     {
-      label: 'Main content',
+      label: t('mainContent'),
       stepContent: (
         <FormProvider {...zodStepOneForm}>
           <Box
@@ -440,7 +442,7 @@ const Page = ({ params: { lng } }: PageParams) => {
               <FormInput
                 className='w-full flex-1'
                 name='title'
-                label='Title'
+                label={t('title')}
                 variant='standard'
               />
               {draftArticles.length > 0 && (
@@ -451,7 +453,7 @@ const Page = ({ params: { lng } }: PageParams) => {
                 />
               )}
             </Box>
-            <Typography className='my-4'>Основная статья:</Typography>
+            <Typography className='my-4'>{t('mainContent')}:</Typography>
             {errorsStepOne.content?.message && (
               <Typography variant='body2' color='error'>
                 {errorsStepOne.content?.message}
@@ -477,9 +479,9 @@ const Page = ({ params: { lng } }: PageParams) => {
               }}
             >
               <Button onClick={() => handleNewArticle()}>
-                New article
+                {t('newArticle')}
               </Button>
-              <Button type='submit'>Proceed to settings</Button>
+              <Button type='submit'>{t('proceedToSettings')}</Button>
             </Box>
           </Box>
         </FormProvider>
@@ -487,7 +489,7 @@ const Page = ({ params: { lng } }: PageParams) => {
       error: Object.keys(errorsStepOne).length > 0,
     },
     {
-      label: 'Settings and preview content',
+      label: t('settingsAndPreview'),
       stepContent: (
         <FormProvider {...zodStepTwoForm}>
           <Box
@@ -518,9 +520,9 @@ const Page = ({ params: { lng } }: PageParams) => {
                   renderInput={(params) => (
                     <TextField
                       {...params}
-                      label='Categories'
+                      label={t('categories')}
                       variant='standard'
-                      placeholder='Select categories'
+                      placeholder={t('selectCategories')}
                       error={Boolean(errorsStepTwo.categoryIds?.message)}
                       helperText={errorsStepTwo.categoryIds?.message}
                     />
@@ -534,7 +536,7 @@ const Page = ({ params: { lng } }: PageParams) => {
               render={({ field }) => (
                 <TextField
                   select
-                  label='Language'
+                  label={t('language')}
                   variant='standard'
                   value={field.value}
                   onChange={field.onChange}
@@ -599,14 +601,14 @@ const Page = ({ params: { lng } }: PageParams) => {
                     <TextField
                       {...params}
                       variant='standard'
-                      label='Tags'
-                      placeholder='Select or create tags'
+                      label={t('tags')}
+                      placeholder={t('selectTags')}
                     />
                   )}
                 />
               )}
             />
-            <Typography className='my-4'>Краткое описание:</Typography>
+            <Typography className='my-4'>{t('shortDescription')}</Typography>
             {errorsStepTwo.previewContent?.message && (
               <Typography variant='body2' color='error'>
                 {errorsStepTwo.previewContent?.message}
@@ -632,9 +634,9 @@ const Page = ({ params: { lng } }: PageParams) => {
               }}
             >
               <Button color='inherit' onClick={handleBack}>
-                Back to publication
+                {t('backToPublication')}
               </Button>
-              <Button type='submit'>Send to moderate</Button>
+              <Button type='submit'>{t('sendToModerate')}</Button>
             </Box>
           </Box>
         </FormProvider>
@@ -642,10 +644,10 @@ const Page = ({ params: { lng } }: PageParams) => {
       error: Object.keys(errorsStepTwo).length > 0,
     },
     {
-      label: 'Success',
+      label: t('success'),
       stepContent: (
         <>
-          Article created successfully!
+          {t('articleCreated')}
           <Box
             sx={{
               display: 'flex',
@@ -655,10 +657,10 @@ const Page = ({ params: { lng } }: PageParams) => {
             }}
           >
             <Button onClick={() => handleNewArticle()}>
-              New article
+              {t('newArticle')}
             </Button>
             <Button type='button' onClick={onSubmit}>
-              Open created article
+              {t('openArticle')}
             </Button>
           </Box>
         </>

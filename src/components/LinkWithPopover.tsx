@@ -12,22 +12,26 @@ import IconButton from '@mui/material/IconButton';
 import Popover from '@mui/material/Popover';
 import * as React from 'react';
 
+import { useTranslation } from '@/app/i18n/client';
 import { Article } from '@/types';
 
 type LinkWithPopoverProps = {
   readonly draftArticles: Article[];
   readonly onDeleteArticle: (id: number) => void;
   readonly onSelectArticle: (article: Article) => void;
+  readonly lang: string;
 };
 
 export const LinkWithPopover = ({
   draftArticles,
   onDeleteArticle,
   onSelectArticle,
+  lang,
 }: LinkWithPopoverProps) => {
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(
     null,
   );
+  const { t } = useTranslation(lang, 'articleEditor');
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
@@ -60,7 +64,7 @@ export const LinkWithPopover = ({
         variant='contained'
         onClick={handleClick}
       >
-        {draftArticles.length} drafts <ExpandMore />
+        {draftArticles.length} {t('drafts')} <ExpandMore />
       </Link>
       <Popover
         id={id}
@@ -81,7 +85,7 @@ export const LinkWithPopover = ({
           aria-labelledby='nested-list-subheader'
           subheader={
             <ListSubheader component='div' id='nested-list-subheader'>
-              В черновиках:
+              {t('inDrafts')}
             </ListSubheader>
           }
         >

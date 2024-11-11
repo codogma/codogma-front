@@ -1,6 +1,7 @@
 import axios, { isAxiosError } from 'axios';
 
 import { devConsoleError } from '@/helpers/devConsoleLogs';
+import { getAuthToken } from '@/helpers/getCookies';
 
 export const axiosInstance = axios.create({
   baseURL: `${process.env.NEXT_PUBLIC_BASE_URL}/api`,
@@ -12,7 +13,13 @@ export const axiosInstance = axios.create({
 });
 
 axiosInstance.interceptors.request.use(
-  (config) => {
+  async (config) => {
+    if (typeof window === 'undefined') {
+      const authToken = await getAuthToken();
+      if (authToken) {
+        config.headers['Authorization'] = `Bearer ${authToken}`;
+      }
+    }
     return config;
   },
   (error) => {
