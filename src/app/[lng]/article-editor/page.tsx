@@ -377,13 +377,13 @@ const Page = ({ params: { lng } }: PageParams) => {
         ...stepOneData,
         ...stepTwoData,
       };
-      if (JSON.stringify(currentData) !== JSON.stringify(prevData)) {
-        const timer = setTimeout(() => {
+      const timer = setTimeout(() => {
+        if (JSON.stringify(currentData) !== JSON.stringify(prevData)) {
           updateDraftArticleMutate(currentData);
           setPrevData(currentData);
-        }, 5000);
-        return () => clearTimeout(timer);
-      }
+        }
+      }, 5000);
+      return () => clearTimeout(timer);
     }
   }, [
     articleId,
@@ -413,6 +413,9 @@ const Page = ({ params: { lng } }: PageParams) => {
       updateArticleMutate(requestData);
     }
     handleNext();
+    setStepOneData(null);
+    setStepTwoData(null);
+    setPrevData({});
     localStorage.removeItem(STEP_ONE_DATA);
     localStorage.removeItem(STEP_TWO_DATA);
     localStorage.removeItem(ARTICLE_ID);
