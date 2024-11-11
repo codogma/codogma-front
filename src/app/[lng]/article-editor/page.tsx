@@ -181,6 +181,26 @@ const Page = ({params: {lng}}: PageParams) => {
     }
   }, [draftArticlesData]);
 
+  const deleteArticleData = useCallback(() => {
+    setArticleId(0);
+    resetStepOne({ title: '', content: '' });
+    resetStepTwo({
+      language: lng,
+      originalArticleId: null,
+      previewContent: '',
+      categoryIds: [],
+      tags: [],
+    });
+    setReset(true);
+    setPrevData(null);
+    setActiveStep(0);
+    setStepOneData(null);
+    setStepTwoData(null);
+    localStorage.removeItem(STEP_ONE_DATA);
+    localStorage.removeItem(STEP_TWO_DATA);
+    localStorage.removeItem(ARTICLE_ID);
+  }, [resetStepOne, resetStepTwo, lng]);
+
   const handleDeleteArticle = (id: number) => {
     deleteArticle(id).then(() => {
       refetch().then((response) => {
@@ -189,23 +209,7 @@ const Page = ({params: {lng}}: PageParams) => {
         }
       });
       if (id === articleId) {
-        setArticleId(0);
-        resetStepOne({title: '', content: ''});
-        resetStepTwo({
-          language: lng,
-          originalArticleId: null,
-          previewContent: '',
-          categoryIds: [],
-          tags: [],
-        });
-        setReset(true);
-        setPrevData(null);
-        setActiveStep(0);
-        setStepOneData(null);
-        setStepTwoData(null);
-        localStorage.removeItem(STEP_ONE_DATA);
-        localStorage.removeItem(STEP_TWO_DATA);
-        localStorage.removeItem(ARTICLE_ID);
+        deleteArticleData();
       }
     });
   };
@@ -228,6 +232,10 @@ const Page = ({params: {lng}}: PageParams) => {
 
   const handleSelectArticle = (article: Article) => {
     setArticleData(article);
+  };
+
+  const handleNewArticle = () => {
+    deleteArticleData();
   };
 
   useEffect(() => {
@@ -366,13 +374,13 @@ const Page = ({params: {lng}}: PageParams) => {
         ...stepOneData,
         ...stepTwoData,
       };
-      if (JSON.stringify(currentData) !== JSON.stringify(prevData)) {
-        const timer = setTimeout(() => {
+      const timer = setTimeout(() => {
+        if (JSON.stringify(currentData) !== JSON.stringify(prevData)) {
           updateDraftArticleMutate(currentData);
           setPrevData(currentData);
-        }, 5000);
-        return () => clearTimeout(timer);
-      }
+        }
+      }, 5000);
+      return () => clearTimeout(timer);
     }
   }, [
     articleId,
@@ -402,6 +410,9 @@ const Page = ({params: {lng}}: PageParams) => {
       updateArticleMutate(requestData);
     }
     handleNext();
+    setStepOneData(null);
+    setStepTwoData(null);
+    setPrevData({});
     localStorage.removeItem(STEP_ONE_DATA);
     localStorage.removeItem(STEP_TWO_DATA);
     localStorage.removeItem(ARTICLE_ID);
@@ -459,9 +470,12 @@ const Page = ({params: {lng}}: PageParams) => {
                     display: 'flex',
                     flexDirection: 'row',
                     pt: 2,
-                    justifyContent: 'flex-end',
+                    justifyContent: 'space-between',
                   }}
               >
+                <Button onClick={() => handleNewArticle()}>
+                  {t('newArticle')}
+                </Button>
                 <Button type='submit'>{t('proceedToSettings')}</Button>
               </Box>
             </Box>
@@ -634,9 +648,12 @@ const Page = ({params: {lng}}: PageParams) => {
                   display: 'flex',
                   flexDirection: 'row',
                   pt: 2,
-                  justifyContent: 'flex-end',
+                  justifyContent: 'space-between',
                 }}
             >
+              <Button onClick={() => handleNewArticle()}>
+                {t('newArticle')}
+              </Button>
               <Button type='button' onClick={onSubmit}>
                 {t('openArticle')}
               </Button>
