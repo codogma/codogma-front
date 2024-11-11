@@ -1,0 +1,19 @@
+{
+  "mainContent": "Main content",
+  "title": "Title",
+  "proceedToSettings": "Proceed to settings",
+  "settingsAndPreview": "Settings and preview content",
+  "categories": "Categories",
+  "selectCategories": "Select categories",
+  "language": "Language",
+  "tags": "Tags",
+  "selectTags": "Select or create tags",
+  "shortDescription": "Short description:",
+  "backToPublication": "Back to publication",
+  "sendToModerate": "Send to moderate",
+  "success": "Success",
+  "articleCreated": "Article created successfully!",
+  "openArticle": "Open created article",
+  "inDrafts": "In drafts:",
+  "drafts": "drafts"
+}
