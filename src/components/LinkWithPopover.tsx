@@ -10,7 +10,7 @@ import {
 } from '@mui/material';
 import IconButton from '@mui/material/IconButton';
 import Popover from '@mui/material/Popover';
-import * as React from 'react';
+import React, { useState } from 'react';
 
 import { useTranslation } from '@/app/i18n/client';
 import { Article } from '@/types';
@@ -31,6 +31,7 @@ export const LinkWithPopover = ({
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(
     null,
   );
+  const [inDrafts, setInDrafts] = useState<string>();
   const { t } = useTranslation(lang, 'articleEditor');
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -61,10 +62,9 @@ export const LinkWithPopover = ({
         aria-describedby={id}
         type='button'
         underline='none'
-        variant='contained'
         onClick={handleClick}
       >
-        {draftArticles.length} {t('drafts')} <ExpandMore />
+        {draftArticles.length} {t('inDrafts')} <ExpandMore />
       </Link>
       <Popover
         id={id}

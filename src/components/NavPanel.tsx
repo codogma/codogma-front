@@ -73,7 +73,11 @@ export const NavPanel = ({ lang }: NavPanelProps) => {
         <List>
           {[t('articles'), t('categories')].map((text, index) => (
             <ListItem key={text} disablePadding sx={{ display: 'block' }}>
-              <Link href={index % 2 === 0 ? '/articles' : '/categories'}>
+              <Link
+                href={
+                  index % 2 === 0 ? `/${lang}/articles` : `/${lang}/categories`
+                }
+              >
                 <ListItemButton
                   sx={[
                     {
