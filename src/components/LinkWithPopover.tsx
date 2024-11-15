@@ -10,7 +10,7 @@ import {
 } from '@mui/material';
 import IconButton from '@mui/material/IconButton';
 import Popover from '@mui/material/Popover';
-import React, { useState } from 'react';
+import React from 'react';
 
 import { useTranslation } from '@/app/i18n/client';
 import { Article } from '@/types';
@@ -31,7 +31,7 @@ export const LinkWithPopover = ({
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(
     null,
   );
-  const [inDrafts, setInDrafts] = useState<string>();
+
   const { t } = useTranslation(lang, 'articleEditor');
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -85,7 +85,7 @@ export const LinkWithPopover = ({
           aria-labelledby='nested-list-subheader'
           subheader={
             <ListSubheader component='div' id='nested-list-subheader'>
-              {t('inDrafts')}
+              {t('titleDrafts')}
             </ListSubheader>
           }
         >

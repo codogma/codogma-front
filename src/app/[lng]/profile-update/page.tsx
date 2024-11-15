@@ -58,17 +58,21 @@ const VisuallyHiddenInput = styled('input')({
   width: 1,
 });
 
-type UsersProps = {
-  readonly lang: string;
+type PageParams = {
+  lng: string;
 };
 
-function Users({ lang }: UsersProps) {
+type PageProps = {
+  readonly params: PageParams;
+};
+
+function Page({ params: { lng } }: PageProps) {
   const { state } = useAuth();
   const username: string | undefined = state.user?.username;
   const [user, setUser] = useState<User>();
   const [avatarFile, setAvatarFile] = useState<File>();
   const [users, setUsers] = useState<User[]>([]);
-  const { t } = useTranslation(lang);
+  const { t } = useTranslation(lng);
 
   const zodForm = useForm<z.infer<typeof UserScheme>>({
     resolver: zodResolver(UserScheme),
@@ -246,4 +250,4 @@ function Users({ lang }: UsersProps) {
   );
 }
 
-export default WithAuth(Users);
+export default WithAuth(Page);
