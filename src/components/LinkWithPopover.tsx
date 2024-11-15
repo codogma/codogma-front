@@ -10,10 +10,10 @@ import {
 } from '@mui/material';
 import IconButton from '@mui/material/IconButton';
 import Popover from '@mui/material/Popover';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { useTranslation } from '@/app/i18n/client';
-import { Article } from '@/types';
+import { Article, Language } from '@/types';
 
 type LinkWithPopoverProps = {
   readonly draftArticles: Article[];
@@ -33,6 +33,29 @@ export const LinkWithPopover = ({
   );
 
   const { t } = useTranslation(lang, 'articleEditor');
+  const [inDrafts, setInDrafts] = useState<string>();
+
+  useEffect(() => {
+    const match = draftArticles.length.toString().match(/\d$/);
+    if (match) {
+      const lastDigit = Number(match[0]);
+      if (lang === Language.RU) {
+        if (lastDigit === 1) {
+          setInDrafts(t('inDrafts'));
+        } else if ([2, 3, 4].includes(lastDigit)) {
+          setInDrafts(t('inDrafts') + 'а');
+        } else {
+          setInDrafts(t('inDrafts') + 'ов');
+        }
+      } else {
+        if (lastDigit > 1) {
+          setInDrafts(t('inDrafts') + 's');
+        } else {
+          setInDrafts(t('inDrafts'));
+        }
+      }
+    }
+  }, [draftArticles, lang, t]);
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
@@ -64,7 +87,8 @@ export const LinkWithPopover = ({
         underline='none'
         onClick={handleClick}
       >
-        {draftArticles.length} {t('inDrafts')} <ExpandMore />
+        {draftArticles.length} {inDrafts}
+        <ExpandMore />
       </Link>
       <Popover
         id={id}
