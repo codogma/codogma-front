@@ -139,7 +139,6 @@ export default function Page({ params: { lng } }: PageProps) {
           position: 'sticky',
           top: '64px',
           zIndex: 10,
-          backgroundColor: 'white',
           boxShadow: '0px 4px 6px rgba(0, 0, 0, 0.1)',
           p: '6px',
           m: '0px auto 8px auto',
