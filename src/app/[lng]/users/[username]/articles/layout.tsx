@@ -13,7 +13,7 @@ type LayoutProps = {
 export async function generateMetadata({
   params: { username, lng },
 }: LayoutProps): Promise<Metadata> {
-  const user = await getUserByUsername(username, lng);
+  const user = await getUserByUsername(username);
   const { t } = await initTranslation(lng, 'users');
   return {
     alternates: {

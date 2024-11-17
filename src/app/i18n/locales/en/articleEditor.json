@@ -14,7 +14,7 @@
   "success": "Success",
   "articleCreated": "Article created successfully!",
   "openArticle": "Open created article",
-  "inDrafts": "In drafts:",
-  "drafts": "drafts",
-  "newArticle": "New article"
+  "newArticle": "New article",
+  "inDrafts": "draft",
+  "titleDrafts": "In drafts:"
 }

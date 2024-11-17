@@ -450,6 +450,7 @@ const Page = ({ params: { lng } }: PageParams) => {
                   draftArticles={draftArticles}
                   onDeleteArticle={handleDeleteArticle}
                   onSelectArticle={handleSelectArticle}
+                  lang={lng}
                 />
               )}
             </Box>

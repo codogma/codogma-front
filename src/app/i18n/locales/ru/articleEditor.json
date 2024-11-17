@@ -14,7 +14,7 @@
   "success": "Успех",
   "articleCreated": "Статья успешно создана!",
   "openArticle": "Открыть статью",
-  "inDrafts": "В черновиках:",
-  "drafts": "черновики",
-  "newArticle": "Новая статья"
+  "newArticle": "Новая статья",
+  "inDrafts": "черновик",
+  "titleDrafts": "В черновиках:"
 }

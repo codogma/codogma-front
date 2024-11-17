@@ -5,7 +5,7 @@ import { CreateComment, GetComment, UpdateComment } from '@/types';
 export const getCommentsByArticleId = async (
   articleId: number,
 ): Promise<GetComment[]> => {
-  const response = await axiosInstance.get(`comments/article/${articleId}`);
+  const response = await axiosInstance.get(`/comments/article/${articleId}`);
   return response.data;
 };
 
