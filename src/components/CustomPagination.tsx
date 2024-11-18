@@ -11,8 +11,8 @@ import { useTranslation } from '@/app/i18n/client';
 
 type PaginationProps = {
   readonly lang: string;
-  readonly totalPages?: number;
-  readonly totalElements?: number;
+  readonly totalPages: number;
+  readonly totalElements: number;
   readonly onCurrentPageChange: (value: number) => void;
   readonly onResultsPerPageChange: (value: number) => void;
 };

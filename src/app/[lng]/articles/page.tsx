@@ -61,8 +61,8 @@ export default function Page({ params: { lng } }: PageProps) {
       DOMPurify.sanitize(article.previewContent),
     ),
   }));
-  const totalPages = data?.totalPages;
-  const totalElements = data?.totalElements;
+  const totalPages = data?.totalPages ?? 0;
+  const totalElements = data?.totalElements ?? 0;
 
   useEffect(() => {
     window.addEventListener(contlCookie, () => refetch());
