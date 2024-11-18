@@ -1,23 +1,19 @@
 'use client';
-import MenuIcon from '@mui/icons-material/Menu';
-import SearchIcon from '@mui/icons-material/Search';
 import FormControl from '@mui/material/FormControl';
-import IconButton from '@mui/material/IconButton';
 import InputLabel from '@mui/material/InputLabel';
-import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import Pagination from '@mui/material/Pagination';
-import Paper from '@mui/material/Paper';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
 import { useQuery } from '@tanstack/react-query';
 import DOMPurify from 'dompurify';
-import React, { FormEvent, useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 import { useTranslation } from '@/app/i18n/client';
 import Articles from '@/components/Articles';
 import { useContentImageContext } from '@/components/ContentImageProvider';
+import { Search } from '@/components/Search';
 import { contlCookie } from '@/constants/i18n';
 import { getArticles, GetArticlesDTO } from '@/helpers/articleApi';
 
@@ -37,20 +33,17 @@ export default function Page({ params: { lng } }: PageProps) {
   const [resultsPerPage, setResultsPerPage] =
     useState<number>(resultsPerPage10);
   const [searchValue, setSearchValue] = useState<string>();
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [searchType, setSearchType] = useState<'content' | 'tag'>('content');
   const { processContent } = useContentImageContext();
   const { t } = useTranslation(lng);
-  const { t: tArt } = useTranslation(lng, 'articles');
-  const { t: tCom } = useTranslation(lng);
 
-  const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorEl(event.currentTarget);
+  const onSearchType = (type: 'content' | 'tag') => {
+    setSearchType(type);
   };
 
-  const handleMenuClose = (type: 'content' | 'tag') => {
-    setSearchType(type);
-    setAnchorEl(null);
+  const onSearchValue = (value: string) => {
+    setSearchValue(value);
+    setCurrentPage(0);
   };
 
   const { data, isFetching, refetch } = useQuery<GetArticlesDTO>({
@@ -70,7 +63,6 @@ export default function Page({ params: { lng } }: PageProps) {
         resultsPerPage,
         byTag,
         byContent,
-        undefined,
       );
     },
   });
@@ -95,14 +87,6 @@ export default function Page({ params: { lng } }: PageProps) {
       searchInputRef.current.focus();
     }
   }, [refetch]);
-
-  const handleSearchSubmit = (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    const formData = new FormData(event.currentTarget);
-    const searchValue = formData.get('search') as string;
-    setSearchValue(searchValue);
-    setCurrentPage(0);
-  };
 
   const handlePageChange = (
     event: React.ChangeEvent<unknown>,
@@ -133,51 +117,11 @@ export default function Page({ params: { lng } }: PageProps) {
 
   return (
     <>
-      <Paper
-        component='form'
-        sx={{
-          position: 'sticky',
-          top: '64px',
-          zIndex: 10,
-          boxShadow: '0px 4px 6px rgba(0, 0, 0, 0.1)',
-          p: '6px',
-          m: '0px auto 8px auto',
-          display: 'flex',
-          alignItems: 'center',
-        }}
-        onSubmit={handleSearchSubmit}
-        variant='outlined'
-      >
-        <IconButton
-          sx={{ p: '10px' }}
-          aria-label='menu'
-          onClick={handleMenuOpen}
-        >
-          <MenuIcon />
-        </IconButton>
-        <Menu
-          anchorEl={anchorEl}
-          open={Boolean(anchorEl)}
-          onClose={() => handleMenuClose(searchType)}
-        >
-          <MenuItem onClick={() => handleMenuClose('content')}>
-            {tArt(`searchContent`)}
-          </MenuItem>
-          <MenuItem onClick={() => handleMenuClose('tag')}>
-            {tArt(`searchTags`)}
-          </MenuItem>
-        </Menu>
-        <TextField
-          label={`${tArt('articlesSearchBy')}${tArt(searchType)}`}
-          id='search-input'
-          sx={{ ml: 1, flex: 1 }}
-          size='small'
-          name='search'
-        />
-        <IconButton type='submit' sx={{ p: '10px' }} aria-label='search'>
-          <SearchIcon />
-        </IconButton>
-      </Paper>
+      <Search
+        lang={lng}
+        onSearchType={onSearchType}
+        onSearchValue={onSearchValue}
+      />
       <Articles lang={lng} articles={articles} loading={isFetching} />
       {totalPages < minPages ? null : (
         <Stack
@@ -214,7 +158,7 @@ export default function Page({ params: { lng } }: PageProps) {
             size='small'
             disabled={totalElements <= resultsPerPage10}
           >
-            <InputLabel id='select-label'>{tCom(`paginationPages`)}</InputLabel>
+            <InputLabel id='select-label'>{t('paginationPages')}</InputLabel>
             <Select
               labelId='select-label'
               id='simple-select'

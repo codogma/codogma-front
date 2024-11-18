@@ -1,10 +1,5 @@
 {
   "articlesDescription": "Статьи CODOGMA",
-  "articlesSearchBy": "Поиск статей по ",
-  "content": "содержанию",
-  "tag": "тегу",
-  "searchContent": "По содержанию",
-  "searchTags": "По тегу",
   "addCommentBtn": "Добавить комментарий",
   "updateCommentBtn": "Обновить комментарий",
   "writeComment": "Напишите комментарий...",
