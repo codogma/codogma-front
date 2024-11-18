@@ -1,18 +1,11 @@
 'use client';
-import FormControl from '@mui/material/FormControl';
-import InputLabel from '@mui/material/InputLabel';
-import MenuItem from '@mui/material/MenuItem';
-import Pagination from '@mui/material/Pagination';
-import Select, { SelectChangeEvent } from '@mui/material/Select';
-import Stack from '@mui/material/Stack';
-import TextField from '@mui/material/TextField';
 import { useQuery } from '@tanstack/react-query';
 import DOMPurify from 'dompurify';
 import React, { useEffect, useRef, useState } from 'react';
 
-import { useTranslation } from '@/app/i18n/client';
 import Articles from '@/components/Articles';
 import { useContentImageContext } from '@/components/ContentImageProvider';
+import { CustomPagination } from '@/components/CustomPagination';
 import { Search } from '@/components/Search';
 import { contlCookie } from '@/constants/i18n';
 import { getArticles, GetArticlesDTO } from '@/helpers/articleApi';
@@ -24,18 +17,12 @@ type PageProps = {
 };
 
 export default function Page({ params: { lng } }: PageProps) {
-  const resultsPerPage10 = 10;
-  const resultsPerPage20 = 20;
-  const resultsPerPage30 = 30;
-  const minPages = 2;
   const searchInputRef = useRef<HTMLInputElement>(null);
   const [currentPage, setCurrentPage] = useState<number>(0);
-  const [resultsPerPage, setResultsPerPage] =
-    useState<number>(resultsPerPage10);
+  const [resultsPerPage, setResultsPerPage] = useState<number>(10);
   const [searchValue, setSearchValue] = useState<string>();
   const [searchType, setSearchType] = useState<'content' | 'tag'>('content');
   const { processContent } = useContentImageContext();
-  const { t } = useTranslation(lng);
 
   const onSearchType = (type: 'content' | 'tag') => {
     setSearchType(type);
@@ -74,8 +61,8 @@ export default function Page({ params: { lng } }: PageProps) {
       DOMPurify.sanitize(article.previewContent),
     ),
   }));
-  const totalPages = data?.totalPages || 0;
-  const totalElements = data?.totalElements || 0;
+  const totalPages = data?.totalPages;
+  const totalElements = data?.totalElements;
 
   useEffect(() => {
     window.addEventListener(contlCookie, () => refetch());
@@ -88,31 +75,12 @@ export default function Page({ params: { lng } }: PageProps) {
     }
   }, [refetch]);
 
-  const handlePageChange = (
-    event: React.ChangeEvent<unknown>,
-    value: number,
-  ) => {
-    setCurrentPage(value - 1);
+  const onPageChange = (value: number) => {
+    setCurrentPage(value);
   };
 
-  const handleArticlesCountChange = (event: SelectChangeEvent) => {
-    setResultsPerPage(Number(event.target.value));
-    setCurrentPage(0);
-  };
-
-  const handlePageChangeInput = (
-    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-  ) => {
-    const value = Number(event.target.value);
-    if (value > 0 && value <= totalPages) {
-      setCurrentPage(value - 1);
-    }
-    if (value === 0) {
-      setCurrentPage(0);
-    }
-    if (value > totalPages) {
-      setCurrentPage(totalPages - 1);
-    }
+  const onResultsPerPageChange = (value: number) => {
+    setResultsPerPage(value);
   };
 
   return (
@@ -123,61 +91,13 @@ export default function Page({ params: { lng } }: PageProps) {
         onSearchValue={onSearchValue}
       />
       <Articles lang={lng} articles={articles} loading={isFetching} />
-      {totalPages < minPages ? null : (
-        <Stack
-          spacing={2}
-          sx={{
-            display: 'flex',
-            alignItems: 'center',
-            pb: 5,
-            pt: 5,
-            justifyContent: 'center',
-            flexDirection: 'row',
-            '& .MuiTextField-root': { m: 0, ml: 1 },
-            '& .MuiFormControl-root': { m: 0, ml: 1 },
-          }}
-        >
-          <Pagination
-            count={totalPages}
-            page={currentPage + 1}
-            onChange={handlePageChange}
-            variant='outlined'
-            shape='rounded'
-          />
-          <TextField
-            label={t('layout')}
-            id='page'
-            size='small'
-            defaultValue={currentPage + 1}
-            value={currentPage + 1}
-            sx={{ width: 100 }}
-            onChange={handlePageChangeInput}
-          />
-          <FormControl
-            sx={{ width: 150 }}
-            size='small'
-            disabled={totalElements <= resultsPerPage10}
-          >
-            <InputLabel id='select-label'>{t('paginationPages')}</InputLabel>
-            <Select
-              labelId='select-label'
-              id='simple-select'
-              value={String(resultsPerPage)}
-              label='View Results'
-              onChange={handleArticlesCountChange}
-              variant='standard'
-            >
-              <MenuItem value={resultsPerPage10}>{resultsPerPage10}</MenuItem>
-              {totalElements > resultsPerPage10 && (
-                <MenuItem value={resultsPerPage20}>{resultsPerPage20}</MenuItem>
-              )}
-              {totalElements > resultsPerPage20 && (
-                <MenuItem value={resultsPerPage30}>{resultsPerPage30}</MenuItem>
-              )}
-            </Select>
-          </FormControl>
-        </Stack>
-      )}
+      <CustomPagination
+        lang={lng}
+        totalPages={totalPages}
+        totalElements={totalElements}
+        onCurrentPageChange={onPageChange}
+        onResultsPerPageChange={onResultsPerPageChange}
+      />
     </>
   );
 }
