@@ -14,16 +14,16 @@ export async function generateMetadata({
   params: { username, lng },
 }: LayoutProps): Promise<Metadata> {
   const user = await getUserByUsername(username);
-  const { t } = await initTranslation(lng, 'users');
+  const { t } = await initTranslation(lng, 'authors');
   return {
     alternates: {
-      canonical: `/users/${username}/profile`,
+      canonical: `/authors/${username}/subscribers`,
       languages: {
-        en: `/en/users/${username}/profile`,
-        ru: `/ru/users/${username}/profile`,
+        en: `/en/authors/${username}/subscribers`,
+        ru: `/ru/authors/${username}/subscribers`,
       },
     },
-    title: t('profileByUser'),
+    title: t('subscribersByUser'),
     description: user.shortInfo,
     keywords: user.categories.map((category) => category.name),
   };

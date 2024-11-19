@@ -17,7 +17,6 @@ import { WithAuth } from '@/components/WithAuth';
 import { devConsoleError } from '@/helpers/devConsoleLogs';
 import {
   deleteUser,
-  getAuthors,
   getUserByUsername,
   updateUser,
   UserUpdate,
@@ -71,7 +70,6 @@ function Page({ params: { lng } }: PageProps) {
   const username: string | undefined = state.user?.username;
   const [user, setUser] = useState<User>();
   const [avatarFile, setAvatarFile] = useState<File>();
-  const [users, setUsers] = useState<User[]>([]);
   const { t } = useTranslation(lng);
 
   const zodForm = useForm<z.infer<typeof UserScheme>>({
@@ -116,19 +114,6 @@ function Page({ params: { lng } }: PageProps) {
     fetchData();
   }, [username, zodForm]);
 
-  useEffect(() => {
-    async function fetchData() {
-      try {
-        const allUsers = await getAuthors();
-        setUsers(allUsers);
-      } catch (error) {
-        devConsoleError('Error fetching data:', error);
-      }
-    }
-
-    fetchData();
-  }, []);
-
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
@@ -150,7 +135,6 @@ function Page({ params: { lng } }: PageProps) {
 
   const handleDelete = (event: MouseEvent<HTMLElement>) => {
     const userId = event.currentTarget.id;
-    setUsers(users.filter((user) => user.username !== userId));
     deleteUser(userId);
   };
 
@@ -239,7 +223,7 @@ function Page({ params: { lng } }: PageProps) {
             variant='standard'
           />
           <Button type='submit'>{t('updateBtn')}</Button>
-          <Link href={`/users`}>
+          <Link href={`/authors`}>
             <Button id={user?.username} onClick={handleDelete}>
               {t('deleteBtn')}
             </Button>

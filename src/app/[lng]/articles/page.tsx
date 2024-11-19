@@ -54,7 +54,7 @@ export default function Page({ params: { lng } }: PageProps) {
     },
   });
 
-  const content = data?.content || [];
+  const content = data?.content ?? [];
   const articles = content.map((article) => ({
     ...article,
     previewContentNode: processContent(

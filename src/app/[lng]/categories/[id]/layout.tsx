@@ -26,7 +26,7 @@ export default function Layout({ params: { id, lng }, children }: PageProps) {
   const { t } = useTranslation(lng);
   const tabs: TabProps[] = [
     { label: t('articles'), href: `/${lng}/categories/${id}/articles` },
-    { label: t('users'), href: `/${lng}/categories/${id}/authors` },
+    { label: t('authors'), href: `/${lng}/categories/${id}/authors` },
   ];
 
   const { data: category } = useQuery<Category>({

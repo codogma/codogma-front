@@ -4,7 +4,7 @@
   "commentsByUser": "Comments by author",
   "subscribersByUser": "Subscribers by author",
   "subscriptionsByUser": "Subscriptions by user",
-  "usersDescription": "Users CODOGMA",
+  "authorsDescription": "Authors CODOGMA",
   "followBtn": "Follow",
   "followingBtn": "Following"
 }

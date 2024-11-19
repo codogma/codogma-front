@@ -14,11 +14,10 @@ type PageProps = {
   readonly params: PageParams;
 };
 
-function Page({ params }: PageProps) {
+export default function Page({ params }: PageProps) {
   const categoryId = params.id;
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
-  const [isAuthor, setIsAuthor] = useState(false);
 
   useEffect(() => {
     async function fetchData() {
@@ -26,7 +25,6 @@ function Page({ params }: PageProps) {
         const allUsers = await getAuthors(categoryId);
         devConsoleInfo(allUsers);
         setUsers(allUsers);
-        setIsAuthor(true);
       } catch (error) {
         devConsoleError('Error fetching data:', error);
       } finally {
@@ -37,7 +35,5 @@ function Page({ params }: PageProps) {
     fetchData();
   }, [categoryId]);
 
-  return <Users users={users} loading={loading} isAuthor={isAuthor} />;
+  return <Users users={users} loading={loading} />;
 }
-
-export default Page;

@@ -31,17 +31,17 @@ export default function Layout({
   const [user, setUser] = useState<User>();
 
   const tabs: TabProps[] = [
-    { label: `${t('profile')}`, href: `/${lng}/users/${username}/profile` },
-    { label: `${t('articles')}`, href: `/${lng}/users/${username}/articles` },
+    { label: `${t('profile')}`, href: `/${lng}/authors/${username}/profile` },
+    { label: `${t('articles')}`, href: `/${lng}/authors/${username}/articles` },
     {
       label: `${t('subscribers')}`,
-      href: `/${lng}/users/${username}/subscribers`,
+      href: `/${lng}/authors/${username}/subscribers`,
     },
     {
       label: `${t('subscriptions')}`,
-      href: `/${lng}/users/${username}/subscriptions`,
+      href: `/${lng}/authors/${username}/subscriptions`,
     },
-    { label: `${t('comments')}`, href: `/${lng}/users/${username}/comments` },
+    { label: `${t('comments')}`, href: `/${lng}/authors/${username}/comments` },
   ];
 
   useEffect(() => {

@@ -45,7 +45,7 @@ export default function Page({ params: { lng } }: PageProps) {
             />
             <Link
               className='article-user-name'
-              href={`/users/${article.username}`}
+              href={`/authors/${article.username}`}
             >
               {article.username}
             </Link>

@@ -76,7 +76,7 @@ export default async function RootLayout({
   const tabs: TabProps[] = [
     { label: `${t('articles')}`, href: `/${lng}/articles` },
     { label: `${t('categories')}`, href: `/${lng}/categories` },
-    { label: `${t('users')}`, href: `/${lng}/users` },
+    { label: `${t('authors')}`, href: `/${lng}/authors` },
   ];
 
   return (

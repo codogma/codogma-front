@@ -14,8 +14,8 @@ const nextConfig = {
         permanent: true,
       },
       {
-        source: '/:lng/users/:username',
-        destination: '/:lng/users/:username/profile',
+        source: '/:lng/authors/:username',
+        destination: '/:lng/authors/:username/profile',
         permanent: true,
       },
     ];

@@ -4,7 +4,7 @@
   "commentsByUser": "Комментарии автора",
   "subscribersByUser": "Подписчики автора",
   "subscriptionsByUser": "Подписки автора",
-  "usersDescription": "Пользователи CODOGMA",
+  "authorsDescription": "Авторы CODOGMA",
   "followBtn": "Подписаться",
   "followingBtn": "Отписаться"
 }

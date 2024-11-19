@@ -20,14 +20,14 @@ type PageProps = {
 
 const Page = ({ params }: PageProps) => {
   const username: string = params.username;
-  const [subscriptions, setSubscriptions] = useState<User[]>([]);
+  const [subscribers, setSubscribers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     async function fetchData() {
       try {
         const user = await getUserByUsername(username);
-        setSubscriptions(user.subscriptions);
+        setSubscribers(user.subscribers);
         setLoading(false);
       } catch (error) {
         devConsoleError('Error fetching data:', error);
@@ -49,7 +49,7 @@ const Page = ({ params }: PageProps) => {
           </CardContent>
         </Card>
       ) : (
-        subscriptions?.map((user) => (
+        subscribers?.map((user) => (
           <Card key={user.username} variant='outlined' className='card'>
             <CardContent className='card-content'>
               <Box className='meta-container'>
@@ -62,13 +62,13 @@ const Page = ({ params }: PageProps) => {
                     size={32}
                   />
                   <Link
-                    href={`/users/${user.username}`}
-                    className='subscriptions-user-name'
+                    href={`/authors/${user.username}`}
+                    className='subscribers-user-name'
                   >
                     @{user.username}
                   </Link>
                 </>
-                <div className='subscriptions-user-description'>
+                <div className='subscribers-user-description'>
                   {user.shortInfo}
                 </div>
               </Box>
