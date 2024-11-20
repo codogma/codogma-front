@@ -18,7 +18,6 @@ import { ContentImageProvider } from '@/components/ContentImageProvider';
 import Footer from '@/components/Footer';
 import NavBar from '@/components/NavBar';
 import { NavPanel } from '@/components/NavPanel';
-import NavTabs, { TabProps } from '@/components/NavTabs';
 import { ReactQueryProvider } from '@/components/ReactQueryProvider';
 import { Spinner } from '@/components/Spinner';
 import { ColorModeProvider } from '@/components/ThemeContext';
@@ -72,13 +71,6 @@ export default async function RootLayout({
   children,
   params: { lng },
 }: RootLayoutProps) {
-  const { t } = await initTranslation(lng);
-  const tabs: TabProps[] = [
-    { label: `${t('articles')}`, href: `/${lng}/articles` },
-    { label: `${t('categories')}`, href: `/${lng}/categories` },
-    { label: `${t('authors')}`, href: `/${lng}/authors` },
-  ];
-
   return (
     <html lang={lng}>
       <body className={inter.className}>
@@ -94,7 +86,6 @@ export default async function RootLayout({
                       <NavPanel lang={lng} />
                       <ButtonBackToTop>
                         <main className='grow px-3'>
-                          <NavTabs tabs={tabs} />
                           <Suspense fallback={<Spinner />}>
                             <ContentImageProvider>
                               {children}
