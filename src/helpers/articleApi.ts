@@ -62,6 +62,7 @@ export const getArticles = async (
   tag?: string,
   content?: string,
   username?: string,
+  feedByUsername?: string,
 ): Promise<GetArticlesDTO> => {
   const response = await axiosInstance.get('/articles', {
     params: {
@@ -71,6 +72,7 @@ export const getArticles = async (
       page,
       size,
       username,
+      feedByUsername,
     },
   });
   return response.data;

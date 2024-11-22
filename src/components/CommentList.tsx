@@ -69,7 +69,7 @@ export const CommentList: React.FC<CommentListProps> = ({
             />
             <Link
               className='article-user-name'
-              href={`/users/${comment.user.username}`}
+              href={`/authors/${comment.user.username}`}
             >
               {comment.user.username}
             </Link>

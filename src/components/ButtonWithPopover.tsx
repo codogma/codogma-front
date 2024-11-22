@@ -28,7 +28,7 @@ export const ButtonWithPopover: React.FC<CustomPopoverProps> = ({
   const [isSubscribed, setIsSubscribed] = useState(false);
   const { state } = useAuth();
   const router = useRouter();
-  const { t } = useTranslation(lang, 'users');
+  const { t } = useTranslation(lang, 'authors');
   const open = Boolean(anchorEl);
   const id = open ? 'simple-popover' : undefined;
 

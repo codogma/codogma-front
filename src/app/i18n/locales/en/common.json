@@ -1,7 +1,9 @@
 {
   "articles": "Articles",
+  "feed": "My feed",
   "categories": "Categories",
-  "users": "Users",
+  "authors": "Authors",
+  "favoriteCategories": "Favorite categories",
   "readMoreBtn": "Read more",
   "editBtn": "Edit",
   "search": "Search",

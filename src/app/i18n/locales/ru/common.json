@@ -1,7 +1,9 @@
 {
   "articles": "Статьи",
+  "feed": "Моя лента",
   "categories": "Категории",
-  "users": "Пользователи",
+  "authors": "Авторы",
+  "favoriteCategories": "Избранные категории",
   "readMoreBtn": "Читать далее",
   "editBtn": "Редактировать",
   "search": "Поиск",

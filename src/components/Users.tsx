@@ -12,10 +12,9 @@ import { User, UserRole } from '@/types';
 type AuthorsProps = {
   readonly users: User[];
   readonly loading?: boolean;
-  readonly isAuthor?: boolean;
 };
 
-export default function Users({ users, loading, isAuthor }: AuthorsProps) {
+export default function Users({ users, loading }: AuthorsProps) {
   const { state } = useAuth();
 
   return (
@@ -38,7 +37,6 @@ export default function Users({ users, loading, isAuthor }: AuthorsProps) {
           </CardContent>
         </Card>
       ) : (
-        users &&
         users?.map((user) => (
           <Card key={user.username} variant='outlined' className='itb-user'>
             <CardContent>
@@ -51,15 +49,17 @@ export default function Users({ users, loading, isAuthor }: AuthorsProps) {
                   size={24}
                 />
               </div>
-              <Link href={`/users/${user.username}`} className='user-title'>
+              <Link href={`/authors/${user.username}`} className='user-title'>
                 {user.username}
               </Link>
-              <Link href={`/users/${user.username}`} className='user-nickname'>
+              <Link
+                href={`/authors/${user.username}`}
+                className='user-nickname'
+              >
                 @{user.username}
               </Link>
               <div className='user-description'>{user.shortInfo}</div>
-              {isAuthor &&
-                state.user?.role === UserRole.ROLE_AUTHOR &&
+              {state.user?.role === UserRole.ROLE_AUTHOR &&
                 user.categories?.length > 0 && (
                   <div className='user-item_categories'>
                     Пишет в категориях:
