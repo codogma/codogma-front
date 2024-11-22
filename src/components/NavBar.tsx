@@ -151,7 +151,7 @@ const NavBar = ({ lang }: NavBarProps) => {
                 <MenuList className='nav-menu-list'>
                   <MenuItem
                     onClick={() =>
-                      handleClickMenuItem(`/users/${state.user?.username}`)
+                      handleClickMenuItem(`/authors/${state.user?.username}`)
                     }
                   >
                     <Typography textAlign='center'>

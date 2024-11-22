@@ -1,7 +1,7 @@
 import axios, { isAxiosError } from 'axios';
 
 import { devConsoleError } from '@/helpers/devConsoleLogs';
-import { getAuthToken } from '@/helpers/getCookies';
+import { getAuthToken, getIntl } from '@/helpers/getCookies';
 
 export const axiosInstance = axios.create({
   baseURL: `${process.env.NEXT_PUBLIC_BASE_URL}/api`,
@@ -18,6 +18,10 @@ axiosInstance.interceptors.request.use(
       const authToken = await getAuthToken();
       if (authToken) {
         config.headers['Authorization'] = `Bearer ${authToken}`;
+      }
+      const intl = await getIntl();
+      if (intl) {
+        config.headers['Accept-Language'] = intl;
       }
     }
     return config;

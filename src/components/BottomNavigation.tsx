@@ -1,14 +1,16 @@
 'use client';
 import ArticleIcon from '@mui/icons-material/Article';
-import CategoryIcon from '@mui/icons-material/Category';
-import { Paper } from '@mui/material';
-import BottomNavigation from '@mui/material/BottomNavigation';
-import BottomNavigationAction from '@mui/material/BottomNavigationAction';
-import Box from '@mui/material/Box';
-import Drawer from '@mui/material/Drawer';
-import Tooltip from '@mui/material/Tooltip';
-import Link from 'next/link';
+import PlaylistAddCheckCircleIcon from '@mui/icons-material/PlaylistAddCheckCircle';
+import {
+  BottomNavigation,
+  BottomNavigationAction,
+  Box,
+  Drawer,
+  Paper,
+} from '@mui/material';
+import { usePathname, useRouter } from 'next/navigation';
 import * as React from 'react';
+import { useEffect, useState } from 'react';
 
 import { useTranslation } from '@/app/i18n/client';
 
@@ -18,14 +20,40 @@ type FixedBottomNavigationProps = {
 export default function FixedBottomNavigation({
   lang,
 }: FixedBottomNavigationProps) {
+  const router = useRouter();
+  const pathname = usePathname();
+
+  const [value, setValue] = useState<'articles' | 'feed' | undefined>();
   const { t } = useTranslation(lang);
 
+  const handleChange = (
+    event: React.SyntheticEvent,
+    newValue: 'articles' | 'feed',
+  ) => {
+    setValue(newValue);
+  };
+
+  useEffect(() => {
+    if (pathname === `/${lang}/articles`) {
+      setValue('articles');
+    } else if (pathname === `/${lang}/feed`) {
+      setValue('feed');
+    } else if (pathname === `/${lang}`) {
+      setValue(undefined);
+    }
+  }, [lang, pathname]);
+
+  const handleClick = (url: string) => {
+    router.push(`/${lang}/${url}`);
+  };
+
   return (
-    <Box sx={{ pb: 7 }}>
+    <Box>
       <Drawer
         variant='permanent'
         sx={{
-          display: { xs: 'block', sm: 'none' },
+          pb: 7,
+          display: { xs: 'block', md: 'none' },
           flexShrink: 0,
           whiteSpace: 'nowrap',
           '& .MuiDrawer-paper': {
@@ -42,23 +70,19 @@ export default function FixedBottomNavigation({
           sx={{ position: 'fixed', bottom: 0, left: 0, right: 0 }}
           elevation={3}
         >
-          <BottomNavigation>
-            <Tooltip title={t('articles')}>
-              <Link href={`/articles`}>
-                <BottomNavigationAction
-                  label='Articles'
-                  icon={<ArticleIcon />}
-                />
-              </Link>
-            </Tooltip>
-            <Tooltip title={t('categories')}>
-              <Link href={`/categories`}>
-                <BottomNavigationAction
-                  label='Categories'
-                  icon={<CategoryIcon />}
-                />
-              </Link>
-            </Tooltip>
+          <BottomNavigation showLabels value={value} onChange={handleChange}>
+            <BottomNavigationAction
+              label={t('articles')}
+              value='articles'
+              icon={<ArticleIcon />}
+              onClick={() => handleClick('articles')}
+            />
+            <BottomNavigationAction
+              label={t('feed')}
+              value='feed'
+              icon={<PlaylistAddCheckCircleIcon />}
+              onClick={() => handleClick('feed')}
+            />
           </BottomNavigation>
         </Paper>
       </Drawer>

@@ -3,7 +3,6 @@ import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import Box from '@mui/material/Box';
 import Fab from '@mui/material/Fab';
 import Fade from '@mui/material/Fade';
-import Toolbar from '@mui/material/Toolbar';
 import useScrollTrigger from '@mui/material/useScrollTrigger';
 import * as React from 'react';
 
@@ -18,9 +17,7 @@ interface Props {
 
 function ScrollTop(props: Props) {
   const { children, window } = props;
-  // Note that you normally won't need to set the window ref as useScrollTrigger
-  // will default to window.
-  // This is only being set here because the demo is in an iframe.
+
   const trigger = useScrollTrigger({
     target: window ? window() : undefined,
     disableHysteresis: true,
@@ -44,7 +41,7 @@ function ScrollTop(props: Props) {
       <Box
         onClick={handleClick}
         role='presentation'
-        sx={{ position: 'fixed', bottom: 120, right: 16 }}
+        sx={{ position: 'fixed', bottom: 120, right: 16, zIndex: 100 }}
       >
         {children}
       </Box>
@@ -56,7 +53,7 @@ export default function BackToTop(props: Props) {
   const { children } = props;
   return (
     <React.Fragment>
-      <Toolbar id='back-to-top-anchor' />
+      <div id='back-to-top-anchor' />
       {children}
       <ScrollTop {...props}>
         <Fab size='small' aria-label='scroll back to top'>

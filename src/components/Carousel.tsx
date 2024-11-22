@@ -82,9 +82,7 @@ const data: DataItem[] = [
 
 const Carousel: React.FC = () => {
   return (
-    <Box
-      sx={{ width: '100%', maxWidth: 1200, margin: 'auto', padding: '20px 0' }}
-    >
+    <Box sx={{ width: 'auto', margin: 'auto', padding: '20px 0' }}>
       <Typography variant='h5' gutterBottom>
         Recently Added
       </Typography>

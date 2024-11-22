@@ -2,13 +2,14 @@ import {
   Box,
   Container,
   CssBaseline,
+  Grid2 as Grid,
   StyledEngineProvider,
 } from '@mui/material';
 import { AppRouterCacheProvider } from '@mui/material-nextjs/v14-appRouter';
 import { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import './globals.css';
-import React, { ReactNode, Suspense } from 'react';
+import React, { ReactNode } from 'react';
 
 import { initTranslation } from '@/app/i18n';
 import { AuthProvider } from '@/components/AuthProvider';
@@ -18,9 +19,7 @@ import { ContentImageProvider } from '@/components/ContentImageProvider';
 import Footer from '@/components/Footer';
 import NavBar from '@/components/NavBar';
 import { NavPanel } from '@/components/NavPanel';
-import NavTabs, { TabProps } from '@/components/NavTabs';
 import { ReactQueryProvider } from '@/components/ReactQueryProvider';
-import { Spinner } from '@/components/Spinner';
 import { ColorModeProvider } from '@/components/ThemeContext';
 
 const inter = Inter({ subsets: ['latin'] });
@@ -72,13 +71,6 @@ export default async function RootLayout({
   children,
   params: { lng },
 }: RootLayoutProps) {
-  const { t } = await initTranslation(lng);
-  const tabs: TabProps[] = [
-    { label: `${t('articles')}`, href: `/${lng}/articles` },
-    { label: `${t('categories')}`, href: `/${lng}/categories` },
-    { label: `${t('users')}`, href: `/${lng}/users` },
-  ];
-
   return (
     <html lang={lng}>
       <body className={inter.className}>
@@ -90,20 +82,23 @@ export default async function RootLayout({
                   <CssBaseline />
                   <Box className='flex min-h-screen flex-col'>
                     <NavBar lang={lng} />
-                    <Container maxWidth='xl' className='flex'>
-                      <NavPanel lang={lng} />
-                      <ButtonBackToTop>
-                        <main className='grow px-3'>
-                          <NavTabs tabs={tabs} />
-                          <Suspense fallback={<Spinner />}>
-                            <ContentImageProvider>
-                              {children}
-                            </ContentImageProvider>
-                          </Suspense>
-                        </main>
-                      </ButtonBackToTop>
+                    <Container maxWidth='xl' className='grid'>
+                      <Grid container spacing={2} rowGap={0}>
+                        <Grid size={{ lg: 2, md: 1, sm: 0 }}>
+                          <NavPanel lang={lng} />
+                        </Grid>
+                        <Grid size={{ lg: 10, md: 11, sm: 12 }}>
+                          <ButtonBackToTop>
+                            <main className='grow'>
+                              <ContentImageProvider>
+                                {children}
+                              </ContentImageProvider>
+                            </main>
+                          </ButtonBackToTop>
+                          <Footer />
+                        </Grid>
+                      </Grid>
                     </Container>
-                    <Footer />
                     <BottomNavigation lang={lng} />
                   </Box>
                 </AuthProvider>
