@@ -1,63 +1,61 @@
 'use client';
 import ArticleIcon from '@mui/icons-material/Article';
-import CategoryIcon from '@mui/icons-material/Category';
-import { ListItemText, useMediaQuery } from '@mui/material';
-import Box from '@mui/material/Box';
-import Drawer from '@mui/material/Drawer';
-import List from '@mui/material/List';
-import ListItem from '@mui/material/ListItem';
-import ListItemButton from '@mui/material/ListItemButton';
-import ListItemIcon from '@mui/material/ListItemIcon';
-import { useTheme } from '@mui/material/styles';
+import PlaylistAddCheckCircleIcon from '@mui/icons-material/PlaylistAddCheckCircle';
+import {
+  Box,
+  Drawer,
+  List,
+  ListItem,
+  ListItemButton,
+  ListItemIcon,
+  ListItemText,
+  useMediaQuery,
+  useTheme,
+} from '@mui/material';
 import Tooltip from '@mui/material/Tooltip';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+import { useEffect, useState } from 'react';
 
 import { useTranslation } from '@/app/i18n/client';
 
 type NavPanelProps = {
   readonly lang: string;
 };
+
 export const NavPanel = ({ lang }: NavPanelProps) => {
+  const pathname = usePathname();
   const theme = useTheme();
   const isMin = useMediaQuery(theme.breakpoints.down('lg'));
-  const isMediumOrSmall = useMediaQuery(theme.breakpoints.down('md'));
   const { t } = useTranslation(lang);
-  const drawerWidth = isMin ? `calc(${theme.spacing(7)} + 1px)` : 200;
+  const [activeIndex, setActiveIndex] = useState<number | undefined>(undefined);
+  const drawerWidth = isMin ? theme.spacing(7) : 'auto';
 
-  const articleLink = isMediumOrSmall ? (
-    <Tooltip title={t('articles')} placement='right'>
-      <Link href={`/articles`}>
-        <ArticleIcon />
-      </Link>
-    </Tooltip>
-  ) : (
-    <Link href={`/articles`}>
-      <ArticleIcon />
-    </Link>
-  );
+  useEffect(() => {
+    if (pathname === `/${lang}/articles`) {
+      setActiveIndex(0);
+    } else if (pathname === `/${lang}/feed`) {
+      setActiveIndex(1);
+    } else if (pathname === `/${lang}`) {
+      setActiveIndex(undefined);
+    }
+  }, [lang, pathname]);
 
-  const categoryLink = isMediumOrSmall ? (
-    <Tooltip title={t('categories')} placement='right'>
-      <Link href={`/categories`}>
-        <CategoryIcon />
-      </Link>
-    </Tooltip>
-  ) : (
-    <Link href={`/categories`}>
-      <CategoryIcon />
-    </Link>
-  );
+  const items = [
+    { text: t('articles'), href: `/${lang}/articles`, icon: <ArticleIcon /> },
+    {
+      text: t('feed'),
+      href: `/${lang}/feed`,
+      icon: <PlaylistAddCheckCircleIcon />,
+    },
+  ];
 
   return (
-    <Box
-      component='nav'
-      sx={{ width: { sm: drawerWidth }, flexShrink: { sm: 0 } }}
-      aria-label='mailbox folders'
-    >
+    <Box component='nav' sx={{ width: drawerWidth }}>
       <Drawer
         variant='permanent'
         sx={{
-          display: { xs: 'none', sm: 'block' },
+          display: { xs: 'none', md: 'block' },
           flexShrink: 0,
           whiteSpace: 'nowrap',
           '& .MuiDrawer-paper': {
@@ -71,59 +69,35 @@ export const NavPanel = ({ lang }: NavPanelProps) => {
         open
       >
         <List>
-          {[t('articles'), t('categories')].map((text, index) => (
+          {items.map(({ text, href, icon }, index) => (
             <ListItem key={text} disablePadding sx={{ display: 'block' }}>
-              <Link
-                href={
-                  index % 2 === 0 ? `/${lang}/articles` : `/${lang}/categories`
-                }
+              <Tooltip
+                title={text}
+                arrow
+                placement='right'
+                sx={{ display: { sm: 'block', xl: 'none' } }}
+                disableHoverListener={!isMin}
               >
-                <ListItemButton
-                  sx={[
-                    {
-                      minHeight: 48,
-                      px: 2.5,
-                    },
-                    !isMin
-                      ? {
-                          justifyContent: 'initial',
-                        }
-                      : {
-                          justifyContent: 'center',
-                        },
-                  ]}
-                >
-                  <ListItemIcon
-                    sx={[
-                      {
-                        minWidth: 0,
-                        justifyContent: 'center',
-                      },
-                      !isMin
-                        ? {
-                            mr: 3,
-                          }
-                        : {
-                            mr: 'auto',
-                          },
-                    ]}
+                <Link href={href}>
+                  <ListItemButton
+                    onClick={() => setActiveIndex(index)}
+                    selected={activeIndex === index}
                   >
-                    {index % 2 === 0 ? articleLink : categoryLink}
-                  </ListItemIcon>
-                  <ListItemText
-                    primary={text}
-                    sx={[
-                      !isMin
-                        ? {
-                            opacity: 1,
-                          }
-                        : {
-                            opacity: 0,
-                          },
-                    ]}
-                  />
-                </ListItemButton>
-              </Link>
+                    <ListItemIcon
+                      sx={{
+                        minWidth: 0,
+                        mr: 1,
+                      }}
+                    >
+                      {icon}
+                    </ListItemIcon>
+                    <ListItemText
+                      primary={text}
+                      sx={{ opacity: isMin ? 0 : 1 }}
+                    />
+                  </ListItemButton>
+                </Link>
+              </Tooltip>
             </ListItem>
           ))}
         </List>
