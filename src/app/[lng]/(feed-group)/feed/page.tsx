@@ -4,6 +4,7 @@ import DOMPurify from 'dompurify';
 import React, { useEffect, useRef, useState } from 'react';
 
 import Articles from '@/components/Articles';
+import { useAuth } from '@/components/AuthProvider';
 import { useContentImageContext } from '@/components/ContentImageProvider';
 import { CustomPagination } from '@/components/CustomPagination';
 import { Search } from '@/components/Search';
@@ -16,13 +17,15 @@ type PageProps = {
   };
 };
 
-export default function Page({ params: { lng } }: PageProps) {
+const Page = ({ params: { lng } }: PageProps) => {
   const searchInputRef = useRef<HTMLInputElement>(null);
   const [currentPage, setCurrentPage] = useState<number>(0);
   const [resultsPerPage, setResultsPerPage] = useState<number>(10);
   const [searchValue, setSearchValue] = useState<string>();
   const [searchType, setSearchType] = useState<'content' | 'tag'>('content');
   const { processContent } = useContentImageContext();
+  const { state } = useAuth();
+  const username = state.user?.username;
 
   const onSearchType = (type: 'content' | 'tag') => {
     setSearchType(type);
@@ -40,6 +43,7 @@ export default function Page({ params: { lng } }: PageProps) {
       resultsPerPage,
       searchType,
       searchValue,
+      username,
     ],
     queryFn: () => {
       const byTag = searchType === 'tag' ? searchValue : undefined;
@@ -50,6 +54,8 @@ export default function Page({ params: { lng } }: PageProps) {
         resultsPerPage,
         byTag,
         byContent,
+        undefined,
+        username,
       );
     },
   });
@@ -100,4 +106,6 @@ export default function Page({ params: { lng } }: PageProps) {
       />
     </>
   );
-}
+};
+
+export default Page;

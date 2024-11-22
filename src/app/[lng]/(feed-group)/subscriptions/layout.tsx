@@ -12,20 +12,16 @@ type LayoutProps = {
 export async function generateMetadata({
   params: { lng },
 }: LayoutProps): Promise<Metadata> {
-  const { t } = await initTranslation(lng);
+  const { t } = await initTranslation(lng, 'authors');
   return {
     alternates: {
-      canonical: `/feed/`,
+      canonical: `/subscriptions`,
       languages: {
-        en: `/en/feed/`,
-        ru: `/ru/feed/`,
+        en: `/en/subscriptions`,
+        ru: `/ru/subscriptions`,
       },
     },
-    title: {
-      template: '%s | CODOGMA',
-      default: t('feed'),
-    },
-    description: t('articlesDescription'),
+    title: t('subscriptionsByUser'),
   };
 }
 

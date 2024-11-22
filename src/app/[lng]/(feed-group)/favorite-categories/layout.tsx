@@ -15,17 +15,17 @@ export async function generateMetadata({
   const { t } = await initTranslation(lng);
   return {
     alternates: {
-      canonical: `/feed/`,
+      canonical: `/categories/`,
       languages: {
-        en: `/en/feed/`,
-        ru: `/ru/feed/`,
+        en: `/en/categories/`,
+        ru: `/ru/categories/`,
       },
     },
     title: {
       template: '%s | CODOGMA',
-      default: t('feed'),
+      default: t('categories'),
     },
-    description: t('articlesDescription'),
+    description: t('categoriesDescription'),
   };
 }
 
