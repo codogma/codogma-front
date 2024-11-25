@@ -2,6 +2,7 @@ import Cookies from 'js-cookie';
 
 import { axiosInstance } from '@/helpers/axiosInstance';
 import { devConsoleInfo } from '@/helpers/devConsoleLogs';
+import { dispatchCustomEvent } from '@/helpers/dispatchCustomEvent';
 import { User, UserRole } from '@/types';
 
 export type UserUpdate = {
@@ -28,7 +29,10 @@ export const updateUser = async (requestData: UserUpdate): Promise<User> => {
     sameSite: 'strict',
   });
   window.dispatchEvent(new Event('storage'));
-  devConsoleInfo('User updated successfully');
+  dispatchCustomEvent('api', {
+    message: 'User updated successfully',
+    severity: 'success',
+  });
   return user;
 };
 

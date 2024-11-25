@@ -50,6 +50,10 @@ export const updateDraftArticle = async (
   requestData: UpdateDraftArticleDTO,
 ): Promise<void> => {
   await axiosInstance.patch(`/articles/drafts/${id}`, requestData);
+  dispatchCustomEvent('api', {
+    message: 'Article draft updated successfully',
+    severity: 'info',
+  });
 };
 
 export const updateArticle = async (
@@ -57,6 +61,10 @@ export const updateArticle = async (
   requestData: UpdateArticleDTO,
 ): Promise<Article> => {
   const response = await axiosInstance.put(`/articles/${id}`, requestData);
+  dispatchCustomEvent('api', {
+    message: 'Article updated successfully',
+    severity: 'success',
+  });
   return response.data;
 };
 
