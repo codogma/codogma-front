@@ -1,5 +1,6 @@
 {
   "categoriesDescription": "Список категорий",
   "articlesInCategory": "Статьи в категории",
-  "authorsInCategory": "Авторы в категории"
+  "authorsInCategory": "Авторы в категории",
+  "categoryCreated": "Категория создана успешно"
 }

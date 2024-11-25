@@ -1,5 +1,7 @@
 import { axiosInstance } from '@/helpers/axiosInstance';
 import { devConsoleInfo } from '@/helpers/devConsoleLogs';
+import { dispatchCustomEvent } from '@/helpers/dispatchCustomEvent';
+import { getIntl } from '@/helpers/getCookies';
 import { Category } from '@/types';
 
 export type CategoryCreate = {
@@ -16,7 +18,10 @@ export const createCategory = async (
       'Content-Type': 'multipart/form-data',
     },
   });
-  devConsoleInfo('Category created successfully');
+  dispatchCustomEvent('api', {
+    message: 'Category created successfully',
+    severity: 'success',
+  });
 };
 
 export const updateCategory = async (
@@ -32,11 +37,17 @@ export const updateCategory = async (
       'Content-Type': 'multipart/form-data',
     },
   });
+  dispatchCustomEvent('api', {
+    message: 'Category updated successfully',
+    severity: 'success',
+  });
   return response.data;
 };
 
 export const getCategories = async (): Promise<Category[]> => {
   const response = await axiosInstance.get('/categories');
+  const lang = await getIntl();
+  devConsoleInfo(lang);
   return response.data;
 };
 

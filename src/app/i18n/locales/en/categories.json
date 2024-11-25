@@ -1,5 +1,6 @@
 {
   "categoriesDescription": "List of categories",
   "articlesInCategory": "Articles in category",
-  "authorsInCategory": "Authors in category"
+  "authorsInCategory": "Authors in category",
+  "categoryCreated": "Category created successfully"
 }

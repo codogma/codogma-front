@@ -1,5 +1,6 @@
 import { axiosInstance } from '@/helpers/axiosInstance';
 import { devConsoleInfo } from '@/helpers/devConsoleLogs';
+import { dispatchCustomEvent } from '@/helpers/dispatchCustomEvent';
 import { Article, Language } from '@/types';
 
 export type CreateDraftArticleDTO = {
@@ -37,6 +38,10 @@ export const createDraftArticle = async (
   requestData: CreateDraftArticleDTO,
 ): Promise<Article> => {
   const response = await axiosInstance.post('/articles/drafts', requestData);
+  dispatchCustomEvent('api', {
+    message: 'Article draft created',
+    severity: 'info',
+  });
   return response.data;
 };
 
