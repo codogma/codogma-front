@@ -1,5 +1,6 @@
 import { axiosInstance } from '@/helpers/axiosInstance';
 import { devConsoleInfo } from '@/helpers/devConsoleLogs';
+import { dispatchCustomEvent } from '@/helpers/dispatchCustomEvent';
 import { Article, Language } from '@/types';
 
 export type CreateDraftArticleDTO = {
@@ -37,6 +38,10 @@ export const createDraftArticle = async (
   requestData: CreateDraftArticleDTO,
 ): Promise<Article> => {
   const response = await axiosInstance.post('/articles/drafts', requestData);
+  dispatchCustomEvent('api', {
+    message: 'Article draft created',
+    severity: 'info',
+  });
   return response.data;
 };
 
@@ -45,6 +50,10 @@ export const updateDraftArticle = async (
   requestData: UpdateDraftArticleDTO,
 ): Promise<void> => {
   await axiosInstance.patch(`/articles/drafts/${id}`, requestData);
+  dispatchCustomEvent('api', {
+    message: 'Article draft updated successfully',
+    severity: 'info',
+  });
 };
 
 export const updateArticle = async (
@@ -52,6 +61,10 @@ export const updateArticle = async (
   requestData: UpdateArticleDTO,
 ): Promise<Article> => {
   const response = await axiosInstance.put(`/articles/${id}`, requestData);
+  dispatchCustomEvent('api', {
+    message: 'Article updated successfully',
+    severity: 'info',
+  });
   return response.data;
 };
 

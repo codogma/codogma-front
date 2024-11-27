@@ -1,5 +1,6 @@
 import { axiosInstance } from '@/helpers/axiosInstance';
 import { devConsoleInfo } from '@/helpers/devConsoleLogs';
+import { dispatchCustomEvent } from '@/helpers/dispatchCustomEvent';
 import { CreateComment, GetComment, UpdateComment } from '@/types';
 
 export const getCommentsByArticleId = async (
@@ -20,6 +21,10 @@ export const createComment = async (
   createComment: CreateComment,
 ): Promise<GetComment> => {
   const response = await axiosInstance.post('/comments', createComment);
+  dispatchCustomEvent('api', {
+    message: 'Comment created',
+    severity: 'success',
+  });
   return response.data;
 };
 
@@ -31,6 +36,10 @@ export const updateComment = async (
     `/comments/${commentId}`,
     updateComment,
   );
+  dispatchCustomEvent('api', {
+    message: 'Comment updated',
+    severity: 'success',
+  });
   return response.data;
 };
 

@@ -2,9 +2,7 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { ModeEditOutlineOutlined } from '@mui/icons-material';
 import { Badge, Box, Button } from '@mui/material';
-import Alert from '@mui/material/Alert';
 import IconButton from '@mui/material/IconButton';
-import Snackbar, { SnackbarCloseReason } from '@mui/material/Snackbar';
 import { styled } from '@mui/material/styles';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -58,11 +56,6 @@ const VisuallyHiddenInput = styled('input')({
 function Categories({ params }: PageProps) {
   const categoryId: number = params.id;
   const router = useRouter();
-  const [open, setOpen] = useState<boolean>(false);
-  const [alertText, setAlertText] = useState<string>('');
-  const [alertSeverity, setAlertSeverity] = useState<
-    'success' | 'error' | 'warning' | 'info'
-  >('info');
   const [category, setCategory] = useState<Category>();
   const [imageFile, setImageFile] = useState<File>();
   const { state } = useAuth();
@@ -121,31 +114,11 @@ function Categories({ params }: PageProps) {
     formData,
   ) => {
     const requestData = { ...formData, image: imageFile };
-    updateCategory(categoryId, requestData)
-      .then(() => {
-        setAlertSeverity('success');
-        setAlertText('Category updated successfully');
-        setOpen(true);
-      })
-      .catch((error) => {
-        setAlertSeverity('error');
-        setAlertText(error);
-        setOpen(true);
-      });
+    updateCategory(categoryId, requestData);
   };
 
   const handleDelete = () => {
     deleteCategory(categoryId);
-  };
-
-  const handleClose = (
-    event?: React.SyntheticEvent | Event,
-    reason?: SnackbarCloseReason,
-  ) => {
-    if (reason === 'clickaway') {
-      return;
-    }
-    setOpen(false);
   };
 
   if (state.user?.role === UserRole.ROLE_ADMIN) {
@@ -212,16 +185,6 @@ function Categories({ params }: PageProps) {
             </Button>
           </Box>
         </FormProvider>
-        <Snackbar open={open} autoHideDuration={10000} onClose={handleClose}>
-          <Alert
-            onClose={handleClose}
-            severity={alertSeverity}
-            variant='filled'
-            sx={{ width: '100%' }}
-          >
-            {alertText}
-          </Alert>
-        </Snackbar>
       </main>
     );
   } else {

@@ -16,6 +16,7 @@ import { AuthProvider } from '@/components/AuthProvider';
 import BottomNavigation from '@/components/BottomNavigation';
 import ButtonBackToTop from '@/components/ButtonBackToTop';
 import { ContentImageProvider } from '@/components/ContentImageProvider';
+import CustomizedSnackbars from '@/components/CustomizedSnackbars';
 import Footer from '@/components/Footer';
 import NavBar from '@/components/NavBar';
 import { NavPanel } from '@/components/NavPanel';
@@ -98,6 +99,7 @@ export default async function RootLayout({
                           <Footer />
                         </Grid>
                       </Grid>
+                      <CustomizedSnackbars />
                     </Container>
                     <BottomNavigation lang={lng} />
                   </Box>
