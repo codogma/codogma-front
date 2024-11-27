@@ -63,7 +63,7 @@ export const updateArticle = async (
   const response = await axiosInstance.put(`/articles/${id}`, requestData);
   dispatchCustomEvent('api', {
     message: 'Article updated successfully',
-    severity: 'success',
+    severity: 'info',
   });
   return response.data;
 };

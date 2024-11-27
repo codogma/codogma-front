@@ -23,7 +23,7 @@ export const createComment = async (
   const response = await axiosInstance.post('/comments', createComment);
   dispatchCustomEvent('api', {
     message: 'Comment created',
-    severity: 'info',
+    severity: 'success',
   });
   return response.data;
 };
@@ -38,7 +38,7 @@ export const updateComment = async (
   );
   dispatchCustomEvent('api', {
     message: 'Comment updated',
-    severity: 'info',
+    severity: 'success',
   });
   return response.data;
 };
