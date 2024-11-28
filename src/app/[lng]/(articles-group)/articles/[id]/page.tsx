@@ -1,6 +1,8 @@
 'use client';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
+import Chip from '@mui/material/Chip';
+import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import DOMPurify from 'dompurify';
 import Link from 'next/link';
@@ -54,6 +56,9 @@ export default function Page({ params: { lng } }: PageProps) {
               className='article-datetime'
               lang={lng}
             />
+            <Stack direction='row' spacing={1}>
+              <Chip label={article.status} variant='outlined' />
+            </Stack>
           </div>
           <div className='article-category'>
             {article.categories?.map((category) => (

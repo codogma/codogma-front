@@ -41,6 +41,7 @@ export type Category = {
 
 export type Article = {
   id: number;
+  status: string;
   title: string;
   language: Language;
   originalArticleId: number;
