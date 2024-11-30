@@ -4,7 +4,6 @@ import DOMPurify from 'dompurify';
 import React, { useEffect, useRef, useState } from 'react';
 
 import Articles from '@/components/Articles';
-import { useAuth } from '@/components/AuthProvider';
 import { useContentImageContext } from '@/components/ContentImageProvider';
 import { CustomPagination } from '@/components/CustomPagination';
 import { Search } from '@/components/Search';
@@ -24,8 +23,6 @@ const Page = ({ params: { lng } }: PageProps) => {
   const [searchValue, setSearchValue] = useState<string>();
   const [searchType, setSearchType] = useState<'content' | 'tag'>('content');
   const { processContent } = useContentImageContext();
-  const { state } = useAuth();
-  const username = state.user?.username;
 
   const onSearchType = (type: 'content' | 'tag') => {
     setSearchType(type);

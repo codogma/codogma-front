@@ -62,6 +62,9 @@ export default function Page({ params: { lng } }: PageProps) {
                 <Chip label={article.status} variant='outlined' />
               </Stack>
             )}
+            <Stack direction='row' spacing={1}>
+              <Chip label={article.language} variant='outlined' />
+            </Stack>
           </div>
           <div className='article-category'>
             {article.categories?.map((category) => (
