@@ -43,11 +43,11 @@ const Page = ({ params: { lng } }: PageProps) => {
       resultsPerPage,
       searchType,
       searchValue,
-      username,
     ],
     queryFn: () => {
       const byTag = searchType === 'tag' ? searchValue : undefined;
       const byContent = searchType === 'content' ? searchValue : undefined;
+      const isFeed = true;
       return getArticles(
         undefined,
         currentPage,
@@ -55,7 +55,7 @@ const Page = ({ params: { lng } }: PageProps) => {
         byTag,
         byContent,
         undefined,
-        username,
+        isFeed,
       );
     },
   });

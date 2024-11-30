@@ -20,6 +20,7 @@ export type User = {
   role: UserRole;
   subscribers: User[] | [];
   subscriptions: User[] | [];
+  favorites: Category[] | [];
   avatarUrl: string;
   articles: Article[] | [];
   categories: Category[];
@@ -41,6 +42,7 @@ export type Category = {
 
 export type Article = {
   id: number;
+  status: string;
   title: string;
   language: Language;
   originalArticleId: number;
