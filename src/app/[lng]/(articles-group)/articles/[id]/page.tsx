@@ -56,9 +56,12 @@ export default function Page({ params: { lng } }: PageProps) {
               className='article-datetime'
               lang={lng}
             />
-            <Stack direction='row' spacing={1}>
-              <Chip label={article.status} variant='outlined' />
-            </Stack>
+            {(state.user?.username === article.username ||
+              state.user?.role === UserRole.ROLE_ADMIN) && (
+              <Stack direction='row' spacing={1}>
+                <Chip label={article.status} variant='outlined' />
+              </Stack>
+            )}
           </div>
           <div className='article-category'>
             {article.categories?.map((category) => (

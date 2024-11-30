@@ -3,6 +3,7 @@ import { Button, Skeleton } from '@mui/material';
 import Card from '@mui/material/Card';
 import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
+import Chip from '@mui/material/Chip';
 import Stack from '@mui/material/Stack';
 import Link from 'next/link';
 import React from 'react';
@@ -67,6 +68,12 @@ export default function Articles({ lang, articles, loading }: ArticlesProps) {
                   className='article-datetime'
                   lang={lang}
                 />
+                {(state.user?.username === article.username ||
+                  state.user?.role === UserRole.ROLE_ADMIN) && (
+                  <Stack direction='row' spacing={1}>
+                    <Chip label={article.status} variant='outlined' />
+                  </Stack>
+                )}
               </div>
               <Link href={`/articles/${article.id}`} className='article-title'>
                 {article.title}
