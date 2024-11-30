@@ -1,6 +1,6 @@
 import { axiosInstance } from '@/helpers/axiosInstance';
-import { devConsoleInfo } from '@/helpers/devConsoleLogs';
 import { dispatchCustomEvent } from '@/helpers/dispatchCustomEvent';
+// import { getT } from '@/helpers/getT';
 import { Article, Language } from '@/types';
 
 export type CreateDraftArticleDTO = {
@@ -38,6 +38,7 @@ export const createDraftArticle = async (
   requestData: CreateDraftArticleDTO,
 ): Promise<Article> => {
   const response = await axiosInstance.post('/articles/drafts', requestData);
+  // const message = await getT('articleCreated', 'articles');
   dispatchCustomEvent('api', {
     message: 'Article draft created',
     severity: 'info',
@@ -49,10 +50,10 @@ export const updateDraftArticle = async (
   id: number | undefined,
   requestData: UpdateDraftArticleDTO,
 ): Promise<void> => {
-  await axiosInstance.patch(`/articles/drafts/${id}`, requestData);
+  await axiosInstance.patch(`/articles/${id}/draft`, requestData);
   dispatchCustomEvent('api', {
     message: 'Article draft updated successfully',
-    severity: 'info',
+    severity: 'success',
   });
 };
 
@@ -62,7 +63,7 @@ export const updateArticle = async (
 ): Promise<Article> => {
   const response = await axiosInstance.put(`/articles/${id}`, requestData);
   dispatchCustomEvent('api', {
-    message: 'Article updated successfully',
+    message: 'Article sent to moderation',
     severity: 'info',
   });
   return response.data;
@@ -99,7 +100,11 @@ export const getDraftArticles = async (): Promise<Article[]> => {
 export const getDraftedArticleById = async (
   id: number | undefined,
 ): Promise<Article> => {
-  const response = await axiosInstance.get(`/articles/drafts/${id}`);
+  const response = await axiosInstance.get(`/articles/${id}/draft`);
+  dispatchCustomEvent('api', {
+    message: 'Article status changed to “Draft”',
+    severity: 'warning',
+  });
   return response.data;
 };
 
@@ -112,5 +117,8 @@ export const getArticleById = async (
 
 export const deleteArticle = async (id: number): Promise<void> => {
   await axiosInstance.delete(`/articles/${id}`);
-  devConsoleInfo('Article deleted successfully');
+  dispatchCustomEvent('api', {
+    message: 'Article deleted successfully',
+    severity: 'success',
+  });
 };

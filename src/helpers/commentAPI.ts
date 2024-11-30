@@ -3,17 +3,16 @@ import { devConsoleInfo } from '@/helpers/devConsoleLogs';
 import { dispatchCustomEvent } from '@/helpers/dispatchCustomEvent';
 import { CreateComment, GetComment, UpdateComment } from '@/types';
 
-export const getCommentsByArticleId = async (
-  articleId: number,
+export const getComments = async (
+  articleId?: number,
+  username?: string,
 ): Promise<GetComment[]> => {
-  const response = await axiosInstance.get(`/comments/article/${articleId}`);
-  return response.data;
-};
-
-export const getCommentsByUsername = async (
-  username: string,
-): Promise<GetComment[]> => {
-  const response = await axiosInstance.get(`/comments/user/${username}`);
+  const response = await axiosInstance.get(`/comments`, {
+    params: {
+      articleId,
+      username,
+    },
+  });
   return response.data;
 };
 
