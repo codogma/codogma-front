@@ -75,7 +75,10 @@ export default function Articles({ lang, articles, loading }: ArticlesProps) {
                   </Stack>
                 )}
                 <Stack direction='row' spacing={1}>
-                  <Chip label={article.language} variant='outlined' />
+                  <Chip
+                    label={article.language.toUpperCase()}
+                    variant='outlined'
+                  />
                 </Stack>
               </div>
               <Link href={`/articles/${article.id}`} className='article-title'>

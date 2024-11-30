@@ -63,7 +63,7 @@ export default function Page({ params: { lng } }: PageProps) {
               </Stack>
             )}
             <Stack direction='row' spacing={1}>
-              <Chip label={article.language} variant='outlined' />
+              <Chip label={article.language.toUpperCase()} variant='outlined' />
             </Stack>
           </div>
           <div className='article-category'>
