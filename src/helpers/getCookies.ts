@@ -2,12 +2,12 @@
 
 import { cookies } from 'next/headers';
 
-export const getAuthToken = async (): Promise<string | undefined> => {
+export const getAuthToken = async (): Promise<string> => {
   const cookieStore = await cookies();
-  return cookieStore.get('auth-token')?.value;
+  return String(cookieStore.get('auth-token')?.value);
 };
 
-export const getIntl = async (): Promise<string | undefined> => {
+export const getIntl = async (): Promise<string> => {
   const cookieStore = await cookies();
-  return cookieStore.get('intl')?.value;
+  return String(cookieStore.get('intl')?.value);
 };

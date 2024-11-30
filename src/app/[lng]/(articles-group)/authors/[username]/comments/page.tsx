@@ -8,7 +8,7 @@ import React from 'react';
 
 import { AvatarImage } from '@/components/AvatarImage';
 import { TimeAgo } from '@/components/TimeAgo';
-import { getCommentsByUsername } from '@/helpers/commentAPI';
+import { getComments } from '@/helpers/commentAPI';
 import { GetComment } from '@/types';
 
 type PageParams = {
@@ -23,7 +23,7 @@ type PageProps = {
 export default function Page({ params: { username, lng } }: PageProps) {
   const { data: comments, isPending } = useQuery<GetComment[]>({
     queryKey: ['comments', username],
-    queryFn: () => getCommentsByUsername(username),
+    queryFn: () => getComments(undefined, username),
   });
 
   return (

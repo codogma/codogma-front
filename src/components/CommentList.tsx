@@ -7,7 +7,7 @@ import { useTranslation } from '@/app/i18n/client';
 import { useAuth } from '@/components/AuthProvider';
 import { AvatarImage } from '@/components/AvatarImage';
 import { TimeAgo } from '@/components/TimeAgo';
-import { deleteComment, getCommentsByArticleId } from '@/helpers/commentAPI';
+import { deleteComment, getComments } from '@/helpers/commentAPI';
 import { GetComment, UserRole } from '@/types';
 
 import { CommentForm } from './CommentForm';
@@ -31,7 +31,7 @@ export const CommentList: React.FC<CommentListProps> = ({
 
   useEffect(() => {
     if (!initialComments) {
-      getCommentsByArticleId(articleId).then((data) => setComments(data));
+      getComments(articleId).then((data) => setComments(data));
     }
   }, [articleId, initialComments]);
 
@@ -47,7 +47,7 @@ export const CommentList: React.FC<CommentListProps> = ({
 
   const handleDelete = async (commentId: number) => {
     await deleteComment(commentId);
-    getCommentsByArticleId(articleId).then((data) => setComments(data));
+    getComments(articleId).then((data) => setComments(data));
   };
 
   const handleCancelEdit = () => {
@@ -85,9 +85,7 @@ export const CommentList: React.FC<CommentListProps> = ({
               parentCommentId={comment.parentCommentId}
               comment={comment}
               onCommentAdded={async () => {
-                getCommentsByArticleId(articleId).then((data) =>
-                  setComments(data),
-                );
+                getComments(articleId).then((data) => setComments(data));
                 setEditingComment(null);
               }}
               onCancelEdit={handleCancelEdit}
@@ -138,9 +136,7 @@ export const CommentList: React.FC<CommentListProps> = ({
                     articleId={articleId}
                     parentCommentId={comment.id}
                     onCommentAdded={async () => {
-                      getCommentsByArticleId(articleId).then((data) =>
-                        setComments(data),
-                      );
+                      getComments(articleId).then((data) => setComments(data));
                       setReplyToCommentId(null);
                     }}
                     onCancelEdit={handleCancelEdit}
@@ -166,7 +162,7 @@ export const CommentList: React.FC<CommentListProps> = ({
         <CommentForm
           articleId={articleId}
           onCommentAdded={() =>
-            getCommentsByArticleId(articleId).then((data) => setComments(data))
+            getComments(articleId).then((data) => setComments(data))
           }
         />
       )}
