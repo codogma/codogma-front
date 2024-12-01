@@ -5,6 +5,6 @@
   "subscribersByUser": "Подписчики автора",
   "subscriptionsByUser": "Подписки автора",
   "authorsDescription": "Авторы CODOGMA",
-  "followBtn": "Подписаться",
-  "followingBtn": "Отписаться"
+  "subscribeBtn": "Подписаться",
+  "unsubscribeBtn": "Отписаться"
 }

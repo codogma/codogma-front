@@ -71,8 +71,11 @@ export const ButtonWithPopover: React.FC<CustomPopoverProps> = ({
   return state.user?.username !== username ? (
     <>
       {isSubscribed ? (
-        <Button className='article-btn' onClick={handleUnsubscribe}>
-          {t('followingBtn')}
+        <Button
+          className='article-btn border-red-500 bg-red-500 text-white'
+          onClick={handleUnsubscribe}
+        >
+          {t('unsubscribeBtn')}
         </Button>
       ) : (
         <Button
@@ -80,7 +83,7 @@ export const ButtonWithPopover: React.FC<CustomPopoverProps> = ({
           className='article-btn'
           onClick={handleSubscribe}
         >
-          {t('followBtn')}
+          {t('subscribeBtn')}
         </Button>
       )}
       {!state.isAuthenticated && (

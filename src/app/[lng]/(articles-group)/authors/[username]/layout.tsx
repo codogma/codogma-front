@@ -78,11 +78,11 @@ export default function Layout({
                 size={48}
               />
             </Badge>
-            <ButtonWithPopover username={username} lang={lng} />
             <div>
               <h1 className='category-card-name'>
                 {user?.firstName} {user?.lastName}
               </h1>
+              <ButtonWithPopover username={username} lang={lng} />
               <p className='category-card-shortInfo'>{user?.shortInfo}</p>
             </div>
           </div>
