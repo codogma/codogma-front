@@ -11,20 +11,20 @@ import { useTranslation } from '@/app/i18n/client';
 
 type SearchProps = {
   readonly lang: string;
-  readonly onSearchType: (type: 'content' | 'tag') => void;
+  readonly onSearchType: (type: string) => void;
   readonly onSearchValue: (value: string) => void;
 };
 
 export const Search = ({ lang, onSearchType, onSearchValue }: SearchProps) => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  const [searchType, setSearchType] = useState<'content' | 'tag'>('content');
+  const [searchType, setSearchType] = useState<string>('content');
   const { t } = useTranslation(lang);
 
   const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
   };
 
-  const handleMenuClose = (type: 'content' | 'tag') => {
+  const handleMenuClose = (type: string) => {
     onSearchType(type);
     setSearchType(type);
     setAnchorEl(null);

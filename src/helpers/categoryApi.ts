@@ -1,13 +1,18 @@
 import { axiosInstance } from '@/helpers/axiosInstance';
 import { devConsoleInfo } from '@/helpers/devConsoleLogs';
 import { dispatchCustomEvent } from '@/helpers/dispatchCustomEvent';
-import { getIntl } from '@/helpers/getCookies';
 import { Category } from '@/types';
 
 export type CategoryCreate = {
   name: string;
   image?: File;
   description?: string;
+};
+
+export type GetCategoriesDTO = {
+  totalElements: number;
+  totalPages: number;
+  content: Category[];
 };
 
 export const createCategory = async (
@@ -44,10 +49,24 @@ export const updateCategory = async (
   return response.data;
 };
 
-export const getCategories = async (): Promise<Category[]> => {
-  const response = await axiosInstance.get('/categories');
-  const lang = await getIntl();
-  devConsoleInfo(lang);
+export const getCategories = async (
+  tag?: string,
+  info?: string,
+  page: number = 0,
+  size: number = 10,
+  sort: string = 'name',
+  order: string = 'asc',
+): Promise<GetCategoriesDTO> => {
+  const response = await axiosInstance.get('/categories', {
+    params: {
+      tag,
+      info,
+      page,
+      size,
+      sort,
+      order,
+    },
+  });
   return response.data;
 };
 

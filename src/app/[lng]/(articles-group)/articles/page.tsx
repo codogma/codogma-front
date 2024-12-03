@@ -21,10 +21,10 @@ export default function Page({ params: { lng } }: PageProps) {
   const [currentPage, setCurrentPage] = useState<number>(0);
   const [resultsPerPage, setResultsPerPage] = useState<number>(10);
   const [searchValue, setSearchValue] = useState<string>();
-  const [searchType, setSearchType] = useState<'content' | 'tag'>('content');
+  const [searchType, setSearchType] = useState<string>('content');
   const { processContent } = useContentImageContext();
 
-  const onSearchType = (type: 'content' | 'tag') => {
+  const onSearchType = (type: string) => {
     setSearchType(type);
   };
 
