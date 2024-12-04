@@ -52,6 +52,7 @@ export const updateCategory = async (
 export const getCategories = async (
   tag?: string,
   info?: string,
+  isFavorite?: boolean,
   page: number = 0,
   size: number = 10,
   sort: string = 'name',
@@ -61,6 +62,7 @@ export const getCategories = async (
     params: {
       tag,
       info,
+      isFavorite,
       page,
       size,
       sort,

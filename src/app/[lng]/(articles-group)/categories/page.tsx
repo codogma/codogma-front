@@ -42,7 +42,7 @@ export default function Page({ params: { lng } }: PageProps) {
     queryFn: () => {
       const byTag = searchType === 'tag' ? searchValue : undefined;
       const byInfo = searchType === 'info' ? searchValue : undefined;
-      return getCategories(byTag, byInfo, currentPage, resultsPerPage);
+      return getCategories(byTag, byInfo, false, currentPage, resultsPerPage);
     },
   });
 
