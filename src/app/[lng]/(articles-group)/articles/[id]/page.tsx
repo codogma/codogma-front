@@ -60,6 +60,10 @@ export default function Page({ params: { lng } }: PageProps) {
               state.user?.role === UserRole.ROLE_ADMIN) && (
               <Stack direction='row' spacing={1}>
                 <Chip label={article.status} variant='outlined' />
+                <Chip
+                  label={article.language.toUpperCase()}
+                  variant='outlined'
+                />
               </Stack>
             )}
           </div>
