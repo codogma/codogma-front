@@ -5,6 +5,12 @@ import { devConsoleInfo } from '@/helpers/devConsoleLogs';
 import { dispatchCustomEvent } from '@/helpers/dispatchCustomEvent';
 import { User, UserRole } from '@/types';
 
+export type GetUsersDTO = {
+  totalElements: number;
+  totalPages: number;
+  content: User[];
+};
+
 export type UserUpdate = {
   username?: string;
   firstName?: string;
@@ -41,11 +47,27 @@ export const getUsers = async (): Promise<User[]> => {
   return response.data;
 };
 
-export const getAuthors = async (categoryId?: number): Promise<User[]> => {
+export const getAuthors = async (
+  categoryId?: number,
+  tag?: string,
+  info?: string,
+  isSubscription?: boolean,
+  page: number = 0,
+  size: number = 10,
+  sort: string = 'username',
+  order: string = 'desc',
+): Promise<GetUsersDTO> => {
   const response = await axiosInstance.get(`/users`, {
     params: {
       categoryId,
       role: UserRole.ROLE_AUTHOR,
+      tag,
+      info,
+      isSubscription,
+      page,
+      size,
+      sort,
+      order,
     },
   });
   return response.data;
