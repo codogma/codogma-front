@@ -1,75 +1,90 @@
 'use client';
-import { Box, Skeleton } from '@mui/material';
-import Card from '@mui/material/Card';
-import CardContent from '@mui/material/CardContent';
-import Link from 'next/link';
-import React, { useEffect, useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import React, { useEffect, useRef, useState } from 'react';
 
-import { useAuth } from '@/components/AuthProvider';
-import { AvatarImage } from '@/components/AvatarImage';
-import { devConsoleError } from '@/helpers/devConsoleLogs';
-import { getUserByUsername } from '@/helpers/userApi';
+import { CustomPagination } from '@/components/CustomPagination';
+import { Search } from '@/components/Search';
+import Users from '@/components/Users';
+import { contlCookie } from '@/constants/i18n';
+import { getAuthors, GetUsersDTO } from '@/helpers/userApi';
 import { User } from '@/types';
 
-const Page = () => {
-  const { state } = useAuth();
-  const username = state.user?.username;
-  const [subscriptions, setSubscriptions] = useState<User[]>([]);
-  const [loading, setLoading] = useState(true);
+type PageProps = {
+  readonly params: {
+    lng: string;
+  };
+};
+
+const Page = ({ params: { lng } }: PageProps) => {
+  const searchInputRef = useRef<HTMLInputElement>(null);
+  const [currentPage, setCurrentPage] = useState<number>(0);
+  const [resultsPerPage, setResultsPerPage] = useState<number>(10);
+  const [searchValue, setSearchValue] = useState<string>();
+  const [searchType, setSearchType] = useState<string>('info');
+
+  const onSearchType = (type: string) => {
+    setSearchType(type);
+  };
+
+  const onSearchValue = (value: string) => {
+    setSearchValue(value);
+    setCurrentPage(0);
+  };
+
+  const { data, isFetching, refetch } = useQuery<GetUsersDTO>({
+    queryKey: ['authors', currentPage, resultsPerPage, searchType, searchValue],
+    queryFn: () => {
+      const byTag = searchType === 'tag' ? searchValue : undefined;
+      const byInfo = searchType === 'info' ? searchValue : undefined;
+      return getAuthors(
+        undefined,
+        byTag,
+        byInfo,
+        true,
+        currentPage,
+        resultsPerPage,
+      );
+    },
+  });
+
+  const users: User[] = data?.content ?? [];
+  const totalPages = data?.totalPages ?? 0;
+  const totalElements = data?.totalElements ?? 0;
 
   useEffect(() => {
-    async function fetchData() {
-      try {
-        const user = await getUserByUsername(username);
-        setSubscriptions(user.subscriptions);
-        setLoading(false);
-      } catch (error) {
-        devConsoleError('Error fetching data:', error);
-      }
+    window.addEventListener(contlCookie, () => refetch());
+    if (window.location.hash === '#search-input' && searchInputRef.current) {
+      searchInputRef.current.scrollIntoView({
+        behavior: 'smooth',
+        block: 'center',
+      });
+      searchInputRef.current.focus();
     }
+  }, [refetch]);
 
-    fetchData();
-  }, [username]);
+  const onPageChange = (value: number) => {
+    setCurrentPage(value);
+  };
+
+  const onResultsPerPageChange = (value: number) => {
+    setResultsPerPage(value);
+  };
 
   return (
     <>
-      {loading ? (
-        <Card className='card'>
-          <CardContent className='card-content'>
-            <Box className='meta-container'>
-              <Skeleton variant='rounded' width={32} height={32} />
-              <Skeleton variant='text' width={100} />
-            </Box>
-          </CardContent>
-        </Card>
-      ) : (
-        subscriptions?.map((user) => (
-          <Card key={user.username} variant='outlined' className='card'>
-            <CardContent className='card-content'>
-              <Box className='meta-container'>
-                <>
-                  <AvatarImage
-                    className='article-user-avatar'
-                    src={user.avatarUrl}
-                    alt={user.username}
-                    variant='rounded'
-                    size={32}
-                  />
-                  <Link
-                    href={`/authors/${user.username}`}
-                    className='subscriptions-user-name'
-                  >
-                    @{user.username}
-                  </Link>
-                </>
-                <div className='subscriptions-user-description'>
-                  {user.shortInfo}
-                </div>
-              </Box>
-            </CardContent>
-          </Card>
-        ))
-      )}
+      <Search
+        lang={lng}
+        onSearchType={onSearchType}
+        onSearchValue={onSearchValue}
+      />
+      <Users users={users} loading={isFetching} />
+      <CustomPagination
+        lang={lng}
+        totalPages={totalPages}
+        totalElements={totalElements}
+        onCurrentPageChange={onPageChange}
+        onResultsPerPageChange={onResultsPerPageChange}
+      />
     </>
   );
 };
