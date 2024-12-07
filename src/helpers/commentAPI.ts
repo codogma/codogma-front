@@ -1,13 +1,12 @@
 import { axiosInstance } from '@/helpers/axiosInstance';
 import { devConsoleInfo } from '@/helpers/devConsoleLogs';
 import { dispatchCustomEvent } from '@/helpers/dispatchCustomEvent';
-import { CreateComment, GetComment, UpdateComment } from '@/types';
-
-export type GetCommentsDTO = {
-  totalElements: number;
-  totalPages: number;
-  content: GetComment[];
-};
+import {
+  CreateComment,
+  GetComment,
+  GetCommentsDTO,
+  UpdateComment,
+} from '@/types';
 
 export const getComments = async (
   articleId?: number,

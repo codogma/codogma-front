@@ -53,6 +53,7 @@ export default function Page({ params: { username, lng } }: PageProps) {
       return getComments(
         undefined,
         username,
+        undefined,
         byContent,
         currentPage,
         resultsPerPage,

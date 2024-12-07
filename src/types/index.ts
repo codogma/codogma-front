@@ -63,10 +63,16 @@ export interface GetComment {
   article: Article;
   parentCommentId?: number;
   user: User;
-  replies?: GetComment[];
+  replies?: GetCommentsDTO;
   createdAt: Date;
   updatedAt: Date;
 }
+
+export type GetCommentsDTO = {
+  totalElements: number;
+  totalPages: number;
+  content: GetComment[];
+};
 
 export interface CreateComment {
   content: string;
