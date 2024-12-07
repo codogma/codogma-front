@@ -195,6 +195,14 @@
     @apply border border-solid border-transparent bg-astral text-white dark:bg-deepsky-blue !important;
   }
 
+  .article-red-btn {
+    @apply inline-flex h-auto max-h-[36px] cursor-pointer items-center rounded-sm border border-solid border-red bg-transparent px-3 py-0 text-[0.8125rem] leading-[1.6875rem] text-red no-underline dark:border-red dark:text-red !important;
+  }
+
+  .article-red-btn:hover {
+    @apply border border-solid border-transparent bg-red text-white dark:bg-red !important;
+  }
+
   .article-presenter-meta {
     @apply mx-0 my-6 box-border grid max-w-[780px] gap-6 text-base leading-[180%] text-horizon;
   }

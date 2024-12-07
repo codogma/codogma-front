@@ -71,10 +71,7 @@ export const ButtonWithPopover: React.FC<CustomPopoverProps> = ({
   return state.user?.username !== username ? (
     <>
       {isSubscribed ? (
-        <Button
-          className='article-btn border-red-500 bg-red-500 text-white'
-          onClick={handleUnsubscribe}
-        >
+        <Button className='article-red-btn' onClick={handleUnsubscribe}>
           {t('unsubscribeBtn')}
         </Button>
       ) : (
