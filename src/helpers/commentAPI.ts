@@ -3,14 +3,28 @@ import { devConsoleInfo } from '@/helpers/devConsoleLogs';
 import { dispatchCustomEvent } from '@/helpers/dispatchCustomEvent';
 import { CreateComment, GetComment, UpdateComment } from '@/types';
 
+export type GetCommentsDTO = {
+  totalElements: number;
+  totalPages: number;
+  content: GetComment[];
+};
+
 export const getComments = async (
   articleId?: number,
   username?: string,
-): Promise<GetComment[]> => {
+  order: string = 'desc',
+  content?: string,
+  page: number = 0,
+  size: number = 10,
+): Promise<GetCommentsDTO> => {
   const response = await axiosInstance.get(`/comments`, {
     params: {
       articleId,
       username,
+      order,
+      content,
+      page,
+      size,
     },
   });
   return response.data;

@@ -1,39 +1,42 @@
 'use client';
 import { Box, Button, Card, CardContent, Typography } from '@mui/material';
+import { useQuery } from '@tanstack/react-query';
 import Link from 'next/link';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 
 import { useTranslation } from '@/app/i18n/client';
 import { useAuth } from '@/components/AuthProvider';
 import { AvatarImage } from '@/components/AvatarImage';
 import { TimeAgo } from '@/components/TimeAgo';
-import { deleteComment, getComments } from '@/helpers/commentAPI';
+import {
+  deleteComment,
+  getComments,
+  GetCommentsDTO,
+} from '@/helpers/commentAPI';
 import { GetComment, UserRole } from '@/types';
 
 import { CommentForm } from './CommentForm';
 
 interface CommentListProps {
   readonly articleId: number;
-  readonly comments?: GetComment[];
   readonly lang: string;
 }
 
 export const CommentList: React.FC<CommentListProps> = ({
   articleId,
-  comments: initialComments,
   lang,
 }) => {
-  const [comments, setComments] = useState<GetComment[]>(initialComments || []);
   const [editingComment, setEditingComment] = useState<GetComment | null>(null);
   const [replyToCommentId, setReplyToCommentId] = useState<number | null>(null);
   const { state } = useAuth();
   const { t } = useTranslation(lang);
 
-  useEffect(() => {
-    if (!initialComments) {
-      getComments(articleId).then((data) => setComments(data));
-    }
-  }, [articleId, initialComments]);
+  const { data, isFetching, refetch } = useQuery<GetCommentsDTO>({
+    queryKey: ['comments', articleId],
+    queryFn: () => getComments(articleId, undefined, 'asc'),
+  });
+
+  const comments: GetComment[] = data?.content ?? [];
 
   const handleEdit = (comment: GetComment) => {
     setEditingComment(comment);
@@ -45,9 +48,8 @@ export const CommentList: React.FC<CommentListProps> = ({
     setEditingComment(null);
   };
 
-  const handleDelete = async (commentId: number) => {
-    await deleteComment(commentId);
-    getComments(articleId).then((data) => setComments(data));
+  const handleDelete = (commentId: number) => {
+    deleteComment(commentId).then(() => refetch());
   };
 
   const handleCancelEdit = () => {
@@ -69,7 +71,7 @@ export const CommentList: React.FC<CommentListProps> = ({
             />
             <Link
               className='article-user-name'
-              href={`/authors/${comment.user.username}`}
+              href={`/users/${comment.user.username}`}
             >
               {comment.user.username}
             </Link>
@@ -85,7 +87,7 @@ export const CommentList: React.FC<CommentListProps> = ({
               parentCommentId={comment.parentCommentId}
               comment={comment}
               onCommentAdded={async () => {
-                getComments(articleId).then((data) => setComments(data));
+                await refetch();
                 setEditingComment(null);
               }}
               onCancelEdit={handleCancelEdit}
@@ -135,8 +137,8 @@ export const CommentList: React.FC<CommentListProps> = ({
                   <CommentForm
                     articleId={articleId}
                     parentCommentId={comment.id}
-                    onCommentAdded={async () => {
-                      getComments(articleId).then((data) => setComments(data));
+                    onCommentAdded={() => {
+                      refetch();
                       setReplyToCommentId(null);
                     }}
                     onCancelEdit={handleCancelEdit}
@@ -159,12 +161,7 @@ export const CommentList: React.FC<CommentListProps> = ({
     <Box sx={{ marginTop: 4 }}>
       {renderComments(comments)}
       {!editingComment && replyToCommentId === null && (
-        <CommentForm
-          articleId={articleId}
-          onCommentAdded={() =>
-            getComments(articleId).then((data) => setComments(data))
-          }
-        />
+        <CommentForm articleId={articleId} onCommentAdded={() => refetch()} />
       )}
     </Box>
   );

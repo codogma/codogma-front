@@ -68,14 +68,6 @@ export const CommentForm: React.FC<CommentFormProps> = ({
     }
   }, [comment]);
 
-  // const onSubmit: SubmitHandler<z.infer<typeof CommentFormScheme>> = (
-  //   formData,
-  // ) => {
-  //   const requestData = { ...formData };
-  //   devConsoleError(requestData);
-  //   createComment(requestData);
-  // };
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 

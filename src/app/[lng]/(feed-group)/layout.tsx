@@ -2,6 +2,7 @@
 import React, { ReactNode } from 'react';
 
 import { useTranslation } from '@/app/i18n/client';
+import { useAuth } from '@/components/AuthProvider';
 import NavTabs, { TabProps } from '@/components/NavTabs';
 import { WithAuth } from '@/components/WithAuth';
 
@@ -11,6 +12,7 @@ type LayoutProps = {
 };
 
 function Layout({ params: { lng }, children }: LayoutProps) {
+  const { state } = useAuth();
   const { t } = useTranslation(lng);
   const tabs: TabProps[] = [
     { label: `${t('feed')}`, href: `/${lng}/feed` },
@@ -18,7 +20,10 @@ function Layout({ params: { lng }, children }: LayoutProps) {
       label: `${t('favoriteCategories')}`,
       href: `/${lng}/favorite-categories`,
     },
-    { label: `${t('subscriptions')}`, href: `/${lng}/subscriptions` },
+    {
+      label: `${t('subscriptions')}`,
+      href: `/${lng}/subscriptions`,
+    },
   ];
   return (
     <>
