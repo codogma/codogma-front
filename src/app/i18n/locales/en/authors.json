@@ -5,6 +5,6 @@
   "subscribersByUser": "Subscribers by author",
   "subscriptionsByUser": "Subscriptions by user",
   "authorsDescription": "Authors CODOGMA",
-  "followBtn": "Follow",
-  "followingBtn": "Following"
+  "subscribeBtn": "Subscribe",
+  "unsubscribeBtn": "Unsubscribe"
 }
