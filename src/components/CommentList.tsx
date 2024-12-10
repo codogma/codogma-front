@@ -1,6 +1,7 @@
 'use client';
+import { LoadingButton } from '@mui/lab';
 import { Box, Button, Card, CardContent, Typography } from '@mui/material';
-import { InfiniteData, useInfiniteQuery } from '@tanstack/react-query';
+import { useInfiniteQuery } from '@tanstack/react-query';
 import Link from 'next/link';
 import React, { useState } from 'react';
 
@@ -9,7 +10,7 @@ import { useAuth } from '@/components/AuthProvider';
 import { AvatarImage } from '@/components/AvatarImage';
 import { TimeAgo } from '@/components/TimeAgo';
 import { deleteComment, getComments } from '@/helpers/commentAPI';
-import { GetComment, GetCommentsDTO, UserRole } from '@/types';
+import { GetComment, UserRole } from '@/types';
 
 import { CommentForm } from './CommentForm';
 
@@ -28,23 +29,25 @@ export const CommentList: React.FC<CommentListProps> = ({
   const { state } = useAuth();
   const { t } = useTranslation(lang);
 
-  const {
-    data,
-    fetchNextPage,
-    hasNextPage,
-    isFetchingNextPage,
-    isFetching,
-    refetch,
-  } = useInfiniteQuery({
-    queryKey: ['comments', articleId],
-    queryFn: ({ pageParam = 0 }) =>
-      getComments(articleId, undefined, 'asc', undefined, pageParam, pageSize),
-    initialPageParam: 0,
-    getNextPageParam: (lastPage, pages) => {
-      const nextPage = pages.length;
-      return nextPage < lastPage.totalPages ? nextPage : undefined;
+  const { data, fetchNextPage, isFetchingNextPage, refetch } = useInfiniteQuery(
+    {
+      queryKey: ['comments', articleId],
+      queryFn: ({ pageParam = 0 }) =>
+        getComments(
+          articleId,
+          undefined,
+          'asc',
+          undefined,
+          pageParam,
+          pageSize,
+        ),
+      initialPageParam: 0,
+      getNextPageParam: (lastPage, pages) => {
+        const nextPage = pages.length;
+        return nextPage < lastPage.totalPages ? nextPage : undefined;
+      },
     },
-  });
+  );
 
   const handleEdit = (comment: GetComment) => {
     setEditingComment(comment);
@@ -65,126 +68,122 @@ export const CommentList: React.FC<CommentListProps> = ({
     setReplyToCommentId(null);
   };
 
-  const renderComments = (data?: InfiniteData<GetCommentsDTO, unknown>) => {
-    return data?.pages.map((page, pageIndex) => (
-      <div key={pageIndex}>
-        {page.content.map((comment) => (
-          <Card key={comment.id} variant='outlined' className='card'>
-            <CardContent className='card-content'>
-              <Box className='meta-container'>
-                <AvatarImage
-                  className='article-user-avatar'
-                  src={comment.user.avatarUrl}
-                  alt={comment.user.username}
-                  variant='rounded'
-                  size={32}
-                />
-                <Link
-                  className='article-user-name'
-                  href={`/users/${comment.user.username}`}
-                >
-                  {comment.user.username}
-                </Link>
-                <TimeAgo
-                  datetime={comment.createdAt}
-                  className='article-datetime'
-                  lang={lang}
-                />
-              </Box>
-              {editingComment && editingComment.id === comment.id ? (
-                <CommentForm
-                  articleId={articleId}
-                  parentCommentId={comment.parentCommentId}
-                  comment={comment}
-                  onCommentAdded={async () => {
-                    await refetch();
-                    setEditingComment(null);
-                  }}
-                  onCancelEdit={handleCancelEdit}
-                />
-              ) : (
-                <>
-                  <Typography variant='body1'>{comment.content}</Typography>
-                  {state.isAuthenticated &&
-                    state.user?.role !== UserRole.ROLE_ADMIN && (
-                      <Box sx={{ display: 'flex', gap: 1, marginTop: 1 }}>
-                        {state.user &&
-                          state.user.username !== comment.user.username && (
-                            <Button
-                              variant='outlined'
-                              size='small'
-                              onClick={() => handleReply(comment.id)}
-                            >
-                              {t('replyBtn')}
-                            </Button>
-                          )}
-                        {state.user &&
-                          state.user.username === comment.user.username && (
-                            <Button
-                              color='secondary'
-                              variant='outlined'
-                              size='small'
-                              onClick={() => handleEdit(comment)}
-                            >
-                              {t('editBtn')}
-                            </Button>
-                          )}
-                        {state.user &&
-                          state.user.username === comment.user.username && (
-                            <Button
-                              color='error'
-                              variant='outlined'
-                              size='small'
-                              onClick={() => handleDelete(comment.id)}
-                            >
-                              {t('deleteBtn')}
-                            </Button>
-                          )}
-                      </Box>
-                    )}
-                  {replyToCommentId === comment.id && (
-                    <Box sx={{ marginTop: 2 }}>
-                      <CommentForm
-                        articleId={articleId}
-                        parentCommentId={comment.id}
-                        onCommentAdded={() => {
-                          refetch();
-                          setReplyToCommentId(null);
-                        }}
-                        onCancelEdit={handleCancelEdit}
-                      />
-                    </Box>
-                  )}
-                </>
-              )}
-              {comment.replies && comment.replies.content?.length > 0 && (
-                <Box sx={{ marginTop: 2, marginLeft: 2 }}>
-                  {renderComments(comment.replies)}
+  const renderComments = (comments?: GetComment[]) => {
+    return comments?.map((comment) => (
+      <Card key={comment.id} variant='outlined' className='card'>
+        <CardContent className='card-content'>
+          <Box className='meta-container'>
+            <AvatarImage
+              className='article-user-avatar'
+              src={comment.user.avatarUrl}
+              alt={comment.user.username}
+              variant='rounded'
+              size={32}
+            />
+            <Link
+              className='article-user-name'
+              href={`/users/${comment.user.username}`}
+            >
+              {comment.user.username}
+            </Link>
+            <TimeAgo
+              datetime={comment.createdAt}
+              className='article-datetime'
+              lang={lang}
+            />
+          </Box>
+          {editingComment && editingComment.id === comment.id ? (
+            <CommentForm
+              articleId={articleId}
+              parentCommentId={comment.parentCommentId}
+              comment={comment}
+              onCommentAdded={async () => {
+                await refetch();
+                setEditingComment(null);
+              }}
+              onCancelEdit={handleCancelEdit}
+            />
+          ) : (
+            <>
+              <Typography variant='body1'>{comment.content}</Typography>
+              {state.isAuthenticated &&
+                state.user?.role !== UserRole.ROLE_ADMIN && (
+                  <Box sx={{ display: 'flex', gap: 1, marginTop: 1 }}>
+                    {state.user &&
+                      state.user.username !== comment.user.username && (
+                        <Button
+                          variant='outlined'
+                          size='small'
+                          onClick={() => handleReply(comment.id)}
+                        >
+                          {t('replyBtn')}
+                        </Button>
+                      )}
+                    {state.user &&
+                      state.user.username === comment.user.username && (
+                        <Button
+                          color='secondary'
+                          variant='outlined'
+                          size='small'
+                          onClick={() => handleEdit(comment)}
+                        >
+                          {t('editBtn')}
+                        </Button>
+                      )}
+                    {state.user &&
+                      state.user.username === comment.user.username && (
+                        <Button
+                          color='error'
+                          variant='outlined'
+                          size='small'
+                          onClick={() => handleDelete(comment.id)}
+                        >
+                          {t('deleteBtn')}
+                        </Button>
+                      )}
+                  </Box>
+                )}
+              {replyToCommentId === comment.id && (
+                <Box sx={{ marginTop: 2 }}>
+                  <CommentForm
+                    articleId={articleId}
+                    parentCommentId={comment.id}
+                    onCommentAdded={() => {
+                      refetch();
+                      setReplyToCommentId(null);
+                    }}
+                    onCancelEdit={handleCancelEdit}
+                  />
                 </Box>
               )}
-            </CardContent>
-          </Card>
-        ))}
-      </div>
+            </>
+          )}
+          {comment.replies && comment.replies?.length > 0 && (
+            <Box sx={{ marginTop: 2, marginLeft: 2 }}>
+              {renderComments(comment.replies)}
+            </Box>
+          )}
+        </CardContent>
+      </Card>
     ));
   };
 
   return (
     <Box sx={{ marginTop: 4 }}>
-      {renderComments(data)}
+      {data?.pages.map((page, pageIndex) => (
+        <div key={pageIndex}>{renderComments(page.content)}</div>
+      ))}
       <div>
-        <Button
+        <LoadingButton
           onClick={() => fetchNextPage()}
-          disabled={!hasNextPage || isFetchingNextPage}
+          loadingPosition='start'
+          loading={isFetchingNextPage}
+          variant='outlined'
+          size='small'
         >
-          {isFetchingNextPage
-            ? 'Loading more...'
-            : hasNextPage
-              ? 'Load More'
-              : 'Nothing more to load'}
-        </Button>
+          Load More
+        </LoadingButton>
       </div>
-      <div>{isFetching && !isFetchingNextPage ? 'Fetching...' : null}</div>
       {!editingComment && replyToCommentId === null && (
         <CommentForm articleId={articleId} onCommentAdded={() => refetch()} />
       )}

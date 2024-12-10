@@ -87,7 +87,7 @@ export const CommentForm: React.FC<CommentFormProps> = ({
     <Box
       component='form'
       onSubmit={handleSubmit}
-      sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}
+      sx={{ marginTop: 2, display: 'flex', flexDirection: 'column', gap: 2 }}
     >
       {state.isAuthenticated ? (
         <>

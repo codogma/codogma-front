@@ -63,7 +63,7 @@ export interface GetComment {
   article: Article;
   parentCommentId?: number;
   user: User;
-  replies?: GetCommentsDTO;
+  replies?: GetComment[];
   createdAt: Date;
   updatedAt: Date;
 }
