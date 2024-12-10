@@ -2,5 +2,7 @@
   "categoriesDescription": "Список категорий",
   "articlesInCategory": "Статьи в категории",
   "authorsInCategory": "Авторы в категории",
-  "categoryCreated": "Категория создана успешно"
+  "categoryCreated": "Категория создана успешно",
+  "addToFavorite": "Добавить в избранное",
+  "removeFromFavorite": "Удалить из избранных"
 }

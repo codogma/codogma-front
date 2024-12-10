@@ -8,6 +8,7 @@ import React from 'react';
 
 import { useTranslation } from '@/app/i18n/client';
 import { AvatarImage } from '@/components/AvatarImage';
+import { ButtonFavorite } from '@/components/ButtonFavorite';
 import NavTabs, { TabProps } from '@/components/NavTabs';
 import { getCategoryById } from '@/helpers/categoryApi';
 import { Category } from '@/types';
@@ -62,6 +63,7 @@ export default function Layout({ params: { id, lng }, children }: PageProps) {
               </p>
             </div>
           </div>
+          <ButtonFavorite id={id} lang={lng} />
         </CardContent>
       </Card>
       <NavTabs tabs={tabs} />

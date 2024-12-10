@@ -81,3 +81,16 @@ export const deleteCategory = async (id: number): Promise<void> => {
   await axiosInstance.delete(`/categories/${id}`);
   devConsoleInfo('Category deleted successfully');
 };
+
+export const checkFavorite = async (id: number): Promise<boolean> => {
+  const response = await axiosInstance.get(`/categories/${id}/is-favorite`);
+  return response.data;
+};
+
+export const unfavoriteToUser = async (id: number): Promise<void> => {
+  await axiosInstance.delete(`/categories/${id}/unfavorite`);
+};
+
+export const favoriteToUser = async (id: number): Promise<void> => {
+  await axiosInstance.post(`/categories/${id}/add-to-favorites`);
+};

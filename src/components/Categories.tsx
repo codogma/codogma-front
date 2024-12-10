@@ -15,18 +15,21 @@ import React from 'react';
 import { useTranslation } from '@/app/i18n/client';
 import { useAuth } from '@/components/AuthProvider';
 import { AvatarImage } from '@/components/AvatarImage';
+import { ButtonFavorite } from '@/components/ButtonFavorite';
 import { Category, UserRole } from '@/types';
 
 type CategoriesProps = {
   readonly categories: Category[];
   readonly loading: boolean;
   readonly lang: string;
+  readonly id: number;
 };
 
 export default function Categories({
   categories,
   loading,
   lang,
+  id,
 }: CategoriesProps) {
   const { state } = useAuth();
   const { t } = useTranslation(lang);
@@ -119,6 +122,7 @@ export default function Categories({
                   )}
                 </Stack>
               </CardActions>
+              <ButtonFavorite id={id} lang={lang} />
             </CardContent>
           </Card>
         ))
