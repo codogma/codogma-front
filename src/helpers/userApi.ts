@@ -42,16 +42,13 @@ export const updateUser = async (requestData: UserUpdate): Promise<User> => {
   return user;
 };
 
-export const getUsers = async (): Promise<User[]> => {
-  const response = await axiosInstance.get('/users');
-  return response.data;
-};
-
-export const getAuthors = async (
+export const getUsers = async (
   categoryId?: number,
+  role?: UserRole,
   tag?: string,
   info?: string,
-  isSubscription?: boolean,
+  isSubscriptions?: boolean,
+  isSubscribers?: boolean,
   page: number = 0,
   size: number = 10,
   sort: string = 'username',
@@ -60,10 +57,11 @@ export const getAuthors = async (
   const response = await axiosInstance.get(`/users`, {
     params: {
       categoryId,
-      role: UserRole.ROLE_AUTHOR,
+      role,
       tag,
       info,
-      isSubscription,
+      isSubscriptions,
+      isSubscribers,
       page,
       size,
       sort,

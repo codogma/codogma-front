@@ -1,39 +1,93 @@
 'use client';
-import React, { useEffect, useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import React, { useEffect, useRef, useState } from 'react';
 
+import { CustomPagination } from '@/components/CustomPagination';
+import { Search } from '@/components/Search';
 import Users from '@/components/Users';
-import { devConsoleError, devConsoleInfo } from '@/helpers/devConsoleLogs';
-import { getAuthors } from '@/helpers/userApi';
-import { User } from '@/types';
-
-type PageParams = {
-  id: number;
-};
+import { contlCookie } from '@/constants/i18n';
+import { getUsers, GetUsersDTO } from '@/helpers/userApi';
+import { User, UserRole } from '@/types';
 
 type PageProps = {
-  readonly params: PageParams;
+  readonly params: {
+    lng: string;
+    id: number;
+  };
 };
 
-export default function Page({ params }: PageProps) {
-  const categoryId = params.id;
-  const [users, setUsers] = useState<User[]>([]);
-  const [loading, setLoading] = useState(true);
+export default function Page({ params: { lng, id } }: PageProps) {
+  const searchInputRef = useRef<HTMLInputElement>(null);
+  const [currentPage, setCurrentPage] = useState<number>(0);
+  const [resultsPerPage, setResultsPerPage] = useState<number>(10);
+  const [searchValue, setSearchValue] = useState<string>();
+  const [searchType, setSearchType] = useState<string>('info');
+
+  const onSearchType = (type: string) => {
+    setSearchType(type);
+  };
+
+  const onSearchValue = (value: string) => {
+    setSearchValue(value);
+    setCurrentPage(0);
+  };
+
+  const { data, isFetching, refetch } = useQuery<GetUsersDTO>({
+    queryKey: ['authors', currentPage, resultsPerPage, searchType, searchValue],
+    queryFn: () => {
+      const byTag = searchType === 'tag' ? searchValue : undefined;
+      const byInfo = searchType === 'info' ? searchValue : undefined;
+      return getUsers(
+        id,
+        UserRole.ROLE_AUTHOR,
+        byTag,
+        byInfo,
+        false,
+        false,
+        currentPage,
+        resultsPerPage,
+      );
+    },
+  });
+
+  const users: User[] = data?.content ?? [];
+  const totalPages = data?.totalPages ?? 0;
+  const totalElements = data?.totalElements ?? 0;
 
   useEffect(() => {
-    async function fetchData() {
-      try {
-        const allUsers = await getAuthors(categoryId);
-        devConsoleInfo(allUsers);
-        setUsers(allUsers);
-      } catch (error) {
-        devConsoleError('Error fetching data:', error);
-      } finally {
-        setLoading(false);
-      }
+    window.addEventListener(contlCookie, () => refetch());
+    if (window.location.hash === '#search-input' && searchInputRef.current) {
+      searchInputRef.current.scrollIntoView({
+        behavior: 'smooth',
+        block: 'center',
+      });
+      searchInputRef.current.focus();
     }
+  }, [refetch]);
 
-    fetchData();
-  }, [categoryId]);
+  const onPageChange = (value: number) => {
+    setCurrentPage(value);
+  };
 
-  return <Users users={users} loading={loading} />;
+  const onResultsPerPageChange = (value: number) => {
+    setResultsPerPage(value);
+  };
+
+  return (
+    <>
+      <Search
+        lang={lng}
+        onSearchType={onSearchType}
+        onSearchValue={onSearchValue}
+      />
+      <Users users={users} loading={isFetching} />
+      <CustomPagination
+        lang={lng}
+        totalPages={totalPages}
+        totalElements={totalElements}
+        onCurrentPageChange={onPageChange}
+        onResultsPerPageChange={onResultsPerPageChange}
+      />
+    </>
+  );
 }

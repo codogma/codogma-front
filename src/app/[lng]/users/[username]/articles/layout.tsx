@@ -17,13 +17,13 @@ export async function generateMetadata({
   const { t } = await initTranslation(lng, 'authors');
   return {
     alternates: {
-      canonical: `/authors/${username}/profile`,
+      canonical: `/users/${username}/articles`,
       languages: {
-        en: `/en/authors/${username}/profile`,
-        ru: `/ru/authors/${username}/profile`,
+        en: `/en/users/${username}/articles`,
+        ru: `/ru/users/${username}/articles`,
       },
     },
-    title: t('profileByUser'),
+    title: t('articlesByUser'),
     description: user.shortInfo,
     keywords: user.categories.map((category) => category.name),
   };

@@ -68,14 +68,6 @@ export const CommentForm: React.FC<CommentFormProps> = ({
     }
   }, [comment]);
 
-  // const onSubmit: SubmitHandler<z.infer<typeof CommentFormScheme>> = (
-  //   formData,
-  // ) => {
-  //   const requestData = { ...formData };
-  //   devConsoleError(requestData);
-  //   createComment(requestData);
-  // };
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -95,7 +87,7 @@ export const CommentForm: React.FC<CommentFormProps> = ({
     <Box
       component='form'
       onSubmit={handleSubmit}
-      sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}
+      sx={{ marginTop: 2, display: 'flex', flexDirection: 'column', gap: 2 }}
     >
       {state.isAuthenticated ? (
         <>

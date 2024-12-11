@@ -1,7 +1,9 @@
 'use client';
+import { LoadingButton } from '@mui/lab';
 import { Box, Button, Card, CardContent, Typography } from '@mui/material';
+import { useInfiniteQuery } from '@tanstack/react-query';
 import Link from 'next/link';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 
 import { useTranslation } from '@/app/i18n/client';
 import { useAuth } from '@/components/AuthProvider';
@@ -14,26 +16,38 @@ import { CommentForm } from './CommentForm';
 
 interface CommentListProps {
   readonly articleId: number;
-  readonly comments?: GetComment[];
   readonly lang: string;
 }
 
 export const CommentList: React.FC<CommentListProps> = ({
   articleId,
-  comments: initialComments,
   lang,
 }) => {
-  const [comments, setComments] = useState<GetComment[]>(initialComments || []);
   const [editingComment, setEditingComment] = useState<GetComment | null>(null);
   const [replyToCommentId, setReplyToCommentId] = useState<number | null>(null);
+  const [pageSize] = useState(5);
   const { state } = useAuth();
   const { t } = useTranslation(lang);
 
-  useEffect(() => {
-    if (!initialComments) {
-      getComments(articleId).then((data) => setComments(data));
-    }
-  }, [articleId, initialComments]);
+  const { data, fetchNextPage, isFetchingNextPage, refetch } = useInfiniteQuery(
+    {
+      queryKey: ['comments', articleId],
+      queryFn: ({ pageParam = 0 }) =>
+        getComments(
+          articleId,
+          undefined,
+          'asc',
+          undefined,
+          pageParam,
+          pageSize,
+        ),
+      initialPageParam: 0,
+      getNextPageParam: (lastPage, pages) => {
+        const nextPage = pages.length;
+        return nextPage < lastPage.totalPages ? nextPage : undefined;
+      },
+    },
+  );
 
   const handleEdit = (comment: GetComment) => {
     setEditingComment(comment);
@@ -45,9 +59,8 @@ export const CommentList: React.FC<CommentListProps> = ({
     setEditingComment(null);
   };
 
-  const handleDelete = async (commentId: number) => {
-    await deleteComment(commentId);
-    getComments(articleId).then((data) => setComments(data));
+  const handleDelete = (commentId: number) => {
+    deleteComment(commentId).then(() => refetch());
   };
 
   const handleCancelEdit = () => {
@@ -55,8 +68,8 @@ export const CommentList: React.FC<CommentListProps> = ({
     setReplyToCommentId(null);
   };
 
-  const renderComments = (comments: GetComment[]) => {
-    return comments.map((comment) => (
+  const renderComments = (comments?: GetComment[]) => {
+    return comments?.map((comment) => (
       <Card key={comment.id} variant='outlined' className='card'>
         <CardContent className='card-content'>
           <Box className='meta-container'>
@@ -69,7 +82,7 @@ export const CommentList: React.FC<CommentListProps> = ({
             />
             <Link
               className='article-user-name'
-              href={`/authors/${comment.user.username}`}
+              href={`/users/${comment.user.username}`}
             >
               {comment.user.username}
             </Link>
@@ -85,7 +98,7 @@ export const CommentList: React.FC<CommentListProps> = ({
               parentCommentId={comment.parentCommentId}
               comment={comment}
               onCommentAdded={async () => {
-                getComments(articleId).then((data) => setComments(data));
+                await refetch();
                 setEditingComment(null);
               }}
               onCancelEdit={handleCancelEdit}
@@ -135,8 +148,8 @@ export const CommentList: React.FC<CommentListProps> = ({
                   <CommentForm
                     articleId={articleId}
                     parentCommentId={comment.id}
-                    onCommentAdded={async () => {
-                      getComments(articleId).then((data) => setComments(data));
+                    onCommentAdded={() => {
+                      refetch();
                       setReplyToCommentId(null);
                     }}
                     onCancelEdit={handleCancelEdit}
@@ -145,7 +158,7 @@ export const CommentList: React.FC<CommentListProps> = ({
               )}
             </>
           )}
-          {comment.replies && comment.replies.length > 0 && (
+          {comment.replies && comment.replies?.length > 0 && (
             <Box sx={{ marginTop: 2, marginLeft: 2 }}>
               {renderComments(comment.replies)}
             </Box>
@@ -157,14 +170,22 @@ export const CommentList: React.FC<CommentListProps> = ({
 
   return (
     <Box sx={{ marginTop: 4 }}>
-      {renderComments(comments)}
+      {data?.pages.map((page, pageIndex) => (
+        <div key={pageIndex}>{renderComments(page.content)}</div>
+      ))}
+      <div>
+        <LoadingButton
+          onClick={() => fetchNextPage()}
+          loadingPosition='start'
+          loading={isFetchingNextPage}
+          variant='outlined'
+          size='small'
+        >
+          Load More
+        </LoadingButton>
+      </div>
       {!editingComment && replyToCommentId === null && (
-        <CommentForm
-          articleId={articleId}
-          onCommentAdded={() =>
-            getComments(articleId).then((data) => setComments(data))
-          }
-        />
+        <CommentForm articleId={articleId} onCommentAdded={() => refetch()} />
       )}
     </Box>
   );

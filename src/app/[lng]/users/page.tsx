@@ -7,7 +7,7 @@ import { Search } from '@/components/Search';
 import Users from '@/components/Users';
 import { contlCookie } from '@/constants/i18n';
 import { getUsers, GetUsersDTO } from '@/helpers/userApi';
-import { User, UserRole } from '@/types';
+import { User } from '@/types';
 
 type PageProps = {
   readonly params: {
@@ -15,7 +15,7 @@ type PageProps = {
   };
 };
 
-const Page = ({ params: { lng } }: PageProps) => {
+export default function Page({ params: { lng } }: PageProps) {
   const searchInputRef = useRef<HTMLInputElement>(null);
   const [currentPage, setCurrentPage] = useState<number>(0);
   const [resultsPerPage, setResultsPerPage] = useState<number>(10);
@@ -38,10 +38,10 @@ const Page = ({ params: { lng } }: PageProps) => {
       const byInfo = searchType === 'info' ? searchValue : undefined;
       return getUsers(
         undefined,
-        UserRole.ROLE_AUTHOR,
+        undefined,
         byTag,
         byInfo,
-        true,
+        false,
         false,
         currentPage,
         resultsPerPage,
@@ -89,6 +89,4 @@ const Page = ({ params: { lng } }: PageProps) => {
       />
     </>
   );
-};
-
-export default Page;
+}
