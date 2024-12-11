@@ -92,7 +92,7 @@
   }
 
   .card-content {
-    @apply p-0 !important;
+    @apply p-0 flex justify-between !important;
   }
 
   .meta-container {
@@ -188,11 +188,19 @@
   }
 
   .article-btn {
-    @apply inline-flex h-auto min-h-[36px] cursor-pointer items-center rounded-sm border border-solid border-horizon bg-transparent px-3 py-0 text-[0.8125rem] leading-[1.6875rem] text-horizon no-underline dark:border-deepsky-blue dark:text-deepsky-blue !important;
+    @apply inline-flex h-auto max-h-[36px] cursor-pointer items-center rounded-sm border border-solid border-horizon bg-transparent px-3 py-0 text-[0.8125rem] leading-[1.6875rem] text-horizon no-underline dark:border-deepsky-blue dark:text-deepsky-blue !important;
   }
 
   .article-btn:hover {
     @apply border border-solid border-transparent bg-astral text-white dark:bg-deepsky-blue !important;
+  }
+
+  .article-red-btn {
+    @apply inline-flex h-auto max-h-[36px] cursor-pointer items-center rounded-sm border border-solid border-red bg-transparent px-3 py-0 text-[0.8125rem] leading-[1.6875rem] text-red no-underline dark:border-red dark:text-red !important;
+  }
+
+  .article-red-btn:hover {
+    @apply border border-solid border-transparent bg-red text-white dark:bg-red !important;
   }
 
   .article-presenter-meta {

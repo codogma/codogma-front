@@ -6,6 +6,7 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
+        red: '#FF0000',
         seashell: '#F0F0F0',
         bunker: '#171717',
         'cod-gray': '#080808',

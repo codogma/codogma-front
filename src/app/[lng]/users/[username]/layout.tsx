@@ -74,7 +74,6 @@ export default function Layout({
                 size={48}
               />
             </Badge>
-            <ButtonWithPopover username={username} lang={lng} />
             <div>
               <h1 className='category-card-name'>
                 {user?.firstName} {user?.lastName}
@@ -82,6 +81,7 @@ export default function Layout({
               <p className='category-card-shortInfo'>{user?.shortInfo}</p>
             </div>
           </div>
+          <ButtonWithPopover username={username} lang={lng} />
         </CardContent>
       </Card>
       <NavTabs tabs={tabs} />
