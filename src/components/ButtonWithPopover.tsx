@@ -1,51 +1,40 @@
 'use client';
 import { Button, Link, Popover, Typography } from '@mui/material';
 import { useRouter } from 'next/navigation';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 
 import { useTranslation } from '@/app/i18n/client';
 import { useAuth } from '@/components/AuthProvider';
-import {
-  checkSubscription,
-  subscribeToUser,
-  unsubscribeToUser,
-} from '@/helpers/userApi';
+import { subscribeToUser, unsubscribeToUser } from '@/helpers/userApi';
 
 interface CustomPopoverProps {
   readonly destination?: string;
   readonly username: string;
   readonly lang: string;
+  readonly isSubscribedValue?: boolean;
 }
 
 export const ButtonWithPopover: React.FC<CustomPopoverProps> = ({
   destination = 'to subscribe to a user',
   username,
   lang,
+  isSubscribedValue,
 }) => {
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(
     null,
   );
-  const [isSubscribed, setIsSubscribed] = useState(false);
+  const [isSubscribed, setIsSubscribed] = useState(isSubscribedValue);
   const { state } = useAuth();
   const router = useRouter();
   const { t } = useTranslation(lang, 'authors');
   const open = Boolean(anchorEl);
   const id = open ? 'simple-popover' : undefined;
 
-  useEffect(() => {
-    const check = async (username: string) => {
-      await checkSubscription(username).then((response) =>
-        setIsSubscribed(response),
-      );
-    };
-    if (state.isAuthenticated) {
-      check(username);
-    }
-  }, [state.isAuthenticated, username]);
-
   const handleUnsubscribe = async () => {
     if (state.isAuthenticated) {
-      await unsubscribeToUser(username).then(() => setIsSubscribed(false));
+      await unsubscribeToUser(username).then((response) =>
+        setIsSubscribed(response.isSubscribed),
+      );
     }
   };
 
@@ -53,7 +42,9 @@ export const ButtonWithPopover: React.FC<CustomPopoverProps> = ({
     event: React.MouseEvent<HTMLButtonElement>,
   ) => {
     if (state.isAuthenticated) {
-      await subscribeToUser(username).then(() => setIsSubscribed(true));
+      await subscribeToUser(username).then((response) =>
+        setIsSubscribed(response.isSubscribed),
+      );
     } else {
       setAnchorEl(event.currentTarget);
     }

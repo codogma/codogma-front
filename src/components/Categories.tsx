@@ -22,14 +22,12 @@ type CategoriesProps = {
   readonly categories: Category[];
   readonly loading: boolean;
   readonly lang: string;
-  readonly id: number;
 };
 
 export default function Categories({
   categories,
   loading,
   lang,
-  id,
 }: CategoriesProps) {
   const { state } = useAuth();
   const { t } = useTranslation(lang);
@@ -122,7 +120,11 @@ export default function Categories({
                   )}
                 </Stack>
               </CardActions>
-              <ButtonFavorite id={id} lang={lang} />
+              <ButtonFavorite
+                id={category.id}
+                lang={lang}
+                isFavoriteValue={category?.isFavorite}
+              />
             </CardContent>
           </Card>
         ))

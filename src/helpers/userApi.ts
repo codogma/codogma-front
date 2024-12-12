@@ -83,15 +83,12 @@ export const deleteUser = async (username: string): Promise<void> => {
   devConsoleInfo('User deleted successfully');
 };
 
-export const checkSubscription = async (username: string): Promise<boolean> => {
-  const response = await axiosInstance.get(`/users/${username}/is-subscribed`);
+export const unsubscribeToUser = async (username: string): Promise<User> => {
+  const response = await axiosInstance.delete(`/users/${username}/unsubscribe`);
   return response.data;
 };
 
-export const unsubscribeToUser = async (username: string): Promise<void> => {
-  await axiosInstance.delete(`/users/${username}/unsubscribe`);
-};
-
-export const subscribeToUser = async (username: string): Promise<void> => {
-  await axiosInstance.post(`/users/${username}/subscribe`);
+export const subscribeToUser = async (username: string): Promise<User> => {
+  const response = await axiosInstance.post(`/users/${username}/subscribe`);
+  return response.data;
 };

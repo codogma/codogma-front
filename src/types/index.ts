@@ -13,6 +13,7 @@ export enum Language {
 
 export type User = {
   username: string;
+  isSubscribed: boolean;
   email: string;
   firstName: string;
   lastName: string;
