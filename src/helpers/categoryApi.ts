@@ -84,6 +84,10 @@ export const deleteCategory = async (id: number): Promise<void> => {
 
 export const unfavoriteToUser = async (id: number): Promise<Category> => {
   const response = await axiosInstance.delete(`/categories/${id}/unfavorite`);
+  dispatchCustomEvent('api', {
+    message: 'You have successfully removed the category from your favorites',
+    severity: 'success',
+  });
   return response.data;
 };
 
@@ -91,5 +95,9 @@ export const favoriteToUser = async (id: number): Promise<Category> => {
   const response = await axiosInstance.post(
     `/categories/${id}/add-to-favorites`,
   );
+  dispatchCustomEvent('api', {
+    message: 'You have successfully added the category to your favorites',
+    severity: 'success',
+  });
   return response.data;
 };
