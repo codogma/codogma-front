@@ -62,7 +62,7 @@ const Page = ({ params }: PageProps) => {
                     size={32}
                   />
                   <Link
-                    href={`/authors/${user.username}`}
+                    href={`/users/${user.username}`}
                     className='subscribers-user-name'
                   >
                     @{user.username}

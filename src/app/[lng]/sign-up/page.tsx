@@ -1,5 +1,6 @@
 'use client';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { LoadingButton } from '@mui/lab';
 import {
   Box,
   Button,
@@ -55,7 +56,7 @@ export default function Page({ params: { lng } }: PageProps) {
   const {
     reset,
     handleSubmit,
-    formState: { isSubmitSuccessful },
+    formState: { isSubmitSuccessful, isSubmitting },
   } = zodForm;
 
   useEffect(() => {
@@ -148,14 +149,17 @@ export default function Page({ params: { lng } }: PageProps) {
                   {serverError}
                 </Typography>
               )}
-              <Button
+              <LoadingButton
                 type='submit'
                 fullWidth
+                loadingPosition='start'
+                loadingIndicator={t('signingUpBtn')}
+                loading={isSubmitting}
                 variant='contained'
-                disabled={isSubmitSuccessful}
+                size='small'
               >
-                {isSubmitSuccessful ? t('signingUpBtn') : t('signUpBtn')}
-              </Button>
+                {t('signUpBtn')}
+              </LoadingButton>
               <Typography sx={{ textAlign: 'center' }}>
                 {t('alreadyAccount')}{' '}
                 <span>

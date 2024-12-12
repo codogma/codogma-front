@@ -49,13 +49,10 @@ export default function Users({ users, loading }: AuthorsProps) {
                   size={24}
                 />
               </div>
-              <Link href={`/authors/${user.username}`} className='user-title'>
+              <Link href={`/users/${user.username}`} className='user-title'>
                 {user.username}
               </Link>
-              <Link
-                href={`/authors/${user.username}`}
-                className='user-nickname'
-              >
+              <Link href={`/users/${user.username}`} className='user-nickname'>
                 @{user.username}
               </Link>
               <div className='user-description'>{user.shortInfo}</div>

@@ -58,7 +58,7 @@ export default function Articles({ lang, articles, loading }: ArticlesProps) {
                   size={32}
                 />
                 <Link
-                  href={`/authors/${article.username}`}
+                  href={`/users/${article.username}`}
                   className='article-user-name'
                 >
                   {article.username}

@@ -1,5 +1,6 @@
 'use client';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { LoadingButton } from '@mui/lab';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Card from '@mui/material/Card';
@@ -12,7 +13,7 @@ import Typography from '@mui/material/Typography';
 import { AxiosError } from 'axios';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
 import { z } from 'zod';
 
@@ -66,7 +67,7 @@ export default function Page({ params: { lng } }: PageProps) {
   const {
     reset,
     handleSubmit,
-    formState: { isSubmitSuccessful },
+    formState: { isSubmitSuccessful, isSubmitting },
   } = zodForm;
 
   useEffect(() => {
@@ -161,14 +162,15 @@ export default function Page({ params: { lng } }: PageProps) {
                   {serverError}
                 </Typography>
               )}
-              <Button
+              <LoadingButton
                 type='submit'
                 fullWidth
+                loadingIndicator={t('signingInBtn')}
+                loading={isSubmitting}
                 variant='contained'
-                disabled={isSubmitSuccessful}
               >
-                {isSubmitSuccessful ? t('signingInBtn') : t('signInBtn')}
-              </Button>
+                {t('signInBtn')}
+              </LoadingButton>
               <Typography sx={{ textAlign: 'center' }}>
                 {t('haveAccount')}{' '}
                 <span>

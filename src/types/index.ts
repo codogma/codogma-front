@@ -68,6 +68,12 @@ export interface GetComment {
   updatedAt: Date;
 }
 
+export type GetCommentsDTO = {
+  totalElements: number;
+  totalPages: number;
+  content: GetComment[];
+};
+
 export interface CreateComment {
   content: string;
   articleId: number;

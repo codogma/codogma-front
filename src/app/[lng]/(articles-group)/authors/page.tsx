@@ -6,8 +6,8 @@ import { CustomPagination } from '@/components/CustomPagination';
 import { Search } from '@/components/Search';
 import Users from '@/components/Users';
 import { contlCookie } from '@/constants/i18n';
-import { getAuthors, GetUsersDTO } from '@/helpers/userApi';
-import { User } from '@/types';
+import { getUsers, GetUsersDTO } from '@/helpers/userApi';
+import { User, UserRole } from '@/types';
 
 type PageProps = {
   readonly params: {
@@ -36,7 +36,16 @@ export default function Page({ params: { lng } }: PageProps) {
     queryFn: () => {
       const byTag = searchType === 'tag' ? searchValue : undefined;
       const byInfo = searchType === 'info' ? searchValue : undefined;
-      return getAuthors(undefined, byTag, byInfo, currentPage, resultsPerPage);
+      return getUsers(
+        undefined,
+        UserRole.ROLE_AUTHOR,
+        byTag,
+        byInfo,
+        false,
+        false,
+        currentPage,
+        resultsPerPage,
+      );
     },
   });
 
