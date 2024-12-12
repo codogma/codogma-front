@@ -34,6 +34,7 @@ export type Tag = {
 
 export type Category = {
   id: number;
+  isFavorite: boolean;
   name: string;
   description: string;
   imageUrl: string;

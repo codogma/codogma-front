@@ -1,21 +1,18 @@
 'use client';
 import { Button, Link, Popover, Typography } from '@mui/material';
 import { useRouter } from 'next/navigation';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 
 import { useTranslation } from '@/app/i18n/client';
 import { useAuth } from '@/components/AuthProvider';
-import {
-  checkFavorite,
-  favoriteToUser,
-  unfavoriteToUser,
-} from '@/helpers/categoryApi';
+import { favoriteToUser, unfavoriteToUser } from '@/helpers/categoryApi';
 
 interface CustomFavoriterProps {
   readonly destination?: string;
   readonly username?: string;
   readonly id: number;
   readonly lang: string;
+  readonly isFavoriteValue?: boolean;
 }
 
 export const ButtonFavorite: React.FC<CustomFavoriterProps> = ({
@@ -23,35 +20,31 @@ export const ButtonFavorite: React.FC<CustomFavoriterProps> = ({
   id,
   lang,
   username,
+  isFavoriteValue,
 }) => {
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(
     null,
   );
-  const [isFavorite, setIsFavorite] = useState(false);
+  const [isFavorite, setIsFavorite] = useState(isFavoriteValue);
   const { state } = useAuth();
   const router = useRouter();
   const { t } = useTranslation(lang, 'categories');
   const open = Boolean(anchorEl);
   const popoverId = open ? 'simple-popover' : undefined;
 
-  useEffect(() => {
-    const check = async (id: number) => {
-      await checkFavorite(id).then((response) => setIsFavorite(response));
-    };
-    if (state.isAuthenticated) {
-      check(id);
-    }
-  }, [state.isAuthenticated, id]);
-
   const handleUnfavorite = async () => {
     if (state.isAuthenticated) {
-      await unfavoriteToUser(id).then(() => setIsFavorite(false));
+      await unfavoriteToUser(id).then((response) =>
+        setIsFavorite(response.isFavorite),
+      );
     }
   };
 
   const handleFavorite = async (event: React.MouseEvent<HTMLButtonElement>) => {
     if (state.isAuthenticated) {
-      await favoriteToUser(id).then(() => setIsFavorite(true));
+      await favoriteToUser(id).then((response) =>
+        setIsFavorite(response.isFavorite),
+      );
     } else {
       setAnchorEl(event.currentTarget);
     }

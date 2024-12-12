@@ -63,7 +63,11 @@ export default function Layout({ params: { id, lng }, children }: PageProps) {
               </p>
             </div>
           </div>
-          <ButtonFavorite id={id} lang={lng} />
+          <ButtonFavorite
+            id={id}
+            lang={lng}
+            isFavoriteValue={category?.isFavorite}
+          />
         </CardContent>
       </Card>
       <NavTabs tabs={tabs} />
