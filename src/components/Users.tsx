@@ -5,17 +5,21 @@ import CardContent from '@mui/material/CardContent';
 import Link from 'next/link';
 import React from 'react';
 
+import { useTranslation } from '@/app/i18n/client';
 import { useAuth } from '@/components/AuthProvider';
 import { AvatarImage } from '@/components/AvatarImage';
+import { ButtonWithPopover } from '@/components/ButtonWithPopover';
 import { User, UserRole } from '@/types';
 
 type AuthorsProps = {
   readonly users: User[];
   readonly loading?: boolean;
+  readonly lang: string;
 };
 
-export default function Users({ users, loading }: AuthorsProps) {
+export default function Users({ users, loading, lang }: AuthorsProps) {
   const { state } = useAuth();
+  const { t } = useTranslation(lang, 'authors');
 
   return (
     <>
@@ -59,7 +63,7 @@ export default function Users({ users, loading }: AuthorsProps) {
               {state.user?.role === UserRole.ROLE_AUTHOR &&
                 user.categories?.length > 0 && (
                   <div className='user-item_categories'>
-                    Пишет в категориях:
+                    {t('writesInCategories')}
                     <div className='user-tags'>
                       {user.categories?.map((category) => (
                         <span className='user-tag-item' key={category.id}>
@@ -74,6 +78,11 @@ export default function Users({ users, loading }: AuthorsProps) {
                     </div>
                   </div>
                 )}
+              <ButtonWithPopover
+                isSubscribedValue={user?.isSubscribed}
+                username={user?.username}
+                lang={lang}
+              />
             </CardContent>
           </Card>
         ))

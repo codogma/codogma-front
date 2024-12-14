@@ -5,7 +5,7 @@ import React, { useState } from 'react';
 
 import { useTranslation } from '@/app/i18n/client';
 import { useAuth } from '@/components/AuthProvider';
-import { favoriteToUser, unfavoriteToUser } from '@/helpers/categoryApi';
+import { favorite, unfavorite } from '@/helpers/categoryApi';
 
 interface CustomFavoriterProps {
   readonly destination?: string;
@@ -34,7 +34,7 @@ export const ButtonFavorite: React.FC<CustomFavoriterProps> = ({
 
   const handleUnfavorite = async () => {
     if (state.isAuthenticated) {
-      await unfavoriteToUser(id).then((response) =>
+      await unfavorite(id).then((response) =>
         setIsFavorite(response.isFavorite),
       );
     }
@@ -42,9 +42,7 @@ export const ButtonFavorite: React.FC<CustomFavoriterProps> = ({
 
   const handleFavorite = async (event: React.MouseEvent<HTMLButtonElement>) => {
     if (state.isAuthenticated) {
-      await favoriteToUser(id).then((response) =>
-        setIsFavorite(response.isFavorite),
-      );
+      await favorite(id).then((response) => setIsFavorite(response.isFavorite));
     } else {
       setAnchorEl(event.currentTarget);
     }

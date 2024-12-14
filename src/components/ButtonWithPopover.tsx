@@ -5,7 +5,7 @@ import React, { useState } from 'react';
 
 import { useTranslation } from '@/app/i18n/client';
 import { useAuth } from '@/components/AuthProvider';
-import { subscribeToUser, unsubscribeToUser } from '@/helpers/userApi';
+import { subscribe, unsubscribe } from '@/helpers/userApi';
 
 interface CustomPopoverProps {
   readonly destination?: string;
@@ -32,7 +32,7 @@ export const ButtonWithPopover: React.FC<CustomPopoverProps> = ({
 
   const handleUnsubscribe = async () => {
     if (state.isAuthenticated) {
-      await unsubscribeToUser(username).then((response) =>
+      await unsubscribe(username).then((response) =>
         setIsSubscribed(response.isSubscribed),
       );
     }
@@ -42,7 +42,7 @@ export const ButtonWithPopover: React.FC<CustomPopoverProps> = ({
     event: React.MouseEvent<HTMLButtonElement>,
   ) => {
     if (state.isAuthenticated) {
-      await subscribeToUser(username).then((response) =>
+      await subscribe(username).then((response) =>
         setIsSubscribed(response.isSubscribed),
       );
     } else {
