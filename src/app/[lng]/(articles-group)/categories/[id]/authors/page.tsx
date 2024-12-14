@@ -33,7 +33,14 @@ export default function Page({ params: { lng, id } }: PageProps) {
   };
 
   const { data, isFetching, refetch } = useQuery<GetUsersDTO>({
-    queryKey: ['authors', currentPage, resultsPerPage, searchType, searchValue],
+    queryKey: [
+      'authors',
+      currentPage,
+      resultsPerPage,
+      searchType,
+      searchValue,
+      id,
+    ],
     queryFn: () => {
       const byTag = searchType === 'tag' ? searchValue : undefined;
       const byInfo = searchType === 'info' ? searchValue : undefined;

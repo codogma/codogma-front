@@ -31,7 +31,7 @@ export const CommentList: React.FC<CommentListProps> = ({
 
   const { data, fetchNextPage, isFetchingNextPage, refetch } = useInfiniteQuery(
     {
-      queryKey: ['comments', articleId],
+      queryKey: ['comments', articleId, pageSize],
       queryFn: ({ pageParam = 0 }) =>
         getComments(
           articleId,

@@ -11,8 +11,8 @@ import { CustomPagination } from '@/components/CustomPagination';
 import { Search } from '@/components/Search';
 import { TimeAgo } from '@/components/TimeAgo';
 import { contlCookie } from '@/constants/i18n';
-import { getComments, GetCommentsDTO } from '@/helpers/commentAPI';
-import { GetComment } from '@/types';
+import { getComments } from '@/helpers/commentAPI';
+import { GetComment, GetCommentsDTO } from '@/types';
 
 type PageParams = {
   username: string;
