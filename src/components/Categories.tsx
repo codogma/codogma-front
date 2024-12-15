@@ -15,6 +15,7 @@ import React from 'react';
 import { useTranslation } from '@/app/i18n/client';
 import { useAuth } from '@/components/AuthProvider';
 import { AvatarImage } from '@/components/AvatarImage';
+import { ButtonFavorite } from '@/components/ButtonFavorite';
 import { Category, UserRole } from '@/types';
 
 type CategoriesProps = {
@@ -119,6 +120,11 @@ export default function Categories({
                   )}
                 </Stack>
               </CardActions>
+              <ButtonFavorite
+                id={category.id}
+                lang={lang}
+                isFavoriteValue={category?.isFavorite}
+              />
             </CardContent>
           </Card>
         ))

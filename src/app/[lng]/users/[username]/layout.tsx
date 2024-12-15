@@ -1,15 +1,15 @@
 'use client';
-import { Badge } from '@mui/material';
+import { Badge, Skeleton } from '@mui/material';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import IconButton from '@mui/material/IconButton';
-import React, { useEffect, useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import React from 'react';
 
 import { useTranslation } from '@/app/i18n/client';
 import { AvatarImage } from '@/components/AvatarImage';
 import { ButtonWithPopover } from '@/components/ButtonWithPopover';
 import NavTabs, { TabProps } from '@/components/NavTabs';
-import { devConsoleError } from '@/helpers/devConsoleLogs';
 import { getUserByUsername } from '@/helpers/userApi';
 import { User } from '@/types';
 
@@ -28,8 +28,6 @@ export default function Layout({
   children,
 }: PageProps) {
   const { t } = useTranslation(lng);
-  const [user, setUser] = useState<User>();
-
   const tabs: TabProps[] = [
     { label: `${t('profile')}`, href: `/${lng}/users/${username}/profile` },
     { label: `${t('articles')}`, href: `/${lng}/users/${username}/articles` },
@@ -40,48 +38,64 @@ export default function Layout({
     { label: `${t('comments')}`, href: `/${lng}/users/${username}/comments` },
   ];
 
-  useEffect(() => {
-    async function fetchData() {
-      try {
-        const userData = await getUserByUsername(username);
-        setUser(userData);
-      } catch (error) {
-        devConsoleError('Error fetching data:', error);
-      }
-    }
-
-    fetchData();
-  }, [username]);
+  const { data: user, isFetching } = useQuery<User>({
+    queryKey: ['user', username],
+    queryFn: () => getUserByUsername(username),
+  });
 
   return (
     <section>
       <Card variant='outlined' className='card'>
         <CardContent className='card-content'>
-          <div className='meta-container'>
-            <Badge
-              className='items-start'
-              overlap='circular'
-              anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-              badgeContent={
-                <IconButton component='label' color='inherit' sx={{ p: 0 }} />
-              }
-            >
-              <AvatarImage
-                alt={user?.username}
-                className='category-img'
-                variant='rounded'
-                src={user?.avatarUrl}
-                size={48}
-              />
-            </Badge>
-            <div>
-              <h1 className='category-card-name'>
-                {user?.firstName} {user?.lastName}
-              </h1>
-              <p className='category-card-shortInfo'>{user?.shortInfo}</p>
+          {isFetching ? (
+            <div className='meta-container'>
+              <Skeleton className='category-img' variant='rounded' />
+              <div>
+                <h1 className='category-card-name'>
+                  <Skeleton variant='text' width={150} />
+                </h1>
+                <p className='category-card-shortInfo'>
+                  <Skeleton variant='text' width={200} />
+                </p>
+              </div>
             </div>
-          </div>
-          <ButtonWithPopover username={username} lang={lng} />
+          ) : (
+            <>
+              <div className='meta-container'>
+                <Badge
+                  className='items-start'
+                  overlap='circular'
+                  anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+                  badgeContent={
+                    <IconButton
+                      component='label'
+                      color='inherit'
+                      sx={{ p: 0 }}
+                    />
+                  }
+                >
+                  <AvatarImage
+                    alt={user?.username}
+                    className='category-img'
+                    variant='rounded'
+                    src={user?.avatarUrl}
+                    size={48}
+                  />
+                </Badge>
+                <div>
+                  <h1 className='category-card-name'>
+                    {user?.firstName} {user?.lastName}
+                  </h1>
+                  <p className='category-card-shortInfo'>{user?.shortInfo}</p>
+                </div>
+              </div>
+              <ButtonWithPopover
+                username={username}
+                isSubscribedValue={user?.isSubscribed}
+                lang={lng}
+              />
+            </>
+          )}
         </CardContent>
       </Card>
       <NavTabs tabs={tabs} />

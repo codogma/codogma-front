@@ -5,46 +5,44 @@ import React, { useState } from 'react';
 
 import { useTranslation } from '@/app/i18n/client';
 import { useAuth } from '@/components/AuthProvider';
-import { subscribe, unsubscribe } from '@/helpers/userApi';
+import { favorite, unfavorite } from '@/helpers/categoryApi';
 
-interface CustomPopoverProps {
+interface CustomFavoriterProps {
   readonly destination?: string;
-  readonly username: string;
+  readonly username?: string;
+  readonly id: number;
   readonly lang: string;
-  readonly isSubscribedValue?: boolean;
+  readonly isFavoriteValue?: boolean;
 }
 
-export const ButtonWithPopover: React.FC<CustomPopoverProps> = ({
-  destination = 'to subscribe to a user',
-  username,
+export const ButtonFavorite: React.FC<CustomFavoriterProps> = ({
+  destination = 'add to favorite',
+  id,
   lang,
-  isSubscribedValue,
+  username,
+  isFavoriteValue,
 }) => {
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(
     null,
   );
-  const [isSubscribed, setIsSubscribed] = useState(isSubscribedValue);
+  const [isFavorite, setIsFavorite] = useState(isFavoriteValue);
   const { state } = useAuth();
   const router = useRouter();
-  const { t } = useTranslation(lang, 'authors');
+  const { t } = useTranslation(lang, 'categories');
   const open = Boolean(anchorEl);
-  const id = open ? 'simple-popover' : undefined;
+  const popoverId = open ? 'simple-popover' : undefined;
 
-  const handleUnsubscribe = async () => {
+  const handleUnfavorite = async () => {
     if (state.isAuthenticated) {
-      await unsubscribe(username).then((response) =>
-        setIsSubscribed(response.isSubscribed),
+      await unfavorite(id).then((response) =>
+        setIsFavorite(response.isFavorite),
       );
     }
   };
 
-  const handleSubscribe = async (
-    event: React.MouseEvent<HTMLButtonElement>,
-  ) => {
+  const handleFavorite = async (event: React.MouseEvent<HTMLButtonElement>) => {
     if (state.isAuthenticated) {
-      await subscribe(username).then((response) =>
-        setIsSubscribed(response.isSubscribed),
-      );
+      await favorite(id).then((response) => setIsFavorite(response.isFavorite));
     } else {
       setAnchorEl(event.currentTarget);
     }
@@ -61,22 +59,22 @@ export const ButtonWithPopover: React.FC<CustomPopoverProps> = ({
 
   return state.user?.username !== username ? (
     <>
-      {isSubscribed ? (
-        <Button className='article-red-btn' onClick={handleUnsubscribe}>
-          {t('unsubscribeBtn')}
+      {isFavorite ? (
+        <Button className='article-red-btn' onClick={handleUnfavorite}>
+          {t('removeFromFavorite')}
         </Button>
       ) : (
         <Button
-          aria-describedby={id}
+          aria-describedby={popoverId}
           className='article-btn'
-          onClick={handleSubscribe}
+          onClick={handleFavorite}
         >
-          {t('subscribeBtn')}
+          {t('addToFavorite')}
         </Button>
       )}
       {!state.isAuthenticated && (
         <Popover
-          id={id}
+          id={popoverId}
           open={open}
           anchorEl={anchorEl}
           anchorOrigin={{

@@ -92,7 +92,7 @@
   }
 
   .card-content {
-    @apply p-0 flex justify-between !important;
+    @apply flex justify-between p-0 !important;
   }
 
   .meta-container {

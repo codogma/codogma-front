@@ -55,6 +55,7 @@ const Page = ({ params: { lng } }: PageProps) => {
 
   useEffect(() => {
     window.addEventListener(contlCookie, () => refetch());
+    window.addEventListener('api', () => refetch());
     if (window.location.hash === '#search-input' && searchInputRef.current) {
       searchInputRef.current.scrollIntoView({
         behavior: 'smooth',
@@ -79,7 +80,7 @@ const Page = ({ params: { lng } }: PageProps) => {
         onSearchType={onSearchType}
         onSearchValue={onSearchValue}
       />
-      <Users users={users} loading={isFetching} />
+      <Users lang={lng} users={users} loading={isFetching} />
       <CustomPagination
         lang={lng}
         totalPages={totalPages}

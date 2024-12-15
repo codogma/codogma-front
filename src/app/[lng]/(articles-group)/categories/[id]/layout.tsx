@@ -1,5 +1,5 @@
 'use client';
-import { Badge } from '@mui/material';
+import { Badge, Skeleton } from '@mui/material';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import IconButton from '@mui/material/IconButton';
@@ -8,6 +8,7 @@ import React from 'react';
 
 import { useTranslation } from '@/app/i18n/client';
 import { AvatarImage } from '@/components/AvatarImage';
+import { ButtonFavorite } from '@/components/ButtonFavorite';
 import NavTabs, { TabProps } from '@/components/NavTabs';
 import { getCategoryById } from '@/helpers/categoryApi';
 import { Category } from '@/types';
@@ -29,7 +30,7 @@ export default function Layout({ params: { id, lng }, children }: PageProps) {
     { label: t('authors'), href: `/${lng}/categories/${id}/authors` },
   ];
 
-  const { data: category } = useQuery<Category>({
+  const { data: category, isFetching } = useQuery<Category>({
     queryKey: ['category', id],
     queryFn: () => getCategoryById(id),
   });
@@ -38,30 +39,55 @@ export default function Layout({ params: { id, lng }, children }: PageProps) {
     <section>
       <Card variant='outlined' className='card'>
         <CardContent className='card-content'>
-          <div className='meta-container'>
-            <Badge
-              className='items-start'
-              overlap='circular'
-              anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-              badgeContent={
-                <IconButton component='label' color='inherit' sx={{ p: 0 }} />
-              }
-            >
-              <AvatarImage
-                alt={category?.name}
-                className='category-img'
-                variant='rounded'
-                src={category?.imageUrl}
-                size={48}
-              />
-            </Badge>
-            <div>
-              <h1 className='category-card-name'>{category?.name}</h1>
-              <p className='category-card-description'>
-                {category?.description}
-              </p>
+          {isFetching ? (
+            <div className='meta-container'>
+              <Skeleton className='category-img' variant='rounded' />
+              <div>
+                <h1 className='category-card-name'>
+                  <Skeleton variant='text' width={150} />
+                </h1>
+                <p className='category-card-shortInfo'>
+                  <Skeleton variant='text' width={200} />
+                </p>
+              </div>
             </div>
-          </div>
+          ) : (
+            <>
+              <div className='meta-container'>
+                <Badge
+                  className='items-start'
+                  overlap='circular'
+                  anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+                  badgeContent={
+                    <IconButton
+                      component='label'
+                      color='inherit'
+                      sx={{ p: 0 }}
+                    />
+                  }
+                >
+                  <AvatarImage
+                    alt={category?.name}
+                    className='category-img'
+                    variant='rounded'
+                    src={category?.imageUrl}
+                    size={48}
+                  />
+                </Badge>
+                <div>
+                  <h1 className='category-card-name'>{category?.name}</h1>
+                  <p className='category-card-description'>
+                    {category?.description}
+                  </p>
+                </div>
+              </div>
+              <ButtonFavorite
+                id={id}
+                lang={lng}
+                isFavoriteValue={category?.isFavorite}
+              />
+            </>
+          )}
         </CardContent>
       </Card>
       <NavTabs tabs={tabs} />

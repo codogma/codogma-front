@@ -8,5 +8,6 @@
   "dialogDescription": "Attention! When the author navigates to the article editing page,the article status will be changed to 'Draft'. To republish the article, it will need to undergo moderation again.",
   "disagreeBtn": "Disagree",
   "agreeBtn": "Agree",
-  "articleCreated": "Article draft created"
+  "articleCreated": "Article draft created",
+  "articlesSearchBy": "Search by "
 }

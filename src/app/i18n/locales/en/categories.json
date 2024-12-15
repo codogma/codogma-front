@@ -2,5 +2,7 @@
   "categoriesDescription": "List of categories",
   "articlesInCategory": "Articles in category",
   "authorsInCategory": "Authors in category",
-  "categoryCreated": "Category created successfully"
+  "categoryCreated": "Category created successfully",
+  "addToFavorite": "Add to favorites",
+  "removeFromFavorite": "Unfavorite"
 }

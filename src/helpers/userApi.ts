@@ -83,15 +83,20 @@ export const deleteUser = async (username: string): Promise<void> => {
   devConsoleInfo('User deleted successfully');
 };
 
-export const checkSubscription = async (username: string): Promise<boolean> => {
-  const response = await axiosInstance.get(`/users/${username}/is-subscribed`);
+export const unsubscribe = async (username: string): Promise<User> => {
+  const response = await axiosInstance.delete(`/users/${username}/unsubscribe`);
+  dispatchCustomEvent('api', {
+    message: 'You have successfully unsubscribed from the author',
+    severity: 'success',
+  });
   return response.data;
 };
 
-export const unsubscribeToUser = async (username: string): Promise<void> => {
-  await axiosInstance.delete(`/users/${username}/unsubscribe`);
-};
-
-export const subscribeToUser = async (username: string): Promise<void> => {
-  await axiosInstance.post(`/users/${username}/subscribe`);
+export const subscribe = async (username: string): Promise<User> => {
+  const response = await axiosInstance.post(`/users/${username}/subscribe`);
+  dispatchCustomEvent('api', {
+    message: 'You have successfully subscribed to the author',
+    severity: 'success',
+  });
+  return response.data;
 };

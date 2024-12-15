@@ -13,6 +13,7 @@ export enum Language {
 
 export type User = {
   username: string;
+  isSubscribed: boolean;
   email: string;
   firstName: string;
   lastName: string;
@@ -34,6 +35,7 @@ export type Tag = {
 
 export type Category = {
   id: number;
+  isFavorite: boolean;
   name: string;
   description: string;
   imageUrl: string;

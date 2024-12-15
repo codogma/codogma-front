@@ -6,5 +6,6 @@
   "subscriptionsByUser": "Subscriptions by user",
   "authorsDescription": "Authors CODOGMA",
   "subscribeBtn": "Subscribe",
-  "unsubscribeBtn": "Unsubscribe"
+  "unsubscribeBtn": "Unsubscribe",
+  "writesInCategories": "Writes in categories:"
 }
