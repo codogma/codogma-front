@@ -152,7 +152,6 @@ export default function Page({ params: { lng } }: PageProps) {
               <LoadingButton
                 type='submit'
                 fullWidth
-                loadingPosition='start'
                 loadingIndicator={t('signingUpBtn')}
                 loading={isSubmitting}
                 variant='contained'
