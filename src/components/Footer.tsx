@@ -24,15 +24,6 @@ function Footer({ title }: FooterProps) {
           <Typography variant='body2' color='inherit'>
             © Codogma
           </Typography>
-          <Box>
-            <Link href='#' color='inherit'>
-              Техническая поддержка
-            </Link>{' '}
-            |
-            <Link href='#' color='inherit'>
-              Настройка языка
-            </Link>
-          </Box>
           <Box mt={2} display='flex' justifyContent='center'>
             <Tooltip title={title}>
               <IconButton color='inherit'>
