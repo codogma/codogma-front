@@ -16,7 +16,7 @@ import {
   Typography,
 } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { keepPreviousData, useMutation, useQuery } from '@tanstack/react-query';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import React, { useCallback, useEffect, useState } from 'react';
 import {
@@ -44,7 +44,11 @@ import {
   updateDraftArticle,
   UpdateDraftArticleDTO,
 } from '@/helpers/articleApi';
-import { getCategories } from '@/helpers/categoryApi';
+import {
+  getCategories,
+  getCategoriesByName,
+  GetCategoriesDTO,
+} from '@/helpers/categoryApi';
 import { devConsoleError } from '@/helpers/devConsoleLogs';
 import { getTagsByName } from '@/helpers/tagApi';
 import { Article, Category, Language, Tag } from '@/types';
@@ -95,6 +99,7 @@ const CustomStepIcon = (props: StepIconProps) => {
 const Page = ({ params: { lng } }: PageParams) => {
   const STEP_ONE_DATA = 'step-one-data';
   const STEP_TWO_DATA = 'step-two-data';
+  const SELECTED_CATEGORIES = 'selected-categories';
   const ARTICLE_ID = 'article-id';
   const PARAM_ID = 'id';
   const route = useRouter();
@@ -110,7 +115,12 @@ const Page = ({ params: { lng } }: PageParams) => {
   const [activeStep, setActiveStep] = useState<number>(0);
   const [articleId, setArticleId] = useState<number>(0);
   const [draftArticles, setDraftArticles] = useState<Article[]>([]);
+  const [inputCategoryValue, setInputCategoryValue] = useState<string>('');
   const [inputTagValue, setInputTagValue] = useState<string>('');
+  const [selectedCategories, setSelectedCategories] = useState<Category[]>();
+  const [availableCategories, setAvailableCategories] = useState<Category[]>(
+    [],
+  );
   const [availableTags, setAvailableTags] = useState<string[]>([]);
   const [prevData, setPrevData] = useState<UpdateDraftArticleDTO | null>(null);
   const { t } = useTranslation(lng, 'articleEditor');
@@ -156,12 +166,12 @@ const Page = ({ params: { lng } }: PageParams) => {
     watch: watchStepTwo,
   } = zodStepTwoForm;
 
-  const { data: categoriesData } = useQuery<Category[]>({
+  const { data: categoriesData } = useQuery<GetCategoriesDTO>({
     queryKey: ['categories'],
     queryFn: () => getCategories(),
   });
 
-  const categories: Category[] = (categoriesData as Category[]) || [];
+  const categoriesPages: GetCategoriesDTO = categoriesData as GetCategoriesDTO;
 
   const { data: draftArticlesData, refetch } = useQuery<Article[]>({
     queryKey: ['draftArticles'],
@@ -203,6 +213,7 @@ const Page = ({ params: { lng } }: PageParams) => {
     setStepTwoData(null);
     localStorage.removeItem(STEP_ONE_DATA);
     localStorage.removeItem(STEP_TWO_DATA);
+    localStorage.removeItem(SELECTED_CATEGORIES);
     localStorage.removeItem(ARTICLE_ID);
   }, [resetStepOne, resetStepTwo, lng]);
 
@@ -246,6 +257,11 @@ const Page = ({ params: { lng } }: PageParams) => {
   useEffect(() => {
     if (article) {
       setArticleData(article);
+      setAvailableCategories([
+        ...(categoriesPages?.content || []),
+        ...article.categories,
+      ]);
+      setSelectedCategories(article.categories);
     } else {
       const lsArticleId = Number(localStorage.getItem(ARTICLE_ID));
       if (isValidId(lsArticleId)) {
@@ -265,7 +281,52 @@ const Page = ({ params: { lng } }: PageParams) => {
       resetStepTwo(parsedStepTwoData);
     }
     route.replace(pathname);
-  }, [article, pathname, resetStepOne, resetStepTwo, route, setArticleData]);
+  }, [
+    article,
+    categoriesPages,
+    pathname,
+    resetStepOne,
+    resetStepTwo,
+    route,
+    setArticleData,
+  ]);
+
+  const { data: categoriesObjects } = useQuery<Category[]>({
+    queryKey: ['categories', inputCategoryValue],
+    queryFn: () => getCategoriesByName(inputCategoryValue),
+    enabled: !!inputCategoryValue,
+    placeholderData: keepPreviousData,
+  });
+
+  useEffect(() => {
+    if (selectedCategories) {
+      localStorage.setItem(
+        SELECTED_CATEGORIES,
+        JSON.stringify(selectedCategories),
+      );
+    }
+  }, [selectedCategories]);
+
+  useEffect(() => {
+    const lsSelectedCategoriesData = localStorage.getItem(SELECTED_CATEGORIES);
+    let lsSelectedCategories: Category[] = [];
+    if (lsSelectedCategoriesData !== undefined)
+      lsSelectedCategories = JSON.parse(lsSelectedCategoriesData);
+    const mergedCategories = [
+      ...(categoriesObjects || []),
+      ...(lsSelectedCategories || []),
+      ...(categoriesPages?.content || []),
+    ];
+    const uniqueCategories = Array.from(
+      mergedCategories
+        .reduce((acc, category) => {
+          acc.set(category.id, category);
+          return acc;
+        }, new Map<number, Category>())
+        .values(),
+    );
+    setAvailableCategories(uniqueCategories);
+  }, [categoriesObjects, categoriesPages]);
 
   useEffect(() => {
     if (inputTagValue === '') {
@@ -420,6 +481,7 @@ const Page = ({ params: { lng } }: PageParams) => {
     setPrevData({});
     localStorage.removeItem(STEP_ONE_DATA);
     localStorage.removeItem(STEP_TWO_DATA);
+    localStorage.removeItem(SELECTED_CATEGORIES);
     localStorage.removeItem(ARTICLE_ID);
   };
 
@@ -506,18 +568,51 @@ const Page = ({ params: { lng } }: PageParams) => {
                 <Autocomplete
                   multiple
                   id='categoryIds'
-                  options={categories}
+                  options={availableCategories}
                   getOptionLabel={(category) => category?.name}
-                  filterSelectedOptions
-                  value={categories.filter((category) =>
+                  freeSolo
+                  value={availableCategories.filter((category) =>
                     field.value?.includes(category.id),
                   )}
                   isOptionEqualToValue={(option, value) =>
                     option.id === value.id
                   }
-                  onChange={(_, newValue) =>
-                    field.onChange(newValue.map((category) => category.id))
+                  onChange={(_, newValue) => {
+                    const normalizedValue: Category[] = (
+                      newValue as Category[]
+                    ).map((value) => {
+                      const existingCategory = availableCategories.find(
+                        (category) => category.id === value.id,
+                      );
+                      return existingCategory || value;
+                    });
+
+                    const uniqueCategoriesIds = new Set<number>();
+                    const uniqueSelectedCategories = new Set<Category>();
+                    normalizedValue.forEach((category) => {
+                      uniqueCategoriesIds.add(category.id);
+                      uniqueSelectedCategories.add(category);
+                    });
+                    setSelectedCategories(Array.from(uniqueSelectedCategories));
+                    field.onChange(Array.from(uniqueCategoriesIds));
+                  }}
+                  onInputChange={(_, newInputValue) =>
+                    setInputCategoryValue(newInputValue)
                   }
+                  renderTags={(value: Category[], getTagProps) =>
+                    value.map((option: Category, index: number) => {
+                      const { key, ...tagProps } = getTagProps({ index });
+                      return (
+                        <Chip
+                          variant='outlined'
+                          label={option.name}
+                          key={key}
+                          {...tagProps}
+                        />
+                      );
+                    })
+                  }
+                  inputValue={inputCategoryValue}
                   renderInput={(params) => (
                     <TextField
                       {...params}
