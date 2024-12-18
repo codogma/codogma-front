@@ -114,7 +114,7 @@ export default function Categories({
                   {state.user?.role === UserRole.ROLE_ADMIN && (
                     <Link href={`/categories/edit/${category.id}`}>
                       <Button className='article-btn' variant='outlined'>
-                        {t('updateBtn')}
+                        {t('editBtn')}
                       </Button>
                     </Link>
                   )}

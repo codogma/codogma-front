@@ -12,6 +12,7 @@ import { useTranslation } from '@/app/i18n/client';
 import { useArticle } from '@/components/ArticleProvider';
 import { useAuth } from '@/components/AuthProvider';
 import { AvatarImage } from '@/components/AvatarImage'; // import { CommentList } from '@/components/CommentList';
+import { Bookmark } from '@/components/Bookmark';
 import ButtonAlertDialog from '@/components/ButtonAlertDialog';
 import { CommentList } from '@/components/CommentList';
 import { useContentImageContext } from '@/components/ContentImageProvider';
@@ -66,6 +67,11 @@ export default function Page({ params: { lng } }: PageProps) {
                 />
               </Stack>
             )}
+            <Bookmark
+              username={article.username}
+              isBookmarkedValue={article.isBookmarked}
+              id={article.id}
+            />
           </div>
           <div className='article-category'>
             {article.categories?.map((category) => (

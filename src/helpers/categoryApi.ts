@@ -29,6 +29,17 @@ export const createCategory = async (
   });
 };
 
+export const getCategoriesByName = async (
+  name: string,
+): Promise<Category[]> => {
+  const response = await axiosInstance.get('/categories/list-by-name', {
+    params: {
+      name,
+    },
+  });
+  return response.data;
+};
+
 export const updateCategory = async (
   id: number,
   requestData: {

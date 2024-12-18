@@ -1,48 +1,48 @@
 'use client';
-import { Button, Link, Popover, Typography } from '@mui/material';
+import BookmarkIcon from '@mui/icons-material/Bookmark';
+import { Link, Popover, Typography } from '@mui/material';
+import IconButton from '@mui/material/IconButton';
 import { useRouter } from 'next/navigation';
 import React, { useState } from 'react';
 
-import { useTranslation } from '@/app/i18n/client';
 import { useAuth } from '@/components/AuthProvider';
-import { favorite, unfavorite } from '@/helpers/categoryApi';
+import { bookmark, unbookmark } from '@/helpers/articleApi';
 
-interface CustomFavoriteProps {
+interface BookmarkProps {
   readonly destination?: string;
-  readonly id: number;
   readonly username?: string;
-  readonly lang: string;
-  readonly isFavoriteValue?: boolean;
+  readonly id: number;
+  readonly isBookmarkedValue?: boolean;
 }
 
-export const ButtonFavorite: React.FC<CustomFavoriteProps> = ({
-  destination = 'add to favorite',
-  id,
+export const Bookmark: React.FC<BookmarkProps> = ({
+  destination = 'to subscribe to a user',
   username,
-  lang,
-  isFavoriteValue,
+  id,
+  isBookmarkedValue,
 }) => {
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(
     null,
   );
-  const [isFavorite, setIsFavorite] = useState(isFavoriteValue);
+  const [isBookmarked, setIsBookmarked] = useState(isBookmarkedValue);
   const { state } = useAuth();
   const router = useRouter();
-  const { t } = useTranslation(lang, 'categories');
   const open = Boolean(anchorEl);
   const popoverId = open ? 'simple-popover' : undefined;
 
-  const handleUnfavorite = async () => {
+  const handleUnbookmark = async () => {
     if (state.isAuthenticated) {
-      await unfavorite(id).then((response) =>
-        setIsFavorite(response.isFavorite),
+      await unbookmark(id).then((response) =>
+        setIsBookmarked(response.isBookmarked),
       );
     }
   };
 
-  const handleFavorite = async (event: React.MouseEvent<HTMLButtonElement>) => {
+  const handleBookmark = async (event: React.MouseEvent<HTMLButtonElement>) => {
     if (state.isAuthenticated) {
-      await favorite(id).then((response) => setIsFavorite(response.isFavorite));
+      await bookmark(id).then((response) =>
+        setIsBookmarked(response.isBookmarked),
+      );
     } else {
       setAnchorEl(event.currentTarget);
     }
@@ -59,18 +59,14 @@ export const ButtonFavorite: React.FC<CustomFavoriteProps> = ({
 
   return state.user?.username !== username ? (
     <>
-      {isFavorite ? (
-        <Button className='article-red-btn' onClick={handleUnfavorite}>
-          {t('removeFromFavorite')}
-        </Button>
+      {isBookmarked ? (
+        <IconButton onClick={handleUnbookmark}>
+          <BookmarkIcon color='error' />
+        </IconButton>
       ) : (
-        <Button
-          aria-describedby={popoverId}
-          className='article-btn'
-          onClick={handleFavorite}
-        >
-          {t('addToFavorite')}
-        </Button>
+        <IconButton onClick={handleBookmark}>
+          <BookmarkIcon aria-describedby={popoverId} />
+        </IconButton>
       )}
       {!state.isAuthenticated && (
         <Popover

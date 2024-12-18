@@ -46,6 +46,7 @@ export type Article = {
   id: number;
   status: string;
   title: string;
+  isBookmarked: boolean;
   language: Language;
   originalArticleId: number;
   previewContent: string;
