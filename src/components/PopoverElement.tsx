@@ -1,36 +1,33 @@
-'use client';
 import { Link, Popover, Typography } from '@mui/material';
 import { useRouter } from 'next/navigation';
 import React from 'react';
 
 interface PopoverElementProps {
   readonly destination: string;
+  readonly popoverId: string;
+  readonly btnEl: HTMLButtonElement | null;
+  readonly onClose?: () => void;
 }
 
 export const PopoverElement: React.FC<PopoverElementProps> = ({
   destination,
+  popoverId,
+  btnEl,
+  onClose,
 }) => {
-  const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(
-    null,
-  );
   const router = useRouter();
-  const open = Boolean(anchorEl);
-  const id = open ? 'simple-popover' : undefined;
+  const open = Boolean(btnEl);
+  const id = open ? popoverId : undefined;
 
   const handleClickLink = (url: string) => {
     router.push(url);
-    handlePopoverClose();
-  };
-
-  const handlePopoverClose = () => {
-    setAnchorEl(null);
   };
 
   return (
     <Popover
       id={id}
       open={open}
-      anchorEl={anchorEl}
+      anchorEl={btnEl}
       anchorOrigin={{
         vertical: 'bottom',
         horizontal: 'left',
@@ -39,7 +36,7 @@ export const PopoverElement: React.FC<PopoverElementProps> = ({
         vertical: 'top',
         horizontal: 'left',
       }}
-      onClose={handlePopoverClose}
+      onClose={onClose}
     >
       <Typography
         variant='body2'

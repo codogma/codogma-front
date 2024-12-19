@@ -23,8 +23,7 @@ export const Bookmark: React.FC<BookmarkProps> = ({
   );
   const [isBookmarked, setIsBookmarked] = useState(isBookmarkedValue);
   const { state } = useAuth();
-  const open = Boolean(anchorEl);
-  const popoverId = open ? 'simple-popover' : undefined;
+  const popoverId = 'simple-popover';
 
   const handleUnbookmark = async () => {
     if (state.isAuthenticated) {
@@ -44,6 +43,10 @@ export const Bookmark: React.FC<BookmarkProps> = ({
     }
   };
 
+  const handlePopoverClose = () => {
+    setAnchorEl(null);
+  };
+
   return state.user?.username !== username ? (
     <>
       {isBookmarked ? (
@@ -56,7 +59,12 @@ export const Bookmark: React.FC<BookmarkProps> = ({
         </IconButton>
       )}
       {!state.isAuthenticated && (
-        <PopoverElement destination={'to add an article to your bookmarks'} />
+        <PopoverElement
+          popoverId={popoverId}
+          btnEl={anchorEl}
+          onClose={handlePopoverClose}
+          destination={'to add an article to your bookmarks'}
+        />
       )}
     </>
   ) : null;

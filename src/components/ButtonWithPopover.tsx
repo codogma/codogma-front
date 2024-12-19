@@ -24,8 +24,7 @@ export const ButtonWithPopover: React.FC<CustomPopoverProps> = ({
   const [isSubscribed, setIsSubscribed] = useState(isSubscribedValue);
   const { state } = useAuth();
   const { t } = useTranslation(lang, 'authors');
-  const open = Boolean(anchorEl);
-  const id = open ? 'simple-popover' : undefined;
+  const id = 'simple-popover';
 
   const handleUnsubscribe = async () => {
     if (state.isAuthenticated) {
@@ -47,6 +46,10 @@ export const ButtonWithPopover: React.FC<CustomPopoverProps> = ({
     }
   };
 
+  const handlePopoverClose = () => {
+    setAnchorEl(null);
+  };
+
   return state.user?.username !== username ? (
     <>
       {isSubscribed ? (
@@ -63,7 +66,12 @@ export const ButtonWithPopover: React.FC<CustomPopoverProps> = ({
         </Button>
       )}
       {!state.isAuthenticated && (
-        <PopoverElement destination={'to subscribe to a user'} />
+        <PopoverElement
+          popoverId={id}
+          btnEl={anchorEl}
+          onClose={handlePopoverClose}
+          destination={'to subscribe to a user'}
+        />
       )}
     </>
   ) : null;
