@@ -1,24 +1,24 @@
 'use client';
 import BookmarkIcon from '@mui/icons-material/Bookmark';
-import { Link, Popover, Typography } from '@mui/material';
 import IconButton from '@mui/material/IconButton';
-import { useRouter } from 'next/navigation';
 import React, { useState } from 'react';
 
+import { useTranslation } from '@/app/i18n/client';
 import { useAuth } from '@/components/AuthProvider';
+import { PopoverElement } from '@/components/PopoverElement';
 import { bookmark, unbookmark } from '@/helpers/articleApi';
 
 interface BookmarkProps {
-  readonly destination?: string;
   readonly username?: string;
+  readonly lang: string;
   readonly id: number;
   readonly isBookmarkedValue?: boolean;
 }
 
 export const Bookmark: React.FC<BookmarkProps> = ({
-  destination = 'to subscribe to a user',
   username,
   id,
+  lang,
   isBookmarkedValue,
 }) => {
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(
@@ -26,9 +26,8 @@ export const Bookmark: React.FC<BookmarkProps> = ({
   );
   const [isBookmarked, setIsBookmarked] = useState(isBookmarkedValue);
   const { state } = useAuth();
-  const router = useRouter();
-  const open = Boolean(anchorEl);
-  const popoverId = open ? 'simple-popover' : undefined;
+  const { t } = useTranslation(lang, 'articles');
+  const popoverId = 'simple-popover';
 
   const handleUnbookmark = async () => {
     if (state.isAuthenticated) {
@@ -48,11 +47,6 @@ export const Bookmark: React.FC<BookmarkProps> = ({
     }
   };
 
-  const handleClickLink = (url: string) => {
-    router.push(url);
-    handlePopoverClose();
-  };
-
   const handlePopoverClose = () => {
     setAnchorEl(null);
   };
@@ -69,35 +63,13 @@ export const Bookmark: React.FC<BookmarkProps> = ({
         </IconButton>
       )}
       {!state.isAuthenticated && (
-        <Popover
-          id={popoverId}
-          open={open}
-          anchorEl={anchorEl}
-          anchorOrigin={{
-            vertical: 'bottom',
-            horizontal: 'left',
-          }}
-          transformOrigin={{
-            vertical: 'top',
-            horizontal: 'left',
-          }}
+        <PopoverElement
+          popoverId={popoverId}
+          btnEl={anchorEl}
           onClose={handlePopoverClose}
-        >
-          <Typography
-            variant='body2'
-            sx={{ pl: '16px', pr: '16px', pt: '12px', pb: '12px' }}
-          >
-            <Link
-              component='button'
-              underline='none'
-              onClick={() => handleClickLink('/sign-up')}
-              sx={{ mr: '5px', verticalAlign: 'unset' }}
-            >
-              Sign up
-            </Link>
-            {destination}
-          </Typography>
-        </Popover>
+          destination={t('popoverBookmark')}
+          lang={lang}
+        />
       )}
     </>
   ) : null;

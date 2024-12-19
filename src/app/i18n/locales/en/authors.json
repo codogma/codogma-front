@@ -7,5 +7,6 @@
   "authorsDescription": "Authors CODOGMA",
   "subscribeBtn": "Subscribe",
   "unsubscribeBtn": "Unsubscribe",
-  "writesInCategories": "Writes in categories:"
+  "writesInCategories": "Writes in categories:",
+  "popoverSubscribe": "to subscribe to a user"
 }

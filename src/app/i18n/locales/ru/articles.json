@@ -9,5 +9,7 @@
   "disagreeBtn": "Отказаться",
   "agreeBtn": "Согласиться",
   "articleCreated": "Черновик статьи создан",
-  "articlesSearchBy": "Поиск по "
+  "articlesSearchBy": "Поиск по ",
+  "popoverBookmark": "чтобы добавить статью в закладки",
+  "popoverSignup": "Зарегистрироваться"
 }
