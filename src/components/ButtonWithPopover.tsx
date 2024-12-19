@@ -70,7 +70,8 @@ export const ButtonWithPopover: React.FC<CustomPopoverProps> = ({
           popoverId={id}
           btnEl={anchorEl}
           onClose={handlePopoverClose}
-          destination={'to subscribe to a user'}
+          destination={t('popoverSubscribe')}
+          lang={lang}
         />
       )}
     </>

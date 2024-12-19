@@ -3,12 +3,14 @@ import BookmarkIcon from '@mui/icons-material/Bookmark';
 import IconButton from '@mui/material/IconButton';
 import React, { useState } from 'react';
 
+import { useTranslation } from '@/app/i18n/client';
 import { useAuth } from '@/components/AuthProvider';
 import { PopoverElement } from '@/components/PopoverElement';
 import { bookmark, unbookmark } from '@/helpers/articleApi';
 
 interface BookmarkProps {
   readonly username?: string;
+  readonly lang: string;
   readonly id: number;
   readonly isBookmarkedValue?: boolean;
 }
@@ -16,6 +18,7 @@ interface BookmarkProps {
 export const Bookmark: React.FC<BookmarkProps> = ({
   username,
   id,
+  lang,
   isBookmarkedValue,
 }) => {
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(
@@ -23,6 +26,7 @@ export const Bookmark: React.FC<BookmarkProps> = ({
   );
   const [isBookmarked, setIsBookmarked] = useState(isBookmarkedValue);
   const { state } = useAuth();
+  const { t } = useTranslation(lang, 'articles');
   const popoverId = 'simple-popover';
 
   const handleUnbookmark = async () => {
@@ -63,7 +67,8 @@ export const Bookmark: React.FC<BookmarkProps> = ({
           popoverId={popoverId}
           btnEl={anchorEl}
           onClose={handlePopoverClose}
-          destination={'to add an article to your bookmarks'}
+          destination={t('popoverBookmark')}
+          lang={lang}
         />
       )}
     </>

@@ -1,10 +1,14 @@
+'use client';
 import { Link, Popover, Typography } from '@mui/material';
 import { useRouter } from 'next/navigation';
 import React from 'react';
 
+import { useTranslation } from '@/app/i18n/client';
+
 interface PopoverElementProps {
   readonly destination: string;
   readonly popoverId: string;
+  readonly lang: string;
   readonly btnEl: HTMLButtonElement | null;
   readonly onClose?: () => void;
 }
@@ -12,11 +16,14 @@ interface PopoverElementProps {
 export const PopoverElement: React.FC<PopoverElementProps> = ({
   destination,
   popoverId,
+  lang,
   btnEl,
   onClose,
 }) => {
   const router = useRouter();
   const open = Boolean(btnEl);
+
+  const { t } = useTranslation(lang, 'articles');
   const id = open ? popoverId : undefined;
 
   const handleClickLink = (url: string) => {
@@ -48,7 +55,7 @@ export const PopoverElement: React.FC<PopoverElementProps> = ({
           onClick={() => handleClickLink('/sign-up')}
           sx={{ mr: '5px', verticalAlign: 'unset' }}
         >
-          Sign up
+          {t('popoverSignup')}
         </Link>
         {destination}
       </Typography>
