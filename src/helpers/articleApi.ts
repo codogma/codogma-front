@@ -15,6 +15,7 @@ export type UpdateDraftArticleDTO = {
   previewContent?: string | null;
   content?: string | null;
   categoryIds?: number[] | null;
+  compilationIds?: number[] | null;
   tags?: string[] | null;
 };
 
@@ -25,6 +26,7 @@ export type UpdateArticleDTO = {
   previewContent: string;
   content: string;
   categoryIds: number[];
+  compilationIds: number[];
   tags: string[];
 };
 

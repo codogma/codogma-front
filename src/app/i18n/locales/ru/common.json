@@ -35,5 +35,7 @@
   "deleteBtn": "Удалить",
   "replyBtn": "Ответить",
   "cancelBtn": "Отмена",
-  "createCompilationBtn": "Создать подборку"
+  "createCompilationBtn": "Создать подборку",
+  "compilations": "Подборки",
+  "selectCompilations": "Выберите подборки"
 }

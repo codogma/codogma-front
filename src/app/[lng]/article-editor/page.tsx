@@ -49,9 +49,14 @@ import {
   getCategoriesByName,
   GetCategoriesDTO,
 } from '@/helpers/categoryApi';
+import {
+  getCompilations,
+  getCompilationsByTitle,
+  GetCompilationsDTO,
+} from '@/helpers/compilationApi';
 import { devConsoleError } from '@/helpers/devConsoleLogs';
 import { getTagsByName } from '@/helpers/tagApi';
-import { Article, Category, Language, Tag } from '@/types';
+import { Article, Category, GetCompilation, Language, Tag } from '@/types';
 
 type PageParams = {
   readonly params: { lng: Language };
@@ -76,6 +81,7 @@ const StepTwoScheme = z.object({
   originalArticleId: z.number().optional().nullable(),
   previewContent: z.string().min(1, 'Краткое описание не может быть пустым.'),
   categoryIds: z.array(z.number()).min(1, 'Выберите хотя бы одну категорию.'),
+  compilationIds: z.array(z.number()).min(1, 'Выберите хотя бы одну подборку.'),
   tags: z.array(z.string()),
 });
 
@@ -103,6 +109,7 @@ const Page = ({ params: { lng } }: PageParams) => {
   const STEP_ONE_DATA = 'step-one-data';
   const STEP_TWO_DATA = 'step-two-data';
   const SELECTED_CATEGORIES = 'selected-categories';
+  const SELECTED_COMPILATIONS = 'selected-compilations';
   const ARTICLE_ID = 'article-id';
   const PARAM_ID = 'id';
   const route = useRouter();
@@ -117,11 +124,18 @@ const Page = ({ params: { lng } }: PageParams) => {
   const [articleId, setArticleId] = useState<number>(0);
   const [draftArticles, setDraftArticles] = useState<Article[]>([]);
   const [inputCategoryValue, setInputCategoryValue] = useState<string>('');
+  const [inputCompilationValue, setInputCompilationValue] =
+    useState<string>('');
   const [inputTagValue, setInputTagValue] = useState<string>('');
   const [selectedCategories, setSelectedCategories] = useState<Category[]>();
   const [availableCategories, setAvailableCategories] = useState<Category[]>(
     [],
   );
+  const [selectedCompilations, setSelectedCompilations] =
+    useState<GetCompilation[]>();
+  const [availableCompilations, setAvailableCompilations] = useState<
+    GetCompilation[]
+  >([]);
   const [availableTags, setAvailableTags] = useState<string[]>([]);
   const [prevData, setPrevData] = useState<UpdateDraftArticleDTO | null>(null);
   const { t } = useTranslation(lng, 'articleEditor');
@@ -152,6 +166,7 @@ const Page = ({ params: { lng } }: PageParams) => {
       originalArticleId: null,
       previewContent: '',
       categoryIds: [],
+      compilationIds: [],
       tags: [],
     },
   });
@@ -173,6 +188,14 @@ const Page = ({ params: { lng } }: PageParams) => {
   });
 
   const categoriesPages: GetCategoriesDTO = categoriesData as GetCategoriesDTO;
+
+  const { data: compilationsData } = useQuery<GetCompilationsDTO>({
+    queryKey: ['compilations'],
+    queryFn: () => getCompilations(),
+  });
+
+  const compilationsPages: GetCompilationsDTO =
+    compilationsData as GetCompilationsDTO;
 
   const { data: draftArticlesData, refetch } = useQuery<Article[]>({
     queryKey: ['draftArticles'],
@@ -205,6 +228,7 @@ const Page = ({ params: { lng } }: PageParams) => {
       originalArticleId: null,
       previewContent: '',
       categoryIds: [],
+      compilationIds: [],
       tags: [],
     });
     setReset(true);
@@ -215,6 +239,7 @@ const Page = ({ params: { lng } }: PageParams) => {
     localStorage.removeItem(STEP_ONE_DATA);
     localStorage.removeItem(STEP_TWO_DATA);
     localStorage.removeItem(SELECTED_CATEGORIES);
+    localStorage.removeItem(SELECTED_COMPILATIONS);
     localStorage.removeItem(ARTICLE_ID);
   }, [resetStepOne, resetStepTwo, lng]);
 
@@ -241,6 +266,9 @@ const Page = ({ params: { lng } }: PageParams) => {
         originalArticleId: article.originalArticleId,
         previewContent: article.previewContent,
         categoryIds: article.categories.map((category) => category.id),
+        compilationIds: article.compilations.map(
+          (compilation) => compilation.id,
+        ),
         tags: article.tags.map((tag) => tag.name),
       });
     },
@@ -263,6 +291,11 @@ const Page = ({ params: { lng } }: PageParams) => {
         ...article.categories,
       ]);
       setSelectedCategories(article.categories);
+      setAvailableCompilations([
+        ...(compilationsPages?.content || []),
+        ...article.compilations,
+      ]);
+      setSelectedCompilations(article.compilations);
     } else {
       const lsArticleId = Number(localStorage.getItem(ARTICLE_ID));
       if (isValidId(lsArticleId)) {
@@ -285,6 +318,7 @@ const Page = ({ params: { lng } }: PageParams) => {
   }, [
     article,
     categoriesPages,
+    compilationsPages,
     pathname,
     resetStepOne,
     resetStepTwo,
@@ -328,6 +362,45 @@ const Page = ({ params: { lng } }: PageParams) => {
     );
     setAvailableCategories(uniqueCategories);
   }, [categoriesObjects, categoriesPages]);
+
+  const { data: compilationsObjects } = useQuery<GetCompilation[]>({
+    queryKey: ['compilations', inputCompilationValue],
+    queryFn: () => getCompilationsByTitle(inputCompilationValue),
+    enabled: !!inputCompilationValue,
+    placeholderData: keepPreviousData,
+  });
+
+  useEffect(() => {
+    if (selectedCompilations) {
+      localStorage.setItem(
+        SELECTED_COMPILATIONS,
+        JSON.stringify(selectedCompilations),
+      );
+    }
+  }, [selectedCompilations]);
+
+  useEffect(() => {
+    const lsSelectedCompilationsData = localStorage.getItem(
+      SELECTED_COMPILATIONS,
+    );
+    let lsSelectedCompilations: GetCompilation[] = [];
+    if (lsSelectedCompilationsData !== null)
+      lsSelectedCompilations = JSON.parse(lsSelectedCompilationsData);
+    const mergedCompilations = [
+      ...(compilationsObjects || []),
+      ...(lsSelectedCompilations || []),
+      ...(compilationsPages?.content || []),
+    ];
+    const uniqueCompilations = Array.from(
+      mergedCompilations
+        .reduce((acc, compilation) => {
+          acc.set(compilation.id, compilation);
+          return acc;
+        }, new Map<number, GetCompilation>())
+        .values(),
+    );
+    setAvailableCompilations(uniqueCompilations);
+  }, [compilationsObjects, compilationsPages]);
 
   useEffect(() => {
     if (inputTagValue === '') {
@@ -490,6 +563,7 @@ const Page = ({ params: { lng } }: PageParams) => {
     localStorage.removeItem(STEP_ONE_DATA);
     localStorage.removeItem(STEP_TWO_DATA);
     localStorage.removeItem(SELECTED_CATEGORIES);
+    localStorage.removeItem(SELECTED_COMPILATIONS);
     localStorage.removeItem(ARTICLE_ID);
   };
 
@@ -629,6 +703,76 @@ const Page = ({ params: { lng } }: PageParams) => {
                       placeholder={t('selectCategories')}
                       error={Boolean(errorsStepTwo.categoryIds?.message)}
                       helperText={errorsStepTwo.categoryIds?.message}
+                    />
+                  )}
+                />
+              )}
+            />
+            <Controller
+              name='compilationIds'
+              control={controlStepTwo}
+              render={({ field }) => (
+                <Autocomplete
+                  multiple
+                  id='compilationIds'
+                  options={availableCompilations}
+                  getOptionLabel={(compilation) =>
+                    (compilation as GetCompilation)?.title
+                  }
+                  freeSolo
+                  value={availableCompilations.filter((compilation) =>
+                    field.value?.includes(compilation.id),
+                  )}
+                  isOptionEqualToValue={(option, value) =>
+                    option.id === value.id
+                  }
+                  onChange={(_, newValue) => {
+                    const normalizedValue: GetCompilation[] = (
+                      newValue as GetCompilation[]
+                    ).map((value) => {
+                      const existingCompilation = availableCompilations.find(
+                        (compilation) => compilation.id === value.id,
+                      );
+                      return existingCompilation || value;
+                    });
+
+                    const uniqueCompilationIds = new Set<number>();
+                    const uniqueSelectedCompilations =
+                      new Set<GetCompilation>();
+                    normalizedValue.forEach((compilation) => {
+                      uniqueCompilationIds.add(compilation.id);
+                      uniqueSelectedCompilations.add(compilation);
+                    });
+                    setSelectedCompilations(
+                      Array.from(uniqueSelectedCompilations),
+                    );
+                    field.onChange(Array.from(uniqueCompilationIds));
+                  }}
+                  onInputChange={(_, newInputValue) =>
+                    setInputCompilationValue(newInputValue)
+                  }
+                  renderTags={(value: GetCompilation[], getTagProps) =>
+                    value.map((option: GetCompilation, index: number) => {
+                      const { key, ...tagProps } = getTagProps({ index });
+                      return (
+                        <Chip
+                          variant='outlined'
+                          label={option.title}
+                          key={key}
+                          {...tagProps}
+                        />
+                      );
+                    })
+                  }
+                  inputValue={inputCompilationValue}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      label={t('compilations')}
+                      variant='standard'
+                      placeholder={t('selectCompilations')}
+                      error={Boolean(errorsStepTwo.compilationIds?.message)}
+                      helperText={errorsStepTwo.compilationIds?.message}
                     />
                   )}
                 />

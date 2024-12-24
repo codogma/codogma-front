@@ -35,5 +35,7 @@
   "deleteBtn": "Delete",
   "replyBtn": "Reply",
   "cancelBtn": "Cancel",
-  "createCompilationBtn": "Create compilation"
+  "createCompilationBtn": "Create compilation",
+  "compilations": "Compilations",
+  "selectCompilations": "Select compilations"
 }
