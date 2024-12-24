@@ -83,6 +83,7 @@ export default function Articles({ lang, articles, loading }: ArticlesProps) {
                   username={article.username}
                   isBookmarkedValue={article.isBookmarked}
                   id={article.id}
+                  lang={lang}
                 />
               </div>
               <Link href={`/articles/${article.id}`} className='article-title'>

@@ -1,6 +1,7 @@
 'use client';
 import ArticleIcon from '@mui/icons-material/Article';
 import PlaylistAddCheckCircleIcon from '@mui/icons-material/PlaylistAddCheckCircle';
+import ViewListIcon from '@mui/icons-material/ViewList';
 import {
   Box,
   Drawer,
@@ -47,6 +48,11 @@ export const NavPanel = ({ lang }: NavPanelProps) => {
       text: t('feed'),
       href: `/${lang}/feed`,
       icon: <PlaylistAddCheckCircleIcon />,
+    },
+    {
+      text: t('compilations'),
+      href: `/${lang}/compilations`,
+      icon: <ViewListIcon />,
     },
   ];
 

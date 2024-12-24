@@ -7,7 +7,7 @@ import { Search } from '@/components/Search';
 import Users from '@/components/Users';
 import { contlCookie } from '@/constants/i18n';
 import { getUsers, GetUsersDTO } from '@/helpers/userApi';
-import { User, UserRole } from '@/types';
+import { SearchType, User, UserRole } from '@/types';
 
 type PageProps = {
   readonly params: {
@@ -20,9 +20,9 @@ export default function Page({ params: { lng } }: PageProps) {
   const [currentPage, setCurrentPage] = useState<number>(0);
   const [resultsPerPage, setResultsPerPage] = useState<number>(10);
   const [searchValue, setSearchValue] = useState<string>();
-  const [searchType, setSearchType] = useState<string>('info');
+  const [searchType, setSearchType] = useState<SearchType>(SearchType.INFO);
 
-  const onSearchType = (type: string) => {
+  const onSearchType = (type: SearchType) => {
     setSearchType(type);
   };
 
@@ -34,8 +34,8 @@ export default function Page({ params: { lng } }: PageProps) {
   const { data, isFetching, refetch } = useQuery<GetUsersDTO>({
     queryKey: ['authors', currentPage, resultsPerPage, searchType, searchValue],
     queryFn: () => {
-      const byTag = searchType === 'tag' ? searchValue : undefined;
-      const byInfo = searchType === 'info' ? searchValue : undefined;
+      const byTag = searchType === SearchType.TAG ? searchValue : undefined;
+      const byInfo = searchType === SearchType.INFO ? searchValue : undefined;
       return getUsers(
         undefined,
         UserRole.ROLE_AUTHOR,

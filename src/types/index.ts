@@ -11,6 +11,12 @@ export enum Language {
   RU = 'ru',
 }
 
+export enum SearchType {
+  CONTENT = 'content',
+  INFO = 'info',
+  TAG = 'tag',
+}
+
 export type User = {
   username: string;
   isSubscribed: boolean;

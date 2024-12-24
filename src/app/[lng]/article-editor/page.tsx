@@ -96,6 +96,9 @@ const CustomStepIcon = (props: StepIconProps) => {
   );
 };
 
+type StepOneType = Pick<UpdateDraftArticleDTO, 'title' | 'content'> | null;
+type StepTwoType = Omit<UpdateDraftArticleDTO, 'title' | 'content'> | null;
+
 const Page = ({ params: { lng } }: PageParams) => {
   const STEP_ONE_DATA = 'step-one-data';
   const STEP_TWO_DATA = 'step-two-data';
@@ -107,11 +110,9 @@ const Page = ({ params: { lng } }: PageParams) => {
   const searchParams = useSearchParams();
   const paramId = searchParams.get(PARAM_ID);
   const id = Number(paramId);
-  const [stepOneData, setStepOneData] = useState<CreateDraftArticleDTO | null>(
-    null,
-  );
+  const [stepOneData, setStepOneData] = useState<StepOneType>(null);
   const [reset, setReset] = useState<boolean>(false);
-  const [stepTwoData, setStepTwoData] = useState(null);
+  const [stepTwoData, setStepTwoData] = useState<StepTwoType>(null);
   const [activeStep, setActiveStep] = useState<number>(0);
   const [articleId, setArticleId] = useState<number>(0);
   const [draftArticles, setDraftArticles] = useState<Article[]>([]);
@@ -310,7 +311,7 @@ const Page = ({ params: { lng } }: PageParams) => {
   useEffect(() => {
     const lsSelectedCategoriesData = localStorage.getItem(SELECTED_CATEGORIES);
     let lsSelectedCategories: Category[] = [];
-    if (lsSelectedCategoriesData !== undefined)
+    if (lsSelectedCategoriesData !== null)
       lsSelectedCategories = JSON.parse(lsSelectedCategoriesData);
     const mergedCategories = [
       ...(categoriesObjects || []),
@@ -365,13 +366,13 @@ const Page = ({ params: { lng } }: PageParams) => {
     if (!isSubmitSuccessfulStepTwo) {
       const subscriptionStepOne = watchStepOne((data) => {
         if (data.title) {
-          setStepOneData(data);
+          setStepOneData(data as StepOneType);
           localStorage.setItem(STEP_ONE_DATA, JSON.stringify(data));
         }
       });
       const subscriptionStepTwo = watchStepTwo((data) => {
         if (data) {
-          setStepTwoData(data);
+          setStepTwoData(data as StepTwoType);
           localStorage.setItem(STEP_TWO_DATA, JSON.stringify(data));
         }
       });
@@ -427,8 +428,15 @@ const Page = ({ params: { lng } }: PageParams) => {
 
   useEffect(() => {
     const lsStepOneData = localStorage.getItem(STEP_ONE_DATA);
-    const parsedStepOneData = JSON.parse(lsStepOneData);
-    if (parsedStepOneData && stepOneData?.title && !isValidId(articleId)) {
+    let parsedStepOneData: StepOneType = null;
+    if (lsStepOneData !== null) {
+      parsedStepOneData = JSON.parse(lsStepOneData);
+    }
+    if (
+      parsedStepOneData !== null &&
+      stepOneData?.title &&
+      !isValidId(articleId)
+    ) {
       const timer = setTimeout(() => {
         createDraftArticleMutate(zodStepOneForm.getValues());
       }, 1000);
@@ -569,7 +577,7 @@ const Page = ({ params: { lng } }: PageParams) => {
                   multiple
                   id='categoryIds'
                   options={availableCategories}
-                  getOptionLabel={(category) => category?.name}
+                  getOptionLabel={(category) => (category as Category)?.name}
                   freeSolo
                   value={availableCategories.filter((category) =>
                     field.value?.includes(category.id),

@@ -9,6 +9,7 @@ import { CustomPagination } from '@/components/CustomPagination';
 import { Search } from '@/components/Search';
 import { contlCookie } from '@/constants/i18n';
 import { getArticles, GetArticlesDTO } from '@/helpers/articleApi';
+import { SearchType } from '@/types';
 
 type PageProps = {
   readonly params: {
@@ -42,8 +43,9 @@ export default function Page({ params: { lng } }: PageProps) {
       searchValue,
     ],
     queryFn: () => {
-      const byTag = searchType === 'tag' ? searchValue : undefined;
-      const byContent = searchType === 'content' ? searchValue : undefined;
+      const byTag = searchType === SearchType.TAG ? searchValue : undefined;
+      const byContent =
+        searchType === SearchType.CONTENT ? searchValue : undefined;
       return getArticles(
         undefined,
         currentPage,

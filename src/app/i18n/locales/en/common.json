@@ -34,5 +34,6 @@
   "logoutBtn": "Logout",
   "deleteBtn": "Delete",
   "replyBtn": "Reply",
-  "cancelBtn": "Cancel"
+  "cancelBtn": "Cancel",
+  "createCompilationBtn": "Create compilation"
 }

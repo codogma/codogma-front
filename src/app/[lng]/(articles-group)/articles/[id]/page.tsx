@@ -71,6 +71,7 @@ export default function Page({ params: { lng } }: PageProps) {
               username={article.username}
               isBookmarkedValue={article.isBookmarked}
               id={article.id}
+              lang={lng}
             />
           </div>
           <div className='article-category'>

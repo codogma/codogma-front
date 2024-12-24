@@ -23,6 +23,7 @@ import { memo, useState } from 'react';
 import { useTranslation } from '@/app/i18n/client';
 import { useAuth } from '@/components/AuthProvider';
 import { AvatarImage } from '@/components/AvatarImage';
+import { DialogBox } from '@/components/DialogBox';
 import { LocalizationDialog } from '@/components/LocalizationDialog';
 import { ThemeToggleButton } from '@/components/ThemeContext';
 import { logout } from '@/helpers/authApi';
@@ -159,6 +160,8 @@ const NavBar = ({ lang }: NavBarProps) => {
                       {t('profile')}
                     </Typography>
                   </MenuItem>
+                  {state.user?.role === UserRole.ROLE_ADMIN ||
+                    (UserRole.ROLE_USER && <DialogBox lang={lang} />)}
                   {state.user?.role === UserRole.ROLE_AUTHOR && (
                     <MenuItem
                       onClick={() => handleClickMenuItem(`/article-editor`)}
