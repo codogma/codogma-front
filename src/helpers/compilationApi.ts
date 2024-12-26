@@ -9,7 +9,8 @@ export type GetCompilationsDTO = {
 
 export const getCompilations = async (
   tag?: string,
-  info?: string,
+  content?: string,
+  username?: string,
   isBookmarked?: boolean,
   page: number = 0,
   size: number = 10,
@@ -19,7 +20,8 @@ export const getCompilations = async (
   const response = await axiosInstance.get('/compilations', {
     params: {
       tag,
-      info,
+      content,
+      username,
       isBookmarked,
       page,
       size,

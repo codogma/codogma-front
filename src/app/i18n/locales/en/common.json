@@ -37,5 +37,7 @@
   "cancelBtn": "Cancel",
   "createCompilationBtn": "Create compilation",
   "compilations": "Compilations",
-  "selectCompilations": "Select compilations"
+  "selectCompilations": "Select compilations",
+  "bookmarks": "Bookmarks",
+  "myCompilations": "My compilations"
 }
