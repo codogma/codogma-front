@@ -1,4 +1,12 @@
 {
   "bookmarksByUser": "Закладки пользователя",
-  "compilationsDescription": "Список подборок"
+  "compilationsDescription": "Список подборок",
+  "articlesInCompilation": "Статьи в подборке",
+  "compilationsInCategory": "Подборки в категории",
+  "compilations": "Подборки",
+  "createCompilation": "Создать подборку",
+  "name": "Название",
+  "description": "Описание",
+  "create": "Создать",
+  "selectCompilations": "Выберите подборки"
 }

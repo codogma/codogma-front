@@ -8,11 +8,17 @@ import React, { useEffect, useState } from 'react';
 import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
 import { z } from 'zod';
 
+import { useTranslation } from '@/app/i18n/client';
 import { AvatarImage } from '@/components/AvatarImage';
 import FormInput from '@/components/FormInput';
 import { WithAuth } from '@/components/WithAuth';
 import { createCategory } from '@/helpers/categoryApi';
 import { devConsoleError } from '@/helpers/devConsoleLogs';
+import { Language } from '@/types';
+
+type PageParams = {
+  readonly params: { lng: Language };
+};
 
 const CategoryScheme = z.object({
   name: z
@@ -37,9 +43,10 @@ const VisuallyHiddenInput = styled('input')({
   width: 1,
 });
 
-function Page() {
+function Page({ params: { lng } }: PageParams) {
   const [imageFile, setImageFile] = useState<File>();
   const [imageUrl, setImageUrl] = useState<string>();
+  const { t } = useTranslation(lng, 'categories');
 
   const zodForm = useForm<z.infer<typeof CategoryScheme>>({
     resolver: zodResolver(CategoryScheme),
@@ -95,7 +102,7 @@ function Page() {
           autoComplete='off'
           onSubmit={handleSubmit(onSubmit)}
         >
-          <FormInput name='name' label='Name' variant='standard' />
+          <FormInput name='name' label={t('name')} variant='standard' />
           <Badge
             overlap='circular'
             anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
@@ -126,10 +133,10 @@ function Page() {
           )}
           <FormInput
             name='description'
-            label='Description'
+            label={t('description')}
             variant='standard'
           />
-          <Button type='submit'>Create</Button>
+          <Button type='submit'>{t('create')}</Button>
         </Box>
       </FormProvider>
     </main>

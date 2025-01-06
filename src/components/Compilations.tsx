@@ -1,12 +1,21 @@
 'use client';
-import { Badge, Card, CardContent, IconButton, Skeleton } from '@mui/material';
+import {
+  Badge,
+  Button,
+  Card,
+  CardActions,
+  CardContent,
+  IconButton,
+  Skeleton,
+  Stack,
+} from '@mui/material';
 import Link from 'next/link';
 import React from 'react';
 
 import { useTranslation } from '@/app/i18n/client';
 import { useAuth } from '@/components/AuthProvider';
 import { AvatarImage } from '@/components/AvatarImage';
-import { GetCompilation } from '@/types';
+import { GetCompilation, UserRole } from '@/types';
 
 type CompilationsProps = {
   readonly compilations: GetCompilation[];
@@ -83,6 +92,20 @@ export default function Compilations({
                     </p>
                   </li>
                 </ul>
+                <CardActions className='m-0 p-0'>
+                  <Stack direction='row' spacing={2}>
+                    {state.user?.role === UserRole.ROLE_ADMIN && (
+                      <Link href={`/categories/edit/${compilation.id}`}>
+                        <Button className='article-btn' variant='outlined'>
+                          {t('editBtn')}
+                        </Button>
+                      </Link>
+                    )}
+                  </Stack>
+                </CardActions>
+                <Button className='article-btn' variant='outlined'>
+                  Удалить
+                </Button>
               </div>
             </CardContent>
           </Card>

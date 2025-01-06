@@ -4,5 +4,8 @@
   "authorsInCategory": "Авторы в категории",
   "categoryCreated": "Категория создана успешно",
   "addToFavorite": "Добавить в избранное",
-  "removeFromFavorite": "Удалить из избранных"
+  "removeFromFavorite": "Удалить из избранных",
+  "name": "Название",
+  "description": "Описание",
+  "create": "Создать"
 }

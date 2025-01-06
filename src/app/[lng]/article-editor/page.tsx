@@ -799,63 +799,63 @@ const Page = ({ params: { lng } }: PageParams) => {
                 </TextField>
               )}
             />
-            <Controller
-              name='tags'
-              control={controlStepTwo}
-              render={({ field }) => (
-                <Autocomplete
-                  multiple
-                  id='tags'
-                  options={availableTags.filter(
-                    (tag) =>
-                      !field.value?.some(
-                        (value) => value.toLowerCase() === tag.toLowerCase(),
-                      ),
-                  )}
-                  freeSolo
-                  value={field.value}
-                  onChange={(_, newValue) => {
-                    const normalizedValue = newValue.map((value) => {
-                      const existingTag = availableTags.find(
-                        (tag) => tag.toLowerCase() === value.toLowerCase(),
-                      );
-                      return existingTag || value;
-                    });
+            {/*<Controller*/}
+            {/*  name='tags'*/}
+            {/*  control={controlStepTwo}*/}
+            {/*  render={({ field }) => (*/}
+            {/*    <Autocomplete*/}
+            {/*      multiple*/}
+            {/*      id='tags'*/}
+            {/*      options={availableTags.filter(*/}
+            {/*        (tag) =>*/}
+            {/*          !field.value?.some(*/}
+            {/*            (value) => value.toLowerCase() === tag.toLowerCase(),*/}
+            {/*          ),*/}
+            {/*      )}*/}
+            {/*      freeSolo*/}
+            {/*      value={field.value}*/}
+            {/*      onChange={(_, newValue) => {*/}
+            {/*        const normalizedValue = newValue.map((value) => {*/}
+            {/*          const existingTag = availableTags.find(*/}
+            {/*            (tag) => tag.toLowerCase() === value.toLowerCase(),*/}
+            {/*          );*/}
+            {/*          return existingTag || value;*/}
+            {/*        });*/}
 
-                    const uniqueTags = new Set<string>();
-                    normalizedValue.forEach((tag) => {
-                      uniqueTags.add(tag);
-                    });
+            {/*        const uniqueTags = new Set<string>();*/}
+            {/*        normalizedValue.forEach((tag) => {*/}
+            {/*          uniqueTags.add(tag);*/}
+            {/*        });*/}
 
-                    field.onChange(Array.from(uniqueTags));
-                  }}
-                  onInputChange={(_, newInputValue) =>
-                    setInputTagValue(newInputValue)
-                  }
-                  renderTags={(value: string[], getTagProps) =>
-                    value.map((option: string, index: number) => {
-                      const { key, ...tagProps } = getTagProps({ index });
-                      return (
-                        <Chip
-                          variant='outlined'
-                          label={option}
-                          key={key}
-                          {...tagProps}
-                        />
-                      );
-                    })
-                  }
-                  renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      variant='standard'
-                      label={t('tags')}
-                      placeholder={t('selectTags')}
-                    />
-                  )}
-                />
-              )}
-            />
+            {/*        field.onChange(Array.from(uniqueTags));*/}
+            {/*      }}*/}
+            {/*      onInputChange={(_, newInputValue) =>*/}
+            {/*        setInputTagValue(newInputValue)*/}
+            {/*      }*/}
+            {/*      renderTags={(value: string[], getTagProps) =>*/}
+            {/*        value.map((option: string, index: number) => {*/}
+            {/*          const { key, ...tagProps } = getTagProps({ index });*/}
+            {/*          return (*/}
+            {/*            <Chip*/}
+            {/*              variant='outlined'*/}
+            {/*              label={option}*/}
+            {/*              key={key}*/}
+            {/*              {...tagProps}*/}
+            {/*            />*/}
+            {/*          );*/}
+            {/*        })*/}
+            {/*      }*/}
+            {/*      renderInput={(params) => (*/}
+            {/*        <TextField*/}
+            {/*          {...params}*/}
+            {/*          variant='standard'*/}
+            {/*          label={t('tags')}*/}
+            {/*          placeholder={t('selectTags')}*/}
+            {/*        />*/}
+            {/*      )}*/}
+            {/*    />*/}
+            {/*  )}*/}
+            {/*/>*/}
             <Typography className='my-4'>{t('shortDescription')}</Typography>
             {errorsStepTwo.previewContent?.message && (
               <Typography variant='body2' color='error'>

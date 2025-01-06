@@ -39,5 +39,7 @@
   "compilations": "Подборки",
   "selectCompilations": "Выберите подборки",
   "bookmarks": "Закладки",
-  "myCompilations": "Мои подборки"
+  "myCompilations": "Мои подборки",
+  "articlesSearchBy": "Поиск по ",
+  "compilation": "Подборка"
 }

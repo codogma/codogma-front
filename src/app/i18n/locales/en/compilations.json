@@ -1,4 +1,12 @@
 {
   "bookmarksByUser": "Bookmarks by user",
-  "compilationsDescription": "List of compilations"
+  "compilationsDescription": "List of compilations",
+  "articlesInCompilation": "Articles in compilation",
+  "compilationsInCategory": "Compilations in category",
+  "compilations": "Compilations",
+  "createCompilation": "Create compilation",
+  "name": "Name",
+  "description": "Description",
+  "create": "Create",
+  "selectCompilations": "Select compilations"
 }

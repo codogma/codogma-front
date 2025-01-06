@@ -39,5 +39,7 @@
   "compilations": "Compilations",
   "selectCompilations": "Select compilations",
   "bookmarks": "Bookmarks",
-  "myCompilations": "My compilations"
+  "myCompilations": "My compilations",
+  "articlesSearchBy": "Search by ",
+  "compilation": "Compilation"
 }
