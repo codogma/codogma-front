@@ -1,7 +1,5 @@
-'use client';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Close as CloseIcon } from '@mui/icons-material';
-import AddCircleIcon from '@mui/icons-material/AddCircle';
 import {
   Box,
   Button,
@@ -11,7 +9,7 @@ import {
   IconButton,
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
 import { z } from 'zod';
 
@@ -31,6 +29,8 @@ const BootstrapDialog = styled(Dialog)(({ theme }) => ({
 
 type CompilationDialogProps = {
   readonly lang: string;
+  readonly state: boolean;
+  readonly onClose: () => void;
 };
 
 const CompilationDialogScheme = z.object({
@@ -41,8 +41,11 @@ const CompilationDialogScheme = z.object({
   description: z.optional(z.string()),
 });
 
-export const CompilationDialog = ({ lang }: CompilationDialogProps) => {
-  const [open, setOpen] = useState(false);
+export const CompilationDialog = ({
+  lang,
+  state,
+  onClose,
+}: CompilationDialogProps) => {
   const { t } = useTranslation(lang, 'compilations');
 
   const zodForm = useForm<z.infer<typeof CompilationDialogScheme>>({
@@ -70,66 +73,51 @@ export const CompilationDialog = ({ lang }: CompilationDialogProps) => {
   ) => {
     const requestData = { ...formData };
     devConsoleError(requestData);
-    createCompilation(requestData);
-    handleClose();
-  };
-
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
-
-  const handleClose = () => {
-    setOpen(false);
+    createCompilation(requestData).then(() => onClose());
   };
 
   return (
-    <>
-      <IconButton color='inherit' onClick={handleClickOpen}>
-        <AddCircleIcon />
+    <BootstrapDialog aria-labelledby='customized-dialog-title' open={state}>
+      <DialogTitle sx={{ m: 0, p: 2 }} id='customized-dialog-title'>
+        {t('createCompilation')}
+      </DialogTitle>
+      <IconButton
+        aria-label='close'
+        onClick={onClose}
+        sx={(theme) => ({
+          position: 'absolute',
+          right: 8,
+          top: 8,
+          color: theme.palette.grey[500],
+        })}
+      >
+        <CloseIcon />
       </IconButton>
-      <BootstrapDialog aria-labelledby='customized-dialog-title' open={open}>
-        <DialogTitle sx={{ m: 0, p: 2 }} id='customized-dialog-title'>
-          {t('createCompilation')}
-        </DialogTitle>
-        <IconButton
-          aria-label='close'
-          onClick={handleClose}
-          sx={(theme) => ({
-            position: 'absolute',
-            right: 8,
-            top: 8,
-            color: theme.palette.grey[500],
-          })}
-        >
-          <CloseIcon />
-        </IconButton>
-        <DialogContent dividers>
-          <FormProvider {...zodForm}>
-            <Box
-              noValidate
-              component='form'
-              onSubmit={handleSubmit(onSubmit)}
-              sx={{
-                display: 'flex',
-                flexDirection: 'column',
-                m: 'auto',
-                width: 'fit-content',
-                gap: 2,
-              }}
-            >
-              {/*<FormControl sx={{ minWidth: 240 }}>*/}
-              <FormInput name='name' label={t('name')} variant='standard' />
-              {/*</FormControl>*/}
-              <FormInput
-                name='description'
-                label={t('description')}
-                variant='standard'
-              />
-              <Button type='submit'>{t('create')}</Button>
-            </Box>
-          </FormProvider>
-        </DialogContent>
-      </BootstrapDialog>
-    </>
+      <DialogContent dividers>
+        <FormProvider {...zodForm}>
+          <Box
+            noValidate
+            component='form'
+            autoComplete='off'
+            onSubmit={handleSubmit(onSubmit)}
+            sx={{
+              display: 'flex',
+              flexDirection: 'column',
+              m: 'auto',
+              width: 'fit-content',
+              gap: 2,
+            }}
+          >
+            <FormInput name='title' label={t('name')} variant='standard' />
+            <FormInput
+              name='description'
+              label={t('description')}
+              variant='standard'
+            />
+            <Button type='submit'>{t('create')}</Button>
+          </Box>
+        </FormProvider>
+      </DialogContent>
+    </BootstrapDialog>
   );
 };

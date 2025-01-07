@@ -6,6 +6,7 @@ import { devConsoleError } from '@/helpers/devConsoleLogs';
 import { uploadImage } from '@/helpers/imageUploadApi';
 
 interface TinyMCEEditorProps {
+  readonly id?: string;
   readonly defaultValue?: string;
   readonly value?: string;
   readonly onChange: (content: string) => void;
@@ -13,6 +14,7 @@ interface TinyMCEEditorProps {
 }
 
 export const TinyMCEEditor = ({
+  id,
   defaultValue,
   value,
   onChange,
@@ -39,6 +41,7 @@ export const TinyMCEEditor = ({
 
   return (
     <Editor
+      id={id}
       tinymceScriptSrc='/tinymce/tinymce.min.js'
       initialValue={defaultValue}
       value={value}

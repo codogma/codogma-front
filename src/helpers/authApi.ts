@@ -43,9 +43,10 @@ export const signIn = async (requestData: SignIn): Promise<User | null> => {
 };
 
 export const logout = async (): Promise<void> => {
-  await axiosInstance.post('/auth/logout');
+  await axiosInstance
+    .post('/auth/logout')
+    .finally(() => window.dispatchEvent(new Event('storage')));
   devConsoleInfo('User logged out successfully');
-  window.dispatchEvent(new Event('storage'));
 };
 
 export const currentUser = async (): Promise<User | null> => {
