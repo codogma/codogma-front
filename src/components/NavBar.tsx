@@ -172,17 +172,19 @@ const NavBar = ({ lang }: NavBarProps) => {
                   </MenuItem>
                   {state.isAuthenticated &&
                     state.user?.role !== UserRole.ROLE_ADMIN && (
-                      <MenuItem onClick={() => handleOpenCompilationDialog()}>
-                        <Typography textAlign='center'>
-                          <CompilationDialog
-                            state={open}
-                            onClose={handleCloseCompilationDialog}
-                            lang={lang}
-                          />
-                          <AddCircleIcon className='mr-2' fontSize='small' />
-                          {t('createCompilationBtn')}
-                        </Typography>
-                      </MenuItem>
+                      <>
+                        <MenuItem onClick={() => handleOpenCompilationDialog()}>
+                          <Typography textAlign='center'>
+                            <AddCircleIcon className='mr-2' fontSize='small' />
+                            {t('createCompilationBtn')}
+                          </Typography>
+                        </MenuItem>
+                        <CompilationDialog
+                          state={open}
+                          onClose={handleCloseCompilationDialog}
+                          lang={lang}
+                        />
+                      </>
                     )}
                   {state.user?.role === UserRole.ROLE_AUTHOR && (
                     <MenuItem
