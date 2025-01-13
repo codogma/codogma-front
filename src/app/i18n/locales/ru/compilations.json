@@ -8,5 +8,10 @@
   "name": "Название",
   "description": "Описание",
   "create": "Создать",
-  "selectCompilations": "Выберите подборки"
+  "selectCompilations": "Выберите подборки",
+  "addToCompilation": "Добавить в подборку",
+  "searchCompilations": "Поиск подборки",
+  "add": "Добавить",
+  "updateCompilation": "Обновить подборку",
+  "save": "Сохранить"
 }

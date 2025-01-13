@@ -49,6 +49,7 @@ const Page = ({ params: { lng } }: PageProps) => {
       const isFeed = true;
       return getArticles(
         undefined,
+        undefined,
         currentPage,
         resultsPerPage,
         byTag,

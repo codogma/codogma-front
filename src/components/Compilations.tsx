@@ -3,11 +3,9 @@ import {
   Badge,
   Button,
   Card,
-  CardActions,
   CardContent,
   IconButton,
   Skeleton,
-  Stack,
 } from '@mui/material';
 import Link from 'next/link';
 import React from 'react';
@@ -15,18 +13,24 @@ import React from 'react';
 import { useTranslation } from '@/app/i18n/client';
 import { useAuth } from '@/components/AuthProvider';
 import { AvatarImage } from '@/components/AvatarImage';
-import { GetCompilation, UserRole } from '@/types';
+import { Bookmark } from '@/components/Bookmark';
+import { EditCompilation } from '@/components/EditCompilation';
+import { GetCompilation } from '@/types';
 
 type CompilationsProps = {
   readonly compilations: GetCompilation[];
   readonly loading: boolean;
   readonly lang: string;
+  readonly isHiddenBookmarks?: boolean;
+  readonly refetch?: () => void;
 };
 
 export default function Compilations({
   compilations,
   loading,
   lang,
+  isHiddenBookmarks,
+  refetch,
 }: CompilationsProps) {
   const { state } = useAuth();
   const { t } = useTranslation(lang);
@@ -92,17 +96,31 @@ export default function Compilations({
                     </p>
                   </li>
                 </ul>
-                <CardActions className='m-0 p-0'>
-                  <Stack direction='row' spacing={2}>
-                    {state.user?.role === UserRole.ROLE_ADMIN && (
-                      <Link href={`/categories/edit/${compilation.id}`}>
-                        <Button className='article-btn' variant='outlined'>
-                          {t('editBtn')}
-                        </Button>
-                      </Link>
-                    )}
-                  </Stack>
-                </CardActions>
+                {!isHiddenBookmarks && (
+                  <Bookmark
+                    lang={lang}
+                    id={compilation.id}
+                    isBookmarkedValue={compilation.isBookmarked}
+                    refetch={refetch}
+                  />
+                )}
+                <EditCompilation
+                  lang={lang}
+                  state={false}
+                  onClose={open}
+                  id={compilation.id}
+                />
+                {/*<CardActions className='m-0 p-0'>*/}
+                {/*  <Stack direction='row' spacing={2}>*/}
+                {/*    {state.user?.role === UserRole.ROLE_ADMIN && (*/}
+                {/*      <Link href={`/categories/edit/${compilation.id}`}>*/}
+                {/*        <Button className='article-btn' variant='outlined'>*/}
+                {/*          {t('editBtn')}*/}
+                {/*        </Button>*/}
+                {/*      </Link>*/}
+                {/*    )}*/}
+                {/*  </Stack>*/}
+                {/*</CardActions>*/}
                 <Button className='article-btn' variant='outlined'>
                   Удалить
                 </Button>

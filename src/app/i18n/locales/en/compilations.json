@@ -8,5 +8,10 @@
   "name": "Name",
   "description": "Description",
   "create": "Create",
-  "selectCompilations": "Select compilations"
+  "selectCompilations": "Select compilations",
+  "addToCompilation": "Add to compilation",
+  "searchCompilations": "Search compilations",
+  "add": "Add",
+  "updateCompilation": "Update compilation",
+  "save": "Save"
 }

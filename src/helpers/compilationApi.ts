@@ -1,6 +1,6 @@
 import { axiosInstance } from '@/helpers/axiosInstance';
 import { dispatchCustomEvent } from '@/helpers/dispatchCustomEvent';
-import { GetCompilation } from '@/types';
+import { Article, GetCompilation } from '@/types';
 
 export type GetCompilationsDTO = {
   totalElements: number;
@@ -69,4 +69,43 @@ export const createCompilation = async (
     message: 'Compilation created successfully',
     severity: 'success',
   });
+};
+
+export const bookmark = async (id: number): Promise<Article> => {
+  const response = await axiosInstance.post(`/compilations/${id}/bookmark`);
+  dispatchCustomEvent('api', {
+    message: 'You have successfully added the compilation to your bookmarks',
+    severity: 'success',
+  });
+  return response.data;
+};
+
+export const unbookmark = async (id: number): Promise<Article> => {
+  const response = await axiosInstance.delete(`/compilations/${id}/unbookmark`);
+  dispatchCustomEvent('api', {
+    message:
+      'You have successfully removed the compilation from your bookmarks',
+    severity: 'success',
+  });
+  return response.data;
+};
+
+export const updateCompilation = async (
+  id: number,
+  requestData: {
+    image?: File;
+    title?: string;
+    description?: string;
+  },
+): Promise<GetCompilation> => {
+  const response = await axiosInstance.put(`/compilations/${id}`, requestData, {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
+  });
+  dispatchCustomEvent('api', {
+    message: 'Compilation updated successfully',
+    severity: 'success',
+  });
+  return response.data;
 };

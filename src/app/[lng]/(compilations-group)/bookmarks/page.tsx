@@ -7,6 +7,7 @@ import { CustomPagination } from '@/components/CustomPagination';
 import { Search } from '@/components/Search';
 import { contlCookie } from '@/constants/i18n';
 import { getCompilations, GetCompilationsDTO } from '@/helpers/compilationApi';
+import { devConsoleInfo } from '@/helpers/devConsoleLogs';
 import { GetCompilation, SearchType } from '@/types';
 
 type PageProps = {
@@ -55,12 +56,12 @@ const Page = ({ params: { lng } }: PageProps) => {
   });
 
   const compilations: GetCompilation[] = data?.content ?? [];
+  devConsoleInfo(compilations);
   const totalPages = data?.totalPages ?? 0;
   const totalElements = data?.totalElements ?? 0;
 
   useEffect(() => {
     window.addEventListener(contlCookie, () => refetch());
-    window.addEventListener('api', () => refetch());
     if (window.location.hash === '#search-input' && searchInputRef.current) {
       searchInputRef.current.scrollIntoView({
         behavior: 'smooth',
@@ -89,6 +90,7 @@ const Page = ({ params: { lng } }: PageProps) => {
         lang={lng}
         loading={isFetching}
         compilations={compilations}
+        refetch={refetch}
       />
       <CustomPagination
         lang={lng}

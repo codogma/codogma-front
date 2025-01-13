@@ -9,9 +9,9 @@ import Link from 'next/link';
 import React from 'react';
 
 import { useTranslation } from '@/app/i18n/client';
+import { AddToCompilations } from '@/components/AddToCompilations';
 import { useAuth } from '@/components/AuthProvider';
 import { AvatarImage } from '@/components/AvatarImage';
-import { Bookmark } from '@/components/Bookmark';
 import ButtonAlertDialog from '@/components/ButtonAlertDialog';
 import { TimeAgo } from '@/components/TimeAgo';
 import { Article, UserRole } from '@/types';
@@ -79,11 +79,10 @@ export default function Articles({ lang, articles, loading }: ArticlesProps) {
                     />
                   </Stack>
                 )}
-                <Bookmark
-                  username={article.username}
-                  isBookmarkedValue={article.isBookmarked}
+                <AddToCompilations
                   id={article.id}
                   lang={lang}
+                  compilations={article.compilations}
                 />
               </div>
               <Link href={`/articles/${article.id}`} className='article-title'>

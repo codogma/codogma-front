@@ -104,6 +104,7 @@ export const CompilationDialog = ({
               display: 'flex',
               flexDirection: 'column',
               m: 'auto',
+              minWidth: 420,
               width: 'fit-content',
               gap: 2,
             }}

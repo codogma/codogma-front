@@ -64,6 +64,7 @@ export default function Layout({ params: { id, lng } }: PageProps) {
       const byContent = searchType === 'content' ? searchValue : undefined;
       return getArticles(
         categoryId,
+        undefined,
         currentPage,
         resultsPerPage,
         byTag,

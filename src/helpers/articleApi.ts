@@ -73,6 +73,7 @@ export const updateArticle = async (
 
 export const getArticles = async (
   categoryId?: number,
+  compilationId?: number,
   page: number = 0,
   size: number = 10,
   tag?: string,
@@ -85,6 +86,7 @@ export const getArticles = async (
       tag,
       content,
       categoryId,
+      compilationId,
       page,
       size,
       username,
@@ -125,19 +127,16 @@ export const deleteArticle = async (id: number): Promise<void> => {
   });
 };
 
-export const unbookmark = async (id: number): Promise<Article> => {
-  const response = await axiosInstance.delete(`/articles/${id}/unbookmark`);
+export const addToCompilations = async (
+  id: number,
+  compilationIds: number[],
+): Promise<Article> => {
+  const response = await axiosInstance.post(
+    `/articles/${id}/add-to-compilations`,
+    { compilationIds },
+  );
   dispatchCustomEvent('api', {
-    message: 'You have successfully removed the article from your bookmarks',
-    severity: 'success',
-  });
-  return response.data;
-};
-
-export const bookmark = async (id: number): Promise<Article> => {
-  const response = await axiosInstance.post(`/articles/${id}/bookmark`);
-  dispatchCustomEvent('api', {
-    message: 'You have successfully added the article to your bookmarks',
+    message: 'You have successfully added the article to the compilation',
     severity: 'success',
   });
   return response.data;

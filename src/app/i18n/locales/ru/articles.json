@@ -10,9 +10,5 @@
   "agreeBtn": "Согласиться",
   "articleCreated": "Черновик статьи создан",
   "popoverBookmark": "чтобы добавить статью в закладки",
-  "popoverSignup": "Зарегистрироваться",
-  "addToCompilation": "Добавить в подборку",
-  "searchCompilations": "Поиск подборки",
-  "selectCompilations": "Выберите подборки",
-  "createCompilation": "Создать подборку"
+  "popoverSignup": "Зарегистрироваться"
 }

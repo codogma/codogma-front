@@ -48,6 +48,7 @@ export default function Page({ params: { lng } }: PageProps) {
         searchType === SearchType.CONTENT ? searchValue : undefined;
       return getArticles(
         undefined,
+        undefined,
         currentPage,
         resultsPerPage,
         byTag,

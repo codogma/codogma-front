@@ -68,6 +68,7 @@ export default function Layout({ params: { lng, username } }: PageProps) {
         }
         const { content, totalPages, totalElements } = await getArticles(
           undefined,
+          undefined,
           page,
           resultsPerPage,
           byTag,

@@ -65,7 +65,6 @@ export default function Page({ params: { lng, username } }: PageProps) {
 
   useEffect(() => {
     window.addEventListener(contlCookie, () => refetch());
-    window.addEventListener('api', () => refetch());
     if (window.location.hash === '#search-input' && searchInputRef.current) {
       searchInputRef.current.scrollIntoView({
         behavior: 'smooth',
@@ -94,6 +93,7 @@ export default function Page({ params: { lng, username } }: PageProps) {
         lang={lng}
         loading={isFetching}
         compilations={compilations}
+        isHiddenBookmarks
       />
       <CustomPagination
         lang={lng}

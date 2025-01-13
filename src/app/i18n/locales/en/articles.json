@@ -10,9 +10,5 @@
   "agreeBtn": "Agree",
   "articleCreated": "Article draft created",
   "popoverBookmark": "to add an article to your bookmarks",
-  "popoverSignup": "Sign up",
-  "addToCompilation": "Add to compilation",
-  "searchCompilations": "Search compilations",
-  "selectCompilations": "Select compilations",
-  "createCompilation": "Create compilation"
+  "popoverSignup": "Sign up"
 }

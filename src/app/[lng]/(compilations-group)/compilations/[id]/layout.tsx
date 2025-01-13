@@ -10,12 +10,15 @@ import React from 'react';
 import { useTranslation } from '@/app/i18n/client';
 import { useAuth } from '@/components/AuthProvider';
 import { AvatarImage } from '@/components/AvatarImage';
+import { Bookmark } from '@/components/Bookmark';
 import { getCompilationById } from '@/helpers/compilationApi';
 import { GetCompilation, UserRole } from '@/types';
 
 type PageParams = {
   id: number;
   lng: string;
+  isHiddenBookmarks?: boolean;
+  refetch?: () => void;
 };
 
 type PageProps = {
@@ -23,7 +26,10 @@ type PageProps = {
   readonly children: React.ReactNode;
 };
 
-export default function Layout({ params: { id, lng }, children }: PageProps) {
+export default function Layout({
+  params: { id, lng, isHiddenBookmarks, refetch },
+  children,
+}: PageProps) {
   const { state } = useAuth();
   const { t } = useTranslation(lng);
 
@@ -77,6 +83,14 @@ export default function Layout({ params: { id, lng }, children }: PageProps) {
                     {compilation?.description}
                   </p>
                 </div>
+                {!isHiddenBookmarks && (
+                  <Bookmark
+                    lang={lng}
+                    id={compilation?.id}
+                    isBookmarkedValue={compilation?.isBookmarked}
+                    refetch={refetch}
+                  />
+                )}
               </div>
               <CardActions className='m-0 p-0'>
                 <Stack direction='row' spacing={2}>
