@@ -3,7 +3,6 @@ import React, { ReactNode } from 'react';
 
 import { useTranslation } from '@/app/i18n/client';
 import NavTabs, { TabProps } from '@/components/NavTabs';
-import { WithAuth } from '@/components/WithAuth';
 
 type LayoutProps = {
   readonly children: ReactNode;
@@ -31,4 +30,4 @@ function Layout({ params: { lng }, children }: LayoutProps) {
   );
 }
 
-export default WithAuth(Layout);
+export default Layout;

@@ -3,6 +3,7 @@ import { Metadata } from 'next';
 import { ReactNode } from 'react';
 
 import { initTranslation } from '@/app/i18n';
+import { SignIn } from '@/components/SignIn';
 
 type LayoutProps = {
   readonly children: ReactNode;
@@ -22,9 +23,13 @@ export async function generateMetadata({
       },
     },
     title: t('bookmarksByUser'),
+    description: t('bookmarksByUser'),
   };
 }
 
-export default async function Layout({ children }: LayoutProps) {
-  return <>{children}</>;
+export default async function Layout({
+  children,
+  params: { lng },
+}: LayoutProps) {
+  return <SignIn lang={lng}>{children}</SignIn>;
 }

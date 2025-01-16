@@ -12,7 +12,7 @@ type LayoutProps = {
 export async function generateMetadata({
   params: { lng },
 }: LayoutProps): Promise<Metadata> {
-  const { t } = await initTranslation(lng);
+  const { t } = await initTranslation(lng, 'compilations');
   return {
     alternates: {
       canonical: `/compilations/`,
