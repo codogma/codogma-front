@@ -31,9 +31,9 @@ export const Bookmark: React.FC<BookmarkProps> = ({
   const { t } = useTranslation(lang, 'articles');
   const popoverId = 'simple-popover';
 
-  const handleUnbookmark = async () => {
+  const handleUnbookmark = () => {
     if (state.isAuthenticated) {
-      await unbookmark(id).then((response) => {
+      unbookmark(id).then((response) => {
         if (refetch) {
           refetch();
         }

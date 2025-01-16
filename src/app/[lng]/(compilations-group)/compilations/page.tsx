@@ -88,6 +88,7 @@ export default function Page({ params: { lng } }: PageProps) {
         lang={lng}
         loading={isFetching}
         compilations={compilations}
+        refetch={refetch}
       />
       <CustomPagination
         lang={lng}

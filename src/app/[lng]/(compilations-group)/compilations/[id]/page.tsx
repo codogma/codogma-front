@@ -17,6 +17,7 @@ import React, { FormEvent, useState } from 'react';
 import { useTranslation } from '@/app/i18n/client';
 import Articles from '@/components/Articles';
 import { getArticles, GetArticlesDTO } from '@/helpers/articleApi';
+import { SearchType } from '@/types';
 
 type PageParams = {
   id: number;
@@ -38,14 +39,14 @@ export default function Layout({ params: { id, lng } }: PageProps) {
     useState<number>(resultsPerPage10);
   const [searchValue, setSearchValue] = useState<string>();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  const [searchType, setSearchType] = useState<'content' | 'tag'>('content');
+  const [searchType, setSearchType] = useState<SearchType>(SearchType.CONTENT);
   const { t } = useTranslation(lng, 'compilations');
 
   const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
   };
 
-  const handleMenuClose = (type: 'content' | 'tag') => {
+  const handleMenuClose = (type: SearchType) => {
     setSearchType(type);
     setAnchorEl(null);
   };
@@ -60,8 +61,9 @@ export default function Layout({ params: { id, lng } }: PageProps) {
       searchValue,
     ],
     queryFn: () => {
-      const byTag = searchType === 'tag' ? searchValue : undefined;
-      const byContent = searchType === 'content' ? searchValue : undefined;
+      const byTag = searchType === SearchType.TAG ? searchValue : undefined;
+      const byContent =
+        searchType === SearchType.CONTENT ? searchValue : undefined;
       return getArticles(
         undefined,
         compilationId,
@@ -136,10 +138,10 @@ export default function Layout({ params: { id, lng } }: PageProps) {
           open={Boolean(anchorEl)}
           onClose={() => handleMenuClose(searchType)}
         >
-          <MenuItem onClick={() => handleMenuClose('content')}>
+          <MenuItem onClick={() => handleMenuClose(SearchType.CONTENT)}>
             {t(`searchContent`)}
           </MenuItem>
-          <MenuItem onClick={() => handleMenuClose('tag')}>
+          <MenuItem onClick={() => handleMenuClose(SearchType.TAG)}>
             {t(`searchTags`)}
           </MenuItem>
         </Menu>

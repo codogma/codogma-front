@@ -37,6 +37,8 @@ export const NavPanel = ({ lang }: NavPanelProps) => {
       setActiveIndex(0);
     } else if (pathname === `/${lang}/feed`) {
       setActiveIndex(1);
+    } else if (pathname === `/${lang}/compilations`) {
+      setActiveIndex(2);
     } else if (pathname === `/${lang}`) {
       setActiveIndex(undefined);
     }

@@ -10,6 +10,7 @@ import {
   Dialog,
   DialogContent,
   DialogTitle,
+  FormHelperText,
   IconButton,
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
@@ -18,12 +19,10 @@ import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
 import { z } from 'zod';
 
 import { useTranslation } from '@/app/i18n/client';
+import { useAuth } from '@/components/AuthProvider';
 import { AvatarImage } from '@/components/AvatarImage';
 import FormInput from '@/components/FormInput';
-import {
-  getCompilationById,
-  updateCompilation,
-} from '@/helpers/compilationApi';
+import { updateCompilation } from '@/helpers/compilationApi';
 import { devConsoleError } from '@/helpers/devConsoleLogs';
 import { GetCompilation } from '@/types';
 
@@ -62,20 +61,22 @@ const BootstrapDialog = styled(Dialog)(({ theme }) => ({
 type EditCompilationProps = {
   readonly id: number;
   readonly lang: string;
-  readonly state: boolean;
-  readonly onClose: () => void;
+  readonly compilationData: GetCompilation;
+  readonly refetch?: () => void;
 };
 
 export const EditCompilation = ({
   id,
   lang,
-  onClose,
+  compilationData,
+  refetch,
 }: EditCompilationProps) => {
-  const compilationId = id;
   const [open, setOpen] = useState(false);
   const [imageFile, setImageFile] = useState<File>();
-  const [compilation, setCompilation] = useState<GetCompilation>();
+  const [compilation, setCompilation] =
+    useState<GetCompilation>(compilationData);
   const { t } = useTranslation(lang, 'compilations');
+  const { state } = useAuth();
 
   const zodForm = useForm<z.infer<typeof EditCompilationScheme>>({
     resolver: zodResolver(EditCompilationScheme),
@@ -87,28 +88,17 @@ export const EditCompilation = ({
   });
 
   useEffect(() => {
-    async function fetchData() {
-      try {
-        const compilationData = await getCompilationById(compilationId);
-        setCompilation(compilationData);
-
-        zodForm.reset({
-          title: compilationData.title,
-          description: compilationData.description,
-          image: undefined,
-        });
-      } catch (error) {
-        devConsoleError('Error fetching data: ' + error);
-      }
-    }
-
-    fetchData();
-  }, [compilationId, zodForm]);
+    zodForm.reset({
+      title: compilationData.title,
+      description: compilationData.description,
+      image: undefined,
+    });
+  }, [compilationData, zodForm]);
 
   const {
     reset,
     handleSubmit,
-    formState: { isSubmitSuccessful },
+    formState: { isSubmitSuccessful, errors },
   } = zodForm;
 
   useEffect(() => {
@@ -132,8 +122,12 @@ export const EditCompilation = ({
   ) => {
     const requestData = { ...formData, image: imageFile };
     devConsoleError(requestData);
-    updateCompilation(compilationId, requestData);
-    handleClose();
+    updateCompilation(id, requestData).then(() => {
+      if (refetch) {
+        refetch();
+      }
+      handleClose();
+    });
   };
 
   const handleClickOpen = () => {
@@ -185,28 +179,36 @@ export const EditCompilation = ({
                 gap: 2,
               }}
             >
-              <Badge
-                overlap='circular'
-                anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-                badgeContent={
-                  <IconButton component='label' color='inherit' sx={{ p: 0 }}>
-                    <ModeEditOutlineOutlined color='primary' />
-                    <VisuallyHiddenInput
-                      id='avatar'
-                      name='avatar'
-                      type='file'
-                      onChange={handleFileChange}
-                    />
-                  </IconButton>
-                }
-              >
-                <AvatarImage
-                  alt={compilation?.title}
-                  variant='rounded'
-                  src={compilation?.imageUrl}
-                  size={112}
-                />
-              </Badge>
+              <span>
+                <Badge
+                  overlap='circular'
+                  anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+                  badgeContent={
+                    <IconButton component='label' color='inherit' sx={{ p: 0 }}>
+                      <ModeEditOutlineOutlined color='primary' />
+                      <VisuallyHiddenInput
+                        id='image'
+                        name='image'
+                        type='file'
+                        onChange={handleFileChange}
+                      />
+                    </IconButton>
+                  }
+                >
+                  <AvatarImage
+                    alt={compilation?.title}
+                    variant='rounded'
+                    src={compilation?.imageUrl}
+                    size={112}
+                    fontSize='large'
+                  />
+                </Badge>
+              </span>
+              {errors.image && (
+                <FormHelperText id='image-text' error={!!errors.image}>
+                  {errors?.image.message}
+                </FormHelperText>
+              )}
               <FormInput name='title' label={t('name')} variant='standard' />
               <FormInput
                 name='description'

@@ -1,7 +1,7 @@
 'use client';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { ModeEditOutlineOutlined } from '@mui/icons-material';
-import { Badge, Box, Button } from '@mui/material';
+import { Badge, Box, Button, FormHelperText } from '@mui/material';
 import IconButton from '@mui/material/IconButton';
 import { styled } from '@mui/material/styles';
 import Link from 'next/link';
@@ -91,7 +91,7 @@ function Categories({ params }: PageProps) {
   const {
     reset,
     handleSubmit,
-    formState: { isSubmitSuccessful },
+    formState: { isSubmitSuccessful, errors },
   } = zodForm;
 
   useEffect(() => {
@@ -163,6 +163,11 @@ function Categories({ params }: PageProps) {
                 fontSize='large'
               />
             </Badge>
+            {errors.image && (
+              <FormHelperText id='image-text' error={!!errors.image}>
+                {errors?.image.message}
+              </FormHelperText>
+            )}
             <FormInput
               name='name'
               label='Name'

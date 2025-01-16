@@ -15,6 +15,7 @@ import { useAuth } from '@/components/AuthProvider';
 import { AvatarImage } from '@/components/AvatarImage';
 import { Bookmark } from '@/components/Bookmark';
 import { EditCompilation } from '@/components/EditCompilation';
+import { deleteCompilation } from '@/helpers/compilationApi';
 import { GetCompilation } from '@/types';
 
 type CompilationsProps = {
@@ -34,6 +35,10 @@ export default function Compilations({
 }: CompilationsProps) {
   const { state } = useAuth();
   const { t } = useTranslation(lang);
+
+  const handleDelete = (compilationId: number) => {
+    deleteCompilation(compilationId);
+  };
 
   return (
     <>
@@ -104,26 +109,23 @@ export default function Compilations({
                     refetch={refetch}
                   />
                 )}
-                <EditCompilation
-                  lang={lang}
-                  state={false}
-                  onClose={open}
-                  id={compilation.id}
-                />
-                {/*<CardActions className='m-0 p-0'>*/}
-                {/*  <Stack direction='row' spacing={2}>*/}
-                {/*    {state.user?.role === UserRole.ROLE_ADMIN && (*/}
-                {/*      <Link href={`/categories/edit/${compilation.id}`}>*/}
-                {/*        <Button className='article-btn' variant='outlined'>*/}
-                {/*          {t('editBtn')}*/}
-                {/*        </Button>*/}
-                {/*      </Link>*/}
-                {/*    )}*/}
-                {/*  </Stack>*/}
-                {/*</CardActions>*/}
-                <Button className='article-btn' variant='outlined'>
-                  Удалить
-                </Button>
+                {state.user?.username === compilation.ownerName && (
+                  <>
+                    <EditCompilation
+                      compilationData={compilation}
+                      lang={lang}
+                      id={compilation.id}
+                      refetch={refetch}
+                    />
+                    <Button
+                      className='article-btn'
+                      variant='outlined'
+                      onClick={() => handleDelete(compilation.id)}
+                    >
+                      Удалить
+                    </Button>
+                  </>
+                )}
               </div>
             </CardContent>
           </Card>

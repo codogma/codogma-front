@@ -1,4 +1,5 @@
 import { axiosInstance } from '@/helpers/axiosInstance';
+import { devConsoleInfo } from '@/helpers/devConsoleLogs';
 import { dispatchCustomEvent } from '@/helpers/dispatchCustomEvent';
 import { Article, GetCompilation } from '@/types';
 
@@ -108,4 +109,9 @@ export const updateCompilation = async (
     severity: 'success',
   });
   return response.data;
+};
+
+export const deleteCompilation = async (id: number): Promise<void> => {
+  await axiosInstance.delete(`/compilations/${id}`);
+  devConsoleInfo('Compilation deleted successfully');
 };

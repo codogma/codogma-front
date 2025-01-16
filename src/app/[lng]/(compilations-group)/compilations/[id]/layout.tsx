@@ -1,18 +1,21 @@
 'use client';
-import { Badge, Button, CardActions, Skeleton, Stack } from '@mui/material';
+import { Badge, Button, Skeleton } from '@mui/material';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import IconButton from '@mui/material/IconButton';
 import { useQuery } from '@tanstack/react-query';
-import Link from 'next/link';
 import React from 'react';
 
 import { useTranslation } from '@/app/i18n/client';
 import { useAuth } from '@/components/AuthProvider';
 import { AvatarImage } from '@/components/AvatarImage';
 import { Bookmark } from '@/components/Bookmark';
-import { getCompilationById } from '@/helpers/compilationApi';
-import { GetCompilation, UserRole } from '@/types';
+import { EditCompilation } from '@/components/EditCompilation';
+import {
+  deleteCompilation,
+  getCompilationById,
+} from '@/helpers/compilationApi';
+import { GetCompilation } from '@/types';
 
 type PageParams = {
   id: number;
@@ -33,10 +36,16 @@ export default function Layout({
   const { state } = useAuth();
   const { t } = useTranslation(lng);
 
-  const { data: compilation, isFetching } = useQuery<GetCompilation>({
+  const { data, isFetching } = useQuery<GetCompilation>({
     queryKey: ['compilation', id],
     queryFn: () => getCompilationById(id),
   });
+
+  const handleDelete = () => {
+    deleteCompilation(id);
+  };
+
+  const compilation = data as GetCompilation;
 
   return (
     <section>
@@ -70,42 +79,45 @@ export default function Layout({
                   }
                 >
                   <AvatarImage
-                    alt={compilation?.title}
+                    alt={compilation.title}
                     className='category-img'
                     variant='rounded'
-                    src={compilation?.imageUrl}
+                    src={compilation.imageUrl}
                     size={48}
                   />
                 </Badge>
                 <div>
-                  <h1 className='category-card-name'>{compilation?.title}</h1>
+                  <h1 className='category-card-name'>{compilation.title}</h1>
                   <p className='category-card-description'>
-                    {compilation?.description}
+                    {compilation.description}
                   </p>
                 </div>
                 {!isHiddenBookmarks && (
                   <Bookmark
                     lang={lng}
-                    id={compilation?.id}
-                    isBookmarkedValue={compilation?.isBookmarked}
+                    id={compilation.id}
+                    isBookmarkedValue={compilation.isBookmarked}
                     refetch={refetch}
                   />
                 )}
               </div>
-              <CardActions className='m-0 p-0'>
-                <Stack direction='row' spacing={2}>
-                  {state.user?.role === UserRole.ROLE_ADMIN && (
-                    <Link href={`/categories/edit/${compilation?.id}`}>
-                      <Button className='article-btn' variant='outlined'>
-                        {t('editBtn')}
-                      </Button>
-                    </Link>
-                  )}
-                </Stack>
-              </CardActions>
-              <Button className='article-btn' variant='outlined'>
-                Удалить
-              </Button>
+              {state.user?.username === compilation.ownerName && (
+                <>
+                  <EditCompilation
+                    compilationData={compilation}
+                    lang={lng}
+                    id={compilation.id}
+                    refetch={refetch}
+                  />
+                  <Button
+                    className='article-btn'
+                    variant='outlined'
+                    onClick={handleDelete}
+                  >
+                    Удалить
+                  </Button>
+                </>
+              )}
             </>
           )}
         </CardContent>
