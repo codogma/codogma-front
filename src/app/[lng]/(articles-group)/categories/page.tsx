@@ -7,7 +7,7 @@ import { CustomPagination } from '@/components/CustomPagination';
 import { Search } from '@/components/Search';
 import { contlCookie } from '@/constants/i18n';
 import { getCategories, GetCategoriesDTO } from '@/helpers/categoryApi';
-import { Category } from '@/types';
+import { Category, SearchType } from '@/types';
 
 type PageProps = {
   readonly params: {
@@ -20,9 +20,9 @@ export default function Page({ params: { lng } }: PageProps) {
   const [currentPage, setCurrentPage] = useState<number>(0);
   const [resultsPerPage, setResultsPerPage] = useState<number>(10);
   const [searchValue, setSearchValue] = useState<string>();
-  const [searchType, setSearchType] = useState<string>('info');
+  const [searchType, setSearchType] = useState<SearchType>(SearchType.INFO);
 
-  const onSearchType = (type: string) => {
+  const onSearchType = (type: SearchType) => {
     setSearchType(type);
   };
 
@@ -40,8 +40,8 @@ export default function Page({ params: { lng } }: PageProps) {
       searchValue,
     ],
     queryFn: () => {
-      const byTag = searchType === 'tag' ? searchValue : undefined;
-      const byInfo = searchType === 'info' ? searchValue : undefined;
+      const byTag = searchType === SearchType.TAG ? searchValue : undefined;
+      const byInfo = searchType === SearchType.INFO ? searchValue : undefined;
       return getCategories(byTag, byInfo, false, currentPage, resultsPerPage);
     },
   });

@@ -11,17 +11,16 @@ import Paper from '@mui/material/Paper';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
-import DOMPurify from 'dompurify';
-import React, { FormEvent, useEffect, useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import React, { FormEvent, useState } from 'react';
 
 import { useTranslation } from '@/app/i18n/client';
 import Articles from '@/components/Articles';
-import { getArticles } from '@/helpers/articleApi';
-import { devConsoleError } from '@/helpers/devConsoleLogs';
-import { Article } from '@/types';
+import { getArticles, GetArticlesDTO } from '@/helpers/articleApi';
+import { SearchType } from '@/types';
 
 type PageParams = {
-  username: string;
+  id: number;
   lng: string;
 };
 
@@ -29,67 +28,56 @@ type PageProps = {
   readonly params: PageParams;
 };
 
-export default function Layout({ params: { lng, username } }: PageProps) {
+export default function Layout({ params: { id, lng } }: PageProps) {
+  const compilationId = id;
   const resultsPerPage10 = 10;
   const resultsPerPage20 = 20;
   const resultsPerPage30 = 30;
   const minPages = 2;
-  const [articles, setArticles] = useState<Article[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [totalPages, setTotalPages] = useState<number>(0);
-  const [totalElements, setTotalElements] = useState<number>(0);
   const [currentPage, setCurrentPage] = useState<number>(0);
   const [resultsPerPage, setResultsPerPage] =
     useState<number>(resultsPerPage10);
   const [searchValue, setSearchValue] = useState<string>();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  const [searchType, setSearchType] = useState<'content' | 'tag'>('content');
-  const { t } = useTranslation(lng, 'articles');
+  const [searchType, setSearchType] = useState<SearchType>(SearchType.CONTENT);
+  const { t } = useTranslation(lng, 'compilations');
 
   const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
   };
 
-  const handleMenuClose = (type: 'content' | 'tag') => {
+  const handleMenuClose = (type: SearchType) => {
     setSearchType(type);
     setAnchorEl(null);
   };
 
-  useEffect(() => {
-    async function fetchData(page: number) {
-      try {
-        let byTag: string | undefined = undefined;
-        let byContent: string | undefined = undefined;
-        if (searchType === 'tag') {
-          byTag = searchValue;
-        }
-        if (searchType === 'content') {
-          byContent = searchValue;
-        }
-        const { content, totalPages, totalElements } = await getArticles(
-          undefined,
-          undefined,
-          page,
-          resultsPerPage,
-          byTag,
-          byContent,
-          username,
-        );
-        content.map(
-          (article) => (article.content = DOMPurify.sanitize(article.content)),
-        );
-        setArticles(content);
-        setTotalPages(totalPages);
-        setTotalElements(totalElements);
-      } catch (error) {
-        devConsoleError('Error fetching data:', error);
-      } finally {
-        setLoading(false);
-      }
-    }
+  const { data, isPending } = useQuery<GetArticlesDTO>({
+    queryKey: [
+      'articles',
+      compilationId,
+      currentPage,
+      resultsPerPage,
+      searchType,
+      searchValue,
+    ],
+    queryFn: () => {
+      const byTag = searchType === SearchType.TAG ? searchValue : undefined;
+      const byContent =
+        searchType === SearchType.CONTENT ? searchValue : undefined;
+      return getArticles(
+        undefined,
+        compilationId,
+        currentPage,
+        resultsPerPage,
+        byTag,
+        byContent,
+      );
+    },
+  });
 
-    fetchData(currentPage).then();
-  }, [currentPage, resultsPerPage, searchType, searchValue, username]);
+  const articles = data?.content || [];
+  const totalPages = data?.totalPages || 0;
+  const totalElements = data?.totalElements || 0;
 
   const handleSearchSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -150,10 +138,10 @@ export default function Layout({ params: { lng, username } }: PageProps) {
           open={Boolean(anchorEl)}
           onClose={() => handleMenuClose(searchType)}
         >
-          <MenuItem onClick={() => handleMenuClose('content')}>
+          <MenuItem onClick={() => handleMenuClose(SearchType.CONTENT)}>
             {t(`searchContent`)}
           </MenuItem>
-          <MenuItem onClick={() => handleMenuClose('tag')}>
+          <MenuItem onClick={() => handleMenuClose(SearchType.TAG)}>
             {t(`searchTags`)}
           </MenuItem>
         </Menu>
@@ -168,7 +156,7 @@ export default function Layout({ params: { lng, username } }: PageProps) {
           <SearchIcon />
         </IconButton>
       </Paper>
-      <Articles lang={lng} articles={articles} loading={loading} />
+      <Articles lang={lng} articles={articles} loading={isPending} />
       {totalPages < minPages ? null : (
         <Stack
           spacing={2}
@@ -191,7 +179,7 @@ export default function Layout({ params: { lng, username } }: PageProps) {
             shape='rounded'
           />
           <TextField
-            label='Layout'
+            label='Success'
             id='page'
             size='small'
             defaultValue={currentPage + 1}

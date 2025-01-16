@@ -1,6 +1,7 @@
 'use client';
 import ArticleIcon from '@mui/icons-material/Article';
 import PlaylistAddCheckCircleIcon from '@mui/icons-material/PlaylistAddCheckCircle';
+import ViewListIcon from '@mui/icons-material/ViewList';
 import {
   BottomNavigation,
   BottomNavigationAction,
@@ -23,12 +24,14 @@ export default function FixedBottomNavigation({
   const router = useRouter();
   const pathname = usePathname();
 
-  const [value, setValue] = useState<'articles' | 'feed' | undefined>();
+  const [value, setValue] = useState<
+    'articles' | 'feed' | 'compilations' | undefined
+  >();
   const { t } = useTranslation(lang);
 
   const handleChange = (
     event: React.SyntheticEvent,
-    newValue: 'articles' | 'feed',
+    newValue: 'articles' | 'feed' | 'compilations',
   ) => {
     setValue(newValue);
   };
@@ -38,6 +41,8 @@ export default function FixedBottomNavigation({
       setValue('articles');
     } else if (pathname === `/${lang}/feed`) {
       setValue('feed');
+    } else if (pathname === `/${lang}/compilations`) {
+      setValue('compilations');
     } else if (pathname === `/${lang}`) {
       setValue(undefined);
     }
@@ -82,6 +87,12 @@ export default function FixedBottomNavigation({
               value='feed'
               icon={<PlaylistAddCheckCircleIcon />}
               onClick={() => handleClick('feed')}
+            />
+            <BottomNavigationAction
+              label={t('compilations')}
+              value='compilations'
+              icon={<ViewListIcon />}
+              onClick={() => handleClick('compilations')}
             />
           </BottomNavigation>
         </Paper>

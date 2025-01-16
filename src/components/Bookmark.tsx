@@ -6,13 +6,14 @@ import React, { useState } from 'react';
 import { useTranslation } from '@/app/i18n/client';
 import { useAuth } from '@/components/AuthProvider';
 import { PopoverElement } from '@/components/PopoverElement';
-import { bookmark, unbookmark } from '@/helpers/articleApi';
+import { bookmark, unbookmark } from '@/helpers/compilationApi';
 
 interface BookmarkProps {
   readonly username?: string;
   readonly lang: string;
   readonly id: number;
   readonly isBookmarkedValue?: boolean;
+  readonly refetch?: () => void;
 }
 
 export const Bookmark: React.FC<BookmarkProps> = ({
@@ -20,6 +21,7 @@ export const Bookmark: React.FC<BookmarkProps> = ({
   id,
   lang,
   isBookmarkedValue,
+  refetch,
 }) => {
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(
     null,
@@ -29,11 +31,14 @@ export const Bookmark: React.FC<BookmarkProps> = ({
   const { t } = useTranslation(lang, 'articles');
   const popoverId = 'simple-popover';
 
-  const handleUnbookmark = async () => {
+  const handleUnbookmark = () => {
     if (state.isAuthenticated) {
-      await unbookmark(id).then((response) =>
-        setIsBookmarked(response.isBookmarked),
-      );
+      unbookmark(id).then((response) => {
+        if (refetch) {
+          refetch();
+        }
+        setIsBookmarked(response.isBookmarked);
+      });
     }
   };
 

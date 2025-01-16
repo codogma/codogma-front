@@ -11,6 +11,12 @@ export enum Language {
   RU = 'ru',
 }
 
+export enum SearchType {
+  CONTENT = 'content',
+  INFO = 'info',
+  TAG = 'tag',
+}
+
 export type User = {
   username: string;
   isSubscribed: boolean;
@@ -42,6 +48,17 @@ export type Category = {
   tags: Tag[];
 };
 
+export type GetCompilation = {
+  id: number;
+  isBookmarked: boolean;
+  bookmarksCount: number;
+  title: string;
+  description: string;
+  ownerName: string;
+  ownerAvatarUrl: string;
+  imageUrl: string;
+};
+
 export type Article = {
   id: number;
   status: string;
@@ -57,6 +74,7 @@ export type Article = {
   authorAvatarUrl: string;
   createdAt: Date;
   categories: Category[];
+  compilations: GetCompilation[];
   tags: Tag[];
 };
 

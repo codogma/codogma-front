@@ -9,10 +9,10 @@ import Link from 'next/link';
 import React from 'react';
 
 import { useTranslation } from '@/app/i18n/client';
+import { AddToCompilations } from '@/components/AddToCompilations';
 import { useArticle } from '@/components/ArticleProvider';
 import { useAuth } from '@/components/AuthProvider';
 import { AvatarImage } from '@/components/AvatarImage'; // import { CommentList } from '@/components/CommentList';
-import { Bookmark } from '@/components/Bookmark';
 import ButtonAlertDialog from '@/components/ButtonAlertDialog';
 import { CommentList } from '@/components/CommentList';
 import { useContentImageContext } from '@/components/ContentImageProvider';
@@ -67,10 +67,10 @@ export default function Page({ params: { lng } }: PageProps) {
                 />
               </Stack>
             )}
-            <Bookmark
-              username={article.username}
-              isBookmarkedValue={article.isBookmarked}
+            <AddToCompilations
               id={article.id}
+              lang={lng}
+              compilations={article.compilations}
             />
           </div>
           <div className='article-category'>

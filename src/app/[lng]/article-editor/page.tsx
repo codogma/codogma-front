@@ -6,7 +6,6 @@ import {
   Box,
   Button,
   Chip,
-  MenuItem,
   Step,
   StepIcon,
   StepIconProps,
@@ -15,6 +14,8 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
+import FormControl from '@mui/material/FormControl';
+import MenuItem from '@mui/material/MenuItem';
 import { useTheme } from '@mui/material/styles';
 import { keepPreviousData, useMutation, useQuery } from '@tanstack/react-query';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
@@ -49,9 +50,14 @@ import {
   getCategoriesByName,
   GetCategoriesDTO,
 } from '@/helpers/categoryApi';
+import {
+  getCompilations,
+  getCompilationsByTitle,
+  GetCompilationsDTO,
+} from '@/helpers/compilationApi';
 import { devConsoleError } from '@/helpers/devConsoleLogs';
 import { getTagsByName } from '@/helpers/tagApi';
-import { Article, Category, Language, Tag } from '@/types';
+import { Article, Category, GetCompilation, Language, Tag } from '@/types';
 
 type PageParams = {
   readonly params: { lng: Language };
@@ -76,7 +82,8 @@ const StepTwoScheme = z.object({
   originalArticleId: z.number().optional().nullable(),
   previewContent: z.string().min(1, 'Краткое описание не может быть пустым.'),
   categoryIds: z.array(z.number()).min(1, 'Выберите хотя бы одну категорию.'),
-  tags: z.array(z.string()),
+  compilationIds: z.array(z.number()).optional().default([]),
+  tags: z.array(z.string()).optional().default([]),
 });
 
 const CustomStepIcon = (props: StepIconProps) => {
@@ -96,10 +103,14 @@ const CustomStepIcon = (props: StepIconProps) => {
   );
 };
 
+type StepOneType = Pick<UpdateDraftArticleDTO, 'title' | 'content'> | null;
+type StepTwoType = Omit<UpdateDraftArticleDTO, 'title' | 'content'> | null;
+
 const Page = ({ params: { lng } }: PageParams) => {
   const STEP_ONE_DATA = 'step-one-data';
   const STEP_TWO_DATA = 'step-two-data';
   const SELECTED_CATEGORIES = 'selected-categories';
+  const SELECTED_COMPILATIONS = 'selected-compilations';
   const ARTICLE_ID = 'article-id';
   const PARAM_ID = 'id';
   const route = useRouter();
@@ -107,21 +118,25 @@ const Page = ({ params: { lng } }: PageParams) => {
   const searchParams = useSearchParams();
   const paramId = searchParams.get(PARAM_ID);
   const id = Number(paramId);
-  const [stepOneData, setStepOneData] = useState<CreateDraftArticleDTO | null>(
-    null,
-  );
+  const [stepOneData, setStepOneData] = useState<StepOneType>(null);
   const [reset, setReset] = useState<boolean>(false);
-  const [stepTwoData, setStepTwoData] = useState(null);
+  const [stepTwoData, setStepTwoData] = useState<StepTwoType>(null);
   const [activeStep, setActiveStep] = useState<number>(0);
   const [articleId, setArticleId] = useState<number>(0);
   const [draftArticles, setDraftArticles] = useState<Article[]>([]);
   const [inputCategoryValue, setInputCategoryValue] = useState<string>('');
+  const [inputCompilationValue, setInputCompilationValue] =
+    useState<string>('');
   const [inputTagValue, setInputTagValue] = useState<string>('');
   const [selectedCategories, setSelectedCategories] = useState<Category[]>();
+  const [selectedCompilations, setSelectedCompilations] =
+    useState<GetCompilation[]>();
   const [availableCategories, setAvailableCategories] = useState<Category[]>(
     [],
   );
-  const [availableTags, setAvailableTags] = useState<string[]>([]);
+  const [availableCompilations, setAvailableCompilations] = useState<
+    GetCompilation[]
+  >([]);
   const [prevData, setPrevData] = useState<UpdateDraftArticleDTO | null>(null);
   const { t } = useTranslation(lng, 'articleEditor');
 
@@ -151,6 +166,7 @@ const Page = ({ params: { lng } }: PageParams) => {
       originalArticleId: null,
       previewContent: '',
       categoryIds: [],
+      compilationIds: [],
       tags: [],
     },
   });
@@ -172,6 +188,14 @@ const Page = ({ params: { lng } }: PageParams) => {
   });
 
   const categoriesPages: GetCategoriesDTO = categoriesData as GetCategoriesDTO;
+
+  const { data: compilationsData } = useQuery<GetCompilationsDTO>({
+    queryKey: ['compilations'],
+    queryFn: () => getCompilations(),
+  });
+
+  const compilationsPages: GetCompilationsDTO =
+    compilationsData as GetCompilationsDTO;
 
   const { data: draftArticlesData, refetch } = useQuery<Article[]>({
     queryKey: ['draftArticles'],
@@ -204,6 +228,7 @@ const Page = ({ params: { lng } }: PageParams) => {
       originalArticleId: null,
       previewContent: '',
       categoryIds: [],
+      compilationIds: [],
       tags: [],
     });
     setReset(true);
@@ -214,6 +239,7 @@ const Page = ({ params: { lng } }: PageParams) => {
     localStorage.removeItem(STEP_ONE_DATA);
     localStorage.removeItem(STEP_TWO_DATA);
     localStorage.removeItem(SELECTED_CATEGORIES);
+    localStorage.removeItem(SELECTED_COMPILATIONS);
     localStorage.removeItem(ARTICLE_ID);
   }, [resetStepOne, resetStepTwo, lng]);
 
@@ -234,12 +260,18 @@ const Page = ({ params: { lng } }: PageParams) => {
     (article: Article) => {
       if (isValidId(article.id)) setArticleId(article.id);
       localStorage.setItem(ARTICLE_ID, String(article.id));
-      resetStepOne({ title: article.title, content: article.content });
+      resetStepOne({
+        title: article.title,
+        content: article.content,
+      });
       resetStepTwo({
         language: article.language || lng,
         originalArticleId: article.originalArticleId,
         previewContent: article.previewContent,
         categoryIds: article.categories.map((category) => category.id),
+        compilationIds: article.compilations.map(
+          (compilation) => compilation.id,
+        ),
         tags: article.tags.map((tag) => tag.name),
       });
     },
@@ -262,6 +294,11 @@ const Page = ({ params: { lng } }: PageParams) => {
         ...article.categories,
       ]);
       setSelectedCategories(article.categories);
+      setAvailableCompilations([
+        ...(compilationsPages?.content || []),
+        ...article.compilations,
+      ]);
+      setSelectedCompilations(article.compilations);
     } else {
       const lsArticleId = Number(localStorage.getItem(ARTICLE_ID));
       if (isValidId(lsArticleId)) {
@@ -284,6 +321,7 @@ const Page = ({ params: { lng } }: PageParams) => {
   }, [
     article,
     categoriesPages,
+    compilationsPages,
     pathname,
     resetStepOne,
     resetStepTwo,
@@ -310,7 +348,7 @@ const Page = ({ params: { lng } }: PageParams) => {
   useEffect(() => {
     const lsSelectedCategoriesData = localStorage.getItem(SELECTED_CATEGORIES);
     let lsSelectedCategories: Category[] = [];
-    if (lsSelectedCategoriesData !== undefined)
+    if (lsSelectedCategoriesData !== null)
       lsSelectedCategories = JSON.parse(lsSelectedCategoriesData);
     const mergedCategories = [
       ...(categoriesObjects || []),
@@ -328,24 +366,53 @@ const Page = ({ params: { lng } }: PageParams) => {
     setAvailableCategories(uniqueCategories);
   }, [categoriesObjects, categoriesPages]);
 
+  const { data: compilationsObjects } = useQuery<GetCompilation[]>({
+    queryKey: ['compilations', inputCompilationValue],
+    queryFn: () => getCompilationsByTitle(inputCompilationValue),
+    enabled: !!inputCompilationValue,
+    placeholderData: keepPreviousData,
+  });
+
   useEffect(() => {
-    if (inputTagValue === '') {
-      setAvailableTags([]);
-      return;
+    if (selectedCompilations) {
+      localStorage.setItem(
+        SELECTED_COMPILATIONS,
+        JSON.stringify(selectedCompilations),
+      );
     }
+  }, [selectedCompilations]);
 
-    const fetchTags = async () => {
-      try {
-        const tagObjects: Tag[] = await getTagsByName(inputTagValue);
-        const tagNames = tagObjects.map((tag) => tag.name);
-        setAvailableTags(tagNames);
-      } catch (error) {
-        devConsoleError('Error fetching tags:', error);
-      }
-    };
+  useEffect(() => {
+    const lsSelectedCompilationsData = localStorage.getItem(
+      SELECTED_COMPILATIONS,
+    );
+    let lsSelectedCompilations: GetCompilation[] = [];
+    if (lsSelectedCompilationsData !== null)
+      lsSelectedCompilations = JSON.parse(lsSelectedCompilationsData);
+    const mergedCompilations = [
+      ...(compilationsObjects || []),
+      ...(lsSelectedCompilations || []),
+      ...(compilationsPages?.content || []),
+    ];
+    const uniqueCompilations = Array.from(
+      mergedCompilations
+        .reduce((acc, compilation) => {
+          acc.set(compilation.id, compilation);
+          return acc;
+        }, new Map<number, GetCompilation>())
+        .values(),
+    );
+    setAvailableCompilations(uniqueCompilations);
+  }, [compilationsObjects, compilationsPages]);
 
-    fetchTags();
-  }, [inputTagValue]);
+  const { data: tagObjects } = useQuery<Tag[]>({
+    queryKey: ['tags', inputTagValue],
+    queryFn: () => getTagsByName(inputTagValue),
+    enabled: !!inputTagValue,
+    placeholderData: keepPreviousData,
+  });
+
+  const availableTags: string[] = tagObjects?.map((tag) => tag.name) ?? [];
 
   useEffect(() => {
     devConsoleError(Object.keys(errorsStepOne).length > 0);
@@ -365,13 +432,13 @@ const Page = ({ params: { lng } }: PageParams) => {
     if (!isSubmitSuccessfulStepTwo) {
       const subscriptionStepOne = watchStepOne((data) => {
         if (data.title) {
-          setStepOneData(data);
+          setStepOneData(data as StepOneType);
           localStorage.setItem(STEP_ONE_DATA, JSON.stringify(data));
         }
       });
       const subscriptionStepTwo = watchStepTwo((data) => {
         if (data) {
-          setStepTwoData(data);
+          setStepTwoData(data as StepTwoType);
           localStorage.setItem(STEP_TWO_DATA, JSON.stringify(data));
         }
       });
@@ -427,8 +494,15 @@ const Page = ({ params: { lng } }: PageParams) => {
 
   useEffect(() => {
     const lsStepOneData = localStorage.getItem(STEP_ONE_DATA);
-    const parsedStepOneData = JSON.parse(lsStepOneData);
-    if (parsedStepOneData && stepOneData?.title && !isValidId(articleId)) {
+    let parsedStepOneData: StepOneType = null;
+    if (lsStepOneData !== null) {
+      parsedStepOneData = JSON.parse(lsStepOneData);
+    }
+    if (
+      parsedStepOneData !== null &&
+      stepOneData?.title &&
+      !isValidId(articleId)
+    ) {
       const timer = setTimeout(() => {
         createDraftArticleMutate(zodStepOneForm.getValues());
       }, 1000);
@@ -482,6 +556,7 @@ const Page = ({ params: { lng } }: PageParams) => {
     localStorage.removeItem(STEP_ONE_DATA);
     localStorage.removeItem(STEP_TWO_DATA);
     localStorage.removeItem(SELECTED_CATEGORIES);
+    localStorage.removeItem(SELECTED_COMPILATIONS);
     localStorage.removeItem(ARTICLE_ID);
   };
 
@@ -500,7 +575,7 @@ const Page = ({ params: { lng } }: PageParams) => {
             autoComplete='off'
             onSubmit={handleSubmitStepOne(onStepOneSubmit)}
           >
-            <Box alignItems='center' display='flex' alignContent='center'>
+            <Box className='align-center mb-1 flex items-center'>
               <FormInput
                 className='w-full flex-1'
                 name='title'
@@ -526,11 +601,7 @@ const Page = ({ params: { lng } }: PageParams) => {
               name='content'
               control={controlStepOne}
               render={({ field }) => (
-                <TinyMCEEditor
-                  reset={reset}
-                  value={field.value}
-                  onChange={field.onChange}
-                />
+                <TinyMCEEditor id='content' {...field} reset={reset} />
               )}
             />
             <Box
@@ -561,149 +632,229 @@ const Page = ({ params: { lng } }: PageParams) => {
             autoComplete='off'
             onSubmit={handleSubmitStepTwo(onStepTwoSubmit)}
           >
-            <Controller
-              name='categoryIds'
-              control={controlStepTwo}
-              render={({ field }) => (
-                <Autocomplete
-                  multiple
-                  id='categoryIds'
-                  options={availableCategories}
-                  getOptionLabel={(category) => category?.name}
-                  freeSolo
-                  value={availableCategories.filter((category) =>
-                    field.value?.includes(category.id),
-                  )}
-                  isOptionEqualToValue={(option, value) =>
-                    option.id === value.id
-                  }
-                  onChange={(_, newValue) => {
-                    const normalizedValue: Category[] = (
-                      newValue as Category[]
-                    ).map((value) => {
-                      const existingCategory = availableCategories.find(
-                        (category) => category.id === value.id,
-                      );
-                      return existingCategory || value;
-                    });
+            <FormControl sx={{ mb: 1 }}>
+              <Controller
+                name='language'
+                control={controlStepTwo}
+                render={({ field }) => (
+                  <TextField
+                    {...field}
+                    select
+                    label={t('language')}
+                    variant='standard'
+                    error={Boolean(errorsStepTwo.language?.message)}
+                    helperText={errorsStepTwo.language?.message}
+                  >
+                    {languageMenuItems.map(({ value, label }) => (
+                      <MenuItem key={value} value={value}>
+                        {label}
+                      </MenuItem>
+                    ))}
+                  </TextField>
+                )}
+              />
+            </FormControl>
+            <FormControl sx={{ mb: 1 }} className='w-full'>
+              <Controller
+                name='categoryIds'
+                control={controlStepTwo}
+                render={({ field }) => (
+                  <Autocomplete
+                    multiple
+                    id='categoryIds'
+                    options={availableCategories}
+                    getOptionLabel={(category) => category?.name}
+                    disableCloseOnSelect
+                    defaultValue={availableCategories.filter((category) =>
+                      field.value?.includes(category.id),
+                    )}
+                    isOptionEqualToValue={(option, value) =>
+                      option.id === value.id
+                    }
+                    onChange={(_, newValue) => {
+                      const normalizedValue: Category[] = (
+                        newValue as Category[]
+                      ).map((value) => {
+                        const existingCategory = availableCategories.find(
+                          (category) => category.id === value.id,
+                        );
+                        return existingCategory || value;
+                      });
 
-                    const uniqueCategoriesIds = new Set<number>();
-                    const uniqueSelectedCategories = new Set<Category>();
-                    normalizedValue.forEach((category) => {
-                      uniqueCategoriesIds.add(category.id);
-                      uniqueSelectedCategories.add(category);
-                    });
-                    setSelectedCategories(Array.from(uniqueSelectedCategories));
-                    field.onChange(Array.from(uniqueCategoriesIds));
-                  }}
-                  onInputChange={(_, newInputValue) =>
-                    setInputCategoryValue(newInputValue)
-                  }
-                  renderTags={(value: Category[], getTagProps) =>
-                    value.map((option: Category, index: number) => {
-                      const { key, ...tagProps } = getTagProps({ index });
-                      return (
-                        <Chip
-                          variant='outlined'
-                          label={option.name}
-                          key={key}
-                          {...tagProps}
-                        />
+                      const uniqueCategoriesIds = new Set<number>();
+                      const uniqueSelectedCategories = new Set<Category>();
+                      normalizedValue.forEach((category) => {
+                        uniqueCategoriesIds.add(category.id);
+                        uniqueSelectedCategories.add(category);
+                      });
+                      const arraySelectedCategories = Array.from(
+                        uniqueSelectedCategories,
                       );
-                    })
-                  }
-                  inputValue={inputCategoryValue}
-                  renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      label={t('categories')}
-                      variant='standard'
-                      placeholder={t('selectCategories')}
-                      error={Boolean(errorsStepTwo.categoryIds?.message)}
-                      helperText={errorsStepTwo.categoryIds?.message}
-                    />
-                  )}
-                />
-              )}
-            />
-            <Controller
-              name='language'
-              control={controlStepTwo}
-              render={({ field }) => (
-                <TextField
-                  select
-                  label={t('language')}
-                  variant='standard'
-                  value={field.value}
-                  onChange={field.onChange}
-                  error={Boolean(errorsStepTwo.language?.message)}
-                  helperText={errorsStepTwo.language?.message}
-                >
-                  {languageMenuItems.map(({ value, label }) => (
-                    <MenuItem key={value} value={value}>
-                      {label}
-                    </MenuItem>
-                  ))}
-                </TextField>
-              )}
-            />
-            <Controller
-              name='tags'
-              control={controlStepTwo}
-              render={({ field }) => (
-                <Autocomplete
-                  multiple
-                  id='tags'
-                  options={availableTags.filter(
-                    (tag) =>
-                      !field.value?.some(
-                        (value) => value.toLowerCase() === tag.toLowerCase(),
-                      ),
-                  )}
-                  freeSolo
-                  value={field.value}
-                  onChange={(_, newValue) => {
-                    const normalizedValue = newValue.map((value) => {
-                      const existingTag = availableTags.find(
-                        (tag) => tag.toLowerCase() === value.toLowerCase(),
+                      setSelectedCategories(arraySelectedCategories);
+                      field.onChange(Array.from(uniqueCategoriesIds));
+                    }}
+                    onInputChange={(_, newInputValue) =>
+                      setInputCategoryValue(newInputValue)
+                    }
+                    renderTags={(value: Category[], getTagProps) =>
+                      value.map((option: Category, index: number) => {
+                        const { key, ...tagProps } = getTagProps({ index });
+                        return (
+                          <Chip
+                            {...tagProps}
+                            variant='outlined'
+                            label={option.name}
+                            key={key}
+                          />
+                        );
+                      })
+                    }
+                    inputValue={inputCategoryValue}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        label={t('categories')}
+                        variant='standard'
+                        placeholder={t('selectCategories')}
+                        error={Boolean(errorsStepTwo.categoryIds?.message)}
+                        helperText={errorsStepTwo.categoryIds?.message}
+                      />
+                    )}
+                  />
+                )}
+              />
+            </FormControl>
+            <FormControl sx={{ mb: 1 }} className='w-full'>
+              <Controller
+                name='compilationIds'
+                control={controlStepTwo}
+                render={({ field }) => (
+                  <Autocomplete
+                    multiple
+                    id='compilationIds'
+                    options={availableCompilations}
+                    getOptionLabel={(compilation) => compilation?.title}
+                    disableCloseOnSelect
+                    defaultValue={availableCompilations.filter((compilation) =>
+                      field.value?.includes(compilation.id),
+                    )}
+                    isOptionEqualToValue={(option, value) =>
+                      option.id === value.id
+                    }
+                    onChange={(_, newValue) => {
+                      const normalizedValue: GetCompilation[] = (
+                        newValue as GetCompilation[]
+                      ).map((value) => {
+                        const existingCompilation = availableCompilations.find(
+                          (compilation) => compilation.id === value.id,
+                        );
+                        return existingCompilation || value;
+                      });
+                      const uniqueCompilationIds = new Set<number>();
+                      const uniqueSelectedCompilations =
+                        new Set<GetCompilation>();
+                      normalizedValue.forEach((compilation) => {
+                        uniqueCompilationIds.add(compilation.id);
+                        uniqueSelectedCompilations.add(compilation);
+                      });
+                      const arraySelectedCompilations = Array.from(
+                        uniqueSelectedCompilations,
                       );
-                      return existingTag || value;
-                    });
-
-                    const uniqueTags = new Set<string>();
-                    normalizedValue.forEach((tag) => {
-                      uniqueTags.add(tag);
-                    });
-
-                    field.onChange(Array.from(uniqueTags));
-                  }}
-                  onInputChange={(_, newInputValue) =>
-                    setInputTagValue(newInputValue)
-                  }
-                  renderTags={(value: string[], getTagProps) =>
-                    value.map((option: string, index: number) => {
-                      const { key, ...tagProps } = getTagProps({ index });
-                      return (
-                        <Chip
-                          variant='outlined'
-                          label={option}
-                          key={key}
-                          {...tagProps}
-                        />
-                      );
-                    })
-                  }
-                  renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      variant='standard'
-                      label={t('tags')}
-                      placeholder={t('selectTags')}
-                    />
-                  )}
-                />
-              )}
-            />
+                      setSelectedCompilations(arraySelectedCompilations);
+                      field.onChange(Array.from(uniqueCompilationIds));
+                    }}
+                    onInputChange={(_, newInputValue) =>
+                      setInputCompilationValue(newInputValue)
+                    }
+                    renderTags={(value: GetCompilation[], getTagProps) =>
+                      value.map((option: GetCompilation, index: number) => {
+                        const { key, ...tagProps } = getTagProps({ index });
+                        return (
+                          <Chip
+                            {...tagProps}
+                            variant='outlined'
+                            label={option.title}
+                            key={key}
+                          />
+                        );
+                      })
+                    }
+                    inputValue={inputCompilationValue}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        label={t('compilations')}
+                        variant='standard'
+                        placeholder={t('selectCompilations')}
+                        error={Boolean(errorsStepTwo.compilationIds?.message)}
+                        helperText={errorsStepTwo.compilationIds?.message}
+                      />
+                    )}
+                  />
+                )}
+              />
+            </FormControl>
+            <FormControl sx={{ mb: 1 }} className='w-full'>
+              <Controller
+                name='tags'
+                control={controlStepTwo}
+                render={({ field }) => (
+                  <Autocomplete
+                    multiple
+                    id='tags'
+                    options={availableTags.filter(
+                      (tag) =>
+                        !field.value?.some(
+                          (value) => value.toLowerCase() === tag.toLowerCase(),
+                        ),
+                    )}
+                    freeSolo
+                    defaultValue={field.value}
+                    isOptionEqualToValue={(option, value) => option === value}
+                    onChange={(_, newValue) => {
+                      const normalizedValue: string[] = (
+                        newValue as string[]
+                      ).map((value) => {
+                        const existingTag = availableTags.find(
+                          (tag) => tag.toLowerCase() === value.toLowerCase(),
+                        );
+                        return existingTag ?? value;
+                      });
+                      const uniqueTags = new Set<string>();
+                      normalizedValue.forEach((tag) => {
+                        uniqueTags.add(tag);
+                      });
+                      const arrayUniqueTags = Array.from(uniqueTags);
+                      field.onChange(arrayUniqueTags);
+                    }}
+                    onInputChange={(_, newInputValue) =>
+                      setInputTagValue(newInputValue)
+                    }
+                    renderTags={(value: Array<string>, getTagProps) =>
+                      value.map((option: string, index: number) => {
+                        const { key, ...tagProps } = getTagProps({ index });
+                        return (
+                          <Chip
+                            {...tagProps}
+                            variant='outlined'
+                            label={option}
+                            key={key}
+                          />
+                        );
+                      })
+                    }
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        variant='standard'
+                        label={t('tags')}
+                        placeholder={t('selectTags')}
+                      />
+                    )}
+                  />
+                )}
+              />
+            </FormControl>
             <Typography className='my-4'>{t('shortDescription')}</Typography>
             {errorsStepTwo.previewContent?.message && (
               <Typography variant='body2' color='error'>
@@ -714,11 +865,7 @@ const Page = ({ params: { lng } }: PageParams) => {
               name='previewContent'
               control={controlStepTwo}
               render={({ field }) => (
-                <TinyMCEEditor
-                  reset={reset}
-                  value={field.value}
-                  onChange={field.onChange}
-                />
+                <TinyMCEEditor id='previewContent' {...field} reset={reset} />
               )}
             />
             <Box
@@ -769,7 +916,7 @@ const Page = ({ params: { lng } }: PageParams) => {
       <Stepper activeStep={activeStep} alternativeLabel>
         {steps.map((step, index) => (
           <Step key={index}>
-            <StepLabel error={step.error} StepIconComponent={CustomStepIcon}>
+            <StepLabel error={step.error} slots={{ stepIcon: CustomStepIcon }}>
               {step.label}
             </StepLabel>
           </Step>

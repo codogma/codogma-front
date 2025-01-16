@@ -1,31 +1,31 @@
 'use client';
 import { useQuery } from '@tanstack/react-query';
-import DOMPurify from 'dompurify';
 import React, { useEffect, useRef, useState } from 'react';
 
-import Articles from '@/components/Articles';
-import { useContentImageContext } from '@/components/ContentImageProvider';
+import { useAuth } from '@/components/AuthProvider';
+import Compilations from '@/components/Compilations';
 import { CustomPagination } from '@/components/CustomPagination';
 import { Search } from '@/components/Search';
 import { contlCookie } from '@/constants/i18n';
-import { getArticles, GetArticlesDTO } from '@/helpers/articleApi';
-import { SearchType } from '@/types';
+import { getCompilations, GetCompilationsDTO } from '@/helpers/compilationApi';
+import { GetCompilation, SearchType } from '@/types';
 
 type PageProps = {
   readonly params: {
+    username: string;
     lng: string;
   };
 };
 
-export default function Page({ params: { lng } }: PageProps) {
+export default function Page({ params: { lng, username } }: PageProps) {
   const searchInputRef = useRef<HTMLInputElement>(null);
   const [currentPage, setCurrentPage] = useState<number>(0);
   const [resultsPerPage, setResultsPerPage] = useState<number>(10);
   const [searchValue, setSearchValue] = useState<string>();
-  const [searchType, setSearchType] = useState<string>('content');
-  const { processContent } = useContentImageContext();
+  const [searchType, setSearchType] = useState<SearchType>(SearchType.CONTENT);
+  const { state } = useAuth();
 
-  const onSearchType = (type: string) => {
+  const onSearchType = (type: SearchType) => {
     setSearchType(type);
   };
 
@@ -34,9 +34,10 @@ export default function Page({ params: { lng } }: PageProps) {
     setCurrentPage(0);
   };
 
-  const { data, isFetching, refetch } = useQuery<GetArticlesDTO>({
+  const { data, isFetching, refetch } = useQuery<GetCompilationsDTO>({
     queryKey: [
-      'articles',
+      'compilations',
+      username,
       currentPage,
       resultsPerPage,
       searchType,
@@ -46,24 +47,19 @@ export default function Page({ params: { lng } }: PageProps) {
       const byTag = searchType === SearchType.TAG ? searchValue : undefined;
       const byContent =
         searchType === SearchType.CONTENT ? searchValue : undefined;
-      return getArticles(
-        undefined,
-        undefined,
-        currentPage,
-        resultsPerPage,
+      const username: string | undefined = state.user?.username;
+      return getCompilations(
         byTag,
         byContent,
+        username,
+        false,
+        currentPage,
+        resultsPerPage,
       );
     },
   });
 
-  const content = data?.content ?? [];
-  const articles = content.map((article) => ({
-    ...article,
-    previewContentNode: processContent(
-      DOMPurify.sanitize(article.previewContent),
-    ),
-  }));
+  const compilations: GetCompilation[] = data?.content ?? [];
   const totalPages = data?.totalPages ?? 0;
   const totalElements = data?.totalElements ?? 0;
 
@@ -78,12 +74,12 @@ export default function Page({ params: { lng } }: PageProps) {
     }
   }, [refetch]);
 
-  const onPageChange = (value: number) => {
-    setCurrentPage(value);
-  };
-
   const onResultsPerPageChange = (value: number) => {
     setResultsPerPage(value);
+  };
+
+  const onPageChange = (value: number) => {
+    setCurrentPage(value);
   };
 
   return (
@@ -93,7 +89,12 @@ export default function Page({ params: { lng } }: PageProps) {
         onSearchType={onSearchType}
         onSearchValue={onSearchValue}
       />
-      <Articles lang={lng} articles={articles} loading={isFetching} />
+      <Compilations
+        lang={lng}
+        loading={isFetching}
+        compilations={compilations}
+        isHiddenBookmarks
+      />
       <CustomPagination
         lang={lng}
         totalPages={totalPages}

@@ -8,23 +8,24 @@ import TextField from '@mui/material/TextField';
 import React, { FormEvent, useState } from 'react';
 
 import { useTranslation } from '@/app/i18n/client';
+import { SearchType } from '@/types';
 
 type SearchProps = {
   readonly lang: string;
-  readonly onSearchType: (type: string) => void;
+  readonly onSearchType: (type: SearchType) => void;
   readonly onSearchValue: (value: string) => void;
 };
 
 export const Search = ({ lang, onSearchType, onSearchValue }: SearchProps) => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  const [searchType, setSearchType] = useState<string>('content');
+  const [searchType, setSearchType] = useState<SearchType>(SearchType.CONTENT);
   const { t } = useTranslation(lang);
 
   const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
   };
 
-  const handleMenuClose = (type: string) => {
+  const handleMenuClose = (type: SearchType) => {
     onSearchType(type);
     setSearchType(type);
     setAnchorEl(null);
@@ -61,10 +62,10 @@ export const Search = ({ lang, onSearchType, onSearchValue }: SearchProps) => {
         open={Boolean(anchorEl)}
         onClose={() => handleMenuClose(searchType)}
       >
-        <MenuItem onClick={() => handleMenuClose('content')}>
+        <MenuItem onClick={() => handleMenuClose(SearchType.CONTENT)}>
           {t('searchContent')}
         </MenuItem>
-        <MenuItem onClick={() => handleMenuClose('tag')}>
+        <MenuItem onClick={() => handleMenuClose(SearchType.TAG)}>
           {t('searchTags')}
         </MenuItem>
       </Menu>

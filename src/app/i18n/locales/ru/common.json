@@ -34,5 +34,12 @@
   "logoutBtn": "Выйти",
   "deleteBtn": "Удалить",
   "replyBtn": "Ответить",
-  "cancelBtn": "Отмена"
+  "cancelBtn": "Отмена",
+  "createCompilationBtn": "Создать подборку",
+  "compilations": "Подборки",
+  "selectCompilations": "Выберите подборки",
+  "bookmarks": "Закладки",
+  "myCompilations": "Мои подборки",
+  "articlesSearchBy": "Поиск по ",
+  "compilation": "Подборка"
 }

@@ -12,7 +12,7 @@ import { Search } from '@/components/Search';
 import { TimeAgo } from '@/components/TimeAgo';
 import { contlCookie } from '@/constants/i18n';
 import { getComments } from '@/helpers/commentAPI';
-import { GetComment, GetCommentsDTO } from '@/types';
+import { GetComment, GetCommentsDTO, SearchType } from '@/types';
 
 type PageParams = {
   username: string;
@@ -28,9 +28,9 @@ export default function Page({ params: { username, lng } }: PageProps) {
   const [currentPage, setCurrentPage] = useState<number>(0);
   const [resultsPerPage, setResultsPerPage] = useState<number>(10);
   const [searchValue, setSearchValue] = useState<string>();
-  const [searchType, setSearchType] = useState<string>('content');
+  const [searchType, setSearchType] = useState<SearchType>(SearchType.CONTENT);
 
-  const onSearchType = (type: string) => {
+  const onSearchType = (type: SearchType) => {
     setSearchType(type);
   };
 
@@ -49,7 +49,8 @@ export default function Page({ params: { username, lng } }: PageProps) {
       searchValue,
     ],
     queryFn: () => {
-      const byContent = searchType === 'content' ? searchValue : undefined;
+      const byContent =
+        searchType === SearchType.CONTENT ? searchValue : undefined;
       return getComments(
         undefined,
         username,

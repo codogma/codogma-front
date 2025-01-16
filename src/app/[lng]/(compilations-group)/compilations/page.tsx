@@ -1,15 +1,13 @@
 'use client';
 import { useQuery } from '@tanstack/react-query';
-import DOMPurify from 'dompurify';
 import React, { useEffect, useRef, useState } from 'react';
 
-import Articles from '@/components/Articles';
-import { useContentImageContext } from '@/components/ContentImageProvider';
+import Compilations from '@/components/Compilations';
 import { CustomPagination } from '@/components/CustomPagination';
 import { Search } from '@/components/Search';
 import { contlCookie } from '@/constants/i18n';
-import { getArticles, GetArticlesDTO } from '@/helpers/articleApi';
-import { SearchType } from '@/types';
+import { getCompilations, GetCompilationsDTO } from '@/helpers/compilationApi';
+import { GetCompilation, SearchType } from '@/types';
 
 type PageProps = {
   readonly params: {
@@ -22,10 +20,9 @@ export default function Page({ params: { lng } }: PageProps) {
   const [currentPage, setCurrentPage] = useState<number>(0);
   const [resultsPerPage, setResultsPerPage] = useState<number>(10);
   const [searchValue, setSearchValue] = useState<string>();
-  const [searchType, setSearchType] = useState<string>('content');
-  const { processContent } = useContentImageContext();
+  const [searchType, setSearchType] = useState<SearchType>(SearchType.CONTENT);
 
-  const onSearchType = (type: string) => {
+  const onSearchType = (type: SearchType) => {
     setSearchType(type);
   };
 
@@ -34,9 +31,9 @@ export default function Page({ params: { lng } }: PageProps) {
     setCurrentPage(0);
   };
 
-  const { data, isFetching, refetch } = useQuery<GetArticlesDTO>({
+  const { data, isFetching, refetch } = useQuery<GetCompilationsDTO>({
     queryKey: [
-      'articles',
+      'compilations',
       currentPage,
       resultsPerPage,
       searchType,
@@ -46,24 +43,18 @@ export default function Page({ params: { lng } }: PageProps) {
       const byTag = searchType === SearchType.TAG ? searchValue : undefined;
       const byContent =
         searchType === SearchType.CONTENT ? searchValue : undefined;
-      return getArticles(
-        undefined,
-        undefined,
-        currentPage,
-        resultsPerPage,
+      return getCompilations(
         byTag,
         byContent,
+        undefined,
+        false,
+        currentPage,
+        resultsPerPage,
       );
     },
   });
 
-  const content = data?.content ?? [];
-  const articles = content.map((article) => ({
-    ...article,
-    previewContentNode: processContent(
-      DOMPurify.sanitize(article.previewContent),
-    ),
-  }));
+  const compilations: GetCompilation[] = data?.content ?? [];
   const totalPages = data?.totalPages ?? 0;
   const totalElements = data?.totalElements ?? 0;
 
@@ -93,7 +84,12 @@ export default function Page({ params: { lng } }: PageProps) {
         onSearchType={onSearchType}
         onSearchValue={onSearchValue}
       />
-      <Articles lang={lng} articles={articles} loading={isFetching} />
+      <Compilations
+        lang={lng}
+        loading={isFetching}
+        compilations={compilations}
+        refetch={refetch}
+      />
       <CustomPagination
         lang={lng}
         totalPages={totalPages}

@@ -1,4 +1,5 @@
 'use client';
+import AddCircleIcon from '@mui/icons-material/AddCircle';
 import CategoryIcon from '@mui/icons-material/Category';
 import CreateIcon from '@mui/icons-material/Create';
 import LoginIcon from '@mui/icons-material/Login';
@@ -23,6 +24,7 @@ import { memo, useState } from 'react';
 import { useTranslation } from '@/app/i18n/client';
 import { useAuth } from '@/components/AuthProvider';
 import { AvatarImage } from '@/components/AvatarImage';
+import { CompilationDialog } from '@/components/CompilationDialog';
 import { LocalizationDialog } from '@/components/LocalizationDialog';
 import { ThemeToggleButton } from '@/components/ThemeContext';
 import { logout } from '@/helpers/authApi';
@@ -34,18 +36,27 @@ type NavBarProps = {
 
 const NavBar = ({ lang }: NavBarProps) => {
   const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
+  const [open, setOpen] = useState(false);
   const router = useRouter();
   const { state } = useAuth();
   const { t } = useTranslation(lang);
 
   const handleLogout = () => {
-    logout().then(() => router.push(`/${lang}`));
+    logout().finally(() => router.push(`/${lang}`));
     handleCloseUserMenu();
   };
 
   const handleClickMenuItem = (url: string) => {
     router.push(`/${lang}/${url}`);
     handleCloseUserMenu();
+  };
+
+  const handleOpenCompilationDialog = () => {
+    setOpen(true);
+  };
+
+  const handleCloseCompilationDialog = () => {
+    setOpen(false);
   };
 
   const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
@@ -159,6 +170,22 @@ const NavBar = ({ lang }: NavBarProps) => {
                       {t('profile')}
                     </Typography>
                   </MenuItem>
+                  {state.isAuthenticated &&
+                    state.user?.role !== UserRole.ROLE_ADMIN && (
+                      <>
+                        <MenuItem onClick={() => handleOpenCompilationDialog()}>
+                          <Typography textAlign='center'>
+                            <AddCircleIcon className='mr-2' fontSize='small' />
+                            {t('createCompilationBtn')}
+                          </Typography>
+                        </MenuItem>
+                        <CompilationDialog
+                          state={open}
+                          onClose={handleCloseCompilationDialog}
+                          lang={lang}
+                        />
+                      </>
+                    )}
                   {state.user?.role === UserRole.ROLE_AUTHOR && (
                     <MenuItem
                       onClick={() => handleClickMenuItem(`/article-editor`)}

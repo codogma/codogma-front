@@ -38,8 +38,20 @@ axiosInstance.interceptors.response.use(
   },
   (error) => {
     if (isAxiosError(error)) {
+      const statusCode = error.response?.status;
       const serverMessage = error.response?.data || 'An unknown error occurred';
       devConsoleError('Axios error: ' + serverMessage);
+      if (statusCode) {
+        devConsoleError(`Axios error (${statusCode}): ${serverMessage}`);
+        if (statusCode === 401) {
+          window.dispatchEvent(new Event('storage'));
+          devConsoleError('Unauthorized access - redirecting to login...');
+        } else if (statusCode === 404) {
+          devConsoleError('Resource not found.');
+        } else if (statusCode >= 500) {
+          devConsoleError('Server error. Please try again later.');
+        }
+      }
     } else if (error instanceof Error) {
       devConsoleError('An unexpected error occurred: ' + error.message);
     } else {

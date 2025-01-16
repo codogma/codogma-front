@@ -9,6 +9,7 @@ import { CustomPagination } from '@/components/CustomPagination';
 import { Search } from '@/components/Search';
 import { contlCookie } from '@/constants/i18n';
 import { getArticles, GetArticlesDTO } from '@/helpers/articleApi';
+import { SearchType } from '@/types';
 
 type PageProps = {
   readonly params: {
@@ -21,10 +22,10 @@ const Page = ({ params: { lng } }: PageProps) => {
   const [currentPage, setCurrentPage] = useState<number>(0);
   const [resultsPerPage, setResultsPerPage] = useState<number>(10);
   const [searchValue, setSearchValue] = useState<string>();
-  const [searchType, setSearchType] = useState<'content' | 'tag'>('content');
+  const [searchType, setSearchType] = useState<SearchType>(SearchType.CONTENT);
   const { processContent } = useContentImageContext();
 
-  const onSearchType = (type: 'content' | 'tag') => {
+  const onSearchType = (type: SearchType) => {
     setSearchType(type);
   };
 
@@ -42,10 +43,12 @@ const Page = ({ params: { lng } }: PageProps) => {
       searchValue,
     ],
     queryFn: () => {
-      const byTag = searchType === 'tag' ? searchValue : undefined;
-      const byContent = searchType === 'content' ? searchValue : undefined;
+      const byTag = searchType === SearchType.TAG ? searchValue : undefined;
+      const byContent =
+        searchType === SearchType.CONTENT ? searchValue : undefined;
       const isFeed = true;
       return getArticles(
+        undefined,
         undefined,
         currentPage,
         resultsPerPage,

@@ -1,12 +1,6 @@
 'use client';
 import parse, { DOMNode, Element } from 'html-react-parser';
-import React, {
-  createContext,
-  CSSProperties,
-  FC,
-  ReactNode,
-  useContext,
-} from 'react';
+import React, { createContext, FC, ReactNode, useContext } from 'react';
 
 import { DefaultImage } from '@/components/DefaultImage';
 import { devConsoleInfo } from '@/helpers/devConsoleLogs';
@@ -15,14 +9,27 @@ interface ContentImageContextType {
   processContent: (content: string) => ReactNode | null;
 }
 
-const parseStyleString = (styleString: string): CSSProperties => {
+// const parseStyleString = (styleString: string): CSSProperties => {
+//   return styleString
+//     .split(';')
+//     .filter((style) => style.trim())
+//     .reduce((acc: CSSProperties, style) => {
+//       const [property, value] = style.split(':');
+//       if (property && value) {
+//         acc[property.trim() as keyof CSSProperties] = value.trim();
+//       }
+//       return acc;
+//     }, {});
+// };
+
+const parseStyleString = (styleString: string): Record<string, string> => {
   return styleString
     .split(';')
     .filter((style) => style.trim())
-    .reduce((acc: CSSProperties, style) => {
+    .reduce((acc: Record<string, string>, style) => {
       const [property, value] = style.split(':');
       if (property && value) {
-        acc[property.trim() as keyof CSSProperties] = value.trim();
+        acc[property.trim()] = value.trim();
       }
       return acc;
     }, {});

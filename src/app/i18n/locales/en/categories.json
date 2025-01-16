@@ -4,5 +4,8 @@
   "authorsInCategory": "Authors in category",
   "categoryCreated": "Category created successfully",
   "addToFavorite": "Add to favorites",
-  "removeFromFavorite": "Unfavorite"
+  "removeFromFavorite": "Unfavorite",
+  "name": "Name",
+  "description": "Description",
+  "create": "Create"
 }
