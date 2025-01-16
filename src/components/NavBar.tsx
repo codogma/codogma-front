@@ -26,6 +26,7 @@ import { useAuth } from '@/components/AuthProvider';
 import { AvatarImage } from '@/components/AvatarImage';
 import { CompilationDialog } from '@/components/CompilationDialog';
 import { LocalizationDialog } from '@/components/LocalizationDialog';
+import { NotificationsDialog } from '@/components/NotificationsDialog';
 import { ThemeToggleButton } from '@/components/ThemeContext';
 import { logout } from '@/helpers/authApi';
 import { UserRole } from '@/types';
@@ -106,6 +107,7 @@ const NavBar = ({ lang }: NavBarProps) => {
           >
             <LocalizationDialog lang={lang} />
             <ThemeToggleButton title={t('theme')} />
+            <NotificationsDialog title={t('notifications')} />
           </ButtonGroup>
           <Box sx={{ flexGrow: 0 }}>
             <Tooltip title={t('settings')}>
