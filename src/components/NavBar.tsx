@@ -61,6 +61,14 @@ const NavBar = ({ lang }: NavBarProps) => {
     setOpen(false);
   };
 
+  const handleOpenCategoryDialog = () => {
+    setOpen(true);
+  };
+
+  const handleCloseCategoryDialog = () => {
+    setOpen(false);
+  };
+
   const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElUser(event.currentTarget);
   };
@@ -201,7 +209,7 @@ const NavBar = ({ lang }: NavBarProps) => {
                   )}
                   {state.user?.role === UserRole.ROLE_ADMIN && (
                     <>
-                      <MenuItem onClick={() => handleOpenCompilationDialog()}>
+                      <MenuItem onClick={() => handleOpenCategoryDialog()}>
                         <Typography textAlign='center'>
                           <CategoryIcon className='mr-2' fontSize='small' />
                           {t('createCategoryBtn')}
@@ -209,7 +217,7 @@ const NavBar = ({ lang }: NavBarProps) => {
                       </MenuItem>
                       <CategoryDialog
                         state={open}
-                        onClose={handleCloseCompilationDialog}
+                        onClose={handleCloseCategoryDialog}
                         lang={lang}
                       />
                     </>
