@@ -24,6 +24,7 @@ import { memo, useState } from 'react';
 import { useTranslation } from '@/app/i18n/client';
 import { useAuth } from '@/components/AuthProvider';
 import { AvatarImage } from '@/components/AvatarImage';
+import { CategoryDialog } from '@/components/CategoryDialog';
 import { CompilationDialog } from '@/components/CompilationDialog';
 import { LocalizationDialog } from '@/components/LocalizationDialog';
 import { NotificationsDialog } from '@/components/NotificationsDialog';
@@ -199,14 +200,19 @@ const NavBar = ({ lang }: NavBarProps) => {
                     </MenuItem>
                   )}
                   {state.user?.role === UserRole.ROLE_ADMIN && (
-                    <MenuItem
-                      onClick={() => handleClickMenuItem(`/create-category`)}
-                    >
-                      <Typography textAlign='center'>
-                        <CategoryIcon className='mr-2' fontSize='small' />
-                        {t('createCategoryBtn')}
-                      </Typography>
-                    </MenuItem>
+                    <>
+                      <MenuItem onClick={() => handleOpenCompilationDialog()}>
+                        <Typography textAlign='center'>
+                          <CategoryIcon className='mr-2' fontSize='small' />
+                          {t('createCategoryBtn')}
+                        </Typography>
+                      </MenuItem>
+                      <CategoryDialog
+                        state={open}
+                        onClose={handleCloseCompilationDialog}
+                        lang={lang}
+                      />
+                    </>
                   )}
                   <MenuItem onClick={handleLogout}>
                     <Typography textAlign='center'>
