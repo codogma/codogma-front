@@ -7,15 +7,18 @@ import { useQuery } from '@tanstack/react-query';
 import React from 'react';
 
 import { useTranslation } from '@/app/i18n/client';
+import { useAuth } from '@/components/AuthProvider';
 import { AvatarImage } from '@/components/AvatarImage';
 import { ButtonFavorite } from '@/components/ButtonFavorite';
+import { EditCategory } from '@/components/EditCategory';
 import NavTabs, { TabProps } from '@/components/NavTabs';
 import { getCategoryById } from '@/helpers/categoryApi';
-import { Category } from '@/types';
+import { Category, UserRole } from '@/types';
 
 type PageParams = {
   id: number;
   lng: string;
+  refetch?: () => void;
 };
 
 type PageProps = {
@@ -23,7 +26,11 @@ type PageProps = {
   readonly children: React.ReactNode;
 };
 
-export default function Layout({ params: { id, lng }, children }: PageProps) {
+export default function Layout({
+  params: { id, lng, refetch },
+  children,
+}: PageProps) {
+  const { state } = useAuth();
   const { t } = useTranslation(lng);
   const tabs: TabProps[] = [
     { label: t('articles'), href: `/${lng}/categories/${id}/articles` },
@@ -81,11 +88,22 @@ export default function Layout({ params: { id, lng }, children }: PageProps) {
                   </p>
                 </div>
               </div>
-              <ButtonFavorite
-                id={id}
-                lang={lng}
-                isFavoriteValue={category?.isFavorite}
-              />
+              {state.user?.role === UserRole.ROLE_ADMIN && (
+                <EditCategory
+                  id={id}
+                  lang={lng}
+                  refetch={refetch}
+                  categoryData={category}
+                />
+              )}
+              {state.isAuthenticated &&
+                state.user?.role !== UserRole.ROLE_ADMIN && (
+                  <ButtonFavorite
+                    id={id}
+                    lang={lng}
+                    isFavoriteValue={category?.isFavorite}
+                  />
+                )}
             </>
           )}
         </CardContent>

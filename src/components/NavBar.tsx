@@ -24,6 +24,7 @@ import { memo, useState } from 'react';
 import { useTranslation } from '@/app/i18n/client';
 import { useAuth } from '@/components/AuthProvider';
 import { AvatarImage } from '@/components/AvatarImage';
+import { CategoryDialog } from '@/components/CategoryDialog';
 import { CompilationDialog } from '@/components/CompilationDialog';
 import { LocalizationDialog } from '@/components/LocalizationDialog';
 import { NotificationsDialog } from '@/components/NotificationsDialog';
@@ -37,7 +38,8 @@ type NavBarProps = {
 
 const NavBar = ({ lang }: NavBarProps) => {
   const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
-  const [open, setOpen] = useState(false);
+  const [compilationDialogOpen, setCompilationDialogOpen] = useState(false);
+  const [categoryDialogOpen, setCategoryDialogOpen] = useState(false);
   const router = useRouter();
   const { state } = useAuth();
   const { t } = useTranslation(lang);
@@ -53,11 +55,23 @@ const NavBar = ({ lang }: NavBarProps) => {
   };
 
   const handleOpenCompilationDialog = () => {
-    setOpen(true);
+    setCompilationDialogOpen(true);
+    handleCloseUserMenu();
   };
 
   const handleCloseCompilationDialog = () => {
-    setOpen(false);
+    setCompilationDialogOpen(false);
+    handleCloseUserMenu();
+  };
+
+  const handleOpenCategoryDialog = () => {
+    setCategoryDialogOpen(true);
+    handleCloseUserMenu();
+  };
+
+  const handleCloseCategoryDialog = () => {
+    setCategoryDialogOpen(false);
+    handleCloseUserMenu();
   };
 
   const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
@@ -182,7 +196,7 @@ const NavBar = ({ lang }: NavBarProps) => {
                           </Typography>
                         </MenuItem>
                         <CompilationDialog
-                          state={open}
+                          open={compilationDialogOpen}
                           onClose={handleCloseCompilationDialog}
                           lang={lang}
                         />
@@ -199,14 +213,19 @@ const NavBar = ({ lang }: NavBarProps) => {
                     </MenuItem>
                   )}
                   {state.user?.role === UserRole.ROLE_ADMIN && (
-                    <MenuItem
-                      onClick={() => handleClickMenuItem(`/create-category`)}
-                    >
-                      <Typography textAlign='center'>
-                        <CategoryIcon className='mr-2' fontSize='small' />
-                        {t('createCategoryBtn')}
-                      </Typography>
-                    </MenuItem>
+                    <>
+                      <MenuItem onClick={() => handleOpenCategoryDialog()}>
+                        <Typography textAlign='center'>
+                          <CategoryIcon className='mr-2' fontSize='small' />
+                          {t('createCategoryBtn')}
+                        </Typography>
+                      </MenuItem>
+                      <CategoryDialog
+                        open={categoryDialogOpen}
+                        onClose={handleCloseCategoryDialog}
+                        lang={lang}
+                      />
+                    </>
                   )}
                   <MenuItem onClick={handleLogout}>
                     <Typography textAlign='center'>
