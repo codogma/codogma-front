@@ -36,7 +36,7 @@ export default function Layout({
   const { state } = useAuth();
   const { t } = useTranslation(lng);
 
-  const { data, isFetching } = useQuery<GetCompilation>({
+  const { data: compilation, isFetching } = useQuery<GetCompilation>({
     queryKey: ['compilation', id],
     queryFn: () => getCompilationById(id),
   });
@@ -44,8 +44,6 @@ export default function Layout({
   const handleDelete = () => {
     deleteCompilation(id);
   };
-
-  const compilation = data as GetCompilation;
 
   return (
     <section>
@@ -79,34 +77,34 @@ export default function Layout({
                   }
                 >
                   <AvatarImage
-                    alt={compilation.title}
+                    alt={compilation?.title}
                     className='category-img'
                     variant='rounded'
-                    src={compilation.imageUrl}
+                    src={compilation?.imageUrl}
                     size={48}
                   />
                 </Badge>
                 <div>
-                  <h1 className='category-card-name'>{compilation.title}</h1>
+                  <h1 className='category-card-name'>{compilation?.title}</h1>
                   <p className='category-card-description'>
-                    {compilation.description}
+                    {compilation?.description}
                   </p>
                 </div>
                 {!isHiddenBookmarks && (
                   <Bookmark
                     lang={lng}
-                    id={compilation.id}
-                    isBookmarkedValue={compilation.isBookmarked}
+                    id={id}
+                    isBookmarkedValue={compilation?.isBookmarked}
                     refetch={refetch}
                   />
                 )}
               </div>
-              {state.user?.username === compilation.ownerName && (
+              {state.user?.username === compilation?.ownerName && (
                 <>
                   <EditCompilation
                     compilationData={compilation}
                     lang={lng}
-                    id={compilation.id}
+                    id={id}
                     refetch={refetch}
                   />
                   <Button

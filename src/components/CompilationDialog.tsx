@@ -13,6 +13,7 @@ import {
   FormHelperText,
   IconButton,
 } from '@mui/material';
+import DialogActions from '@mui/material/DialogActions';
 import { styled } from '@mui/material/styles';
 import React, { useEffect, useState } from 'react';
 import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
@@ -47,7 +48,7 @@ const BootstrapDialog = styled(Dialog)(({ theme }) => ({
 
 type CompilationDialogProps = {
   readonly lang: string;
-  readonly state: boolean;
+  readonly open: boolean;
   readonly onClose: () => void;
 };
 
@@ -62,7 +63,7 @@ const CompilationDialogScheme = z.object({
 
 export const CompilationDialog = ({
   lang,
-  state,
+  open,
   onClose,
 }: CompilationDialogProps) => {
   const [imageFile, setImageFile] = useState<File>();
@@ -111,7 +112,7 @@ export const CompilationDialog = ({
   };
 
   return (
-    <BootstrapDialog aria-labelledby='customized-dialog-title' open={state}>
+    <BootstrapDialog aria-labelledby='customized-dialog-title' open={open}>
       <DialogTitle sx={{ m: 0, p: 2 }} id='customized-dialog-title'>
         {t('createCompilation')}
       </DialogTitle>
@@ -177,13 +178,20 @@ export const CompilationDialog = ({
                 {errors?.image.message}
               </FormHelperText>
             )}
-            <FormInput name='title' label={t('name')} variant='standard' />
+            <FormInput
+              name='title'
+              required
+              label={t('name')}
+              variant='standard'
+            />
             <FormInput
               name='description'
               label={t('description')}
               variant='standard'
             />
-            <Button type='submit'>{t('create')}</Button>
+            <DialogActions>
+              <Button type='submit'>{t('create')}</Button>
+            </DialogActions>
           </Box>
         </FormProvider>
       </DialogContent>

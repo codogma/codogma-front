@@ -13,6 +13,7 @@ import {
   FormHelperText,
   IconButton,
 } from '@mui/material';
+import DialogActions from '@mui/material/DialogActions';
 import { styled } from '@mui/material/styles';
 import React, { useEffect, useState } from 'react';
 import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
@@ -61,7 +62,7 @@ const BootstrapDialog = styled(Dialog)(({ theme }) => ({
 type EditCategoryProps = {
   readonly id: number;
   readonly lang: string;
-  readonly categoryData: Category;
+  readonly categoryData: Category | undefined;
   readonly refetch?: () => void;
 };
 
@@ -73,7 +74,7 @@ export const EditCategory = ({
 }: EditCategoryProps) => {
   const [open, setOpen] = useState(false);
   const [imageFile, setImageFile] = useState<File>();
-  const [category, setCategory] = useState<Category>(categoryData);
+  const [category, setCategory] = useState<Category | undefined>(categoryData);
   const { t } = useTranslation(lang, 'categories');
   const { state } = useAuth();
 
@@ -88,11 +89,11 @@ export const EditCategory = ({
 
   useEffect(() => {
     zodForm.reset({
-      name: categoryData.name,
+      name: category?.name,
       image: undefined,
-      description: categoryData.description,
+      description: category?.description,
     });
-  }, [categoryData, zodForm]);
+  }, [category, zodForm]);
 
   const {
     reset,
@@ -208,13 +209,20 @@ export const EditCategory = ({
                   {errors?.image.message}
                 </FormHelperText>
               )}
-              <FormInput name='name' label={t('name')} variant='standard' />
+              <FormInput
+                name='name'
+                required
+                label={t('name')}
+                variant='standard'
+              />
               <FormInput
                 name='description'
                 label={t('description')}
                 variant='standard'
               />
-              <Button type='submit'>{t('save')}</Button>
+              <DialogActions>
+                <Button type='submit'>{t('save')}</Button>
+              </DialogActions>
             </Box>
           </FormProvider>
         </DialogContent>

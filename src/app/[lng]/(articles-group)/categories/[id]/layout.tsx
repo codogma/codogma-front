@@ -37,12 +37,10 @@ export default function Layout({
     { label: t('authors'), href: `/${lng}/categories/${id}/authors` },
   ];
 
-  const { data, isFetching } = useQuery<Category>({
+  const { data: category, isFetching } = useQuery<Category>({
     queryKey: ['category', id],
     queryFn: () => getCategoryById(id),
   });
-
-  const category = data as Category;
 
   return (
     <section>

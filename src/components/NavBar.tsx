@@ -38,7 +38,8 @@ type NavBarProps = {
 
 const NavBar = ({ lang }: NavBarProps) => {
   const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
-  const [open, setOpen] = useState(false);
+  const [compilationDialogOpen, setCompilationDialogOpen] = useState(false);
+  const [categoryDialogOpen, setCategoryDialogOpen] = useState(false);
   const router = useRouter();
   const { state } = useAuth();
   const { t } = useTranslation(lang);
@@ -54,19 +55,23 @@ const NavBar = ({ lang }: NavBarProps) => {
   };
 
   const handleOpenCompilationDialog = () => {
-    setOpen(true);
+    setCompilationDialogOpen(true);
+    handleCloseUserMenu();
   };
 
   const handleCloseCompilationDialog = () => {
-    setOpen(false);
+    setCompilationDialogOpen(false);
+    handleCloseUserMenu();
   };
 
   const handleOpenCategoryDialog = () => {
-    setOpen(true);
+    setCategoryDialogOpen(true);
+    handleCloseUserMenu();
   };
 
   const handleCloseCategoryDialog = () => {
-    setOpen(false);
+    setCategoryDialogOpen(false);
+    handleCloseUserMenu();
   };
 
   const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
@@ -191,7 +196,7 @@ const NavBar = ({ lang }: NavBarProps) => {
                           </Typography>
                         </MenuItem>
                         <CompilationDialog
-                          state={open}
+                          open={compilationDialogOpen}
                           onClose={handleCloseCompilationDialog}
                           lang={lang}
                         />
@@ -216,7 +221,7 @@ const NavBar = ({ lang }: NavBarProps) => {
                         </Typography>
                       </MenuItem>
                       <CategoryDialog
-                        state={open}
+                        open={categoryDialogOpen}
                         onClose={handleCloseCategoryDialog}
                         lang={lang}
                       />

@@ -13,13 +13,13 @@ import {
   FormHelperText,
   IconButton,
 } from '@mui/material';
+import DialogActions from '@mui/material/DialogActions';
 import { styled } from '@mui/material/styles';
 import React, { useEffect, useState } from 'react';
 import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
 import { z } from 'zod';
 
 import { useTranslation } from '@/app/i18n/client';
-import { useAuth } from '@/components/AuthProvider';
 import { AvatarImage } from '@/components/AvatarImage';
 import FormInput from '@/components/FormInput';
 import { updateCompilation } from '@/helpers/compilationApi';
@@ -61,7 +61,7 @@ const BootstrapDialog = styled(Dialog)(({ theme }) => ({
 type EditCompilationProps = {
   readonly id: number;
   readonly lang: string;
-  readonly compilationData: GetCompilation;
+  readonly compilationData: GetCompilation | undefined;
   readonly refetch?: () => void;
 };
 
@@ -73,10 +73,10 @@ export const EditCompilation = ({
 }: EditCompilationProps) => {
   const [open, setOpen] = useState(false);
   const [imageFile, setImageFile] = useState<File>();
-  const [compilation, setCompilation] =
-    useState<GetCompilation>(compilationData);
+  const [compilation, setCompilation] = useState<GetCompilation | undefined>(
+    compilationData,
+  );
   const { t } = useTranslation(lang, 'compilations');
-  const { state } = useAuth();
 
   const zodForm = useForm<z.infer<typeof EditCompilationScheme>>({
     resolver: zodResolver(EditCompilationScheme),
@@ -89,11 +89,11 @@ export const EditCompilation = ({
 
   useEffect(() => {
     zodForm.reset({
-      title: compilationData.title,
-      description: compilationData.description,
+      title: compilation?.title,
+      description: compilation?.description,
       image: undefined,
     });
-  }, [compilationData, zodForm]);
+  }, [compilation, zodForm]);
 
   const {
     reset,
@@ -209,13 +209,20 @@ export const EditCompilation = ({
                   {errors?.image.message}
                 </FormHelperText>
               )}
-              <FormInput name='title' label={t('name')} variant='standard' />
+              <FormInput
+                name='title'
+                required
+                label={t('name')}
+                variant='standard'
+              />
               <FormInput
                 name='description'
                 label={t('description')}
                 variant='standard'
               />
-              <Button type='submit'>{t('save')}</Button>
+              <DialogActions>
+                <Button type='submit'>{t('save')}</Button>
+              </DialogActions>
             </Box>
           </FormProvider>
         </DialogContent>

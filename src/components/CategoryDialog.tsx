@@ -13,6 +13,7 @@ import {
   FormHelperText,
   IconButton,
 } from '@mui/material';
+import DialogActions from '@mui/material/DialogActions';
 import { styled } from '@mui/material/styles';
 import React, { useEffect, useState } from 'react';
 import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
@@ -47,7 +48,7 @@ const BootstrapDialog = styled(Dialog)(({ theme }) => ({
 
 type CategoryDialogProps = {
   readonly lang: string;
-  readonly state: boolean;
+  readonly open: boolean;
   readonly onClose: () => void;
 };
 
@@ -64,7 +65,7 @@ const CategoryDialogScheme = z.object({
 
 export const CategoryDialog = ({
   lang,
-  state,
+  open,
   onClose,
 }: CategoryDialogProps) => {
   const [imageFile, setImageFile] = useState<File>();
@@ -113,7 +114,7 @@ export const CategoryDialog = ({
   };
 
   return (
-    <BootstrapDialog aria-labelledby='customized-dialog-title' open={state}>
+    <BootstrapDialog aria-labelledby='customized-dialog-title' open={open}>
       <DialogTitle sx={{ m: 0, p: 2 }} id='customized-dialog-title'>
         {t('createCategory')}
       </DialogTitle>
@@ -179,13 +180,20 @@ export const CategoryDialog = ({
                 {errors?.image.message}
               </FormHelperText>
             )}
-            <FormInput name='name' label={t('name')} variant='standard' />
+            <FormInput
+              name='name'
+              required
+              label={t('name')}
+              variant='standard'
+            />
             <FormInput
               name='description'
               label={t('description')}
               variant='standard'
             />
-            <Button type='submit'>{t('create')}</Button>
+            <DialogActions>
+              <Button type='submit'>{t('create')}</Button>
+            </DialogActions>
           </Box>
         </FormProvider>
       </DialogContent>
