@@ -13,6 +13,7 @@ import {
   FormHelperText,
   IconButton,
 } from '@mui/material';
+import DialogActions from '@mui/material/DialogActions';
 import { styled } from '@mui/material/styles';
 import React, { useEffect, useState } from 'react';
 import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
@@ -21,7 +22,7 @@ import { z } from 'zod';
 import { useTranslation } from '@/app/i18n/client';
 import { AvatarImage } from '@/components/AvatarImage';
 import FormInput from '@/components/FormInput';
-import { createCompilation } from '@/helpers/compilationApi';
+import { createCategory } from '@/helpers/categoryApi';
 import { devConsoleError } from '@/helpers/devConsoleLogs';
 
 const VisuallyHiddenInput = styled('input')({
@@ -45,35 +46,37 @@ const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   },
 }));
 
-type CompilationDialogProps = {
+type CategoryDialogProps = {
   readonly lang: string;
   readonly open: boolean;
   readonly onClose: () => void;
 };
 
-const CompilationDialogScheme = z.object({
-  image: z.optional(z.instanceof(File)),
-  title: z
+const CategoryDialogScheme = z.object({
+  name: z
     .string()
-    .min(2, 'Название подборки не может содержать менее 2 символов.')
-    .max(50, 'Название подборки не может содержать более 50 символов.'),
+    .min(2, 'Название категории не может содержать менее 2 символов.')
+    .max(50, 'Название категории не может содержать более 50 символов.'),
+  image: z.instanceof(File, {
+    message: 'Изображение обязательно для загрузки.',
+  }),
   description: z.optional(z.string()),
 });
 
-export const CompilationDialog = ({
+export const CategoryDialog = ({
   lang,
   open,
   onClose,
-}: CompilationDialogProps) => {
+}: CategoryDialogProps) => {
   const [imageFile, setImageFile] = useState<File>();
   const [imageUrl, setImageUrl] = useState<string>();
-  const { t } = useTranslation(lang, 'compilations');
+  const { t } = useTranslation(lang, 'categories');
 
-  const zodForm = useForm<z.infer<typeof CompilationDialogScheme>>({
-    resolver: zodResolver(CompilationDialogScheme),
+  const zodForm = useForm<z.infer<typeof CategoryDialogScheme>>({
+    resolver: zodResolver(CategoryDialogScheme),
     defaultValues: {
+      name: '',
       image: undefined,
-      title: '',
       description: '',
     },
   });
@@ -102,18 +105,18 @@ export const CompilationDialog = ({
     }
   };
 
-  const onSubmit: SubmitHandler<z.infer<typeof CompilationDialogScheme>> = (
+  const onSubmit: SubmitHandler<z.infer<typeof CategoryDialogScheme>> = (
     formData,
   ) => {
     const requestData = { ...formData, image: imageFile };
     devConsoleError(requestData);
-    createCompilation(requestData).then(() => onClose());
+    createCategory(requestData).then(() => onClose());
   };
 
   return (
     <BootstrapDialog aria-labelledby='customized-dialog-title' open={open}>
       <DialogTitle sx={{ m: 0, p: 2 }} id='customized-dialog-title'>
-        {t('createCompilation')}
+        {t('createCategory')}
       </DialogTitle>
       <IconButton
         aria-label='close'
@@ -177,13 +180,20 @@ export const CompilationDialog = ({
                 {errors?.image.message}
               </FormHelperText>
             )}
-            <FormInput name='title' label={t('name')} variant='standard' />
+            <FormInput
+              name='name'
+              required
+              label={t('name')}
+              variant='standard'
+            />
             <FormInput
               name='description'
               label={t('description')}
               variant='standard'
             />
-            <Button type='submit'>{t('create')}</Button>
+            <DialogActions>
+              <Button type='submit'>{t('create')}</Button>
+            </DialogActions>
           </Box>
         </FormProvider>
       </DialogContent>

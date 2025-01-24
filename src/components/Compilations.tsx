@@ -103,6 +103,7 @@ export default function Compilations({
                 </ul>
                 {!isHiddenBookmarks && (
                   <Bookmark
+                    username={compilation.ownerName}
                     lang={lang}
                     id={compilation.id}
                     isBookmarkedValue={compilation.isBookmarked}

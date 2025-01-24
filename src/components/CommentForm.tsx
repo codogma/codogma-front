@@ -11,7 +11,7 @@ import { z } from 'zod';
 import { useAuth } from '@/components/AuthProvider';
 import { createComment, updateComment } from '@/helpers/commentAPI';
 import { devConsoleError } from '@/helpers/devConsoleLogs';
-import { CreateComment, GetComment, UpdateComment, UserRole } from '@/types';
+import { CreateComment, GetComment, UpdateComment } from '@/types';
 
 interface CommentFormProps {
   readonly articleId: number;
@@ -99,15 +99,9 @@ export const CommentForm: React.FC<CommentFormProps> = ({
             placeholder='Write your comment...'
             variant='outlined'
             fullWidth
-            disabled={state.user?.role === UserRole.ROLE_ADMIN}
           />
           <Box sx={{ display: 'flex', gap: 1 }}>
-            <Button
-              type='submit'
-              variant='outlined'
-              size='small'
-              disabled={state.user?.role === UserRole.ROLE_ADMIN}
-            >
+            <Button type='submit' variant='outlined' size='small'>
               {comment ? 'Update Comment' : 'Add Comment'}
             </Button>
             {onCancelEdit && (

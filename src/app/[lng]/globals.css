@@ -87,12 +87,16 @@
     }
   }
 
+  .comment-card-link.active {
+    @apply shadow-[0_4px_12px_#548121] border-green-600 !important;
+  }
+
   .card {
     @apply mb-4 bg-white pb-4 pl-5 pr-5 pt-4 text-mine-shaft dark:bg-bunker !important;
   }
 
   .card-content {
-    @apply flex justify-between p-0 !important;
+    @apply p-0 !important;
   }
 
   .meta-container {

@@ -17,6 +17,17 @@ export enum SearchType {
   TAG = 'tag',
 }
 
+export enum NotificationType {
+  SYSTEM = 'SYSTEM',
+  ARTICLE_MODERATION = 'ARTICLE_MODERATION',
+  COMMENT_MODERATION = 'COMMENT_MODERATION',
+  COMMENT_REPLIED = 'COMMENT_REPLIED',
+  ARTICLE_COMMENTED = 'ARTICLE_COMMENTED',
+  ARTICLE_PUBLISHED = 'ARTICLE_PUBLISHED',
+  ARTICLE_DRAFT = 'ARTICLE_DRAFT',
+  REMINDER = 'REMINDER',
+}
+
 export type User = {
   username: string;
   isSubscribed: boolean;
@@ -59,6 +70,16 @@ export type GetCompilation = {
   imageUrl: string;
 };
 
+export type GetNotification = {
+  id: number;
+  articleId: number;
+  commentId: number;
+  title: string;
+  message: string;
+  type: NotificationType;
+  read: boolean;
+};
+
 export type Article = {
   id: number;
   status: string;
@@ -76,6 +97,8 @@ export type Article = {
   categories: Category[];
   compilations: GetCompilation[];
   tags: Tag[];
+  commentsCount: number;
+  likeCount: number;
 };
 
 export interface GetComment {

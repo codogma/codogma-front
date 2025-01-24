@@ -10,6 +10,7 @@ import React from 'react';
 
 import { useTranslation } from '@/app/i18n/client';
 import { AddToCompilations } from '@/components/AddToCompilations';
+import { ArticleActions } from '@/components/ArticleActions';
 import { useArticle } from '@/components/ArticleProvider';
 import { useAuth } from '@/components/AuthProvider';
 import { AvatarImage } from '@/components/AvatarImage'; // import { CommentList } from '@/components/CommentList';
@@ -21,13 +22,14 @@ import { UserRole } from '@/types';
 
 type PageParams = {
   lng: string;
+  id: number;
 };
 
 type PageProps = {
   readonly params: PageParams;
 };
 
-export default function Page({ params: { lng } }: PageProps) {
+export default function Page({ params: { lng, id } }: PageProps) {
   const { article } = useArticle();
   const { state } = useAuth();
   const { processContent } = useContentImageContext();
@@ -36,7 +38,7 @@ export default function Page({ params: { lng } }: PageProps) {
 
   return (
     <>
-      <Card key={article.id} variant='outlined' className='card'>
+      <Card key={id} id={`article-${id}`} variant='outlined' className='card'>
         <CardContent className='card-content'>
           <div className='meta-container'>
             <AvatarImage
@@ -68,7 +70,7 @@ export default function Page({ params: { lng } }: PageProps) {
               </Stack>
             )}
             <AddToCompilations
-              id={article.id}
+              id={id}
               lang={lng}
               compilations={article.compilations}
             />
@@ -113,12 +115,13 @@ export default function Page({ params: { lng } }: PageProps) {
           </div>
           {state.user?.username === article.username &&
             state.user?.role === UserRole.ROLE_AUTHOR && (
-              <ButtonAlertDialog articleId={article.id} lang={lng} />
+              <ButtonAlertDialog articleId={id} lang={lng} />
             )}
         </CardContent>
       </Card>
+      <ArticleActions lang={lng} articleData={article} />
       <Typography component='div'>{t('comments')}:</Typography>
-      <CommentList articleId={article.id} lang={lng} />
+      <CommentList articleId={id} lang={lng} />
     </>
   );
 }

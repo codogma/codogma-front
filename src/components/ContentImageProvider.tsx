@@ -3,7 +3,6 @@ import parse, { DOMNode, Element } from 'html-react-parser';
 import React, { createContext, FC, ReactNode, useContext } from 'react';
 
 import { DefaultImage } from '@/components/DefaultImage';
-import { devConsoleInfo } from '@/helpers/devConsoleLogs';
 
 interface ContentImageContextType {
   processContent: (content: string) => ReactNode | null;
@@ -50,7 +49,6 @@ export const ContentImageProvider: FC<{ readonly children: ReactNode }> = ({
           domNode.name === 'img' &&
           domNode.attribs?.id?.startsWith('content-image')
         ) {
-          devConsoleInfo(domNode);
           const styleObject = domNode.attribs?.style
             ? parseStyleString(domNode.attribs.style)
             : undefined;
