@@ -31,7 +31,6 @@ import {
   getCompilationsByTitle,
   GetCompilationsDTO,
 } from '@/helpers/compilationApi';
-import { devConsoleInfo } from '@/helpers/devConsoleLogs';
 import { GetCompilation } from '@/types';
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
@@ -134,7 +133,6 @@ export const AddToCompilations: React.FC<AddToCompilationsProps> = ({
     formData,
   ) => {
     const requestData = { ...formData };
-    devConsoleInfo(requestData);
     addToCompilations(id, requestData.compilationIds).then(() => handleClose());
   };
 

@@ -1,6 +1,6 @@
 'use client';
 import BookmarkIcon from '@mui/icons-material/Bookmark';
-import IconButton from '@mui/material/IconButton';
+import Checkbox from '@mui/material/Checkbox';
 import React, { useState } from 'react';
 
 import { useTranslation } from '@/app/i18n/client';
@@ -31,24 +31,20 @@ export const Bookmark: React.FC<BookmarkProps> = ({
   const { t } = useTranslation(lang, 'articles');
   const popoverId = 'simple-popover';
 
-  const handleUnbookmark = () => {
+  const handleChange = async (
+    event: React.ChangeEvent<HTMLInputElement>,
+    checked: boolean,
+  ) => {
     if (state.isAuthenticated) {
-      unbookmark(id).then((response) => {
-        if (refetch) {
-          refetch();
-        }
-        setIsBookmarked(response.isBookmarked);
-      });
-    }
-  };
+      setIsBookmarked(checked);
 
-  const handleBookmark = async (event: React.MouseEvent<HTMLButtonElement>) => {
-    if (state.isAuthenticated) {
-      await bookmark(id).then((response) =>
-        setIsBookmarked(response.isBookmarked),
-      );
+      if (checked) {
+        await bookmark(id).then(() => refetch && refetch());
+      } else {
+        await unbookmark(id).then(() => refetch && refetch());
+      }
     } else {
-      setAnchorEl(event.currentTarget);
+      setAnchorEl(event.currentTarget as HTMLButtonElement);
     }
   };
 
@@ -58,15 +54,13 @@ export const Bookmark: React.FC<BookmarkProps> = ({
 
   return state.user?.username !== username ? (
     <>
-      {isBookmarked ? (
-        <IconButton onClick={handleUnbookmark}>
-          <BookmarkIcon color='error' />
-        </IconButton>
-      ) : (
-        <IconButton onClick={handleBookmark}>
-          <BookmarkIcon aria-describedby={popoverId} />
-        </IconButton>
-      )}
+      <Checkbox
+        checked={isBookmarked}
+        onChange={handleChange}
+        icon={<BookmarkIcon aria-describedby={popoverId} />}
+        checkedIcon={<BookmarkIcon color='error' />}
+        inputProps={{ 'aria-label': 'Bookmark compilation' }}
+      />
       {!state.isAuthenticated && (
         <PopoverElement
           popoverId={popoverId}

@@ -7,7 +7,6 @@ import { CustomPagination } from '@/components/CustomPagination';
 import { Search } from '@/components/Search';
 import { contlCookie } from '@/constants/i18n';
 import { getCompilations, GetCompilationsDTO } from '@/helpers/compilationApi';
-import { devConsoleInfo } from '@/helpers/devConsoleLogs';
 import { GetCompilation, SearchType } from '@/types';
 
 type PageProps = {
@@ -56,7 +55,6 @@ const Page = ({ params: { lng } }: PageProps) => {
   });
 
   const compilations: GetCompilation[] = data?.content ?? [];
-  devConsoleInfo(compilations);
   const totalPages = data?.totalPages ?? 0;
   const totalElements = data?.totalElements ?? 0;
 

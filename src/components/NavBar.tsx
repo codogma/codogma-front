@@ -121,7 +121,7 @@ const NavBar = ({ lang }: NavBarProps) => {
           >
             <LocalizationDialog lang={lang} />
             <ThemeToggleButton title={t('theme')} />
-            <NotificationsDialog title={t('notifications')} />
+            <NotificationsDialog lang={lang} />
           </ButtonGroup>
           <Box sx={{ flexGrow: 0 }}>
             <Tooltip title={t('settings')}>

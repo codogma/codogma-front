@@ -3,7 +3,7 @@ import { LoadingButton } from '@mui/lab';
 import { Box, Button, Card, CardContent, Typography } from '@mui/material';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import Link from 'next/link';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { useTranslation } from '@/app/i18n/client';
 import { useAuth } from '@/components/AuthProvider';
@@ -25,7 +25,8 @@ export const CommentList: React.FC<CommentListProps> = ({
 }) => {
   const [editingComment, setEditingComment] = useState<GetComment | null>(null);
   const [replyToCommentId, setReplyToCommentId] = useState<number | null>(null);
-  const [pageSize] = useState(5);
+  const [pageSize, setPageSize] = useState<number>(5);
+  const [isScrolled, setIsScrolled] = useState(false);
   const { state } = useAuth();
   const { t } = useTranslation(lang);
 
@@ -49,6 +50,40 @@ export const CommentList: React.FC<CommentListProps> = ({
     },
   );
 
+  useEffect(() => {
+    const checkCommentExistenceOnLoad = async () => {
+      if (isScrolled) return;
+      const targetCommentId = window.location.hash.replace('#comment-', '');
+      if (!targetCommentId) return;
+
+      let commentElement = document.getElementById(
+        `comment-${targetCommentId}`,
+      );
+
+      if (!commentElement) {
+        const page = data?.pages[data.pages.length - 1];
+        if (page?.totalElements) {
+          setPageSize(page.totalElements);
+        }
+        await fetchNextPage();
+        commentElement = document.getElementById(`comment-${targetCommentId}`);
+      }
+
+      if (commentElement) {
+        commentElement.classList.add('active');
+        commentElement.scrollIntoView({
+          behavior: 'instant',
+          block: 'center',
+        });
+        setIsScrolled(true);
+      }
+    };
+
+    if (window.location.hash) {
+      checkCommentExistenceOnLoad();
+    }
+  }, [data, fetchNextPage, isScrolled]);
+
   const handleEdit = (comment: GetComment) => {
     setEditingComment(comment);
     setReplyToCommentId(null);
@@ -68,9 +103,17 @@ export const CommentList: React.FC<CommentListProps> = ({
     setReplyToCommentId(null);
   };
 
+  const hasMoreComments =
+    !!data?.pages && data.pages.length < (data.pages[0]?.totalPages || 0);
+
   const renderComments = (comments?: GetComment[]) => {
     return comments?.map((comment) => (
-      <Card key={comment.id} variant='outlined' className='card'>
+      <Card
+        key={`comment-${comment.id}`}
+        id={`comment-${comment.id}`}
+        variant='outlined'
+        className='card comment-card-link'
+      >
         <CardContent className='card-content'>
           <Box className='meta-container'>
             <AvatarImage
@@ -173,17 +216,16 @@ export const CommentList: React.FC<CommentListProps> = ({
       {data?.pages.map((page, pageIndex) => (
         <div key={pageIndex}>{renderComments(page.content)}</div>
       ))}
-      <div>
-        <LoadingButton
-          onClick={() => fetchNextPage()}
-          loadingPosition='start'
-          loading={isFetchingNextPage}
-          variant='outlined'
-          size='small'
-        >
-          Load More
-        </LoadingButton>
-      </div>
+      <LoadingButton
+        onClick={() => fetchNextPage()}
+        loadingPosition='start'
+        loading={isFetchingNextPage}
+        variant='outlined'
+        size='small'
+        disabled={!hasMoreComments}
+      >
+        Load More
+      </LoadingButton>
       {!editingComment && replyToCommentId === null && (
         <CommentForm articleId={articleId} onCommentAdded={() => refetch()} />
       )}
