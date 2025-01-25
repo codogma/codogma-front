@@ -69,11 +69,14 @@ export default function Page({ params: { lng, id } }: PageProps) {
                 />
               </Stack>
             )}
-            <AddToCompilations
-              id={id}
-              lang={lng}
-              compilations={article.compilations}
-            />
+            {state.isAuthenticated &&
+              state.user?.role !== UserRole.ROLE_ADMIN && (
+                <AddToCompilations
+                  id={id}
+                  lang={lng}
+                  compilations={article.compilations}
+                />
+              )}
           </div>
           <div className='article-category'>
             {article.categories?.map((category) => (

@@ -29,6 +29,7 @@ import {
 import { z } from 'zod';
 
 import { useTranslation } from '@/app/i18n/client';
+import { useAuth } from '@/components/AuthProvider';
 import FormInput from '@/components/FormInput';
 import { LinkWithPopover } from '@/components/LinkWithPopover';
 import { TinyMCEEditor } from '@/components/TinyMCEEditor';
@@ -113,6 +114,10 @@ const Page = ({ params: { lng } }: PageParams) => {
   const SELECTED_COMPILATIONS = 'selected-compilations';
   const ARTICLE_ID = 'article-id';
   const PARAM_ID = 'id';
+  const {
+    state: { user },
+  } = useAuth();
+  const username = user?.username;
   const route = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -190,8 +195,9 @@ const Page = ({ params: { lng } }: PageParams) => {
   const categoriesPages: GetCategoriesDTO = categoriesData as GetCategoriesDTO;
 
   const { data: compilationsData } = useQuery<GetCompilationsDTO>({
-    queryKey: ['compilations'],
-    queryFn: () => getCompilations(),
+    queryKey: ['compilations', username],
+    queryFn: () => getCompilations(undefined, undefined, username),
+    enabled: !!username,
   });
 
   const compilationsPages: GetCompilationsDTO =

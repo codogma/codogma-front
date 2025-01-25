@@ -13,6 +13,7 @@ import {
   FormHelperText,
   IconButton,
 } from '@mui/material';
+import DialogActions from '@mui/material/DialogActions';
 import { styled } from '@mui/material/styles';
 import React, { useEffect, useState } from 'react';
 import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
@@ -177,13 +178,20 @@ export const CompilationDialog = ({
                 {errors?.image.message}
               </FormHelperText>
             )}
-            <FormInput name='title' label={t('name')} variant='standard' />
+            <FormInput
+              name='title'
+              required
+              label={t('name')}
+              variant='standard'
+            />
             <FormInput
               name='description'
               label={t('description')}
               variant='standard'
             />
-            <Button type='submit'>{t('create')}</Button>
+            <DialogActions>
+              <Button type='submit'>{t('create')}</Button>
+            </DialogActions>
           </Box>
         </FormProvider>
       </DialogContent>
