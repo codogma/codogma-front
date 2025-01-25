@@ -1,7 +1,6 @@
 'use client';
 import {
   Badge,
-  Button,
   Card,
   CardActions,
   CardContent,
@@ -16,18 +15,21 @@ import { useTranslation } from '@/app/i18n/client';
 import { useAuth } from '@/components/AuthProvider';
 import { AvatarImage } from '@/components/AvatarImage';
 import { ButtonFavorite } from '@/components/ButtonFavorite';
+import { EditCategory } from '@/components/EditCategory';
 import { Category, UserRole } from '@/types';
 
 type CategoriesProps = {
   readonly categories: Category[];
   readonly loading: boolean;
   readonly lang: string;
+  readonly refetch?: () => void;
 };
 
 export default function Categories({
   categories,
   loading,
   lang,
+  refetch,
 }: CategoriesProps) {
   const { state } = useAuth();
   const { t } = useTranslation(lang);
@@ -112,19 +114,23 @@ export default function Categories({
               <CardActions className='m-0 p-0'>
                 <Stack direction='row' spacing={2}>
                   {state.user?.role === UserRole.ROLE_ADMIN && (
-                    <Link href={`/categories/edit/${category.id}`}>
-                      <Button className='article-btn' variant='outlined'>
-                        {t('editBtn')}
-                      </Button>
-                    </Link>
+                    <EditCategory
+                      id={category?.id}
+                      lang={lang}
+                      categoryData={category}
+                      refetch={refetch}
+                    />
                   )}
                 </Stack>
               </CardActions>
-              <ButtonFavorite
-                id={category.id}
-                lang={lang}
-                isFavoriteValue={category?.isFavorite}
-              />
+              {state.isAuthenticated &&
+                state.user?.role !== UserRole.ROLE_ADMIN && (
+                  <ButtonFavorite
+                    id={category.id}
+                    lang={lang}
+                    isFavoriteValue={category?.isFavorite}
+                  />
+                )}
             </CardContent>
           </Card>
         ))

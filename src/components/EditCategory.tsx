@@ -20,20 +20,21 @@ import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
 import { z } from 'zod';
 
 import { useTranslation } from '@/app/i18n/client';
+import { useAuth } from '@/components/AuthProvider';
 import { AvatarImage } from '@/components/AvatarImage';
 import FormInput from '@/components/FormInput';
-import { updateCompilation } from '@/helpers/compilationApi';
+import { updateCategory } from '@/helpers/categoryApi';
 import { devConsoleError } from '@/helpers/devConsoleLogs';
-import { GetCompilation } from '@/types';
+import { Category } from '@/types';
 
-const EditCompilationScheme = z.object({
-  image: z.optional(z.instanceof(File)),
-  title: z.optional(
+const EditCategoryScheme = z.object({
+  name: z.optional(
     z
       .string()
-      .min(2, 'Название подборки не может содержать менее 2 символов.')
-      .max(50, 'Название подборки не может содержать более 50 символов.'),
+      .min(2, 'Название категории не может содержать менее 2 символов.')
+      .max(50, 'Название категории не может содержать более 50 символов.'),
   ),
+  image: z.optional(z.instanceof(File)),
   description: z.optional(z.string()),
 });
 
@@ -58,42 +59,41 @@ const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   },
 }));
 
-type EditCompilationProps = {
+type EditCategoryProps = {
   readonly id: number;
   readonly lang: string;
-  readonly compilationData: GetCompilation | undefined;
+  readonly categoryData: Category | undefined;
   readonly refetch?: () => void;
 };
 
-export const EditCompilation = ({
+export const EditCategory = ({
   id,
   lang,
-  compilationData,
+  categoryData,
   refetch,
-}: EditCompilationProps) => {
+}: EditCategoryProps) => {
   const [open, setOpen] = useState(false);
   const [imageFile, setImageFile] = useState<File>();
-  const [compilation, setCompilation] = useState<GetCompilation | undefined>(
-    compilationData,
-  );
-  const { t } = useTranslation(lang, 'compilations');
+  const [category, setCategory] = useState<Category | undefined>(categoryData);
+  const { t } = useTranslation(lang, 'categories');
+  const { state } = useAuth();
 
-  const zodForm = useForm<z.infer<typeof EditCompilationScheme>>({
-    resolver: zodResolver(EditCompilationScheme),
+  const zodForm = useForm<z.infer<typeof EditCategoryScheme>>({
+    resolver: zodResolver(EditCategoryScheme),
     defaultValues: {
+      name: '',
       image: undefined,
-      title: '',
       description: '',
     },
   });
 
   useEffect(() => {
     zodForm.reset({
-      title: compilation?.title,
-      description: compilation?.description,
+      name: category?.name,
       image: undefined,
+      description: category?.description,
     });
-  }, [compilation, zodForm]);
+  }, [category, zodForm]);
 
   const {
     reset,
@@ -111,18 +111,18 @@ export const EditCompilation = ({
     const file = event.target.files?.[0];
     if (file) {
       setImageFile(file);
-      setCompilation((prev) =>
+      setCategory((prev) =>
         prev ? { ...prev, imageUrl: URL.createObjectURL(file) } : prev,
       );
     }
   };
 
-  const onSubmit: SubmitHandler<z.infer<typeof EditCompilationScheme>> = (
+  const onSubmit: SubmitHandler<z.infer<typeof EditCategoryScheme>> = (
     formData,
   ) => {
     const requestData = { ...formData, image: imageFile };
     devConsoleError(requestData);
-    updateCompilation(id, requestData).then(() => {
+    updateCategory(id, requestData).then(() => {
       if (refetch) {
         refetch();
       }
@@ -149,7 +149,7 @@ export const EditCompilation = ({
       </Button>
       <BootstrapDialog aria-labelledby='customized-dialog-title' open={open}>
         <DialogTitle sx={{ m: 0, p: 2 }} id='customized-dialog-title'>
-          {t('updateCompilation')}
+          {t('updateCategory')}
         </DialogTitle>
         <IconButton
           aria-label='close'
@@ -196,9 +196,9 @@ export const EditCompilation = ({
                   }
                 >
                   <AvatarImage
-                    alt={compilation?.title}
+                    alt={category?.name}
                     variant='rounded'
-                    src={compilation?.imageUrl}
+                    src={category?.imageUrl}
                     size={112}
                     fontSize='large'
                   />
@@ -210,7 +210,7 @@ export const EditCompilation = ({
                 </FormHelperText>
               )}
               <FormInput
-                name='title'
+                name='name'
                 required
                 label={t('name')}
                 variant='standard'

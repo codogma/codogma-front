@@ -15,7 +15,7 @@ import {
 import DialogContent from '@mui/material/DialogContent';
 import { styled } from '@mui/material/styles';
 import { keepPreviousData, useQuery } from '@tanstack/react-query';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import {
   Controller,
   FormProvider,
@@ -44,6 +44,7 @@ const BootstrapDialog = styled(Dialog)(({ theme }) => ({
 
 interface AddToCompilationsProps {
   readonly id: number;
+  readonly username?: string;
   readonly lang: string;
   readonly compilations: GetCompilation[];
 }
@@ -54,6 +55,7 @@ const BookmarkScheme = z.object({
 
 export const AddToCompilations: React.FC<AddToCompilationsProps> = ({
   id,
+  username,
   lang,
   compilations,
 }) => {
@@ -82,8 +84,9 @@ export const AddToCompilations: React.FC<AddToCompilationsProps> = ({
   } = zodForm;
 
   const { data: compilationsData } = useQuery<GetCompilationsDTO>({
-    queryKey: ['compilations'],
-    queryFn: () => getCompilations(),
+    queryKey: ['compilations', username],
+    queryFn: () => getCompilations(undefined, undefined, username),
+    enabled: !!username,
   });
 
   const compilationsPages: GetCompilationsDTO =
@@ -96,10 +99,17 @@ export const AddToCompilations: React.FC<AddToCompilationsProps> = ({
     placeholderData: keepPreviousData,
   });
 
+  const filteredUserCompilations = useMemo(() => {
+    if (!username) return [];
+    return selectedCompilations.filter(
+      (compilation) => compilation.ownerName === username,
+    );
+  }, [selectedCompilations, username]);
+
   useEffect(() => {
     const mergedCompilations = [
       ...(compilationsObjects || []),
-      ...(selectedCompilations || []),
+      ...(filteredUserCompilations || []),
       ...(compilationsPages?.content || []),
     ];
     const uniqueCompilations = Array.from(

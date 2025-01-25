@@ -79,11 +79,15 @@ export default function Articles({ lang, articles, loading }: ArticlesProps) {
                     />
                   </Stack>
                 )}
-                <AddToCompilations
-                  id={article.id}
-                  lang={lang}
-                  compilations={article.compilations}
-                />
+                {state.isAuthenticated &&
+                  state.user?.role !== UserRole.ROLE_ADMIN && (
+                    <AddToCompilations
+                      id={article.id}
+                      username={state.user?.username}
+                      lang={lang}
+                      compilations={article.compilations}
+                    />
+                  )}
               </div>
               <Link href={`/articles/${article.id}`} className='article-title'>
                 {article.title}
