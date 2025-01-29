@@ -1,9 +1,11 @@
 import { Close as CloseIcon } from '@mui/icons-material';
+import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import WarningAmberIcon from '@mui/icons-material/WarningAmber';
 import { Box, Button, Dialog, Link } from '@mui/material';
 import Badge from '@mui/material/Badge';
 import Card from '@mui/material/Card';
+import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import IconButton from '@mui/material/IconButton';
 import Stack from '@mui/material/Stack';
@@ -18,8 +20,11 @@ import { useState } from 'react';
 import { useTranslation } from '@/app/i18n/client';
 import { CustomPagination } from '@/components/CustomPagination';
 import {
+  deleteAllNotifications,
+  deleteNotification,
   getNotifications,
   GetNotificationsDTO,
+  readNotification,
 } from '@/helpers/notificationAPI';
 import { GetNotification, NotificationType } from '@/types';
 
@@ -73,6 +78,18 @@ export const NotificationsDialog = ({ lang }: NotificationsDialogProps) => {
 
   const onResultsPerPageChange = (value: number) => {
     setResultsPerPage(value);
+  };
+
+  const handleDelete = (id: number) => {
+    deleteNotification(id);
+  };
+
+  const handleDeleteAll = () => {
+    deleteAllNotifications();
+  };
+
+  const handleReadNotification = (id: number) => {
+    readNotification(id);
   };
 
   return (
@@ -136,6 +153,28 @@ export const NotificationsDialog = ({ lang }: NotificationsDialogProps) => {
                       <Typography gutterBottom component='div'>
                         {notification.message}
                       </Typography>
+                      <Button
+                        className='article-btn'
+                        variant='outlined'
+                        onClick={() => handleReadNotification(notification.id)}
+                      >
+                        Отметить как прочитанное
+                      </Button>
+                      <Button
+                        className='article-btn'
+                        variant='outlined'
+                        onClick={() => handleDelete(notification.id)}
+                      >
+                        Удалить
+                      </Button>
+                      <FiberManualRecordIcon
+                        sx={() => ({
+                          position: 'absolute',
+                          right: 25,
+                          top: 130,
+                          color: 'red',
+                        })}
+                      />
                     </>
                   )}
                   {notification.type ===
@@ -164,6 +203,23 @@ export const NotificationsDialog = ({ lang }: NotificationsDialogProps) => {
                           <br />
                           <Button>Проверить</Button>
                         </Link>
+                        <Button
+                          className='article-btn'
+                          variant='outlined'
+                          onClick={() =>
+                            handleReadNotification(notification.id)
+                          }
+                        >
+                          Отметить как прочитанное
+                        </Button>
+                        <FiberManualRecordIcon
+                          sx={() => ({
+                            position: 'absolute',
+                            right: 25,
+                            top: 130,
+                            color: 'red',
+                          })}
+                        />
                       </Typography>
                     </>
                   )}
@@ -192,7 +248,24 @@ export const NotificationsDialog = ({ lang }: NotificationsDialogProps) => {
                         >
                           <Button>Проверить</Button>
                         </Link>
+                        <Button
+                          className='article-btn'
+                          variant='outlined'
+                          onClick={() =>
+                            handleReadNotification(notification.id)
+                          }
+                        >
+                          Отметить как прочитанное
+                        </Button>
                       </Typography>
+                      <FiberManualRecordIcon
+                        sx={() => ({
+                          position: 'absolute',
+                          right: 25,
+                          top: 130,
+                          color: 'red',
+                        })}
+                      />
                     </>
                   )}
                 </Box>
@@ -206,6 +279,22 @@ export const NotificationsDialog = ({ lang }: NotificationsDialogProps) => {
             onCurrentPageChange={onPageChange}
             onResultsPerPageChange={onResultsPerPageChange}
           />
+          <DialogActions>
+            <Button
+              className='article-btn'
+              variant='outlined'
+              onClick={handleClose}
+            >
+              Закрыть
+            </Button>
+            <Button
+              className='article-btn'
+              variant='outlined'
+              onClick={handleDeleteAll}
+            >
+              Удалить все прочитанные уведомления
+            </Button>
+          </DialogActions>
         </DialogContent>
       </BootstrapDialog>
     </>

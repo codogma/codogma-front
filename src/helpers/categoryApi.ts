@@ -1,12 +1,12 @@
 import { axiosInstance } from '@/helpers/axiosInstance';
 import { devConsoleInfo } from '@/helpers/devConsoleLogs';
 import { dispatchCustomEvent } from '@/helpers/dispatchCustomEvent';
-import { Category } from '@/types';
+import { Category, Language } from '@/types';
 
 export type CategoryCreate = {
-  name: string;
+  name: Map<Language, string>;
   image?: File;
-  description?: string;
+  description?: Map<Language, string>;
 };
 
 export type GetCategoriesDTO = {

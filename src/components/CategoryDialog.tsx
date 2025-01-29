@@ -12,8 +12,10 @@ import {
   DialogTitle,
   FormHelperText,
   IconButton,
+  TextField,
 } from '@mui/material';
 import DialogActions from '@mui/material/DialogActions';
+import MenuItem from '@mui/material/MenuItem';
 import { styled } from '@mui/material/styles';
 import React, { useEffect, useState } from 'react';
 import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
@@ -22,8 +24,10 @@ import { z } from 'zod';
 import { useTranslation } from '@/app/i18n/client';
 import { AvatarImage } from '@/components/AvatarImage';
 import FormInput from '@/components/FormInput';
-import { createCategory } from '@/helpers/categoryApi';
-import { devConsoleError } from '@/helpers/devConsoleLogs';
+import { languageMenuItems } from '@/constants/i18n';
+import { CategoryCreate, createCategory } from '@/helpers/categoryApi';
+import { devConsoleInfo } from '@/helpers/devConsoleLogs';
+import { Language } from '@/types';
 
 const VisuallyHiddenInput = styled('input')({
   clip: 'rect(0 0 0 0)',
@@ -53,14 +57,17 @@ type CategoryDialogProps = {
 };
 
 const CategoryDialogScheme = z.object({
-  name: z
-    .string()
-    .min(2, 'Название категории не может содержать менее 2 символов.')
-    .max(50, 'Название категории не может содержать более 50 символов.'),
+  name: z.map(
+    z.nativeEnum(Language),
+    z
+      .string()
+      .min(2, 'Название категории не может содержать менее 2 символов.')
+      .max(50, 'Название категории не может содержать более 50 символов.'),
+  ),
   image: z.instanceof(File, {
     message: 'Изображение обязательно для загрузки.',
   }),
-  description: z.optional(z.string()),
+  description: z.optional(z.map(z.nativeEnum(Language), z.string())),
 });
 
 export const CategoryDialog = ({
@@ -68,16 +75,21 @@ export const CategoryDialog = ({
   open,
   onClose,
 }: CategoryDialogProps) => {
+  const [selectedLang, setSelectedLang] = useState<Language>(Language.EN);
   const [imageFile, setImageFile] = useState<File>();
   const [imageUrl, setImageUrl] = useState<string>();
   const { t } = useTranslation(lang, 'categories');
+  const [nameMap, setNameMap] = useState<Map<Language, string>>(new Map());
+  const [descriptionMap, setDescriptionMap] = useState<Map<Language, string>>(
+    new Map(),
+  );
 
   const zodForm = useForm<z.infer<typeof CategoryDialogScheme>>({
     resolver: zodResolver(CategoryDialogScheme),
     defaultValues: {
-      name: '',
+      name: new Map(),
       image: undefined,
-      description: '',
+      description: new Map(),
     },
   });
 
@@ -105,12 +117,43 @@ export const CategoryDialog = ({
     }
   };
 
-  const onSubmit: SubmitHandler<z.infer<typeof CategoryDialogScheme>> = (
+  const handleInputChange = (field: 'name' | 'description', value: string) => {
+    if (field === 'name') {
+      setNameMap((prev) => new Map(prev.set(selectedLang, value)));
+    } else if (field === 'description') {
+      setDescriptionMap((prev) => new Map(prev.set(selectedLang, value)));
+    }
+  };
+
+  useEffect(() => {
+    setValue('name', nameMap);
+    setValue('description', descriptionMap);
+  }, [selectedLang, nameMap, descriptionMap, setValue]);
+
+  const onSubmit: SubmitHandler<z.infer<typeof CategoryDialogScheme>> = async (
     formData,
   ) => {
-    const requestData = { ...formData, image: imageFile };
-    devConsoleError(requestData);
-    createCategory(requestData).then(() => onClose());
+    const requestData = {
+      name: nameMap,
+      image: imageFile,
+      description: descriptionMap,
+    };
+
+    const formDataToSend = new FormData();
+    formDataToSend.append('name', JSON.stringify(requestData.name));
+    if (requestData.image) formDataToSend.append('image', requestData.image);
+    if (requestData.description) {
+      formDataToSend.append(
+        'description',
+        JSON.stringify(requestData.description),
+      );
+    }
+    const formDataObject = Object.fromEntries(
+      formDataToSend.entries(),
+    ) as unknown as CategoryCreate;
+    devConsoleInfo(formDataObject);
+    await createCategory(formDataObject);
+    onClose();
   };
 
   return (
@@ -180,16 +223,33 @@ export const CategoryDialog = ({
                 {errors?.image.message}
               </FormHelperText>
             )}
+            <TextField
+              select
+              label={t('language')}
+              variant='standard'
+              value={selectedLang}
+              onChange={(e) => setSelectedLang(e.target.value as Language)}
+            >
+              {languageMenuItems.map(({ value, label }) => (
+                <MenuItem key={value} value={value}>
+                  {label}
+                </MenuItem>
+              ))}
+            </TextField>
             <FormInput
-              name='name'
+              name={`name.${selectedLang}`}
               required
               label={t('name')}
               variant='standard'
+              onChange={(e) => handleInputChange('name', e.target.value)}
+              value={nameMap.get(selectedLang) || ''}
             />
             <FormInput
-              name='description'
+              name={`description.${selectedLang}`}
               label={t('description')}
               variant='standard'
+              onChange={(e) => handleInputChange('description', e.target.value)}
+              value={descriptionMap.get(selectedLang) || ''}
             />
             <DialogActions>
               <Button type='submit'>{t('create')}</Button>

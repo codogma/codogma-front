@@ -25,3 +25,15 @@ export const getNotifications = async (
   });
   return response.data;
 };
+
+export const deleteNotification = async (id: number): Promise<void> => {
+  await axiosInstance.delete(`/notifications/${id}/delete-system`);
+};
+
+export const readNotification = async (id: number): Promise<void> => {
+  await axiosInstance.patch(`/notifications/${id}/read`);
+};
+
+export const deleteAllNotifications = async (): Promise<void> => {
+  await axiosInstance.delete(`/notifications/delete-all-system`);
+};
