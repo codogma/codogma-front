@@ -1,12 +1,20 @@
 import { Close as CloseIcon } from '@mui/icons-material';
-import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import WarningAmberIcon from '@mui/icons-material/WarningAmber';
-import { Box, Button, Dialog, Link } from '@mui/material';
+import {
+  Box,
+  Button,
+  Dialog,
+  DialogTitle,
+  Link,
+  List,
+  ListItem,
+  ListItemText,
+} from '@mui/material';
 import Badge from '@mui/material/Badge';
-import Card from '@mui/material/Card';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
+import Divider from '@mui/material/Divider';
 import IconButton from '@mui/material/IconButton';
 import Stack from '@mui/material/Stack';
 import { styled } from '@mui/material/styles';
@@ -48,7 +56,7 @@ export const NotificationsDialog = ({ lang }: NotificationsDialogProps) => {
   const { t } = useTranslation(lang, 'notifications');
   const router = useRouter();
 
-  const { data } = useQuery<GetNotificationsDTO>({
+  const { data, refetch } = useQuery<GetNotificationsDTO>({
     queryKey: ['notifications', currentPage, resultsPerPage],
     queryFn: () => {
       return getNotifications(undefined, currentPage, resultsPerPage);
@@ -89,7 +97,7 @@ export const NotificationsDialog = ({ lang }: NotificationsDialogProps) => {
   };
 
   const handleReadNotification = (id: number) => {
-    readNotification(id);
+    readNotification(id).then(() => refetch());
   };
 
   return (
@@ -102,6 +110,9 @@ export const NotificationsDialog = ({ lang }: NotificationsDialogProps) => {
         </IconButton>
       </Tooltip>
       <BootstrapDialog aria-labelledby='customized-dialog-title' open={open}>
+        <DialogTitle sx={{ m: 0, p: 2 }} id='customized-dialog-title'>
+          {t('notifications')}
+        </DialogTitle>
         <IconButton
           aria-label='close'
           onClick={handleClose}
@@ -128,149 +139,110 @@ export const NotificationsDialog = ({ lang }: NotificationsDialogProps) => {
               gap: 2,
             }}
           >
-            {notifications?.map((notification) => (
-              <Card
-                key={notification.id}
-                variant='outlined'
-                sx={{ maxWidth: 760 }}
-              >
-                <Box sx={{ p: 2 }}>
-                  {notification.type === NotificationType.SYSTEM && (
-                    <>
-                      <Stack
-                        direction='row'
-                        sx={{
-                          justifyContent: 'space-between',
-                          alignItems: 'center',
-                        }}
-                      >
-                        <WarningAmberIcon color='warning' />
-                        <Typography gutterBottom variant='h5' component='div'>
-                          {notification.title}
-                        </Typography>
-                        <WarningAmberIcon color='warning' />
-                      </Stack>
-                      <Typography gutterBottom component='div'>
-                        {notification.message}
-                      </Typography>
-                      <Button
-                        className='article-btn'
-                        variant='outlined'
-                        onClick={() => handleReadNotification(notification.id)}
-                      >
-                        Отметить как прочитанное
-                      </Button>
-                      <Button
-                        className='article-btn'
-                        variant='outlined'
-                        onClick={() => handleDelete(notification.id)}
-                      >
-                        Удалить
-                      </Button>
-                      <FiberManualRecordIcon
-                        sx={() => ({
-                          position: 'absolute',
-                          right: 25,
-                          top: 130,
-                          color: 'red',
-                        })}
+            <List>
+              {notifications?.map((notification, id) => (
+                <>
+                  <Badge
+                    key={id}
+                    invisible={
+                      notification.read ||
+                      notification.type === NotificationType.SYSTEM
+                    }
+                    color='error'
+                    badgeContent=' '
+                  >
+                    <ListItem alignItems='flex-start'>
+                      <ListItemText
+                        primary={
+                          <Stack
+                            direction='row'
+                            sx={{
+                              justifyContent: 'space-between',
+                              alignItems: 'center',
+                            }}
+                          >
+                            {notification.type === NotificationType.SYSTEM && (
+                              <WarningAmberIcon color='warning' />
+                            )}
+                            <Typography
+                              gutterBottom
+                              variant='h5'
+                              component='div'
+                            >
+                              {notification.title}
+                            </Typography>
+                            {notification.type === NotificationType.SYSTEM && (
+                              <WarningAmberIcon color='warning' />
+                            )}
+                          </Stack>
+                        }
+                        secondary={
+                          <>
+                            <Typography
+                              component='span'
+                              variant='body2'
+                              sx={{ color: 'text.primary', display: 'inline' }}
+                            >
+                              {notification.message}
+                              {notification.type ===
+                                NotificationType.ARTICLE_MODERATION && (
+                                <Link
+                                  onClick={() =>
+                                    handleClickArticleModeration(
+                                      `/${lang}/articles/${notification.articleId}`,
+                                    )
+                                  }
+                                >
+                                  <br />
+                                  <Button>Проверить</Button>
+                                </Link>
+                              )}
+                              {(notification.type ===
+                                NotificationType.COMMENT_MODERATION ||
+                                notification.type ===
+                                  NotificationType.COMMENT_REPLIED) && (
+                                <Link
+                                  onClick={() =>
+                                    handleClickArticleModeration(
+                                      `/${lang}/articles/${notification.articleId}#comment-${notification.commentId}`,
+                                    )
+                                  }
+                                >
+                                  <Button>Проверить</Button>
+                                </Link>
+                              )}
+                            </Typography>
+                            {notification.type !== NotificationType.SYSTEM && (
+                              <>
+                                <Button
+                                  className='article-btn'
+                                  variant='outlined'
+                                  onClick={() =>
+                                    handleReadNotification(notification.id)
+                                  }
+                                >
+                                  Отметить как прочитанное
+                                </Button>
+                                <Button
+                                  className='article-btn'
+                                  variant='outlined'
+                                  onClick={() => handleDelete(notification.id)}
+                                >
+                                  Удалить
+                                </Button>
+                              </>
+                            )}
+                          </>
+                        }
                       />
-                    </>
+                    </ListItem>
+                  </Badge>
+                  {notifications.length - 1 !== id && (
+                    <Divider component='li' />
                   )}
-                  {notification.type ===
-                    NotificationType.ARTICLE_MODERATION && (
-                    <>
-                      <Stack
-                        direction='row'
-                        sx={{
-                          justifyContent: 'space-between',
-                          alignItems: 'center',
-                        }}
-                      >
-                        <Typography gutterBottom variant='h5' component='div'>
-                          {notification.title}
-                        </Typography>
-                      </Stack>
-                      <Typography gutterBottom component='div'>
-                        {notification.message}
-                        <Link
-                          onClick={() =>
-                            handleClickArticleModeration(
-                              `/${lang}/articles/${notification.articleId}`,
-                            )
-                          }
-                        >
-                          <br />
-                          <Button>Проверить</Button>
-                        </Link>
-                        <Button
-                          className='article-btn'
-                          variant='outlined'
-                          onClick={() =>
-                            handleReadNotification(notification.id)
-                          }
-                        >
-                          Отметить как прочитанное
-                        </Button>
-                        <FiberManualRecordIcon
-                          sx={() => ({
-                            position: 'absolute',
-                            right: 25,
-                            top: 130,
-                            color: 'red',
-                          })}
-                        />
-                      </Typography>
-                    </>
-                  )}
-                  {(notification.type === NotificationType.COMMENT_MODERATION ||
-                    notification.type === NotificationType.COMMENT_REPLIED) && (
-                    <>
-                      <Stack
-                        direction='row'
-                        sx={{
-                          justifyContent: 'space-between',
-                          alignItems: 'center',
-                        }}
-                      >
-                        <Typography gutterBottom variant='h5' component='div'>
-                          {notification.title}
-                        </Typography>
-                      </Stack>
-                      <Typography gutterBottom component='div'>
-                        {notification.message}
-                        <Link
-                          onClick={() =>
-                            handleClickArticleModeration(
-                              `/${lang}/articles/${notification.articleId}#comment-${notification.commentId}`,
-                            )
-                          }
-                        >
-                          <Button>Проверить</Button>
-                        </Link>
-                        <Button
-                          className='article-btn'
-                          variant='outlined'
-                          onClick={() =>
-                            handleReadNotification(notification.id)
-                          }
-                        >
-                          Отметить как прочитанное
-                        </Button>
-                      </Typography>
-                      <FiberManualRecordIcon
-                        sx={() => ({
-                          position: 'absolute',
-                          right: 25,
-                          top: 130,
-                          color: 'red',
-                        })}
-                      />
-                    </>
-                  )}
-                </Box>
-              </Card>
-            ))}
+                </>
+              ))}
+            </List>
           </Box>
           <CustomPagination
             lang={lang}
@@ -279,23 +251,23 @@ export const NotificationsDialog = ({ lang }: NotificationsDialogProps) => {
             onCurrentPageChange={onPageChange}
             onResultsPerPageChange={onResultsPerPageChange}
           />
-          <DialogActions>
-            <Button
-              className='article-btn'
-              variant='outlined'
-              onClick={handleClose}
-            >
-              Закрыть
-            </Button>
-            <Button
-              className='article-btn'
-              variant='outlined'
-              onClick={handleDeleteAll}
-            >
-              Удалить все прочитанные уведомления
-            </Button>
-          </DialogActions>
         </DialogContent>
+        <DialogActions>
+          <Button
+            className='article-btn'
+            variant='outlined'
+            onClick={handleClose}
+          >
+            Отметить как прочитанные
+          </Button>
+          <Button
+            className='article-btn'
+            variant='outlined'
+            onClick={handleDeleteAll}
+          >
+            Удалить прочитанные
+          </Button>
+        </DialogActions>
       </BootstrapDialog>
     </>
   );
