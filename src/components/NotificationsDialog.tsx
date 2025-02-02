@@ -32,6 +32,7 @@ import {
   deleteNotification,
   getNotifications,
   GetNotificationsDTO,
+  readAllNotifications,
   readNotification,
 } from '@/helpers/notificationAPI';
 import { GetNotification, NotificationType } from '@/types';
@@ -75,9 +76,10 @@ export const NotificationsDialog = ({ lang }: NotificationsDialogProps) => {
     setOpen(false);
   };
 
-  const handleClickArticleModeration = (url: string) => {
+  const handleClickArticleModeration = (url: string, id: number) => {
     router.push(url);
     setOpen(false);
+    readNotification(id).then(() => refetch());
   };
 
   const onPageChange = (value: number) => {
@@ -89,7 +91,7 @@ export const NotificationsDialog = ({ lang }: NotificationsDialogProps) => {
   };
 
   const handleDelete = (id: number) => {
-    deleteNotification(id);
+    deleteNotification(id).then(() => refetch());
   };
 
   const handleDeleteAll = () => {
@@ -98,6 +100,10 @@ export const NotificationsDialog = ({ lang }: NotificationsDialogProps) => {
 
   const handleReadNotification = (id: number) => {
     readNotification(id).then(() => refetch());
+  };
+
+  const handleReadAllNotifications = () => {
+    readAllNotifications();
   };
 
   return (
@@ -172,7 +178,16 @@ export const NotificationsDialog = ({ lang }: NotificationsDialogProps) => {
                               {notification.title}
                             </Typography>
                             {notification.type === NotificationType.SYSTEM && (
-                              <WarningAmberIcon color='warning' />
+                              <>
+                                <WarningAmberIcon color='warning' />
+                                <Button
+                                  className='article-btn'
+                                  variant='outlined'
+                                  onClick={() => handleDelete(notification.id)}
+                                >
+                                  Удалить
+                                </Button>
+                              </>
                             )}
                           </Stack>
                         }
@@ -190,11 +205,17 @@ export const NotificationsDialog = ({ lang }: NotificationsDialogProps) => {
                                   onClick={() =>
                                     handleClickArticleModeration(
                                       `/${lang}/articles/${notification.articleId}`,
+                                      notification.id,
                                     )
                                   }
                                 >
                                   <br />
-                                  <Button>Проверить</Button>
+                                  <Button
+                                    className='article-btn'
+                                    variant='outlined'
+                                  >
+                                    Проверить
+                                  </Button>
                                 </Link>
                               )}
                               {(notification.type ===
@@ -205,15 +226,21 @@ export const NotificationsDialog = ({ lang }: NotificationsDialogProps) => {
                                   onClick={() =>
                                     handleClickArticleModeration(
                                       `/${lang}/articles/${notification.articleId}#comment-${notification.commentId}`,
+                                      notification.id,
                                     )
                                   }
                                 >
-                                  <Button>Проверить</Button>
+                                  <Button
+                                    className='article-btn'
+                                    variant='outlined'
+                                  >
+                                    Проверить
+                                  </Button>
                                 </Link>
                               )}
                             </Typography>
                             {notification.type !== NotificationType.SYSTEM && (
-                              <>
+                              <DialogActions>
                                 <Button
                                   className='article-btn'
                                   variant='outlined'
@@ -230,7 +257,7 @@ export const NotificationsDialog = ({ lang }: NotificationsDialogProps) => {
                                 >
                                   Удалить
                                 </Button>
-                              </>
+                              </DialogActions>
                             )}
                           </>
                         }
@@ -256,7 +283,7 @@ export const NotificationsDialog = ({ lang }: NotificationsDialogProps) => {
           <Button
             className='article-btn'
             variant='outlined'
-            onClick={handleClose}
+            onClick={handleReadAllNotifications}
           >
             Отметить как прочитанные
           </Button>

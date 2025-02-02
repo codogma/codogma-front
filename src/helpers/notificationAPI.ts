@@ -34,6 +34,10 @@ export const readNotification = async (id: number): Promise<void> => {
   await axiosInstance.patch(`/notifications/${id}/read`);
 };
 
+export const readAllNotifications = async (): Promise<void> => {
+  await axiosInstance.patch(`/notifications/read-all`);
+};
+
 export const deleteAllNotifications = async (): Promise<void> => {
   await axiosInstance.delete(`/notifications/delete-all-system`);
 };

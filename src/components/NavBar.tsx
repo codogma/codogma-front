@@ -30,10 +30,10 @@ import { LocalizationDialog } from '@/components/LocalizationDialog';
 import { NotificationsDialog } from '@/components/NotificationsDialog';
 import { ThemeToggleButton } from '@/components/ThemeContext';
 import { logout } from '@/helpers/authApi';
-import { UserRole } from '@/types';
+import { Language, UserRole } from '@/types';
 
 type NavBarProps = {
-  readonly lang: string;
+  readonly lang: Language;
 };
 
 const NavBar = ({ lang }: NavBarProps) => {

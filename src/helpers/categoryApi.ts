@@ -9,6 +9,12 @@ export type CategoryCreate = {
   description?: Map<Language, string>;
 };
 
+export type CategoryUpdate = {
+  name?: Map<Language, string>;
+  image?: File;
+  description?: Map<Language, string>;
+};
+
 export type GetCategoriesDTO = {
   totalElements: number;
   totalPages: number;
@@ -42,11 +48,7 @@ export const getCategoriesByName = async (
 
 export const updateCategory = async (
   id: number,
-  requestData: {
-    image?: File;
-    name?: string;
-    description?: string;
-  },
+  requestData: CategoryUpdate,
 ): Promise<Category> => {
   const response = await axiosInstance.put(`/categories/${id}`, requestData, {
     headers: {

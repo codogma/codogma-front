@@ -42,5 +42,7 @@
   "myCompilations": "My compilations",
   "articlesSearchBy": "Search by ",
   "compilation": "Compilation",
-  "notifications": "Notifications"
+  "notifications": "Notifications",
+  "en": "English language",
+  "ru": "Russian language"
 }

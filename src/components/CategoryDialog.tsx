@@ -18,7 +18,12 @@ import DialogActions from '@mui/material/DialogActions';
 import MenuItem from '@mui/material/MenuItem';
 import { styled } from '@mui/material/styles';
 import React, { useEffect, useState } from 'react';
-import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
+import {
+  FormProvider,
+  SubmitHandler,
+  useForm,
+  useWatch,
+} from 'react-hook-form';
 import { z } from 'zod';
 
 import { useTranslation } from '@/app/i18n/client';
@@ -51,45 +56,43 @@ const BootstrapDialog = styled(Dialog)(({ theme }) => ({
 }));
 
 type CategoryDialogProps = {
-  readonly lang: string;
+  readonly lang: Language;
   readonly open: boolean;
   readonly onClose: () => void;
 };
-
-const CategoryDialogScheme = z.object({
-  name: z.map(
-    z.nativeEnum(Language),
-    z
-      .string()
-      .min(2, 'Название категории не может содержать менее 2 символов.')
-      .max(50, 'Название категории не может содержать более 50 символов.'),
-  ),
-  image: z.instanceof(File, {
-    message: 'Изображение обязательно для загрузки.',
-  }),
-  description: z.optional(z.map(z.nativeEnum(Language), z.string())),
-});
 
 export const CategoryDialog = ({
   lang,
   open,
   onClose,
 }: CategoryDialogProps) => {
-  const [selectedLang, setSelectedLang] = useState<Language>(Language.EN);
-  const [imageFile, setImageFile] = useState<File>();
+  const [selectedLang, setSelectedLang] = useState<Language>(lang);
   const [imageUrl, setImageUrl] = useState<string>();
   const { t } = useTranslation(lang, 'categories');
-  const [nameMap, setNameMap] = useState<Map<Language, string>>(new Map());
-  const [descriptionMap, setDescriptionMap] = useState<Map<Language, string>>(
-    new Map(),
-  );
+
+  const CategoryDialogScheme = z.object({
+    name: z.record(
+      z.nativeEnum(Language),
+      z.string().min(2, t('minText')).max(50, t('maxText')),
+    ),
+    image: z.instanceof(File, {
+      message: 'Изображение обязательно для загрузки.',
+    }),
+    description: z.optional(z.record(z.nativeEnum(Language), z.string())),
+  });
 
   const zodForm = useForm<z.infer<typeof CategoryDialogScheme>>({
     resolver: zodResolver(CategoryDialogScheme),
     defaultValues: {
-      name: new Map(),
+      name: {
+        en: '',
+        ru: '',
+      },
       image: undefined,
-      description: new Map(),
+      description: {
+        en: '',
+        ru: '',
+      },
     },
   });
 
@@ -98,47 +101,55 @@ export const CategoryDialog = ({
     handleSubmit,
     setValue,
     trigger,
+    control,
     formState: { isSubmitSuccessful, errors },
   } = zodForm;
 
+  const nameValues = useWatch({
+    name: `name.${selectedLang}`,
+    control,
+  }) as Record<string, string>;
+
+  const descriptionValues = useWatch({
+    name: `description.${selectedLang}`,
+    control,
+  }) as Record<string, string>;
+
   useEffect(() => {
     if (isSubmitSuccessful) {
-      reset(zodForm.getValues());
+      reset({
+        name: {
+          en: '',
+          ru: '',
+        },
+        image: undefined,
+        description: {
+          en: '',
+          ru: '',
+        },
+      });
+      setImageUrl(undefined);
+      setSelectedLang(lang);
     }
-  }, [isSubmitSuccessful, reset, zodForm]);
+  }, [isSubmitSuccessful, lang, reset]);
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
-      setImageFile(file);
       setImageUrl(URL.createObjectURL(file));
       setValue('image', file);
       trigger('image');
     }
   };
 
-  const handleInputChange = (field: 'name' | 'description', value: string) => {
-    if (field === 'name') {
-      setNameMap((prev) => new Map(prev.set(selectedLang, value)));
-    } else if (field === 'description') {
-      setDescriptionMap((prev) => new Map(prev.set(selectedLang, value)));
-    }
-  };
-
-  useEffect(() => {
-    setValue('name', nameMap);
-    setValue('description', descriptionMap);
-  }, [selectedLang, nameMap, descriptionMap, setValue]);
-
   const onSubmit: SubmitHandler<z.infer<typeof CategoryDialogScheme>> = async (
     formData,
   ) => {
     const requestData = {
-      name: nameMap,
-      image: imageFile,
-      description: descriptionMap,
+      name: formData.name,
+      image: formData.image,
+      description: formData.description,
     };
-
     const formDataToSend = new FormData();
     formDataToSend.append('name', JSON.stringify(requestData.name));
     if (requestData.image) formDataToSend.append('image', requestData.image);
@@ -237,19 +248,31 @@ export const CategoryDialog = ({
               ))}
             </TextField>
             <FormInput
+              key={`name-${selectedLang}`}
               name={`name.${selectedLang}`}
               required
               label={t('name')}
               variant='standard'
-              onChange={(e) => handleInputChange('name', e.target.value)}
-              value={nameMap.get(selectedLang) || ''}
+              value={nameValues}
+              error={!!errors.name?.ru || !!errors.name?.en}
+              helperText={
+                (!!errors.name?.[selectedLang] &&
+                  errors.name?.[selectedLang].message?.replace(
+                    '{}',
+                    t(selectedLang.toLowerCase()),
+                  )) ||
+                (!!errors.name?.ru &&
+                  errors.name?.ru?.message?.replace('{}', t('ru'))) ||
+                (!!errors.name?.en &&
+                  errors.name?.en?.message?.replace('{}', t('en')))
+              }
             />
             <FormInput
+              key={`description-${selectedLang}`}
               name={`description.${selectedLang}`}
               label={t('description')}
               variant='standard'
-              onChange={(e) => handleInputChange('description', e.target.value)}
-              value={descriptionMap.get(selectedLang) || ''}
+              value={descriptionValues}
             />
             <DialogActions>
               <Button type='submit'>{t('create')}</Button>

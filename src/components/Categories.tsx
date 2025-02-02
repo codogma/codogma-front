@@ -16,12 +16,12 @@ import { useAuth } from '@/components/AuthProvider';
 import { AvatarImage } from '@/components/AvatarImage';
 import { ButtonFavorite } from '@/components/ButtonFavorite';
 import { EditCategory } from '@/components/EditCategory';
-import { Category, UserRole } from '@/types';
+import { Category, Language, UserRole } from '@/types';
 
 type CategoriesProps = {
   readonly categories: Category[];
   readonly loading: boolean;
-  readonly lang: string;
+  readonly lang: Language;
   readonly refetch?: () => void;
 };
 

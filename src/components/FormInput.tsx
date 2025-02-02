@@ -6,7 +6,12 @@ type IFormInputProps = {
   readonly name: string;
 } & TextFieldProps;
 
-const FormInput: FC<IFormInputProps> = ({ name, ...otherProps }) => {
+const FormInput: FC<IFormInputProps> = ({
+  name,
+  error,
+  helperText,
+  ...otherProps
+}) => {
   const {
     control,
     formState: { errors },
@@ -20,9 +25,10 @@ const FormInput: FC<IFormInputProps> = ({ name, ...otherProps }) => {
         <TextField
           {...otherProps}
           {...field}
-          error={!!errors[name]}
+          error={error || !!errors[name]}
           helperText={
-            errors[name] ? (errors[name] as FieldError).message || '' : ''
+            helperText ||
+            (errors[name] ? ((errors[name] as FieldError).message ?? '') : '')
           }
         />
       )}
