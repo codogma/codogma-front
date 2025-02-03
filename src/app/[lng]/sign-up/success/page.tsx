@@ -4,10 +4,11 @@ import { useRouter } from 'next/navigation';
 import React from 'react';
 
 import { useTranslation } from '@/app/i18n/client';
+import { Language } from '@/types';
 
 type PageProps = {
   readonly params: {
-    lng: string;
+    lng: Language;
   };
 };
 

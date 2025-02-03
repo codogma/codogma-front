@@ -2,6 +2,7 @@
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import CategoryIcon from '@mui/icons-material/Category';
 import CreateIcon from '@mui/icons-material/Create';
+import EditNotificationsIcon from '@mui/icons-material/EditNotifications';
 import LoginIcon from '@mui/icons-material/Login';
 import LogoutIcon from '@mui/icons-material/Logout';
 import PersonIcon from '@mui/icons-material/Person';
@@ -27,7 +28,8 @@ import { AvatarImage } from '@/components/AvatarImage';
 import { CategoryDialog } from '@/components/CategoryDialog';
 import { CompilationDialog } from '@/components/CompilationDialog';
 import { LocalizationDialog } from '@/components/LocalizationDialog';
-import { NotificationsDialog } from '@/components/NotificationsDialog';
+import { NotificationDialog } from '@/components/NotificationDialog';
+import { SystemNotificationDialog } from '@/components/SystemNotificationDialog';
 import { ThemeToggleButton } from '@/components/ThemeContext';
 import { logout } from '@/helpers/authApi';
 import { Language, UserRole } from '@/types';
@@ -40,6 +42,7 @@ const NavBar = ({ lang }: NavBarProps) => {
   const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
   const [compilationDialogOpen, setCompilationDialogOpen] = useState(false);
   const [categoryDialogOpen, setCategoryDialogOpen] = useState(false);
+  const [notificationDialogOpen, setNotificationDialogOpen] = useState(false);
   const router = useRouter();
   const { state } = useAuth();
   const { t } = useTranslation(lang);
@@ -71,6 +74,16 @@ const NavBar = ({ lang }: NavBarProps) => {
 
   const handleCloseCategoryDialog = () => {
     setCategoryDialogOpen(false);
+    handleCloseUserMenu();
+  };
+
+  const handleOpenNotificationDialog = () => {
+    setNotificationDialogOpen(true);
+    handleCloseUserMenu();
+  };
+
+  const handleCloseNotificationDialog = () => {
+    setNotificationDialogOpen(false);
     handleCloseUserMenu();
   };
 
@@ -121,7 +134,7 @@ const NavBar = ({ lang }: NavBarProps) => {
           >
             <LocalizationDialog lang={lang} />
             <ThemeToggleButton title={t('theme')} />
-            <NotificationsDialog lang={lang} />
+            <NotificationDialog lang={lang} />
           </ButtonGroup>
           <Box sx={{ flexGrow: 0 }}>
             <Tooltip title={t('settings')}>
@@ -223,6 +236,20 @@ const NavBar = ({ lang }: NavBarProps) => {
                       <CategoryDialog
                         open={categoryDialogOpen}
                         onClose={handleCloseCategoryDialog}
+                        lang={lang}
+                      />
+                      <MenuItem onClick={() => handleOpenNotificationDialog()}>
+                        <Typography textAlign='center'>
+                          <EditNotificationsIcon
+                            className='mr-2'
+                            fontSize='small'
+                          />
+                          {t('createNotificationBtn')}
+                        </Typography>
+                      </MenuItem>
+                      <SystemNotificationDialog
+                        open={notificationDialogOpen}
+                        onClose={handleCloseNotificationDialog}
                         lang={lang}
                       />
                     </>

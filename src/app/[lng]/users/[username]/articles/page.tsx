@@ -18,11 +18,11 @@ import { useTranslation } from '@/app/i18n/client';
 import Articles from '@/components/Articles';
 import { getArticles } from '@/helpers/articleApi';
 import { devConsoleError } from '@/helpers/devConsoleLogs';
-import { Article } from '@/types';
+import { Article, Language } from '@/types';
 
 type PageParams = {
   username: string;
-  lng: string;
+  lng: Language;
 };
 
 type PageProps = {

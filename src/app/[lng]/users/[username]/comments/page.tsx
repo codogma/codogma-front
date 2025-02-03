@@ -12,11 +12,11 @@ import { Search } from '@/components/Search';
 import { TimeAgo } from '@/components/TimeAgo';
 import { contlCookie } from '@/constants/i18n';
 import { getComments } from '@/helpers/commentAPI';
-import { GetComment, GetCommentsDTO, SearchType } from '@/types';
+import { GetComment, GetCommentsDTO, Language, SearchType } from '@/types';
 
 type PageParams = {
   username: string;
-  lng: string;
+  lng: Language;
 };
 
 type PageProps = {

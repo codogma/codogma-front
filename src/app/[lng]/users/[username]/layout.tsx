@@ -11,11 +11,11 @@ import { AvatarImage } from '@/components/AvatarImage';
 import { ButtonWithPopover } from '@/components/ButtonWithPopover';
 import NavTabs, { TabProps } from '@/components/NavTabs';
 import { getUserByUsername } from '@/helpers/userApi';
-import { User } from '@/types';
+import { Language, User } from '@/types';
 
 type PageParams = {
   username: string;
-  lng: string;
+  lng: Language;
 };
 
 type PageProps = {

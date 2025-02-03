@@ -50,7 +50,7 @@ type NotificationsDialogProps = {
   readonly lang: string;
 };
 
-export const NotificationsDialog = ({ lang }: NotificationsDialogProps) => {
+export const NotificationDialog = ({ lang }: NotificationsDialogProps) => {
   const [open, setOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState<number>(0);
   const [resultsPerPage, setResultsPerPage] = useState<number>(10);
@@ -256,6 +256,12 @@ export const NotificationsDialog = ({ lang }: NotificationsDialogProps) => {
                                   onClick={() => handleDelete(notification.id)}
                                 >
                                   Удалить
+                                </Button>
+                                <Button
+                                  className='article-btn'
+                                  variant='outlined'
+                                >
+                                  Редактировать
                                 </Button>
                               </DialogActions>
                             )}

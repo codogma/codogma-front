@@ -21,7 +21,7 @@ import {
   updateUser,
   UserUpdate,
 } from '@/helpers/userApi';
-import { User } from '@/types';
+import { Language, User } from '@/types';
 
 const UserScheme = z.object({
   username: z.optional(
@@ -58,7 +58,7 @@ const VisuallyHiddenInput = styled('input')({
 });
 
 type PageParams = {
-  lng: string;
+  lng: Language;
 };
 
 type PageProps = {

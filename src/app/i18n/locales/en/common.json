@@ -44,5 +44,6 @@
   "compilation": "Compilation",
   "notifications": "Notifications",
   "en": "English language",
-  "ru": "Russian language"
+  "ru": "Russian language",
+  "createNotificationBtn": "Create notification"
 }

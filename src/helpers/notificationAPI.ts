@@ -1,10 +1,31 @@
 import { axiosInstance } from '@/helpers/axiosInstance';
-import { GetNotification } from '@/types';
+import { dispatchCustomEvent } from '@/helpers/dispatchCustomEvent';
+import { GetNotification, Language } from '@/types';
+
+export type NotificationCreate = {
+  title: Map<Language, string>;
+  message?: Map<Language, string>;
+};
+
+export type NotificationUpdate = {
+  title?: Map<Language, string>;
+  message?: Map<Language, string>;
+};
 
 export type GetNotificationsDTO = {
   totalElements: number;
   totalPages: number;
   content: GetNotification[];
+};
+
+export const createNotification = async (
+  requestData: NotificationCreate,
+): Promise<void> => {
+  await axiosInstance.post('/notifications', requestData);
+  dispatchCustomEvent('api', {
+    message: 'Notification created successfully',
+    severity: 'success',
+  });
 };
 
 export const getNotifications = async (

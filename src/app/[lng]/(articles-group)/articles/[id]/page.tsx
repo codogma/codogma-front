@@ -18,10 +18,10 @@ import ButtonAlertDialog from '@/components/ButtonAlertDialog';
 import { CommentList } from '@/components/CommentList';
 import { useContentImageContext } from '@/components/ContentImageProvider';
 import { TimeAgo } from '@/components/TimeAgo';
-import { UserRole } from '@/types';
+import { Language, UserRole } from '@/types';
 
 type PageParams = {
-  lng: string;
+  lng: Language;
   id: number;
 };
 

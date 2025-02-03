@@ -13,11 +13,11 @@ import { ButtonFavorite } from '@/components/ButtonFavorite';
 import { EditCategory } from '@/components/EditCategory';
 import NavTabs, { TabProps } from '@/components/NavTabs';
 import { getCategoryById } from '@/helpers/categoryApi';
-import { Category, UserRole } from '@/types';
+import { Category, Language, UserRole } from '@/types';
 
 type PageParams = {
   id: number;
-  lng: string;
+  lng: Language;
   refetch?: () => void;
 };
 

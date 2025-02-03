@@ -15,11 +15,11 @@ import {
   deleteCompilation,
   getCompilationById,
 } from '@/helpers/compilationApi';
-import { GetCompilation } from '@/types';
+import { GetCompilation, Language } from '@/types';
 
 type PageParams = {
   id: number;
-  lng: string;
+  lng: Language;
   isHiddenBookmarks?: boolean;
   refetch?: () => void;
 };

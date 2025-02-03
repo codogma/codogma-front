@@ -17,11 +17,11 @@ import React, { FormEvent, useState } from 'react';
 import { useTranslation } from '@/app/i18n/client';
 import Articles from '@/components/Articles';
 import { getArticles, GetArticlesDTO } from '@/helpers/articleApi';
-import { SearchType } from '@/types';
+import { Language, SearchType } from '@/types';
 
 type PageParams = {
   id: number;
-  lng: string;
+  lng: Language;
 };
 
 type PageProps = {

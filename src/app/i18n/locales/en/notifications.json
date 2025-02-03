@@ -1,3 +1,13 @@
 {
-  "notifications": "Notifications"
+  "notifications": "Notifications",
+  "createNotification": "Create notification",
+  "updateNotification": "Update notification",
+  "save": "Save",
+  "minText": "The notification name for {} cannot be less than 2 characters",
+  "maxText": "The notification name for {} cannot contain more than 50 characters",
+  "title": "Title",
+  "message": "Message",
+  "create": "Create",
+  "minTextTitle": "The notification message for {} cannot be less than 10 characters",
+  "maxTextTitle": "The notification message for {} cannot contain more than 1000 characters"
 }

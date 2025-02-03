@@ -8,12 +8,12 @@ import { CustomPagination } from '@/components/CustomPagination';
 import { Search } from '@/components/Search';
 import { contlCookie } from '@/constants/i18n';
 import { getCompilations, GetCompilationsDTO } from '@/helpers/compilationApi';
-import { GetCompilation, SearchType } from '@/types';
+import { GetCompilation, Language, SearchType } from '@/types';
 
 type PageProps = {
   readonly params: {
     username: string;
-    lng: string;
+    lng: Language;
   };
 };
 
