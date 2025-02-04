@@ -26,7 +26,9 @@ import * as React from 'react';
 import { useState } from 'react';
 
 import { useTranslation } from '@/app/i18n/client';
+import { useAuth } from '@/components/AuthProvider';
 import { CustomPagination } from '@/components/CustomPagination';
+import { EditNotification } from '@/components/EditNotification';
 import {
   deleteAllNotifications,
   deleteNotification,
@@ -55,6 +57,7 @@ export const NotificationDialog = ({ lang }: NotificationsDialogProps) => {
   const [currentPage, setCurrentPage] = useState<number>(0);
   const [resultsPerPage, setResultsPerPage] = useState<number>(10);
   const { t } = useTranslation(lang, 'notifications');
+  const { state } = useAuth();
   const router = useRouter();
 
   const { data, refetch } = useQuery<GetNotificationsDTO>({
@@ -187,6 +190,12 @@ export const NotificationDialog = ({ lang }: NotificationsDialogProps) => {
                                 >
                                   Удалить
                                 </Button>
+                                <EditNotification
+                                  id={notification.id}
+                                  refetch={refetch}
+                                  notificationData={notification}
+                                  lang={lang}
+                                />
                               </>
                             )}
                           </Stack>
@@ -257,12 +266,12 @@ export const NotificationDialog = ({ lang }: NotificationsDialogProps) => {
                                 >
                                   Удалить
                                 </Button>
-                                <Button
-                                  className='article-btn'
-                                  variant='outlined'
-                                >
-                                  Редактировать
-                                </Button>
+                                <EditNotification
+                                  id={notification.id}
+                                  refetch={refetch}
+                                  notificationData={notification}
+                                  lang={lang}
+                                />
                               </DialogActions>
                             )}
                           </>

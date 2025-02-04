@@ -57,11 +57,11 @@ export const SystemNotificationDialog = ({
   const SystemNotificationDialogScheme = z.object({
     title: z.record(
       z.nativeEnum(Language),
-      z.string().min(2, t('minText')).max(50, t('maxText')),
+      z.string().min(2, t('minTextTitle')).max(50, t('maxTextTitle')),
     ),
     message: z.record(
       z.nativeEnum(Language),
-      z.string().min(10, t('minTextTitle')).max(1000, t('maxTextTitle')),
+      z.string().min(10, t('minTextMessage')).max(1000, t('maxTextMessage')),
     ),
   });
 
