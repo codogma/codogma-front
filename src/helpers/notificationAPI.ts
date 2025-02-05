@@ -1,6 +1,6 @@
 import { axiosInstance } from '@/helpers/axiosInstance';
 import { dispatchCustomEvent } from '@/helpers/dispatchCustomEvent';
-import { GetNotification, Language } from '@/types';
+import { GetNotification, GetNotificationToUpdate, Language } from '@/types';
 
 export type NotificationCreate = {
   title: Map<Language, string>;
@@ -31,7 +31,7 @@ export const createNotification = async (
 export const updateNotification = async (
   id: number,
   requestData: NotificationUpdate,
-): Promise<Notification> => {
+): Promise<GetNotification> => {
   const response = await axiosInstance.put(`/notifications/${id}`, requestData);
   dispatchCustomEvent('api', {
     message: 'Notification updated successfully',
@@ -56,6 +56,13 @@ export const getNotifications = async (
       order,
     },
   });
+  return response.data;
+};
+
+export const getNotificationByIdToUpdate = async (
+  id: number,
+): Promise<GetNotificationToUpdate> => {
+  const response = await axiosInstance.get(`/notifications/${id}`);
   return response.data;
 };
 

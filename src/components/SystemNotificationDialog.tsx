@@ -197,7 +197,7 @@ export const SystemNotificationDialog = ({
               label={t('message')}
               variant='standard'
               value={messageValues}
-              error={!!errors.title?.ru || !!errors.title?.en}
+              error={!!errors.message?.ru || !!errors.message?.en}
               helperText={
                 (!!errors.message?.[selectedLang] &&
                   errors.message?.[selectedLang].message?.replace(

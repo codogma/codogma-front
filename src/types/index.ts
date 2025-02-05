@@ -59,6 +59,17 @@ export type Category = {
   tags: Tag[];
 };
 
+export type GetCategoryToUpdate = {
+  name: Record<Language, string>;
+  description: Record<Language, string>;
+  imageUrl: string;
+};
+
+export type GetNotificationToUpdate = {
+  title: Record<Language, string>;
+  message: Record<Language, string>;
+};
+
 export type GetCompilation = {
   id: number;
   isBookmarked: boolean;

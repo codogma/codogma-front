@@ -17,6 +17,7 @@ import {
 import DialogActions from '@mui/material/DialogActions';
 import MenuItem from '@mui/material/MenuItem';
 import { styled } from '@mui/material/styles';
+import { useQuery } from '@tanstack/react-query';
 import React, { useEffect, useState } from 'react';
 import {
   FormProvider,
@@ -30,9 +31,13 @@ import { useTranslation } from '@/app/i18n/client';
 import { AvatarImage } from '@/components/AvatarImage';
 import FormInput from '@/components/FormInput';
 import { languageMenuItems } from '@/constants/i18n';
-import { CategoryUpdate, updateCategory } from '@/helpers/categoryApi';
+import {
+  CategoryUpdate,
+  getCategoryByIdToUpdate,
+  updateCategory,
+} from '@/helpers/categoryApi';
 import { devConsoleInfo } from '@/helpers/devConsoleLogs';
-import { Category, Language } from '@/types';
+import { GetCategoryToUpdate, Language } from '@/types';
 
 const VisuallyHiddenInput = styled('input')({
   clip: 'rect(0 0 0 0)',
@@ -58,20 +63,12 @@ const BootstrapDialog = styled(Dialog)(({ theme }) => ({
 type EditCategoryProps = {
   readonly id: number;
   readonly lang: Language;
-  readonly categoryData: Category | undefined;
   readonly refetch?: () => void;
 };
 
-export const EditCategory = ({
-  id,
-  lang,
-  categoryData,
-  refetch,
-}: EditCategoryProps) => {
+export const EditCategory = ({ id, lang, refetch }: EditCategoryProps) => {
   const [open, setOpen] = useState(false);
-  const [imageUrl, setImageUrl] = useState<string | undefined>(
-    categoryData?.imageUrl,
-  );
+  const [imageUrl, setImageUrl] = useState<string | undefined>();
   const [selectedLang, setSelectedLang] = useState<Language>(lang);
   const { t } = useTranslation(lang, 'categories');
 
@@ -84,24 +81,28 @@ export const EditCategory = ({
     description: z.optional(z.record(z.nativeEnum(Language), z.string())),
   });
 
+  const { data: categoryData } = useQuery<GetCategoryToUpdate>({
+    queryKey: ['category', id],
+    queryFn: () => getCategoryByIdToUpdate(id),
+  });
+
   const zodForm = useForm<z.infer<typeof EditCategoryScheme>>({
     resolver: zodResolver(EditCategoryScheme),
     defaultValues: {
-      name: {
-        en: categoryData?.name,
-        ru: categoryData?.name,
-      },
+      name: categoryData?.name,
       image: undefined,
-      description: {
-        en: categoryData?.description,
-        ru: categoryData?.description,
-      },
+      description: categoryData?.description,
     },
   });
 
   useEffect(() => {
-    zodForm.reset(zodForm.getValues());
-  }, [zodForm]);
+    zodForm.reset({
+      name: categoryData?.name,
+      image: undefined,
+      description: categoryData?.description,
+    });
+    setImageUrl(categoryData?.imageUrl);
+  }, [categoryData, zodForm]);
 
   const {
     reset,
@@ -232,7 +233,7 @@ export const EditCategory = ({
                   }
                 >
                   <AvatarImage
-                    alt={categoryData?.name}
+                    alt={categoryData?.name?.[selectedLang]}
                     variant='rounded'
                     src={imageUrl}
                     size={112}

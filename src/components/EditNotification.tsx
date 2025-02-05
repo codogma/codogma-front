@@ -12,6 +12,7 @@ import {
 import DialogActions from '@mui/material/DialogActions';
 import MenuItem from '@mui/material/MenuItem';
 import { styled } from '@mui/material/styles';
+import { useQuery } from '@tanstack/react-query';
 import React, { useEffect, useState } from 'react';
 import {
   FormProvider,
@@ -24,12 +25,12 @@ import { z } from 'zod';
 import { useTranslation } from '@/app/i18n/client';
 import FormInput from '@/components/FormInput';
 import { languageMenuItems } from '@/constants/i18n';
-import { devConsoleInfo } from '@/helpers/devConsoleLogs';
 import {
+  getNotificationByIdToUpdate,
   NotificationUpdate,
   updateNotification,
 } from '@/helpers/notificationAPI';
-import { Language } from '@/types';
+import { GetNotificationToUpdate, Language } from '@/types';
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   '& .MuiDialogContent-root': {
@@ -43,14 +44,12 @@ const BootstrapDialog = styled(Dialog)(({ theme }) => ({
 type EditNotificationProps = {
   readonly id: number;
   readonly lang: Language;
-  readonly notificationData: Notification | undefined;
   readonly refetch?: () => void;
 };
 
 export const EditNotification = ({
   id,
   lang,
-  notificationData,
   refetch,
 }: EditNotificationProps) => {
   const [open, setOpen] = useState(false);
@@ -62,31 +61,31 @@ export const EditNotification = ({
       z.nativeEnum(Language),
       z.string().min(2, t('minTextTitle')).max(50, t('maxTextTitle')),
     ),
-    message: z.optional(
-      z.record(
-        z.nativeEnum(Language),
-        z.string().min(10, t('minTextMessage')).max(1000, t('maxTextMessage')),
-      ),
+    message: z.record(
+      z.nativeEnum(Language),
+      z.string().min(10, t('minTextMessage')).max(1000, t('maxTextMessage')),
     ),
+  });
+
+  const { data: notificationData } = useQuery<GetNotificationToUpdate>({
+    queryKey: ['notification', id],
+    queryFn: () => getNotificationByIdToUpdate(id),
   });
 
   const zodForm = useForm<z.infer<typeof EditNotificationScheme>>({
     resolver: zodResolver(EditNotificationScheme),
     defaultValues: {
-      title: {
-        en: notificationData?.title,
-        ru: notificationData?.title,
-      },
-      message: {
-        en: notificationData?.message,
-        ru: notificationData?.message,
-      },
+      title: notificationData?.title,
+      message: notificationData?.message,
     },
   });
 
   useEffect(() => {
-    zodForm.reset(zodForm.getValues());
-  }, [zodForm]);
+    zodForm.reset({
+      title: notificationData?.title,
+      message: notificationData?.message,
+    });
+  }, [notificationData, zodForm]);
 
   const {
     reset,
@@ -117,17 +116,8 @@ export const EditNotification = ({
     const requestData = {
       title: formData.title,
       message: formData.message,
-    };
-    const formDataToSend = new FormData();
-    formDataToSend.append('title', JSON.stringify(requestData.title));
-    if (requestData.message) {
-      formDataToSend.append('message', JSON.stringify(requestData.message));
-    }
-    const formDataObject = Object.fromEntries(
-      formDataToSend.entries(),
-    ) as unknown as NotificationUpdate;
-    devConsoleInfo(formDataObject);
-    updateNotification(id, formDataObject).then(() => {
+    } as NotificationUpdate;
+    updateNotification(id, requestData).then(() => {
       if (refetch) {
         refetch();
       }

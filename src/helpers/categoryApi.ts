@@ -1,7 +1,7 @@
 import { axiosInstance } from '@/helpers/axiosInstance';
 import { devConsoleInfo } from '@/helpers/devConsoleLogs';
 import { dispatchCustomEvent } from '@/helpers/dispatchCustomEvent';
-import { Category, Language } from '@/types';
+import { Category, GetCategoryToUpdate, Language } from '@/types';
 
 export type CategoryCreate = {
   name: Map<Language, string>;
@@ -87,6 +87,13 @@ export const getCategories = async (
 
 export const getCategoryById = async (id: number): Promise<Category> => {
   const response = await axiosInstance.get(`/categories/${id}`);
+  return response.data;
+};
+
+export const getCategoryByIdToUpdate = async (
+  id: number,
+): Promise<GetCategoryToUpdate> => {
+  const response = await axiosInstance.get(`/categories/${id}/to-update`);
   return response.data;
 };
 

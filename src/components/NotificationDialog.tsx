@@ -26,7 +26,6 @@ import * as React from 'react';
 import { useState } from 'react';
 
 import { useTranslation } from '@/app/i18n/client';
-import { useAuth } from '@/components/AuthProvider';
 import { CustomPagination } from '@/components/CustomPagination';
 import { EditNotification } from '@/components/EditNotification';
 import {
@@ -37,7 +36,7 @@ import {
   readAllNotifications,
   readNotification,
 } from '@/helpers/notificationAPI';
-import { GetNotification, NotificationType } from '@/types';
+import { GetNotification, Language, NotificationType } from '@/types';
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   '& .MuiDialogContent-root': {
@@ -49,7 +48,7 @@ const BootstrapDialog = styled(Dialog)(({ theme }) => ({
 }));
 
 type NotificationsDialogProps = {
-  readonly lang: string;
+  readonly lang: Language;
 };
 
 export const NotificationDialog = ({ lang }: NotificationsDialogProps) => {
@@ -57,7 +56,6 @@ export const NotificationDialog = ({ lang }: NotificationsDialogProps) => {
   const [currentPage, setCurrentPage] = useState<number>(0);
   const [resultsPerPage, setResultsPerPage] = useState<number>(10);
   const { t } = useTranslation(lang, 'notifications');
-  const { state } = useAuth();
   const router = useRouter();
 
   const { data, refetch } = useQuery<GetNotificationsDTO>({
@@ -193,7 +191,6 @@ export const NotificationDialog = ({ lang }: NotificationsDialogProps) => {
                                 <EditNotification
                                   id={notification.id}
                                   refetch={refetch}
-                                  notificationData={notification}
                                   lang={lang}
                                 />
                               </>
@@ -269,7 +266,6 @@ export const NotificationDialog = ({ lang }: NotificationsDialogProps) => {
                                 <EditNotification
                                   id={notification.id}
                                   refetch={refetch}
-                                  notificationData={notification}
                                   lang={lang}
                                 />
                               </DialogActions>
