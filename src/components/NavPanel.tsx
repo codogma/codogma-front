@@ -13,6 +13,7 @@ import {
   useMediaQuery,
   useTheme,
 } from '@mui/material';
+import Grid from '@mui/material/Grid2';
 import Tooltip from '@mui/material/Tooltip';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -59,57 +60,59 @@ export const NavPanel = ({ lang }: NavPanelProps) => {
   ];
 
   return (
-    <Box component='nav' sx={{ width: drawerWidth }}>
-      <Drawer
-        variant='permanent'
-        sx={{
-          display: { xs: 'none', md: 'block' },
-          flexShrink: 0,
-          whiteSpace: 'nowrap',
-          '& .MuiDrawer-paper': {
-            boxSizing: 'border-box',
-            width: drawerWidth,
-            top: 'initial',
-            left: 'initial',
-            bottom: 'initial',
-          },
-        }}
-        open
-      >
-        <List>
-          {items.map(({ text, href, icon }, index) => (
-            <ListItem key={text} disablePadding sx={{ display: 'block' }}>
-              <Tooltip
-                title={text}
-                arrow
-                placement='right'
-                sx={{ display: { sm: 'block', xl: 'none' } }}
-                disableHoverListener={!isMin}
-              >
-                <Link href={href}>
-                  <ListItemButton
-                    onClick={() => setActiveIndex(index)}
-                    selected={activeIndex === index}
-                  >
-                    <ListItemIcon
-                      sx={{
-                        minWidth: 0,
-                        mr: 1,
-                      }}
+    <Grid size={{ lg: 2, md: 1, sm: 0 }}>
+      <Box component='nav' sx={{ width: drawerWidth }}>
+        <Drawer
+          variant='permanent'
+          sx={{
+            display: { xs: 'none', md: 'block' },
+            flexShrink: 0,
+            whiteSpace: 'nowrap',
+            '& .MuiDrawer-paper': {
+              boxSizing: 'border-box',
+              width: drawerWidth,
+              top: 'initial',
+              left: 'initial',
+              bottom: 'initial',
+            },
+          }}
+          open
+        >
+          <List>
+            {items.map(({ text, href, icon }, index) => (
+              <ListItem key={text} disablePadding sx={{ display: 'block' }}>
+                <Tooltip
+                  title={text}
+                  arrow
+                  placement='right'
+                  sx={{ display: { sm: 'block', xl: 'none' } }}
+                  disableHoverListener={!isMin}
+                >
+                  <Link href={href}>
+                    <ListItemButton
+                      onClick={() => setActiveIndex(index)}
+                      selected={activeIndex === index}
                     >
-                      {icon}
-                    </ListItemIcon>
-                    <ListItemText
-                      primary={text}
-                      sx={{ opacity: isMin ? 0 : 1 }}
-                    />
-                  </ListItemButton>
-                </Link>
-              </Tooltip>
-            </ListItem>
-          ))}
-        </List>
-      </Drawer>
-    </Box>
+                      <ListItemIcon
+                        sx={{
+                          minWidth: 0,
+                          mr: 1,
+                        }}
+                      >
+                        {icon}
+                      </ListItemIcon>
+                      <ListItemText
+                        primary={text}
+                        sx={{ opacity: isMin ? 0 : 1 }}
+                      />
+                    </ListItemButton>
+                  </Link>
+                </Tooltip>
+              </ListItem>
+            ))}
+          </List>
+        </Drawer>
+      </Box>
+    </Grid>
   );
 };

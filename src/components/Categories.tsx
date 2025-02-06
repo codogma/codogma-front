@@ -16,10 +16,10 @@ import { useAuth } from '@/components/AuthProvider';
 import { AvatarImage } from '@/components/AvatarImage';
 import { ButtonFavorite } from '@/components/ButtonFavorite';
 import { EditCategory } from '@/components/EditCategory';
-import { Category, Language, UserRole } from '@/types';
+import { GetCategory, Language, UserRole } from '@/types';
 
 type CategoriesProps = {
-  readonly categories: Category[];
+  readonly categories: GetCategory[];
   readonly loading: boolean;
   readonly lang: Language;
   readonly refetch?: () => void;
@@ -117,7 +117,6 @@ export default function Categories({
                     <EditCategory
                       id={category?.id}
                       lang={lang}
-                      categoryData={category}
                       refetch={refetch}
                     />
                   )}

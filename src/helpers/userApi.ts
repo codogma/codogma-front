@@ -3,12 +3,12 @@ import Cookies from 'js-cookie';
 import { axiosInstance } from '@/helpers/axiosInstance';
 import { devConsoleInfo } from '@/helpers/devConsoleLogs';
 import { dispatchCustomEvent } from '@/helpers/dispatchCustomEvent';
-import { User, UserRole } from '@/types';
+import { GetUserDTO, User, UserRole } from '@/types';
 
 export type GetUsersDTO = {
   totalElements: number;
   totalPages: number;
-  content: User[];
+  content: GetUserDTO[];
 };
 
 export type UserUpdate = {

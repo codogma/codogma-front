@@ -58,7 +58,13 @@ import {
 } from '@/helpers/compilationApi';
 import { devConsoleError } from '@/helpers/devConsoleLogs';
 import { getTagsByName } from '@/helpers/tagApi';
-import { Article, Category, GetCompilation, Language, Tag } from '@/types';
+import {
+  Article,
+  GetCategory,
+  GetCompilation,
+  GetTag,
+  Language,
+} from '@/types';
 
 type PageParams = {
   readonly params: { lng: Language };
@@ -133,10 +139,10 @@ const Page = ({ params: { lng } }: PageParams) => {
   const [inputCompilationValue, setInputCompilationValue] =
     useState<string>('');
   const [inputTagValue, setInputTagValue] = useState<string>('');
-  const [selectedCategories, setSelectedCategories] = useState<Category[]>();
+  const [selectedCategories, setSelectedCategories] = useState<GetCategory[]>();
   const [selectedCompilations, setSelectedCompilations] =
     useState<GetCompilation[]>();
-  const [availableCategories, setAvailableCategories] = useState<Category[]>(
+  const [availableCategories, setAvailableCategories] = useState<GetCategory[]>(
     [],
   );
   const [availableCompilations, setAvailableCompilations] = useState<
@@ -335,7 +341,7 @@ const Page = ({ params: { lng } }: PageParams) => {
     setArticleData,
   ]);
 
-  const { data: categoriesObjects } = useQuery<Category[]>({
+  const { data: categoriesObjects } = useQuery<GetCategory[]>({
     queryKey: ['categories', inputCategoryValue],
     queryFn: () => getCategoriesByName(inputCategoryValue),
     enabled: !!inputCategoryValue,
@@ -353,7 +359,7 @@ const Page = ({ params: { lng } }: PageParams) => {
 
   useEffect(() => {
     const lsSelectedCategoriesData = localStorage.getItem(SELECTED_CATEGORIES);
-    let lsSelectedCategories: Category[] = [];
+    let lsSelectedCategories: GetCategory[] = [];
     if (lsSelectedCategoriesData !== null)
       lsSelectedCategories = JSON.parse(lsSelectedCategoriesData);
     const mergedCategories = [
@@ -366,7 +372,7 @@ const Page = ({ params: { lng } }: PageParams) => {
         .reduce((acc, category) => {
           acc.set(category.id, category);
           return acc;
-        }, new Map<number, Category>())
+        }, new Map<number, GetCategory>())
         .values(),
     );
     setAvailableCategories(uniqueCategories);
@@ -411,7 +417,7 @@ const Page = ({ params: { lng } }: PageParams) => {
     setAvailableCompilations(uniqueCompilations);
   }, [compilationsObjects, compilationsPages]);
 
-  const { data: tagObjects } = useQuery<Tag[]>({
+  const { data: tagObjects } = useQuery<GetTag[]>({
     queryKey: ['tags', inputTagValue],
     queryFn: () => getTagsByName(inputTagValue),
     enabled: !!inputTagValue,
@@ -678,8 +684,8 @@ const Page = ({ params: { lng } }: PageParams) => {
                       option.id === value.id
                     }
                     onChange={(_, newValue) => {
-                      const normalizedValue: Category[] = (
-                        newValue as Category[]
+                      const normalizedValue: GetCategory[] = (
+                        newValue as GetCategory[]
                       ).map((value) => {
                         const existingCategory = availableCategories.find(
                           (category) => category.id === value.id,
@@ -688,7 +694,7 @@ const Page = ({ params: { lng } }: PageParams) => {
                       });
 
                       const uniqueCategoriesIds = new Set<number>();
-                      const uniqueSelectedCategories = new Set<Category>();
+                      const uniqueSelectedCategories = new Set<GetCategory>();
                       normalizedValue.forEach((category) => {
                         uniqueCategoriesIds.add(category.id);
                         uniqueSelectedCategories.add(category);
@@ -702,8 +708,8 @@ const Page = ({ params: { lng } }: PageParams) => {
                     onInputChange={(_, newInputValue) =>
                       setInputCategoryValue(newInputValue)
                     }
-                    renderTags={(value: Category[], getTagProps) =>
-                      value.map((option: Category, index: number) => {
+                    renderTags={(value: GetCategory[], getTagProps) =>
+                      value.map((option: GetCategory, index: number) => {
                         const { key, ...tagProps } = getTagProps({ index });
                         return (
                           <Chip

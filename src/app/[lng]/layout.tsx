@@ -1,10 +1,4 @@
-import {
-  Box,
-  Container,
-  CssBaseline,
-  Grid2 as Grid,
-  StyledEngineProvider,
-} from '@mui/material';
+import { CssBaseline, StyledEngineProvider } from '@mui/material';
 import { AppRouterCacheProvider } from '@mui/material-nextjs/v14-appRouter';
 import { Metadata } from 'next';
 import { Inter } from 'next/font/google';
@@ -13,21 +7,19 @@ import React, { ReactNode } from 'react';
 
 import { initTranslation } from '@/app/i18n';
 import { AuthProvider } from '@/components/AuthProvider';
-import BottomNavigation from '@/components/BottomNavigation';
 import ButtonBackToTop from '@/components/ButtonBackToTop';
+import { ContainerWithNavigations } from '@/components/ContainerWithNavigations';
 import { ContentImageProvider } from '@/components/ContentImageProvider';
-import CustomizedSnackbars from '@/components/CustomizedSnackbars';
 import Footer from '@/components/Footer';
-import NavBar from '@/components/NavBar';
-import { NavPanel } from '@/components/NavPanel';
 import { ReactQueryProvider } from '@/components/ReactQueryProvider';
 import { ColorModeProvider } from '@/components/ThemeContext';
+import { Language } from '@/types';
 
 const inter = Inter({ subsets: ['latin'] });
 
 type RootLayoutProps = {
   readonly children: ReactNode;
-  readonly params: { lng: string };
+  readonly params: { lng: Language };
 };
 
 export async function generateMetadata({
@@ -81,28 +73,14 @@ export default async function RootLayout({
               <ReactQueryProvider>
                 <AuthProvider>
                   <CssBaseline />
-                  <Box className='flex min-h-screen flex-col'>
-                    <NavBar lang={lng} />
-                    <Container maxWidth='xl' className='grid'>
-                      <Grid container spacing={2} rowGap={0}>
-                        <Grid size={{ lg: 2, md: 1, sm: 0 }}>
-                          <NavPanel lang={lng} />
-                        </Grid>
-                        <Grid size={{ lg: 10, md: 11, sm: 12 }}>
-                          <ButtonBackToTop>
-                            <main className='grow'>
-                              <ContentImageProvider>
-                                {children}
-                              </ContentImageProvider>
-                            </main>
-                          </ButtonBackToTop>
-                          <Footer />
-                        </Grid>
-                      </Grid>
-                      <CustomizedSnackbars />
-                    </Container>
-                    <BottomNavigation lang={lng} />
-                  </Box>
+                  <ContainerWithNavigations lang={lng}>
+                    <ButtonBackToTop>
+                      <main className='grow'>
+                        <ContentImageProvider>{children}</ContentImageProvider>
+                      </main>
+                    </ButtonBackToTop>
+                    <Footer lang={lng} />
+                  </ContainerWithNavigations>
                 </AuthProvider>
               </ReactQueryProvider>
             </ColorModeProvider>

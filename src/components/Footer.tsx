@@ -4,13 +4,22 @@ import XIcon from '@mui/icons-material/X';
 import { Box, Container, Divider, Link, Typography } from '@mui/material';
 import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
+import { usePathname } from 'next/navigation';
 import React, { memo } from 'react';
 
+import { Language } from '@/types';
+
 type FooterProps = {
+  readonly lang: Language;
   readonly title?: string;
 };
 
-function Footer({ title }: FooterProps) {
+function Footer({ lang, title }: FooterProps) {
+  const pathname = usePathname();
+  const hasAdmin = pathname.startsWith(`/${lang}/admin`);
+  if (hasAdmin) {
+    return null;
+  }
   return (
     <Box className='bg-white py-6 text-white dark:bg-woodsmoke'>
       <Container maxWidth='xl'>

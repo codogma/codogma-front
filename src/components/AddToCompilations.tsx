@@ -121,7 +121,7 @@ export const AddToCompilations: React.FC<AddToCompilationsProps> = ({
         .values(),
     );
     setAvailableCompilations(uniqueCompilations);
-  }, [compilationsObjects, compilationsPages, selectedCompilations]);
+  }, [compilationsObjects, compilationsPages, filteredUserCompilations]);
 
   useEffect(() => {
     if (isSubmitSuccessful) {

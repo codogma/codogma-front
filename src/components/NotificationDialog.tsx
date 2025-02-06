@@ -256,18 +256,6 @@ export const NotificationDialog = ({ lang }: NotificationsDialogProps) => {
                                 >
                                   Отметить как прочитанное
                                 </Button>
-                                <Button
-                                  className='article-btn'
-                                  variant='outlined'
-                                  onClick={() => handleDelete(notification.id)}
-                                >
-                                  Удалить
-                                </Button>
-                                <EditNotification
-                                  id={notification.id}
-                                  refetch={refetch}
-                                  lang={lang}
-                                />
                               </DialogActions>
                             )}
                           </>

@@ -1,7 +1,7 @@
 import { axiosInstance } from '@/helpers/axiosInstance';
 import { devConsoleInfo } from '@/helpers/devConsoleLogs';
 import { dispatchCustomEvent } from '@/helpers/dispatchCustomEvent';
-import { Category, GetCategoryToUpdate, Language } from '@/types';
+import { GetCategory, GetCategoryToUpdate, Language } from '@/types';
 
 export type CategoryCreate = {
   name: Map<Language, string>;
@@ -18,7 +18,7 @@ export type CategoryUpdate = {
 export type GetCategoriesDTO = {
   totalElements: number;
   totalPages: number;
-  content: Category[];
+  content: GetCategory[];
 };
 
 export const createCategory = async (
@@ -37,7 +37,7 @@ export const createCategory = async (
 
 export const getCategoriesByName = async (
   name: string,
-): Promise<Category[]> => {
+): Promise<GetCategory[]> => {
   const response = await axiosInstance.get('/categories/list-by-name', {
     params: {
       name,
@@ -49,7 +49,7 @@ export const getCategoriesByName = async (
 export const updateCategory = async (
   id: number,
   requestData: CategoryUpdate,
-): Promise<Category> => {
+): Promise<GetCategory> => {
   const response = await axiosInstance.put(`/categories/${id}`, requestData, {
     headers: {
       'Content-Type': 'multipart/form-data',
@@ -85,7 +85,7 @@ export const getCategories = async (
   return response.data;
 };
 
-export const getCategoryById = async (id: number): Promise<Category> => {
+export const getCategoryById = async (id: number): Promise<GetCategory> => {
   const response = await axiosInstance.get(`/categories/${id}`);
   return response.data;
 };
@@ -102,7 +102,7 @@ export const deleteCategory = async (id: number): Promise<void> => {
   devConsoleInfo('Category deleted successfully');
 };
 
-export const unfavorite = async (id: number): Promise<Category> => {
+export const unfavorite = async (id: number): Promise<GetCategory> => {
   const response = await axiosInstance.delete(`/categories/${id}/unfavorite`);
   dispatchCustomEvent('api', {
     message: 'You have successfully removed the category from your favorites',
@@ -111,7 +111,7 @@ export const unfavorite = async (id: number): Promise<Category> => {
   return response.data;
 };
 
-export const favorite = async (id: number): Promise<Category> => {
+export const favorite = async (id: number): Promise<GetCategory> => {
   const response = await axiosInstance.post(
     `/categories/${id}/add-to-favorites`,
   );
