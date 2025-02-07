@@ -67,10 +67,12 @@ export const EditNotification = ({
     ),
   });
 
-  const { data: notificationData } = useQuery<GetNotificationToUpdate>({
-    queryKey: ['notification', id],
-    queryFn: () => getNotificationByIdToUpdate(id),
-  });
+  const { data: notificationData, refetch: refetchNotificationData } =
+    useQuery<GetNotificationToUpdate>({
+      queryKey: ['notification', id],
+      queryFn: () => getNotificationByIdToUpdate(id),
+      enabled: false,
+    });
 
   const zodForm = useForm<z.infer<typeof EditNotificationScheme>>({
     resolver: zodResolver(EditNotificationScheme),
@@ -126,7 +128,7 @@ export const EditNotification = ({
   };
 
   const handleClickOpen = () => {
-    setOpen(true);
+    refetchNotificationData().then(() => setOpen(true));
   };
 
   const handleClose = () => {

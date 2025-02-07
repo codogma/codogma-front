@@ -13,18 +13,25 @@ export function useArticleProgress(articleId: number) {
       const articleElement = document.getElementById(`article-${articleId}`);
       if (!articleElement) return;
 
-      const { top, height } = articleElement.getBoundingClientRect();
+      const articleTop = articleElement.offsetTop;
+      const articleHeight = articleElement.offsetHeight;
+      const scrollY = window.scrollY || window.pageYOffset;
       const windowHeight = window.innerHeight;
 
-      const visibleHeight = Math.min(windowHeight - top, height);
-      const scrolledHeight = Math.max(0, visibleHeight);
-      const newProgress = Math.min((scrolledHeight / height) * 100, 100);
+      const maxScrollable = articleHeight - windowHeight;
+      if (maxScrollable <= 0) {
+        setProgress(0);
+        return;
+      }
 
+      const scrolled = scrollY - articleTop;
+      const clampedScrolled = Math.max(0, Math.min(scrolled, maxScrollable));
+      const newProgress = (clampedScrolled / maxScrollable) * 100;
       setProgress(newProgress);
     }
 
     window.addEventListener('scroll', handleScroll);
-    handleScroll();
+    if (articleId) handleScroll();
 
     const interval = setInterval(() => {
       setTimeSpent(Math.floor((Date.now() - startTime) / 1000));

@@ -10,6 +10,7 @@ import { AuthProvider } from '@/components/AuthProvider';
 import ButtonBackToTop from '@/components/ButtonBackToTop';
 import { ContainerWithNavigations } from '@/components/ContainerWithNavigations';
 import { ContentImageProvider } from '@/components/ContentImageProvider';
+import { CustomizedSnackbars } from '@/components/CustomizedSnackbars';
 import Footer from '@/components/Footer';
 import { ReactQueryProvider } from '@/components/ReactQueryProvider';
 import { ColorModeProvider } from '@/components/ThemeContext';
@@ -60,7 +61,7 @@ export async function generateMetadata({
   };
 }
 
-export default async function RootLayout({
+export default async function Layout({
   children,
   params: { lng },
 }: RootLayoutProps) {
@@ -80,6 +81,7 @@ export default async function RootLayout({
                       </main>
                     </ButtonBackToTop>
                     <Footer lang={lng} />
+                    <CustomizedSnackbars />
                   </ContainerWithNavigations>
                 </AuthProvider>
               </ReactQueryProvider>

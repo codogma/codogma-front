@@ -23,7 +23,7 @@ import Typography from '@mui/material/Typography';
 import { useQuery } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import * as React from 'react';
-import { useState } from 'react';
+import { Fragment, useState } from 'react';
 
 import { useTranslation } from '@/app/i18n/client';
 import { CustomPagination } from '@/components/CustomPagination';
@@ -148,9 +148,8 @@ export const NotificationDialog = ({ lang }: NotificationsDialogProps) => {
           >
             <List>
               {notifications?.map((notification, id) => (
-                <>
+                <Fragment key={id}>
                   <Badge
-                    key={id}
                     invisible={
                       notification.read ||
                       notification.type === NotificationType.SYSTEM
@@ -266,7 +265,7 @@ export const NotificationDialog = ({ lang }: NotificationsDialogProps) => {
                   {notifications.length - 1 !== id && (
                     <Divider component='li' />
                   )}
-                </>
+                </Fragment>
               ))}
             </List>
           </Box>

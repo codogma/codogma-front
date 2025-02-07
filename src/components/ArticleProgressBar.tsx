@@ -31,6 +31,7 @@ export const ArticleProgressBar = ({
     >
       <LinearProgress
         variant='determinate'
+        defaultValue={0}
         value={progress ?? 0}
         sx={{
           height: 5,

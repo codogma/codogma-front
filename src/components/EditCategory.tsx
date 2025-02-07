@@ -81,10 +81,12 @@ export const EditCategory = ({ id, lang, refetch }: EditCategoryProps) => {
     description: z.optional(z.record(z.nativeEnum(Language), z.string())),
   });
 
-  const { data: categoryData } = useQuery<GetCategoryToUpdate>({
-    queryKey: ['category', id],
-    queryFn: () => getCategoryByIdToUpdate(id),
-  });
+  const { data: categoryData, refetch: refetchCategoryData } =
+    useQuery<GetCategoryToUpdate>({
+      queryKey: ['category', id],
+      queryFn: () => getCategoryByIdToUpdate(id),
+      enabled: false,
+    });
 
   const zodForm = useForm<z.infer<typeof EditCategoryScheme>>({
     resolver: zodResolver(EditCategoryScheme),
@@ -168,7 +170,7 @@ export const EditCategory = ({ id, lang, refetch }: EditCategoryProps) => {
   };
 
   const handleClickOpen = () => {
-    setOpen(true);
+    refetchCategoryData().then(() => setOpen(true));
   };
 
   const handleClose = () => {

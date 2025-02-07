@@ -45,5 +45,6 @@
   "notifications": "Уведомления",
   "en": "Английского языка",
   "ru": "Русского языка",
-  "createNotificationBtn": "Создать уведомление"
+  "createNotificationBtn": "Создать уведомление",
+  "adminPanelBtn": "Панель администратора"
 }

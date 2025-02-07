@@ -1,4 +1,5 @@
 import axios, { isAxiosError } from 'axios';
+import { redirect } from 'next/navigation';
 
 import { devConsoleError } from '@/helpers/devConsoleLogs';
 import { getAuthToken, getIntl } from '@/helpers/getCookies';
@@ -47,7 +48,7 @@ axiosInstance.interceptors.response.use(
           window.dispatchEvent(new Event('storage'));
           devConsoleError('Unauthorized access - redirecting to login...');
         } else if (statusCode === 404) {
-          devConsoleError('Resource not found.');
+          redirect('/not-found');
         } else if (statusCode >= 500) {
           devConsoleError('Server error. Please try again later.');
         }

@@ -1,5 +1,6 @@
 'use client';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
+import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
 import CategoryIcon from '@mui/icons-material/Category';
 import CreateIcon from '@mui/icons-material/Create';
 import EditNotificationsIcon from '@mui/icons-material/EditNotifications';
@@ -52,11 +53,15 @@ const NavBar = ({ lang }: NavBarProps) => {
     handleCloseUserMenu();
   };
 
-  const handleClickMenuItem = (url: string) => {
-    router.push(`/${lang}/${url}`);
+  const handleClickMenuItem = (url: string, openInNewTab: boolean = false) => {
+    if (openInNewTab) {
+      const fullUrl = `/${lang}/${url}`;
+      window.open(fullUrl, '_blank');
+    } else {
+      router.push(`/${lang}/${url}`);
+    }
     handleCloseUserMenu();
   };
-
   const handleOpenCompilationDialog = () => {
     setCompilationDialogOpen(true);
     handleCloseUserMenu();
@@ -171,7 +176,7 @@ const NavBar = ({ lang }: NavBarProps) => {
             >
               {!state.isAuthenticated ? (
                 <MenuList className='nav-menu-list'>
-                  <MenuItem onClick={() => handleClickMenuItem(`/sign-up`)}>
+                  <MenuItem onClick={() => handleClickMenuItem('sign-up')}>
                     <Typography textAlign='center'>
                       <PersonAddAltRoundedIcon
                         className='mr-2'
@@ -180,7 +185,7 @@ const NavBar = ({ lang }: NavBarProps) => {
                       {t('signUpBtn')}
                     </Typography>
                   </MenuItem>
-                  <MenuItem onClick={() => handleClickMenuItem(`/sign-in`)}>
+                  <MenuItem onClick={() => handleClickMenuItem('sign-in')}>
                     <Typography textAlign='center'>
                       <LoginIcon className='mr-2' fontSize='small' />
                       {t('signInBtn')}
@@ -191,7 +196,7 @@ const NavBar = ({ lang }: NavBarProps) => {
                 <MenuList className='nav-menu-list'>
                   <MenuItem
                     onClick={() =>
-                      handleClickMenuItem(`/users/${state.user?.username}`)
+                      handleClickMenuItem(`users/${state.user?.username}`)
                     }
                   >
                     <Typography textAlign='center'>
@@ -217,7 +222,7 @@ const NavBar = ({ lang }: NavBarProps) => {
                     )}
                   {state.user?.role === UserRole.ROLE_AUTHOR && (
                     <MenuItem
-                      onClick={() => handleClickMenuItem(`/article-editor`)}
+                      onClick={() => handleClickMenuItem('article-editor')}
                     >
                       <Typography textAlign='center'>
                         <CreateIcon className='mr-2' fontSize='small' />
@@ -238,6 +243,17 @@ const NavBar = ({ lang }: NavBarProps) => {
                         onClose={handleCloseCategoryDialog}
                         lang={lang}
                       />
+                      <MenuItem
+                        onClick={() => handleClickMenuItem('admin', true)}
+                      >
+                        <Typography textAlign='center'>
+                          <AdminPanelSettingsIcon
+                            className='mr-2'
+                            fontSize='small'
+                          />
+                          {t('adminPanelBtn')}
+                        </Typography>
+                      </MenuItem>
                       <MenuItem onClick={() => handleOpenNotificationDialog()}>
                         <Typography textAlign='center'>
                           <EditNotificationsIcon

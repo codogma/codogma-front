@@ -45,5 +45,6 @@
   "notifications": "Notifications",
   "en": "English language",
   "ru": "Russian language",
-  "createNotificationBtn": "Create notification"
+  "createNotificationBtn": "Create notification",
+  "adminPanelBtn": "Admin panel"
 }

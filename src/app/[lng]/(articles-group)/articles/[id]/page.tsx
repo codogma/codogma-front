@@ -13,7 +13,7 @@ import { AddToCompilations } from '@/components/AddToCompilations';
 import { ArticleActions } from '@/components/ArticleActions';
 import { useArticle } from '@/components/ArticleProvider';
 import { useAuth } from '@/components/AuthProvider';
-import { AvatarImage } from '@/components/AvatarImage'; // import { CommentList } from '@/components/CommentList';
+import { AvatarImage } from '@/components/AvatarImage';
 import ButtonAlertDialog from '@/components/ButtonAlertDialog';
 import { CommentList } from '@/components/CommentList';
 import { useContentImageContext } from '@/components/ContentImageProvider';

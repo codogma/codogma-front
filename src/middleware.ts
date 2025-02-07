@@ -30,15 +30,6 @@ export async function middleware(req: NextRequest) {
     return handleAdminCheck(req);
   }
 
-  // === 3. Маршрутизация при ошибках ===
-  const response = await fetch(req.nextUrl, {
-    headers: req.headers,
-  });
-
-  if (response.status === 404) {
-    return redirectTo(req, '/not-found');
-  }
-
   return NextResponse.next();
 }
 
