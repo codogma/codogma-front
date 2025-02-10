@@ -26,6 +26,7 @@ import * as React from 'react';
 import { Fragment, useState } from 'react';
 
 import { useTranslation } from '@/app/i18n/client';
+import { useAuth } from '@/components/AuthProvider';
 import { CustomPagination } from '@/components/CustomPagination';
 import { EditNotification } from '@/components/EditNotification';
 import {
@@ -36,7 +37,7 @@ import {
   readAllNotifications,
   readNotification,
 } from '@/helpers/notificationAPI';
-import { GetNotification, Language, NotificationType } from '@/types';
+import { GetNotification, Language, NotificationType, UserRole } from '@/types';
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   '& .MuiDialogContent-root': {
@@ -55,6 +56,7 @@ export const NotificationDialog = ({ lang }: NotificationsDialogProps) => {
   const [open, setOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState<number>(0);
   const [resultsPerPage, setResultsPerPage] = useState<number>(10);
+  const { state } = useAuth();
   const { t } = useTranslation(lang, 'notifications');
   const router = useRouter();
 
@@ -178,22 +180,27 @@ export const NotificationDialog = ({ lang }: NotificationsDialogProps) => {
                               {notification.title}
                             </Typography>
                             {notification.type === NotificationType.SYSTEM && (
-                              <>
-                                <WarningAmberIcon color='warning' />
-                                <Button
-                                  className='article-btn'
-                                  variant='outlined'
-                                  onClick={() => handleDelete(notification.id)}
-                                >
-                                  Удалить
-                                </Button>
-                                <EditNotification
-                                  id={notification.id}
-                                  refetch={refetch}
-                                  lang={lang}
-                                />
-                              </>
+                              <WarningAmberIcon color='warning' />
                             )}
+                            {state.user?.role === UserRole.ROLE_ADMIN &&
+                              notification.type === NotificationType.SYSTEM && (
+                                <>
+                                  <Button
+                                    className='article-btn'
+                                    variant='outlined'
+                                    onClick={() =>
+                                      handleDelete(notification.id)
+                                    }
+                                  >
+                                    Удалить
+                                  </Button>
+                                  <EditNotification
+                                    id={notification.id}
+                                    refetch={refetch}
+                                    lang={lang}
+                                  />
+                                </>
+                              )}
                           </Stack>
                         }
                         secondary={
@@ -220,6 +227,15 @@ export const NotificationDialog = ({ lang }: NotificationsDialogProps) => {
                                     variant='outlined'
                                   >
                                     Проверить
+                                  </Button>
+                                  <Button
+                                    className='article-btn'
+                                    variant='outlined'
+                                    onClick={() =>
+                                      handleDelete(notification.id)
+                                    }
+                                  >
+                                    Удалить
                                   </Button>
                                 </Link>
                               )}
@@ -281,14 +297,14 @@ export const NotificationDialog = ({ lang }: NotificationsDialogProps) => {
           <Button
             className='article-btn'
             variant='outlined'
-            onClick={handleReadAllNotifications}
+            onClick={() => handleReadAllNotifications()}
           >
             Отметить как прочитанные
           </Button>
           <Button
             className='article-btn'
             variant='outlined'
-            onClick={handleDeleteAll}
+            onClick={() => handleDeleteAll()}
           >
             Удалить прочитанные
           </Button>
