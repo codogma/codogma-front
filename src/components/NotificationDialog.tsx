@@ -53,7 +53,7 @@ const BootstrapDialog = styled(Dialog)(({ theme }) => ({
 const BadgeDialog = styled(Badge)(() => ({
   '& .MuiBadge-badge': {
     position: 'absolute',
-    right: -100,
+    right: 470,
     top: '50%',
     transform: 'translateY(-50%)',
     backgroundColor: 'red',
@@ -234,18 +234,16 @@ export const NotificationDialog = ({ lang }: NotificationsDialogProps) => {
                               {notification.message}
                               {notification.type ===
                                 NotificationType.ARTICLE_MODERATION && (
-                                <Link
-                                  onClick={() =>
-                                    handleClickArticleModeration(
-                                      `/${lang}/articles/${notification.articleId}`,
-                                      notification.id,
-                                    )
-                                  }
-                                >
-                                  <br />
+                                <>
                                   <Button
                                     className='article-btn'
                                     variant='outlined'
+                                    onClick={() =>
+                                      handleClickArticleModeration(
+                                        `/${lang}/articles/${notification.articleId}`,
+                                        notification.id,
+                                      )
+                                    }
                                   >
                                     Проверить
                                   </Button>
@@ -258,7 +256,7 @@ export const NotificationDialog = ({ lang }: NotificationsDialogProps) => {
                                   >
                                     Удалить
                                   </Button>
-                                </Link>
+                                </>
                               )}
                               {(notification.type ===
                                 NotificationType.COMMENT_MODERATION ||
