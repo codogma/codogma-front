@@ -30,8 +30,10 @@ import { useAuth } from '@/components/AuthProvider';
 import { CustomPagination } from '@/components/CustomPagination';
 import { EditNotification } from '@/components/EditNotification';
 import {
-  deleteAllNotifications,
+  deleteAllSystemNotifications,
   deleteNotification,
+  deleteReadNotifications,
+  deleteSystemNotification,
   getNotifications,
   GetNotificationsDTO,
   readAllNotifications,
@@ -45,6 +47,16 @@ const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   },
   '& .MuiDialogActions-root': {
     padding: theme.spacing(1),
+  },
+}));
+
+const BadgeDialog = styled(Badge)(() => ({
+  '& .MuiBadge-badge': {
+    position: 'absolute',
+    right: -100,
+    top: '50%',
+    transform: 'translateY(-50%)',
+    backgroundColor: 'red',
   },
 }));
 
@@ -93,20 +105,28 @@ export const NotificationDialog = ({ lang }: NotificationsDialogProps) => {
     setResultsPerPage(value);
   };
 
-  const handleDelete = (id: number) => {
-    deleteNotification(id).then(() => refetch());
-  };
-
-  const handleDeleteAll = () => {
-    deleteAllNotifications();
-  };
-
   const handleReadNotification = (id: number) => {
     readNotification(id).then(() => refetch());
   };
 
   const handleReadAllNotifications = () => {
-    readAllNotifications();
+    readAllNotifications().then(() => refetch());
+  };
+
+  const handleDeleteNotification = (id: number) => {
+    deleteNotification(id).then(() => refetch());
+  };
+
+  const handleDeleteReadNotifications = () => {
+    deleteReadNotifications().then(() => refetch());
+  };
+
+  const handleDeleteSystemNotification = (id: number) => {
+    deleteSystemNotification(id).then(() => refetch());
+  };
+
+  const handleDeleteAllSystemNotifications = () => {
+    deleteAllSystemNotifications().then(() => refetch());
   };
 
   return (
@@ -151,12 +171,11 @@ export const NotificationDialog = ({ lang }: NotificationsDialogProps) => {
             <List>
               {notifications?.map((notification, id) => (
                 <Fragment key={id}>
-                  <Badge
+                  <BadgeDialog
                     invisible={
                       notification.read ||
                       notification.type === NotificationType.SYSTEM
                     }
-                    color='error'
                     badgeContent=' '
                   >
                     <ListItem alignItems='flex-start'>
@@ -189,7 +208,9 @@ export const NotificationDialog = ({ lang }: NotificationsDialogProps) => {
                                     className='article-btn'
                                     variant='outlined'
                                     onClick={() =>
-                                      handleDelete(notification.id)
+                                      handleDeleteSystemNotification(
+                                        notification.id,
+                                      )
                                     }
                                   >
                                     Удалить
@@ -232,7 +253,7 @@ export const NotificationDialog = ({ lang }: NotificationsDialogProps) => {
                                     className='article-btn'
                                     variant='outlined'
                                     onClick={() =>
-                                      handleDelete(notification.id)
+                                      handleDeleteNotification(notification.id)
                                     }
                                   >
                                     Удалить
@@ -277,7 +298,7 @@ export const NotificationDialog = ({ lang }: NotificationsDialogProps) => {
                         }
                       />
                     </ListItem>
-                  </Badge>
+                  </BadgeDialog>
                   {notifications.length - 1 !== id && (
                     <Divider component='li' />
                   )}
@@ -304,10 +325,19 @@ export const NotificationDialog = ({ lang }: NotificationsDialogProps) => {
           <Button
             className='article-btn'
             variant='outlined'
-            onClick={() => handleDeleteAll()}
+            onClick={() => handleDeleteReadNotifications()}
           >
             Удалить прочитанные
           </Button>
+          {state.user?.role === UserRole.ROLE_ADMIN && (
+            <Button
+              className='article-btn'
+              variant='outlined'
+              onClick={() => handleDeleteAllSystemNotifications()}
+            >
+              Удалить системные уведомления
+            </Button>
+          )}
         </DialogActions>
       </BootstrapDialog>
     </>
