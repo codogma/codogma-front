@@ -1,17 +1,20 @@
 import { Close as CloseIcon } from '@mui/icons-material';
 import NotificationsIcon from '@mui/icons-material/Notifications';
+import NotificationsActiveIcon from '@mui/icons-material/NotificationsActive';
 import WarningAmberIcon from '@mui/icons-material/WarningAmber';
 import {
   Box,
   Button,
+  ButtonGroup,
+  CardActions,
   Dialog,
   DialogTitle,
-  Link,
   List,
   ListItem,
-  ListItemText,
 } from '@mui/material';
 import Badge from '@mui/material/Badge';
+import Card from '@mui/material/Card';
+import CardContent from '@mui/material/CardContent';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import Divider from '@mui/material/Divider';
@@ -52,11 +55,10 @@ const BootstrapDialog = styled(Dialog)(({ theme }) => ({
 
 const BadgeDialog = styled(Badge)(() => ({
   '& .MuiBadge-badge': {
-    position: 'absolute',
-    right: 470,
-    top: '50%',
-    transform: 'translateY(-50%)',
-    backgroundColor: 'red',
+    top: '25%',
+    left: -5,
+    transform: 'translateY(-25%)',
+    color: 'red',
   },
 }));
 
@@ -77,6 +79,7 @@ export const NotificationDialog = ({ lang }: NotificationsDialogProps) => {
     queryFn: () => {
       return getNotifications(undefined, currentPage, resultsPerPage);
     },
+    refetchInterval: 10000,
   });
 
   const notifications: GetNotification[] = data?.content ?? [];
@@ -176,16 +179,20 @@ export const NotificationDialog = ({ lang }: NotificationsDialogProps) => {
                       notification.read ||
                       notification.type === NotificationType.SYSTEM
                     }
-                    badgeContent=' '
+                    anchorOrigin={{
+                      vertical: 'top',
+                      horizontal: 'left',
+                    }}
+                    badgeContent={<NotificationsActiveIcon />}
                   >
                     <ListItem alignItems='flex-start'>
-                      <ListItemText
-                        primary={
+                      <Card elevation={0}>
+                        <CardContent>
                           <Stack
                             direction='row'
                             sx={{
                               justifyContent: 'space-between',
-                              alignItems: 'center',
+                              alignItems: 'flex-start',
                             }}
                           >
                             {notification.type === NotificationType.SYSTEM && (
@@ -201,100 +208,89 @@ export const NotificationDialog = ({ lang }: NotificationsDialogProps) => {
                             {notification.type === NotificationType.SYSTEM && (
                               <WarningAmberIcon color='warning' />
                             )}
+                          </Stack>
+                          <Typography
+                            component='span'
+                            variant='body2'
+                            sx={{
+                              color: 'text.secondary',
+                            }}
+                          >
+                            {notification.message}
+                          </Typography>
+                        </CardContent>
+                        <CardActions>
+                          <ButtonGroup size='small'>
                             {state.user?.role === UserRole.ROLE_ADMIN &&
                               notification.type === NotificationType.SYSTEM && (
-                                <>
-                                  <Button
-                                    className='article-btn'
-                                    variant='outlined'
-                                    onClick={() =>
-                                      handleDeleteSystemNotification(
-                                        notification.id,
-                                      )
-                                    }
-                                  >
-                                    Удалить
-                                  </Button>
-                                  <EditNotification
-                                    id={notification.id}
-                                    refetch={refetch}
-                                    lang={lang}
-                                  />
-                                </>
-                              )}
-                          </Stack>
-                        }
-                        secondary={
-                          <>
-                            <Typography
-                              component='span'
-                              variant='body2'
-                              sx={{ color: 'text.primary', display: 'inline' }}
-                            >
-                              {notification.message}
-                              {notification.type ===
-                                NotificationType.ARTICLE_MODERATION && (
-                                <>
-                                  <Button
-                                    className='article-btn'
-                                    variant='outlined'
-                                    onClick={() =>
-                                      handleClickArticleModeration(
-                                        `/${lang}/articles/${notification.articleId}`,
-                                        notification.id,
-                                      )
-                                    }
-                                  >
-                                    Проверить
-                                  </Button>
-                                  <Button
-                                    className='article-btn'
-                                    variant='outlined'
-                                    onClick={() =>
-                                      handleDeleteNotification(notification.id)
-                                    }
-                                  >
-                                    Удалить
-                                  </Button>
-                                </>
-                              )}
-                              {(notification.type ===
-                                NotificationType.COMMENT_MODERATION ||
-                                notification.type ===
-                                  NotificationType.COMMENT_REPLIED) && (
-                                <Link
+                                <Button
                                   onClick={() =>
-                                    handleClickArticleModeration(
-                                      `/${lang}/articles/${notification.articleId}#comment-${notification.commentId}`,
+                                    handleDeleteSystemNotification(
                                       notification.id,
                                     )
                                   }
                                 >
-                                  <Button
-                                    className='article-btn'
-                                    variant='outlined'
-                                  >
-                                    Проверить
-                                  </Button>
-                                </Link>
-                              )}
-                            </Typography>
-                            {notification.type !== NotificationType.SYSTEM && (
-                              <DialogActions>
-                                <Button
-                                  className='article-btn'
-                                  variant='outlined'
-                                  onClick={() =>
-                                    handleReadNotification(notification.id)
-                                  }
-                                >
-                                  Отметить как прочитанное
+                                  Удалить
                                 </Button>
-                              </DialogActions>
+                              )}
+                            {state.user?.role === UserRole.ROLE_ADMIN &&
+                              notification.type === NotificationType.SYSTEM && (
+                                <EditNotification
+                                  id={notification.id}
+                                  refetch={refetch}
+                                  lang={lang}
+                                />
+                              )}
+                            {notification.type ===
+                              NotificationType.ARTICLE_MODERATION && (
+                              <Button
+                                onClick={() =>
+                                  handleClickArticleModeration(
+                                    `/${lang}/articles/${notification.articleId}`,
+                                    notification.id,
+                                  )
+                                }
+                              >
+                                Проверить
+                              </Button>
                             )}
-                          </>
-                        }
-                      />
+                            {notification.type ===
+                              NotificationType.ARTICLE_MODERATION && (
+                              <Button
+                                onClick={() =>
+                                  handleDeleteNotification(notification.id)
+                                }
+                              >
+                                Удалить
+                              </Button>
+                            )}
+                            {(notification.type ===
+                              NotificationType.COMMENT_MODERATION ||
+                              notification.type ===
+                                NotificationType.COMMENT_REPLIED) && (
+                              <Button
+                                onClick={() =>
+                                  handleClickArticleModeration(
+                                    `/${lang}/articles/${notification.articleId}#comment-${notification.commentId}`,
+                                    notification.id,
+                                  )
+                                }
+                              >
+                                Проверить
+                              </Button>
+                            )}
+                            {notification.type !== NotificationType.SYSTEM && (
+                              <Button
+                                onClick={() =>
+                                  handleReadNotification(notification.id)
+                                }
+                              >
+                                Отметить как прочитанное
+                              </Button>
+                            )}
+                          </ButtonGroup>
+                        </CardActions>
+                      </Card>
                     </ListItem>
                   </BadgeDialog>
                   {notifications.length - 1 !== id && (
@@ -313,29 +309,19 @@ export const NotificationDialog = ({ lang }: NotificationsDialogProps) => {
           />
         </DialogContent>
         <DialogActions>
-          <Button
-            className='article-btn'
-            variant='outlined'
-            onClick={() => handleReadAllNotifications()}
-          >
-            Отметить как прочитанные
-          </Button>
-          <Button
-            className='article-btn'
-            variant='outlined'
-            onClick={() => handleDeleteReadNotifications()}
-          >
-            Удалить прочитанные
-          </Button>
-          {state.user?.role === UserRole.ROLE_ADMIN && (
-            <Button
-              className='article-btn'
-              variant='outlined'
-              onClick={() => handleDeleteAllSystemNotifications()}
-            >
-              Удалить системные уведомления
+          <ButtonGroup size='small'>
+            <Button onClick={() => handleReadAllNotifications()}>
+              Отметить как прочитанные
             </Button>
-          )}
+            <Button onClick={() => handleDeleteReadNotifications()}>
+              Удалить прочитанные
+            </Button>
+            {state.user?.role === UserRole.ROLE_ADMIN && (
+              <Button onClick={() => handleDeleteAllSystemNotifications()}>
+                Удалить системные уведомления
+              </Button>
+            )}
+          </ButtonGroup>
         </DialogActions>
       </BootstrapDialog>
     </>
