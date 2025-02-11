@@ -13,11 +13,11 @@ import { ButtonFavorite } from '@/components/ButtonFavorite';
 import { EditCategory } from '@/components/EditCategory';
 import NavTabs, { TabProps } from '@/components/NavTabs';
 import { getCategoryById } from '@/helpers/categoryApi';
-import { Category, UserRole } from '@/types';
+import { GetCategory, Language, UserRole } from '@/types';
 
 type PageParams = {
   id: number;
-  lng: string;
+  lng: Language;
   refetch?: () => void;
 };
 
@@ -37,7 +37,7 @@ export default function Layout({
     { label: t('authors'), href: `/${lng}/categories/${id}/authors` },
   ];
 
-  const { data: category, isFetching } = useQuery<Category>({
+  const { data: category, isFetching } = useQuery<GetCategory>({
     queryKey: ['category', id],
     queryFn: () => getCategoryById(id),
   });
@@ -89,12 +89,7 @@ export default function Layout({
                 </div>
               </div>
               {state.user?.role === UserRole.ROLE_ADMIN && (
-                <EditCategory
-                  id={id}
-                  lang={lng}
-                  refetch={refetch}
-                  categoryData={category}
-                />
+                <EditCategory id={id} lang={lng} refetch={refetch} />
               )}
               {state.isAuthenticated &&
                 state.user?.role !== UserRole.ROLE_ADMIN && (

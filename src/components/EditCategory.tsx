@@ -12,31 +12,32 @@ import {
   DialogTitle,
   FormHelperText,
   IconButton,
+  TextField,
 } from '@mui/material';
 import DialogActions from '@mui/material/DialogActions';
+import MenuItem from '@mui/material/MenuItem';
 import { styled } from '@mui/material/styles';
+import { useQuery } from '@tanstack/react-query';
 import React, { useEffect, useState } from 'react';
-import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
+import {
+  FormProvider,
+  SubmitHandler,
+  useForm,
+  useWatch,
+} from 'react-hook-form';
 import { z } from 'zod';
 
 import { useTranslation } from '@/app/i18n/client';
-import { useAuth } from '@/components/AuthProvider';
 import { AvatarImage } from '@/components/AvatarImage';
 import FormInput from '@/components/FormInput';
-import { updateCategory } from '@/helpers/categoryApi';
-import { devConsoleError } from '@/helpers/devConsoleLogs';
-import { Category } from '@/types';
-
-const EditCategoryScheme = z.object({
-  name: z.optional(
-    z
-      .string()
-      .min(2, 'Название категории не может содержать менее 2 символов.')
-      .max(50, 'Название категории не может содержать более 50 символов.'),
-  ),
-  image: z.optional(z.instanceof(File)),
-  description: z.optional(z.string()),
-});
+import { languageMenuItems } from '@/constants/i18n';
+import {
+  CategoryUpdate,
+  getCategoryByIdToUpdate,
+  updateCategory,
+} from '@/helpers/categoryApi';
+import { devConsoleInfo } from '@/helpers/devConsoleLogs';
+import { GetCategoryToUpdate, Language } from '@/types';
 
 const VisuallyHiddenInput = styled('input')({
   clip: 'rect(0 0 0 0)',
@@ -61,45 +62,68 @@ const BootstrapDialog = styled(Dialog)(({ theme }) => ({
 
 type EditCategoryProps = {
   readonly id: number;
-  readonly lang: string;
-  readonly categoryData: Category | undefined;
+  readonly lang: Language;
   readonly refetch?: () => void;
 };
 
-export const EditCategory = ({
-  id,
-  lang,
-  categoryData,
-  refetch,
-}: EditCategoryProps) => {
+export const EditCategory = ({ id, lang, refetch }: EditCategoryProps) => {
   const [open, setOpen] = useState(false);
-  const [imageFile, setImageFile] = useState<File>();
-  const [category, setCategory] = useState<Category | undefined>(categoryData);
+  const [imageUrl, setImageUrl] = useState<string | undefined>();
+  const [selectedLang, setSelectedLang] = useState<Language>(lang);
   const { t } = useTranslation(lang, 'categories');
-  const { state } = useAuth();
+
+  const EditCategoryScheme = z.object({
+    name: z.record(
+      z.nativeEnum(Language),
+      z.string().min(2, t('minText')).max(50, t('maxText')),
+    ),
+    image: z.optional(z.instanceof(File)),
+    description: z.optional(z.record(z.nativeEnum(Language), z.string())),
+  });
+
+  const { data: categoryData, refetch: refetchCategoryData } =
+    useQuery<GetCategoryToUpdate>({
+      queryKey: ['category', id],
+      queryFn: () => getCategoryByIdToUpdate(id),
+      enabled: false,
+    });
 
   const zodForm = useForm<z.infer<typeof EditCategoryScheme>>({
     resolver: zodResolver(EditCategoryScheme),
     defaultValues: {
-      name: '',
+      name: categoryData?.name,
       image: undefined,
-      description: '',
+      description: categoryData?.description,
     },
   });
 
   useEffect(() => {
     zodForm.reset({
-      name: category?.name,
+      name: categoryData?.name,
       image: undefined,
-      description: category?.description,
+      description: categoryData?.description,
     });
-  }, [category, zodForm]);
+    setImageUrl(categoryData?.imageUrl);
+  }, [categoryData, zodForm]);
 
   const {
     reset,
     handleSubmit,
+    setValue,
+    trigger,
+    control,
     formState: { isSubmitSuccessful, errors },
   } = zodForm;
+
+  const nameValues = useWatch({
+    name: `name.${selectedLang}`,
+    control,
+  }) as Record<string, string>;
+
+  const descriptionValues = useWatch({
+    name: `description.${selectedLang}`,
+    control,
+  }) as Record<string, string>;
 
   useEffect(() => {
     if (isSubmitSuccessful) {
@@ -110,19 +134,34 @@ export const EditCategory = ({
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
-      setImageFile(file);
-      setCategory((prev) =>
-        prev ? { ...prev, imageUrl: URL.createObjectURL(file) } : prev,
-      );
+      setImageUrl(URL.createObjectURL(file));
+      setValue('image', file);
+      trigger('image');
     }
   };
 
   const onSubmit: SubmitHandler<z.infer<typeof EditCategoryScheme>> = (
     formData,
   ) => {
-    const requestData = { ...formData, image: imageFile };
-    devConsoleError(requestData);
-    updateCategory(id, requestData).then(() => {
+    const requestData = {
+      name: formData.name,
+      image: formData.image,
+      description: formData.description,
+    };
+    const formDataToSend = new FormData();
+    formDataToSend.append('name', JSON.stringify(requestData.name));
+    if (requestData.image) formDataToSend.append('image', requestData.image);
+    if (requestData.description) {
+      formDataToSend.append(
+        'description',
+        JSON.stringify(requestData.description),
+      );
+    }
+    const formDataObject = Object.fromEntries(
+      formDataToSend.entries(),
+    ) as unknown as CategoryUpdate;
+    devConsoleInfo(formDataObject);
+    updateCategory(id, formDataObject).then(() => {
       if (refetch) {
         refetch();
       }
@@ -131,7 +170,7 @@ export const EditCategory = ({
   };
 
   const handleClickOpen = () => {
-    setOpen(true);
+    refetchCategoryData().then(() => setOpen(true));
   };
 
   const handleClose = () => {
@@ -196,9 +235,9 @@ export const EditCategory = ({
                   }
                 >
                   <AvatarImage
-                    alt={category?.name}
+                    alt={categoryData?.name?.[selectedLang]}
                     variant='rounded'
-                    src={category?.imageUrl}
+                    src={imageUrl}
                     size={112}
                     fontSize='large'
                   />
@@ -209,16 +248,45 @@ export const EditCategory = ({
                   {errors?.image.message}
                 </FormHelperText>
               )}
+              <TextField
+                select
+                label={t('language')}
+                variant='standard'
+                value={selectedLang}
+                onChange={(e) => setSelectedLang(e.target.value as Language)}
+              >
+                {languageMenuItems.map(({ value, label }) => (
+                  <MenuItem key={value} value={value}>
+                    {label}
+                  </MenuItem>
+                ))}
+              </TextField>
               <FormInput
-                name='name'
+                key={`name-${selectedLang}`}
+                name={`name.${selectedLang}`}
                 required
                 label={t('name')}
                 variant='standard'
+                value={nameValues}
+                error={!!errors.name?.ru || !!errors.name?.en}
+                helperText={
+                  (!!errors.name?.[selectedLang] &&
+                    errors.name?.[selectedLang].message?.replace(
+                      '{}',
+                      t(selectedLang.toLowerCase()),
+                    )) ||
+                  (!!errors.name?.ru &&
+                    errors.name?.ru?.message?.replace('{}', t('ru'))) ||
+                  (!!errors.name?.en &&
+                    errors.name?.en?.message?.replace('{}', t('en')))
+                }
               />
               <FormInput
-                name='description'
+                key={`description-${selectedLang}`}
+                name={`description.${selectedLang}`}
                 label={t('description')}
                 variant='standard'
+                value={descriptionValues}
               />
               <DialogActions>
                 <Button type='submit'>{t('save')}</Button>

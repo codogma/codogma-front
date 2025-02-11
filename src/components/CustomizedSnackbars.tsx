@@ -6,7 +6,7 @@ import { useEffect, useState } from 'react';
 
 import { CustomEventDetail } from '@/types/global';
 
-export default function CustomizedSnackbars() {
+export function CustomizedSnackbars() {
   const [open, setOpen] = React.useState(false);
   const [alertText, setAlertText] = useState<string>('');
   const [alertSeverity, setAlertSeverity] = useState<

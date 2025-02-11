@@ -88,7 +88,7 @@
   }
 
   .comment-card-link.active {
-    @apply shadow-[0_4px_12px_#548121] border-green-600 !important;
+    @apply border-green-600 shadow-[0_4px_12px_#548121] !important;
   }
 
   .card {

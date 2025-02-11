@@ -7,11 +7,11 @@ import { Search } from '@/components/Search';
 import Users from '@/components/Users';
 import { contlCookie } from '@/constants/i18n';
 import { getUsers, GetUsersDTO } from '@/helpers/userApi';
-import { SearchType, User, UserRole } from '@/types';
+import { Language, SearchType, User, UserRole } from '@/types';
 
 type PageProps = {
   readonly params: {
-    lng: string;
+    lng: Language;
   };
 };
 

@@ -8,22 +8,22 @@ import { CustomPagination } from '@/components/CustomPagination';
 import { Search } from '@/components/Search';
 import { contlCookie } from '@/constants/i18n';
 import { getCompilations, GetCompilationsDTO } from '@/helpers/compilationApi';
-import { GetCompilation, SearchType } from '@/types';
+import { GetCompilation, Language, SearchType } from '@/types';
 
 type PageProps = {
   readonly params: {
-    username: string;
-    lng: string;
+    lng: Language;
   };
 };
 
-export default function Page({ params: { lng, username } }: PageProps) {
+export default function Page({ params: { lng } }: PageProps) {
   const searchInputRef = useRef<HTMLInputElement>(null);
   const [currentPage, setCurrentPage] = useState<number>(0);
   const [resultsPerPage, setResultsPerPage] = useState<number>(10);
   const [searchValue, setSearchValue] = useState<string>();
   const [searchType, setSearchType] = useState<SearchType>(SearchType.CONTENT);
   const { state } = useAuth();
+  const username: string | undefined = state.user?.username;
 
   const onSearchType = (type: SearchType) => {
     setSearchType(type);
@@ -47,7 +47,6 @@ export default function Page({ params: { lng, username } }: PageProps) {
       const byTag = searchType === SearchType.TAG ? searchValue : undefined;
       const byContent =
         searchType === SearchType.CONTENT ? searchValue : undefined;
-      const username: string | undefined = state.user?.username;
       return getCompilations(
         byTag,
         byContent,

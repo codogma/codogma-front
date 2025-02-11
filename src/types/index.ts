@@ -28,6 +28,20 @@ export enum NotificationType {
   REMINDER = 'REMINDER',
 }
 
+export type GetUserDTO = {
+  id: number;
+  username: string;
+  isSubscribed: boolean;
+  email: string;
+  firstName: string;
+  lastName: string;
+  shortInfo: string;
+  bio: string;
+  role: UserRole;
+  avatarUrl: string;
+  categories: GetCategory[];
+};
+
 export type User = {
   username: string;
   isSubscribed: boolean;
@@ -38,25 +52,36 @@ export type User = {
   role: UserRole;
   subscribers: User[] | [];
   subscriptions: User[] | [];
-  favorites: Category[] | [];
+  favorites: GetCategory[] | [];
   avatarUrl: string;
   articles: Article[] | [];
-  categories: Category[];
+  categories: GetCategory[];
   shortInfo: string;
 };
 
-export type Tag = {
+export type GetTag = {
   id: number;
   name: string;
 };
 
-export type Category = {
+export type GetCategory = {
   id: number;
   isFavorite: boolean;
   name: string;
   description: string;
   imageUrl: string;
-  tags: Tag[];
+  tags: GetTag[];
+};
+
+export type GetCategoryToUpdate = {
+  name: Record<Language, string>;
+  description: Record<Language, string>;
+  imageUrl: string;
+};
+
+export type GetNotificationToUpdate = {
+  title: Record<Language, string>;
+  message: Record<Language, string>;
 };
 
 export type GetCompilation = {
@@ -94,9 +119,9 @@ export type Article = {
   username: string;
   authorAvatarUrl: string;
   createdAt: Date;
-  categories: Category[];
+  categories: GetCategory[];
   compilations: GetCompilation[];
-  tags: Tag[];
+  tags: GetTag[];
   commentsCount: number;
   likeCount: number;
 };

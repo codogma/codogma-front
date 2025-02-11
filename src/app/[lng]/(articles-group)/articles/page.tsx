@@ -9,11 +9,11 @@ import { CustomPagination } from '@/components/CustomPagination';
 import { Search } from '@/components/Search';
 import { contlCookie } from '@/constants/i18n';
 import { getArticles, GetArticlesDTO } from '@/helpers/articleApi';
-import { SearchType } from '@/types';
+import { Language, SearchType } from '@/types';
 
 type PageProps = {
   readonly params: {
-    lng: string;
+    lng: Language;
   };
 };
 

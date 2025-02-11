@@ -23,6 +23,7 @@ import { GithubIcon, GitlabIcon } from '@/components/CustomIcons';
 import ForgotPassword from '@/components/ForgotPassword';
 import FormInput from '@/components/FormInput';
 import { signIn } from '@/helpers/authApi';
+import { Language } from '@/types';
 
 const SignInScheme = z.object({
   usernameOrEmail: z.string().min(1, { message: 'Name is required' }),
@@ -32,7 +33,7 @@ const SignInScheme = z.object({
 });
 
 type PageParams = {
-  lng: string;
+  lng: Language;
 };
 
 type PageProps = {

@@ -12,18 +12,27 @@ import {
   DialogTitle,
   FormHelperText,
   IconButton,
+  TextField,
 } from '@mui/material';
 import DialogActions from '@mui/material/DialogActions';
+import MenuItem from '@mui/material/MenuItem';
 import { styled } from '@mui/material/styles';
 import React, { useEffect, useState } from 'react';
-import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
+import {
+  FormProvider,
+  SubmitHandler,
+  useForm,
+  useWatch,
+} from 'react-hook-form';
 import { z } from 'zod';
 
 import { useTranslation } from '@/app/i18n/client';
 import { AvatarImage } from '@/components/AvatarImage';
 import FormInput from '@/components/FormInput';
-import { createCategory } from '@/helpers/categoryApi';
-import { devConsoleError } from '@/helpers/devConsoleLogs';
+import { languageMenuItems } from '@/constants/i18n';
+import { CategoryCreate, createCategory } from '@/helpers/categoryApi';
+import { devConsoleInfo } from '@/helpers/devConsoleLogs';
+import { Language } from '@/types';
 
 const VisuallyHiddenInput = styled('input')({
   clip: 'rect(0 0 0 0)',
@@ -47,37 +56,43 @@ const BootstrapDialog = styled(Dialog)(({ theme }) => ({
 }));
 
 type CategoryDialogProps = {
-  readonly lang: string;
+  readonly lang: Language;
   readonly open: boolean;
   readonly onClose: () => void;
 };
-
-const CategoryDialogScheme = z.object({
-  name: z
-    .string()
-    .min(2, 'Название категории не может содержать менее 2 символов.')
-    .max(50, 'Название категории не может содержать более 50 символов.'),
-  image: z.instanceof(File, {
-    message: 'Изображение обязательно для загрузки.',
-  }),
-  description: z.optional(z.string()),
-});
 
 export const CategoryDialog = ({
   lang,
   open,
   onClose,
 }: CategoryDialogProps) => {
-  const [imageFile, setImageFile] = useState<File>();
+  const [selectedLang, setSelectedLang] = useState<Language>(lang);
   const [imageUrl, setImageUrl] = useState<string>();
   const { t } = useTranslation(lang, 'categories');
+
+  const CategoryDialogScheme = z.object({
+    name: z.record(
+      z.nativeEnum(Language),
+      z.string().min(2, t('minText')).max(50, t('maxText')),
+    ),
+    image: z.instanceof(File, {
+      message: 'Изображение обязательно для загрузки.',
+    }),
+    description: z.optional(z.record(z.nativeEnum(Language), z.string())),
+  });
 
   const zodForm = useForm<z.infer<typeof CategoryDialogScheme>>({
     resolver: zodResolver(CategoryDialogScheme),
     defaultValues: {
-      name: '',
+      name: {
+        en: '',
+        ru: '',
+      },
       image: undefined,
-      description: '',
+      description: {
+        en: '',
+        ru: '',
+      },
     },
   });
 
@@ -86,31 +101,70 @@ export const CategoryDialog = ({
     handleSubmit,
     setValue,
     trigger,
+    control,
     formState: { isSubmitSuccessful, errors },
   } = zodForm;
 
+  const nameValues = useWatch({
+    name: `name.${selectedLang}`,
+    control,
+  }) as Record<string, string>;
+
+  const descriptionValues = useWatch({
+    name: `description.${selectedLang}`,
+    control,
+  }) as Record<string, string>;
+
   useEffect(() => {
     if (isSubmitSuccessful) {
-      reset(zodForm.getValues());
+      reset({
+        name: {
+          en: '',
+          ru: '',
+        },
+        image: undefined,
+        description: {
+          en: '',
+          ru: '',
+        },
+      });
+      setImageUrl(undefined);
+      setSelectedLang(lang);
     }
-  }, [isSubmitSuccessful, reset, zodForm]);
+  }, [isSubmitSuccessful, lang, reset]);
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
-      setImageFile(file);
       setImageUrl(URL.createObjectURL(file));
       setValue('image', file);
       trigger('image');
     }
   };
 
-  const onSubmit: SubmitHandler<z.infer<typeof CategoryDialogScheme>> = (
+  const onSubmit: SubmitHandler<z.infer<typeof CategoryDialogScheme>> = async (
     formData,
   ) => {
-    const requestData = { ...formData, image: imageFile };
-    devConsoleError(requestData);
-    createCategory(requestData).then(() => onClose());
+    const requestData = {
+      name: formData.name,
+      image: formData.image,
+      description: formData.description,
+    };
+    const formDataToSend = new FormData();
+    formDataToSend.append('name', JSON.stringify(requestData.name));
+    if (requestData.image) formDataToSend.append('image', requestData.image);
+    if (requestData.description) {
+      formDataToSend.append(
+        'description',
+        JSON.stringify(requestData.description),
+      );
+    }
+    const formDataObject = Object.fromEntries(
+      formDataToSend.entries(),
+    ) as unknown as CategoryCreate;
+    devConsoleInfo(formDataObject);
+    await createCategory(formDataObject);
+    onClose();
   };
 
   return (
@@ -180,16 +234,45 @@ export const CategoryDialog = ({
                 {errors?.image.message}
               </FormHelperText>
             )}
+            <TextField
+              select
+              label={t('language')}
+              variant='standard'
+              value={selectedLang}
+              onChange={(e) => setSelectedLang(e.target.value as Language)}
+            >
+              {languageMenuItems.map(({ value, label }) => (
+                <MenuItem key={value} value={value}>
+                  {label}
+                </MenuItem>
+              ))}
+            </TextField>
             <FormInput
-              name='name'
+              key={`name-${selectedLang}`}
+              name={`name.${selectedLang}`}
               required
               label={t('name')}
               variant='standard'
+              value={nameValues}
+              error={!!errors.name?.ru || !!errors.name?.en}
+              helperText={
+                (!!errors.name?.[selectedLang] &&
+                  errors.name?.[selectedLang].message?.replace(
+                    '{}',
+                    t(selectedLang.toLowerCase()),
+                  )) ||
+                (!!errors.name?.ru &&
+                  errors.name?.ru?.message?.replace('{}', t('ru'))) ||
+                (!!errors.name?.en &&
+                  errors.name?.en?.message?.replace('{}', t('en')))
+              }
             />
             <FormInput
-              name='description'
+              key={`description-${selectedLang}`}
+              name={`description.${selectedLang}`}
               label={t('description')}
               variant='standard'
+              value={descriptionValues}
             />
             <DialogActions>
               <Button type='submit'>{t('create')}</Button>

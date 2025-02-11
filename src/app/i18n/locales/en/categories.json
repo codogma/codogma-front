@@ -10,5 +10,7 @@
   "create": "Create",
   "createCategory": "Create category",
   "updateCategory": "Update category",
-  "save": "Save"
+  "save": "Save",
+  "minText": "The category name for {} cannot be less than 2 characters",
+  "maxText": "The category name for {} cannot contain more than 50 characters"
 }

@@ -7,11 +7,11 @@ import { CustomPagination } from '@/components/CustomPagination';
 import { Search } from '@/components/Search';
 import { contlCookie } from '@/constants/i18n';
 import { getCategories, GetCategoriesDTO } from '@/helpers/categoryApi';
-import { Category, SearchType } from '@/types';
+import { GetCategory, Language, SearchType } from '@/types';
 
 type PageProps = {
   readonly params: {
-    lng: string;
+    lng: Language;
   };
 };
 
@@ -46,7 +46,7 @@ export default function Page({ params: { lng } }: PageProps) {
     },
   });
 
-  const categories: Category[] = data?.content ?? [];
+  const categories: GetCategory[] = data?.content ?? [];
   const totalPages = data?.totalPages ?? 0;
   const totalElements = data?.totalElements ?? 0;
 

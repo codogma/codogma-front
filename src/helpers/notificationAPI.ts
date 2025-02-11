@@ -1,10 +1,43 @@
 import { axiosInstance } from '@/helpers/axiosInstance';
-import { GetNotification } from '@/types';
+import { dispatchCustomEvent } from '@/helpers/dispatchCustomEvent';
+import { GetNotification, GetNotificationToUpdate, Language } from '@/types';
+
+export type NotificationCreate = {
+  title: Map<Language, string>;
+  message: Map<Language, string>;
+};
+
+export type NotificationUpdate = {
+  title: Map<Language, string>;
+  message: Map<Language, string>;
+};
 
 export type GetNotificationsDTO = {
   totalElements: number;
   totalPages: number;
   content: GetNotification[];
+};
+
+export const createNotification = async (
+  requestData: NotificationCreate,
+): Promise<void> => {
+  await axiosInstance.post('/notifications', requestData);
+  dispatchCustomEvent('api', {
+    message: 'Notification created successfully',
+    severity: 'success',
+  });
+};
+
+export const updateNotification = async (
+  id: number,
+  requestData: NotificationUpdate,
+): Promise<GetNotification> => {
+  const response = await axiosInstance.put(`/notifications/${id}`, requestData);
+  dispatchCustomEvent('api', {
+    message: 'Notification updated successfully',
+    severity: 'success',
+  });
+  return response.data;
 };
 
 export const getNotifications = async (
@@ -24,4 +57,35 @@ export const getNotifications = async (
     },
   });
   return response.data;
+};
+
+export const getNotificationByIdToUpdate = async (
+  id: number,
+): Promise<GetNotificationToUpdate> => {
+  const response = await axiosInstance.get(`/notifications/${id}`);
+  return response.data;
+};
+
+export const readNotification = async (id: number): Promise<void> => {
+  await axiosInstance.patch(`/notifications/${id}/read`);
+};
+
+export const readAllNotifications = async (): Promise<void> => {
+  await axiosInstance.patch(`/notifications/read-all`);
+};
+
+export const deleteNotification = async (id: number): Promise<void> => {
+  await axiosInstance.delete(`/notifications/${id}/delete`);
+};
+
+export const deleteReadNotifications = async (): Promise<void> => {
+  await axiosInstance.delete(`/notifications/delete-read`);
+};
+
+export const deleteSystemNotification = async (id: number): Promise<void> => {
+  await axiosInstance.delete(`/notifications/${id}/delete-system`);
+};
+
+export const deleteAllSystemNotifications = async (): Promise<void> => {
+  await axiosInstance.delete(`/notifications/delete-all-system`);
 };
