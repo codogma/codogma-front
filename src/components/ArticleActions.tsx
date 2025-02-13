@@ -14,18 +14,16 @@ type SearchProps = {
   readonly id: number;
   readonly lang: string;
   readonly articleData: Article;
-  readonly isLikedValue?: boolean;
   readonly refetch?: () => void;
 };
 
 export const ArticleActions = ({
   id,
   lang,
-  isLikedValue,
   articleData,
   refetch,
 }: SearchProps) => {
-  const [isLiked, setIsLiked] = useState(isLikedValue);
+  const [isLiked, setIsLiked] = useState(articleData.isLiked);
   const { state } = useAuth();
 
   const handleChange = async (

@@ -124,6 +124,7 @@ export type Article = {
   tags: GetTag[];
   commentsCount: number;
   likeCount: number;
+  isLiked: boolean;
 };
 
 export interface GetComment {
