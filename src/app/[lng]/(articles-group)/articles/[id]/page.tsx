@@ -122,7 +122,7 @@ export default function Page({ params: { lng, id } }: PageProps) {
             )}
         </CardContent>
       </Card>
-      <ArticleActions lang={lng} articleData={article} />
+      <ArticleActions lang={lng} articleData={article} id={id} />
       <Typography component='div'>{t('comments')}:</Typography>
       <CommentList articleId={id} lang={lng} />
     </>

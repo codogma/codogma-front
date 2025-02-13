@@ -1,18 +1,41 @@
 import CommentOutlinedIcon from '@mui/icons-material/CommentOutlined';
 import ThumbUpOutlinedIcon from '@mui/icons-material/ThumbUpOutlined';
+import Checkbox from '@mui/material/Checkbox';
 import IconButton from '@mui/material/IconButton';
 import Paper from '@mui/material/Paper';
-import React from 'react';
+import React, { useState } from 'react';
 
 import { ArticleProgressBar } from '@/components/ArticleProgressBar';
+import { useAuth } from '@/components/AuthProvider';
+import { like } from '@/helpers/articleApi';
 import { Article } from '@/types';
 
 type SearchProps = {
+  readonly id: number;
   readonly lang: string;
   readonly articleData: Article;
+  readonly refetch?: () => void;
 };
 
-export const ArticleActions = ({ lang, articleData }: SearchProps) => {
+export const ArticleActions = ({
+  id,
+  lang,
+  articleData,
+  refetch,
+}: SearchProps) => {
+  const [isLiked, setIsLiked] = useState(articleData.isLiked);
+  const { state } = useAuth();
+
+  const handleChange = async (
+    event: React.ChangeEvent<HTMLInputElement>,
+    checked: boolean,
+  ) => {
+    if (state.isAuthenticated) {
+      setIsLiked(checked);
+      await like(id).then(() => refetch && refetch());
+    }
+  };
+
   return (
     <Paper
       sx={{
@@ -34,10 +57,17 @@ export const ArticleActions = ({ lang, articleData }: SearchProps) => {
       variant='outlined'
       aria-label='Article Actions'
     >
-      <IconButton aria-label='Like' color='inherit' sx={{ borderRadius: 8 }}>
-        <ThumbUpOutlinedIcon />
-        <div className='ml-1 text-base leading-5'>{articleData.likeCount}</div>
-      </IconButton>
+      <Checkbox
+        checked={isLiked}
+        onChange={handleChange}
+        icon={<ThumbUpOutlinedIcon />}
+        checkedIcon={
+          <ThumbUpOutlinedIcon color='inherit'>
+            {articleData.likeCount}
+          </ThumbUpOutlinedIcon>
+        }
+        inputProps={{ 'aria-label': 'Like' }}
+      />
       <IconButton
         aria-label='Comments'
         color='inherit'

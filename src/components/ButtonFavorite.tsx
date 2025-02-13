@@ -1,5 +1,6 @@
 'use client';
 import { Button } from '@mui/material';
+import Checkbox from '@mui/material/Checkbox';
 import React, { useState } from 'react';
 
 import { useTranslation } from '@/app/i18n/client';
@@ -11,6 +12,7 @@ interface CustomFavoriteProps {
   readonly username?: string;
   readonly lang: string;
   readonly isFavoriteValue?: boolean;
+  readonly refetch?: () => void;
 }
 
 export const ButtonFavorite: React.FC<CustomFavoriteProps> = ({
@@ -18,36 +20,38 @@ export const ButtonFavorite: React.FC<CustomFavoriteProps> = ({
   username,
   lang,
   isFavoriteValue,
+  refetch,
 }) => {
   const [isFavorite, setIsFavorite] = useState(isFavoriteValue);
   const { state } = useAuth();
   const { t } = useTranslation(lang, 'categories');
 
-  const handleUnfavorite = async () => {
+  const handleChange = async (
+    event: React.ChangeEvent<HTMLInputElement>,
+    checked: boolean,
+  ) => {
     if (state.isAuthenticated) {
-      await unfavorite(id).then((response) =>
-        setIsFavorite(response.isFavorite),
-      );
-    }
-  };
+      setIsFavorite(checked);
 
-  const handleFavorite = async () => {
-    if (state.isAuthenticated) {
-      await favorite(id).then((response) => setIsFavorite(response.isFavorite));
+      if (checked) {
+        await favorite(id).then(() => refetch && refetch());
+      } else {
+        await unfavorite(id).then(() => refetch && refetch());
+      }
     }
   };
 
   return state.user?.username !== username ? (
     <>
-      {isFavorite ? (
-        <Button className='article-red-btn' onClick={handleUnfavorite}>
-          {t('removeFromFavorite')}
-        </Button>
-      ) : (
-        <Button className='article-btn' onClick={handleFavorite}>
-          {t('addToFavorite')}
-        </Button>
-      )}
+      <Checkbox
+        checked={isFavorite}
+        onChange={handleChange}
+        icon={<Button className='article-btn'>{t('addToFavorite')}</Button>}
+        checkedIcon={
+          <Button className='article-red-btn'>{t('removeFromFavorite')}</Button>
+        }
+        inputProps={{ 'aria-label': 'Favorites' }}
+      />
     </>
   ) : null;
 };

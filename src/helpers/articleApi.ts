@@ -141,3 +141,12 @@ export const addToCompilations = async (
   });
   return response.data;
 };
+
+export const like = async (id: number): Promise<Article> => {
+  const response = await axiosInstance.post(`/articles/${id}/like`);
+  dispatchCustomEvent('api', {
+    message: 'Liked article',
+    severity: 'success',
+  });
+  return response.data;
+};
