@@ -1,12 +1,13 @@
 'use client';
 import { useQuery } from '@tanstack/react-query';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useState } from 'react';
 
 import Compilations from '@/components/Compilations';
 import { CustomPagination } from '@/components/CustomPagination';
 import { Search } from '@/components/Search';
 import { contlCookie } from '@/constants/i18n';
 import { getCompilations, GetCompilationsDTO } from '@/helpers/compilationApi';
+import { useEventListener } from '@/helpers/useEventListener';
 import { GetCompilation, Language, SearchType } from '@/types';
 
 type PageProps = {
@@ -16,7 +17,6 @@ type PageProps = {
 };
 
 const Page = ({ params: { lng } }: PageProps) => {
-  const searchInputRef = useRef<HTMLInputElement>(null);
   const [currentPage, setCurrentPage] = useState<number>(0);
   const [resultsPerPage, setResultsPerPage] = useState<number>(10);
   const [searchValue, setSearchValue] = useState<string>();
@@ -58,16 +58,7 @@ const Page = ({ params: { lng } }: PageProps) => {
   const totalPages = data?.totalPages ?? 0;
   const totalElements = data?.totalElements ?? 0;
 
-  useEffect(() => {
-    window.addEventListener(contlCookie, () => refetch());
-    if (window.location.hash === '#search-input' && searchInputRef.current) {
-      searchInputRef.current.scrollIntoView({
-        behavior: 'smooth',
-        block: 'center',
-      });
-      searchInputRef.current.focus();
-    }
-  }, [refetch]);
+  useEventListener(contlCookie, () => refetch());
 
   const onPageChange = (value: number) => {
     setCurrentPage(value);

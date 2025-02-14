@@ -5,7 +5,7 @@ import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import Paper from '@mui/material/Paper';
 import TextField from '@mui/material/TextField';
-import React, { FormEvent, useState } from 'react';
+import React, { FormEvent, useEffect, useRef, useState } from 'react';
 
 import { useTranslation } from '@/app/i18n/client';
 import { SearchType } from '@/types';
@@ -17,9 +17,20 @@ type SearchProps = {
 };
 
 export const Search = ({ lang, onSearchType, onSearchValue }: SearchProps) => {
+  const searchInputRef = useRef<HTMLInputElement>(null);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [searchType, setSearchType] = useState<SearchType>(SearchType.CONTENT);
   const { t } = useTranslation(lang);
+
+  useEffect(() => {
+    if (window.location.hash === '#search-input' && searchInputRef.current) {
+      searchInputRef.current.scrollIntoView({
+        behavior: 'smooth',
+        block: 'center',
+      });
+      searchInputRef.current.focus();
+    }
+  }, []);
 
   const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -72,6 +83,7 @@ export const Search = ({ lang, onSearchType, onSearchValue }: SearchProps) => {
       <TextField
         label={`${t('searchBy')}${t(searchType)}`}
         id='search-input'
+        inputRef={searchInputRef}
         sx={{ ml: 1, flex: 1 }}
         size='small'
         name='search'

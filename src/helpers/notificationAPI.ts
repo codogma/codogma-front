@@ -1,5 +1,10 @@
+import { Client, StompSubscription } from '@stomp/stompjs';
+import SockJS from 'sockjs-client';
+
 import { axiosInstance } from '@/helpers/axiosInstance';
+import { devConsoleError, devConsoleInfo } from '@/helpers/devConsoleLogs';
 import { dispatchCustomEvent } from '@/helpers/dispatchCustomEvent';
+import { getAuthToken } from '@/helpers/getCookies';
 import { GetNotification, GetNotificationToUpdate, Language } from '@/types';
 
 export type NotificationCreate = {
@@ -16,6 +21,112 @@ export type GetNotificationsDTO = {
   totalElements: number;
   totalPages: number;
   content: GetNotification[];
+};
+
+let publicClient: Client | null = null;
+let privateClient: Client | null = null;
+let privateSubscription: StompSubscription | null = null;
+
+export const connectPublicWebSocket = (): Client => {
+  if (publicClient?.active) return publicClient;
+
+  const stompClient = new Client({
+    webSocketFactory: () =>
+      new SockJS(`${process.env.NEXT_PUBLIC_BASE_URL}/api/ws`),
+    debug: (str) => devConsoleInfo('[PUBLIC WS]', str),
+    reconnectDelay: 5000,
+    heartbeatIncoming: 4000,
+    heartbeatOutgoing: 4000,
+  });
+
+  stompClient.onConnect = (frame) => {
+    devConsoleInfo('Public connection established:', frame);
+    stompClient.subscribe('/topic/public-notifications', (message) => {
+      const notification = JSON.parse(message.body);
+      devConsoleInfo('Public notification received:', notification);
+      dispatchCustomEvent('notification', {
+        message: 'Public notification received',
+        severity: 'success',
+      });
+    });
+  };
+
+  stompClient.onStompError = (frame) => {
+    devConsoleError('STOMP error:', frame);
+  };
+
+  stompClient.onWebSocketError = (event) => {
+    devConsoleError('WebSocket error:', event);
+  };
+
+  stompClient.onDisconnect = (frame) => {
+    devConsoleInfo('Disconnected:', frame);
+  };
+
+  stompClient.activate();
+  publicClient = stompClient;
+  return stompClient;
+};
+
+export const connectPrivateWebSocket = async (): Promise<Client> => {
+  const token = await getAuthToken();
+  if (!token) {
+    devConsoleError('Cannot connect private WebSocket: missing token');
+    throw new Error('Missing token');
+  }
+  if (privateClient?.active) return privateClient;
+
+  const stompClient = new Client({
+    webSocketFactory: () =>
+      new SockJS(`${process.env.NEXT_PUBLIC_BASE_URL}/api/ws`),
+    connectHeaders: { Authorization: `Bearer ${token}` },
+    debug: (str) => devConsoleInfo('[PRIVATE WS]', str),
+    reconnectDelay: 5000,
+    heartbeatIncoming: 4000,
+    heartbeatOutgoing: 4000,
+  });
+
+  stompClient.onConnect = (frame) => {
+    devConsoleInfo('Private connection established:', frame);
+    privateSubscription = stompClient.subscribe(
+      '/user/queue/notifications',
+      (message) => {
+        const notification = JSON.parse(message.body);
+        devConsoleInfo('Private notification received:', notification);
+        dispatchCustomEvent('notification', {
+          message: 'Private notification received',
+          severity: 'success',
+        });
+      },
+    );
+  };
+
+  stompClient.onStompError = (frame) => {
+    devConsoleError('STOMP error:', frame);
+  };
+
+  stompClient.onWebSocketError = (event) => {
+    devConsoleError('WebSocket error:', event);
+  };
+
+  stompClient.onDisconnect = (frame) => {
+    devConsoleInfo('Disconnected:', frame);
+  };
+
+  stompClient.activate();
+  privateClient = stompClient;
+  return stompClient;
+};
+
+export const disconnectPrivateWebSocket = async () => {
+  if (privateSubscription) {
+    privateSubscription.unsubscribe();
+    privateSubscription = null;
+  }
+  if (privateClient?.active) {
+    privateClient?.deactivate();
+    privateClient = null;
+  }
 };
 
 export const createNotification = async (

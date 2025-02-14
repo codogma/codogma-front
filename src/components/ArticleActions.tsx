@@ -17,22 +17,34 @@ type SearchProps = {
   readonly refetch?: () => void;
 };
 
-export const ArticleActions = ({
-  id,
-  lang,
-  articleData,
-  refetch,
-}: SearchProps) => {
+export const ArticleActions = ({ id, lang, articleData }: SearchProps) => {
   const [isLiked, setIsLiked] = useState(articleData.isLiked);
+  const [likeCount, setLikeCount] = useState(articleData.likeCount);
   const { state } = useAuth();
+
+  const handleClick = () => {
+    const commentElement = document.getElementById(`comments`);
+    if (commentElement) {
+      commentElement.scrollIntoView({
+        behavior: 'instant',
+        block: 'start',
+      });
+    }
+  };
 
   const handleChange = async (
     event: React.ChangeEvent<HTMLInputElement>,
     checked: boolean,
   ) => {
     if (state.isAuthenticated) {
-      setIsLiked(checked);
-      await like(id).then(() => refetch && refetch());
+      await like(id).then(() => {
+        setIsLiked(checked);
+        if (isLiked) {
+          setLikeCount((prevState) => prevState - 1);
+        } else {
+          setLikeCount((prevState) => prevState + 1);
+        }
+      });
     }
   };
 
@@ -60,15 +72,22 @@ export const ArticleActions = ({
       <Checkbox
         checked={isLiked}
         onChange={handleChange}
-        icon={<ThumbUpOutlinedIcon />}
+        icon={
+          <>
+            <ThumbUpOutlinedIcon />
+            <div className='ml-1 text-base leading-5'>{likeCount}</div>
+          </>
+        }
         checkedIcon={
-          <ThumbUpOutlinedIcon color='inherit'>
-            {articleData.likeCount}
-          </ThumbUpOutlinedIcon>
+          <>
+            <ThumbUpOutlinedIcon color='inherit' />
+            <div className='ml-1 text-base leading-5'>{likeCount}</div>
+          </>
         }
         inputProps={{ 'aria-label': 'Like' }}
       />
       <IconButton
+        onClick={handleClick}
         aria-label='Comments'
         color='inherit'
         sx={{ borderRadius: 8 }}

@@ -3,7 +3,6 @@ import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import Chip from '@mui/material/Chip';
 import Stack from '@mui/material/Stack';
-import Typography from '@mui/material/Typography';
 import DOMPurify from 'dompurify';
 import Link from 'next/link';
 import React from 'react';
@@ -123,7 +122,6 @@ export default function Page({ params: { lng, id } }: PageProps) {
         </CardContent>
       </Card>
       <ArticleActions lang={lng} articleData={article} id={id} />
-      <Typography component='div'>{t('comments')}:</Typography>
       <CommentList articleId={id} lang={lng} />
     </>
   );

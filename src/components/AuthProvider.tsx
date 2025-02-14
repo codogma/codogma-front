@@ -1,4 +1,5 @@
 'use client';
+import { Client } from '@stomp/stompjs';
 import { useQuery } from '@tanstack/react-query';
 import Cookies from 'js-cookie';
 import {
@@ -9,10 +10,18 @@ import {
   useContext,
   useEffect,
   useReducer,
+  useRef,
 } from 'react';
 
 import { Spinner } from '@/components/Spinner';
 import { currentUser, refreshToken } from '@/helpers/authApi';
+import { devConsoleError, devConsoleInfo } from '@/helpers/devConsoleLogs';
+import {
+  connectPrivateWebSocket,
+  connectPublicWebSocket,
+  disconnectPrivateWebSocket,
+} from '@/helpers/notificationAPI';
+import { useEventListener } from '@/helpers/useEventListener';
 import { User } from '@/types';
 
 interface AuthState {
@@ -55,6 +64,45 @@ interface AuthProviderProps {
 
 export const AuthProvider: FC<AuthProviderProps> = ({ children }) => {
   const [state, dispatch] = useReducer(authReducer, initialState);
+  const publicClientRef = useRef<Client>();
+
+  useEffect(() => {
+    // Всегда поддерживаем публичное подключение
+    publicClientRef.current = connectPublicWebSocket();
+
+    return () => {
+      if (publicClientRef?.current?.active) {
+        publicClientRef.current?.deactivate();
+      }
+    };
+  }, []);
+
+  useEffect(() => {
+    const handleAuthChange = async () => {
+      try {
+        if (state.isAuthenticated) {
+          await connectPrivateWebSocket();
+          devConsoleInfo('Private connection established');
+        } else {
+          await disconnectPrivateWebSocket();
+          devConsoleInfo('Private connection closed');
+        }
+      } catch (error) {
+        devConsoleError('Connection error:', error);
+        dispatch({ type: 'LOGOUT' });
+      }
+    };
+
+    const timeoutId = setTimeout(handleAuthChange, 500);
+    return () => clearTimeout(timeoutId);
+  }, [state.isAuthenticated]);
+
+  useEventListener('storage', async () => {
+    const savedUser = Cookies.get('user');
+    if (!savedUser && publicClientRef?.current?.active) {
+      await disconnectPrivateWebSocket();
+    }
+  });
 
   const {
     data: user,
@@ -88,37 +136,30 @@ export const AuthProvider: FC<AuthProviderProps> = ({ children }) => {
     }
   }, [user, hasCurrentUserError, hasRefreshTokenError, dispatch]);
 
-  useEffect(() => {
-    const handleStorageChange = () => {
-      const savedUser = Cookies.get('user');
-      if (savedUser) {
-        refetch()
-          .then(({ data }) => {
-            if (data) {
-              dispatch({ type: 'LOGIN', user: data });
-              Cookies.set('user', JSON.stringify(user), {
-                secure: true,
-                sameSite: 'strict',
-              });
-            } else {
-              dispatch({ type: 'LOGOUT' });
-              Cookies.remove('user');
-            }
-          })
-          .catch(() => {
+  useEventListener('storage', () => {
+    const savedUser = Cookies.get('user');
+    if (savedUser) {
+      refetch()
+        .then(({ data }) => {
+          if (data) {
+            dispatch({ type: 'LOGIN', user: data });
+            Cookies.set('user', JSON.stringify(user), {
+              secure: true,
+              sameSite: 'strict',
+            });
+          } else {
             dispatch({ type: 'LOGOUT' });
             Cookies.remove('user');
-          });
-      } else {
-        dispatch({ type: 'LOGOUT' });
-      }
-    };
-
-    window.addEventListener('storage', handleStorageChange);
-    return () => {
-      window.removeEventListener('storage', handleStorageChange);
-    };
-  }, [refetch, dispatch, user]);
+          }
+        })
+        .catch(() => {
+          dispatch({ type: 'LOGOUT' });
+          Cookies.remove('user');
+        });
+    } else {
+      dispatch({ type: 'LOGOUT' });
+    }
+  });
 
   if (isPending) {
     return <Spinner className='reload-spinner' />;
