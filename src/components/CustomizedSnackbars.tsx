@@ -2,8 +2,9 @@
 import Alert from '@mui/material/Alert';
 import Snackbar, { SnackbarCloseReason } from '@mui/material/Snackbar';
 import * as React from 'react';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
+import { useEventListener } from '@/helpers/useEventListener';
 import { CustomEventDetail } from '@/types/global';
 
 export function CustomizedSnackbars() {
@@ -13,15 +14,11 @@ export function CustomizedSnackbars() {
     'success' | 'error' | 'warning' | 'info'
   >('info');
 
-  useEffect(() => {
-    const alertChange = (event: CustomEvent<CustomEventDetail>) => {
-      setAlertSeverity(event.detail.severity);
-      setAlertText(event.detail.message);
-      setOpen(true);
-    };
-
-    window.addEventListener('api', alertChange);
-  }, []);
+  useEventListener('api', (event: CustomEvent<CustomEventDetail>) => {
+    setAlertSeverity(event.detail.severity);
+    setAlertText(event.detail.message);
+    setOpen(true);
+  });
 
   const handleClose = (
     event?: React.SyntheticEvent | Event,

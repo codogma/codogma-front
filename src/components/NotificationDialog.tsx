@@ -42,6 +42,7 @@ import {
   readAllNotifications,
   readNotification,
 } from '@/helpers/notificationAPI';
+import { useEventListener } from '@/helpers/useEventListener';
 import { GetNotification, Language, NotificationType, UserRole } from '@/types';
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
@@ -79,8 +80,11 @@ export const NotificationDialog = ({ lang }: NotificationsDialogProps) => {
     queryFn: () => {
       return getNotifications(undefined, currentPage, resultsPerPage);
     },
-    refetchInterval: 10000,
   });
+
+  useEventListener('notification', () => refetch());
+
+  useEventListener('storage', () => refetch());
 
   const notifications: GetNotification[] = data?.content ?? [];
   const totalPages = data?.totalPages ?? 0;

@@ -7,10 +7,6 @@ import useScrollTrigger from '@mui/material/useScrollTrigger';
 import * as React from 'react';
 
 interface Props {
-  /**
-   * Injected by the documentation to work in an iframe.
-   * You won't need it on your project.
-   */
   readonly window?: () => Window;
   readonly children?: React.ReactElement<unknown>;
 }

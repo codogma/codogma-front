@@ -1,7 +1,6 @@
 'use client';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
-import Typography from '@mui/material/Typography';
 import DOMPurify from 'dompurify';
 import Link from 'next/link';
 import React from 'react';
@@ -99,7 +98,6 @@ export default function Page({ params: { lng } }: PageProps) {
             )}
         </CardContent>
       </Card>
-      <Typography component='div'>{t('comments')}:</Typography>
       <CommentList articleId={article.id} lang={lng} />
     </>
   );

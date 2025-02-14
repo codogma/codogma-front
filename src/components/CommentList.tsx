@@ -212,23 +212,28 @@ export const CommentList: React.FC<CommentListProps> = ({
   };
 
   return (
-    <Box sx={{ marginTop: 4 }}>
-      {data?.pages.map((page, pageIndex) => (
-        <div key={pageIndex}>{renderComments(page.content)}</div>
-      ))}
-      <LoadingButton
-        onClick={() => fetchNextPage()}
-        loadingPosition='start'
-        loading={isFetchingNextPage}
-        variant='outlined'
-        size='small'
-        disabled={!hasMoreComments}
-      >
-        Load More
-      </LoadingButton>
-      {!editingComment && replyToCommentId === null && (
-        <CommentForm articleId={articleId} onCommentAdded={() => refetch()} />
-      )}
-    </Box>
+    <>
+      <Typography id='comments' component='div'>
+        {t('comments')}:
+      </Typography>
+      <Box sx={{ marginTop: 4 }}>
+        {data?.pages.map((page, pageIndex) => (
+          <div key={pageIndex}>{renderComments(page.content)}</div>
+        ))}
+        <LoadingButton
+          onClick={() => fetchNextPage()}
+          loadingPosition='start'
+          loading={isFetchingNextPage}
+          variant='outlined'
+          size='small'
+          disabled={!hasMoreComments}
+        >
+          Load More
+        </LoadingButton>
+        {!editingComment && replyToCommentId === null && (
+          <CommentForm articleId={articleId} onCommentAdded={() => refetch()} />
+        )}
+      </Box>
+    </>
   );
 };

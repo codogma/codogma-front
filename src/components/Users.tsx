@@ -9,10 +9,10 @@ import { useTranslation } from '@/app/i18n/client';
 import { useAuth } from '@/components/AuthProvider';
 import { AvatarImage } from '@/components/AvatarImage';
 import { ButtonWithPopover } from '@/components/ButtonWithPopover';
-import { User, UserRole } from '@/types';
+import { GetUserDTO, UserRole } from '@/types';
 
 type AuthorsProps = {
-  readonly users: User[];
+  readonly users: GetUserDTO[];
   readonly loading?: boolean;
   readonly lang: string;
 };
