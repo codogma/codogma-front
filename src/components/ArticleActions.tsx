@@ -7,6 +7,7 @@ import React, { useState } from 'react';
 
 import { ArticleProgressBar } from '@/components/ArticleProgressBar';
 import { useAuth } from '@/components/AuthProvider';
+import MenuButton from '@/components/MenuButton';
 import { like } from '@/helpers/articleApi';
 import { Article } from '@/types';
 
@@ -14,7 +15,6 @@ type SearchProps = {
   readonly id: number;
   readonly lang: string;
   readonly articleData: Article;
-  readonly refetch?: () => void;
 };
 
 export const ArticleActions = ({ id, lang, articleData }: SearchProps) => {
@@ -98,6 +98,7 @@ export const ArticleActions = ({ id, lang, articleData }: SearchProps) => {
         </div>
       </IconButton>
       <ArticleProgressBar lang={lang} articleData={articleData} />
+      <MenuButton />
     </Paper>
   );
 };

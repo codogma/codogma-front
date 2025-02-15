@@ -3,13 +3,14 @@ import { LoadingButton } from '@mui/lab';
 import { Box, Button, Card, CardContent, Typography } from '@mui/material';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import Link from 'next/link';
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 
 import { useTranslation } from '@/app/i18n/client';
 import { useAuth } from '@/components/AuthProvider';
 import { AvatarImage } from '@/components/AvatarImage';
 import { TimeAgo } from '@/components/TimeAgo';
 import { deleteComment, getComments } from '@/helpers/commentAPI';
+import { useEventListener } from '@/helpers/useEventListener';
 import { GetComment, UserRole } from '@/types';
 
 import { CommentForm } from './CommentForm';
@@ -50,39 +51,45 @@ export const CommentList: React.FC<CommentListProps> = ({
     },
   );
 
+  const checkCommentExistenceOnLoad = useCallback(async () => {
+    if (isScrolled) return;
+    document.querySelectorAll('.comment-card-link').forEach((el) => {
+      el.classList.remove('active');
+    });
+    const targetCommentId = window.location.hash.replace('#comment-', '');
+    if (!targetCommentId) return;
+
+    let commentElement = document.getElementById(`comment-${targetCommentId}`);
+
+    if (!commentElement) {
+      const page = data?.pages[data.pages.length - 1];
+      if (page?.totalElements) {
+        setPageSize(page.totalElements);
+      }
+      await fetchNextPage();
+      commentElement = document.getElementById(`comment-${targetCommentId}`);
+    }
+
+    if (commentElement) {
+      commentElement.classList.add('active');
+      commentElement.scrollIntoView({
+        behavior: 'instant',
+        block: 'center',
+      });
+      setIsScrolled(true);
+    }
+  }, [data, fetchNextPage, isScrolled]);
+
+  useEventListener('hashchange', () => {
+    setIsScrolled(false);
+    checkCommentExistenceOnLoad();
+  });
+
   useEffect(() => {
-    const checkCommentExistenceOnLoad = async () => {
-      if (isScrolled) return;
-      const targetCommentId = window.location.hash.replace('#comment-', '');
-      if (!targetCommentId) return;
-
-      let commentElement = document.getElementById(
-        `comment-${targetCommentId}`,
-      );
-
-      if (!commentElement) {
-        const page = data?.pages[data.pages.length - 1];
-        if (page?.totalElements) {
-          setPageSize(page.totalElements);
-        }
-        await fetchNextPage();
-        commentElement = document.getElementById(`comment-${targetCommentId}`);
-      }
-
-      if (commentElement) {
-        commentElement.classList.add('active');
-        commentElement.scrollIntoView({
-          behavior: 'instant',
-          block: 'center',
-        });
-        setIsScrolled(true);
-      }
-    };
-
     if (window.location.hash) {
       checkCommentExistenceOnLoad();
     }
-  }, [data, fetchNextPage, isScrolled]);
+  }, [checkCommentExistenceOnLoad]);
 
   const handleEdit = (comment: GetComment) => {
     setEditingComment(comment);
