@@ -12,7 +12,7 @@ import { useTranslation } from '@/app/i18n/client';
 import { useAuth } from '@/components/AuthProvider';
 import { devConsoleError } from '@/helpers/devConsoleLogs';
 import { getUserByUsername } from '@/helpers/userApi';
-import { Language, User } from '@/types';
+import { GetUserDTO, Language } from '@/types';
 
 type PageParams = {
   username: string;
@@ -24,7 +24,7 @@ type PageProps = {
 };
 
 export default function Page({ params: { lng, username } }: PageProps) {
-  const [user, setUser] = useState<User>();
+  const [user, setUser] = useState<GetUserDTO>();
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
   const [currentCategory, setCurrentCategory] = useState<number | null>(null);
   const { t } = useTranslation(lng);

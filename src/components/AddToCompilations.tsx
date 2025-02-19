@@ -47,6 +47,7 @@ interface AddToCompilationsProps {
   readonly username?: string;
   readonly lang: string;
   readonly compilations: GetCompilation[];
+  // readonly isCompilatedValue?: boolean;
 }
 
 const BookmarkScheme = z.object({
@@ -58,6 +59,7 @@ export const AddToCompilations: React.FC<AddToCompilationsProps> = ({
   username,
   lang,
   compilations,
+  // isCompilatedValue,
 }) => {
   const [open, setOpen] = useState(false);
   const [availableCompilations, setAvailableCompilations] = useState<
@@ -67,6 +69,7 @@ export const AddToCompilations: React.FC<AddToCompilationsProps> = ({
     useState<GetCompilation[]>(compilations);
   const [inputCompilationValue, setInputCompilationValue] =
     useState<string>('');
+  // const [isCompilated, setIsCompilated] = useState(isCompilatedValue);
   const { t } = useTranslation(lang, 'compilations');
 
   const zodForm = useForm<z.infer<typeof BookmarkScheme>>({
@@ -152,6 +155,15 @@ export const AddToCompilations: React.FC<AddToCompilationsProps> = ({
       <IconButton color='inherit' onClick={handleClickOpen}>
         <PlaylistAddIcon />
       </IconButton>
+      {/*{isCompilated ? (*/}
+      {/*  <IconButton color='inherit' onClick={handleClose}>*/}
+      {/*    <PlaylistAddCheckIcon />*/}
+      {/*  </IconButton>*/}
+      {/*) : (*/}
+      {/*  <IconButton color='inherit' onClick={handleClickOpen}>*/}
+      {/*    <PlaylistAddIcon />*/}
+      {/*  </IconButton>*/}
+      {/*)}*/}
       <BootstrapDialog aria-labelledby='customized-dialog-title' open={open}>
         <DialogTitle sx={{ m: 0, p: 2 }} id='customized-dialog-title'>
           {t('addToCompilation')}

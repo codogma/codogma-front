@@ -1,12 +1,21 @@
-import EditIcon from '@mui/icons-material/Edit';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
-import PersonAddIcon from '@mui/icons-material/PersonAdd';
-import PlaylistAddIcon from '@mui/icons-material/PlaylistAdd';
+import { MenuList } from '@mui/material';
 import IconButton from '@mui/material/IconButton';
 import Menu, { MenuProps } from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import { alpha, styled } from '@mui/material/styles';
+import Typography from '@mui/material/Typography';
+import { useQuery } from '@tanstack/react-query';
 import * as React from 'react';
+import { useState } from 'react';
+
+import { useTranslation } from '@/app/i18n/client';
+import { AddToCompilations } from '@/components/AddToCompilations';
+import { useAuth } from '@/components/AuthProvider';
+import ButtonAlertDialog from '@/components/ButtonAlertDialog';
+import { SubscribeMenuItem } from '@/components/SubscribeMenuItem';
+import { getUserByUsername } from '@/helpers/userApi';
+import { Article, GetUserDTO, Language, UserRole } from '@/types';
 
 const StyledMenu = styled((props: MenuProps) => (
   <Menu
@@ -51,18 +60,34 @@ const StyledMenu = styled((props: MenuProps) => (
   },
 }));
 
-export default function MenuButton() {
-  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+type MenuButtonProps = {
+  readonly article: Article;
+  readonly lang: Language;
+};
+
+export default function MenuButton({ article, lang }: MenuButtonProps) {
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const { state } = useAuth();
   const open = Boolean(anchorEl);
+  const { t } = useTranslation(lang);
+
+  const { data } = useQuery<GetUserDTO>({
+    queryKey: ['user', article.username],
+    queryFn: () => getUserByUsername(article.username),
+  });
+
+  const user: GetUserDTO = data as GetUserDTO;
+
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
   };
+
   const handleClose = () => {
     setAnchorEl(null);
   };
 
   return (
-    <div>
+    <>
       <IconButton
         aria-label='more'
         id='long-button'
@@ -78,23 +103,45 @@ export default function MenuButton() {
         MenuListProps={{
           'aria-labelledby': 'demo-customized-button',
         }}
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'center',
+        }}
+        transformOrigin={{
+          vertical: 'bottom',
+          horizontal: 'center',
+        }}
         anchorEl={anchorEl}
         open={open}
         onClose={handleClose}
       >
-        <MenuItem onClick={handleClose} disableRipple>
-          <EditIcon />
-          Редактировать
-        </MenuItem>
-        <MenuItem onClick={handleClose} disableRipple>
-          <PlaylistAddIcon />
-          Добавить в подборки
-        </MenuItem>
-        <MenuItem onClick={handleClose} disableRipple>
-          <PersonAddIcon />
-          Подписаться
-        </MenuItem>
+        <MenuList className='menu-list'>
+          <MenuItem onClick={handleClose} disableRipple>
+            <Typography textAlign='center'>
+              {state.user?.username === article.username &&
+                state.user?.role === UserRole.ROLE_AUTHOR && (
+                  <ButtonAlertDialog articleId={article.id} lang={lang} />
+                )}
+              {t('editBtn')}
+            </Typography>
+          </MenuItem>
+          <MenuItem onClick={handleClose} disableRipple>
+            <Typography textAlign='center'>
+              {state.isAuthenticated &&
+                state.user?.role !== UserRole.ROLE_ADMIN && (
+                  <AddToCompilations
+                    id={article.id}
+                    username={state.user?.username}
+                    lang={lang}
+                    compilations={article.compilations}
+                  />
+                )}
+              {t('addToCompilation')}
+            </Typography>
+          </MenuItem>
+          <SubscribeMenuItem user={user} lang={lang} onClose={handleClose} />
+        </MenuList>
       </StyledMenu>
-    </div>
+    </>
   );
 }

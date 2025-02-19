@@ -33,13 +33,9 @@ export default function ButtonAlertDialog({
   return (
     <React.Fragment>
       <Button
-        variant='outlined'
         onClick={handleClickOpen}
-        className='article-btn'
         startIcon={<EditOutlinedIcon />}
-      >
-        {t('editBtn')}
-      </Button>
+      ></Button>
       <Dialog
         open={open}
         onClose={handleClose}

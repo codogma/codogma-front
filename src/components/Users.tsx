@@ -8,7 +8,7 @@ import React from 'react';
 import { useTranslation } from '@/app/i18n/client';
 import { useAuth } from '@/components/AuthProvider';
 import { AvatarImage } from '@/components/AvatarImage';
-import { ButtonWithPopover } from '@/components/ButtonWithPopover';
+import { SubscribeMenuItem } from '@/components/SubscribeMenuItem';
 import { GetUserDTO, UserRole } from '@/types';
 
 type AuthorsProps = {
@@ -107,11 +107,7 @@ export default function Users({ users, loading, lang }: AuthorsProps) {
                   </li>
                 </ul>
               </div>
-              <ButtonWithPopover
-                isSubscribedValue={user?.isSubscribed}
-                username={user?.username}
-                lang={lang}
-              />
+              <SubscribeMenuItem user={user} lang={lang} />
             </CardContent>
           </Card>
         ))

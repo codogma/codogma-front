@@ -9,11 +9,11 @@ import { ArticleProgressBar } from '@/components/ArticleProgressBar';
 import { useAuth } from '@/components/AuthProvider';
 import MenuButton from '@/components/MenuButton';
 import { like } from '@/helpers/articleApi';
-import { Article } from '@/types';
+import { Article, Language } from '@/types';
 
 type SearchProps = {
   readonly id: number;
-  readonly lang: string;
+  readonly lang: Language;
   readonly articleData: Article;
 };
 
@@ -97,8 +97,8 @@ export const ArticleActions = ({ id, lang, articleData }: SearchProps) => {
           {articleData.commentsCount}
         </div>
       </IconButton>
+      <MenuButton article={articleData} lang={lang} />
       <ArticleProgressBar lang={lang} articleData={articleData} />
-      <MenuButton />
     </Paper>
   );
 };
