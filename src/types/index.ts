@@ -125,6 +125,7 @@ export type Article = {
   commentsCount: number;
   likeCount: number;
   isLiked: boolean;
+  isCompilated: boolean;
 };
 
 export interface GetComment {

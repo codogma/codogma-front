@@ -111,6 +111,7 @@ export default function MenuButton({ article, lang }: MenuButtonProps) {
           vertical: 'bottom',
           horizontal: 'center',
         }}
+        keepMounted
         anchorEl={anchorEl}
         open={open}
         onClose={handleClose}
@@ -134,9 +135,9 @@ export default function MenuButton({ article, lang }: MenuButtonProps) {
                     username={state.user?.username}
                     lang={lang}
                     compilations={article.compilations}
+                    isCompilatedValue={false}
                   />
                 )}
-              {t('addToCompilation')}
             </Typography>
           </MenuItem>
           <SubscribeMenuItem user={user} lang={lang} onClose={handleClose} />

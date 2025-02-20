@@ -25,7 +25,7 @@ export const SubscribeMenuItem: React.FC<CustomPopoverProps> = ({
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(
     null,
   );
-  const [isSubscribed, setIsSubscribed] = useState<boolean>(user.isSubscribed);
+  const [isSubscribed, setIsSubscribed] = useState<boolean>(user?.isSubscribed);
   const { state } = useAuth();
   const { t } = useTranslation(lang, 'authors');
   const id = 'simple-popover';
@@ -51,16 +51,21 @@ export const SubscribeMenuItem: React.FC<CustomPopoverProps> = ({
     setAnchorEl(null);
   };
 
-  return state.user?.username !== user.username ? (
+  return state.user?.username !== user?.username ? (
     <>
       <MenuItem onClick={handleChange}>
         <Typography textAlign='center'>
           {isSubscribed ? (
-            <PersonAddDisabledIcon />
+            <>
+              <PersonAddDisabledIcon />
+              {t('unsubscribe')}
+            </>
           ) : (
-            <PersonAddAltIcon aria-describedby={id} />
+            <>
+              <PersonAddAltIcon aria-describedby={id} />
+              {t('subscribe')}
+            </>
           )}
-          {t('subscribe')}
         </Typography>
       </MenuItem>
       {!state.isAuthenticated && (
