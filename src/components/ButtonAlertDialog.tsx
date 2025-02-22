@@ -6,6 +6,8 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
+import MenuItem from '@mui/material/MenuItem';
+import Typography from '@mui/material/Typography';
 import Link from 'next/link';
 import React, { useState } from 'react';
 
@@ -31,11 +33,13 @@ export default function ButtonAlertDialog({
   };
 
   return (
-    <React.Fragment>
-      <Button
-        onClick={handleClickOpen}
-        startIcon={<EditOutlinedIcon />}
-      ></Button>
+    <>
+      <MenuItem onClick={handleClickOpen}>
+        <Typography textAlign='center'>
+          <EditOutlinedIcon />
+          {t('editBtn')}
+        </Typography>
+      </MenuItem>
       <Dialog
         open={open}
         onClose={handleClose}
@@ -57,6 +61,6 @@ export default function ButtonAlertDialog({
           </Button>
         </DialogActions>
       </Dialog>
-    </React.Fragment>
+    </>
   );
 }

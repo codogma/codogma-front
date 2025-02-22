@@ -123,7 +123,6 @@ export default function MenuButton({ article, lang }: MenuButtonProps) {
                 state.user?.role === UserRole.ROLE_AUTHOR && (
                   <ButtonAlertDialog articleId={article.id} lang={lang} />
                 )}
-              {t('editBtn')}
             </Typography>
           </MenuItem>
           <MenuItem onClick={handleClose} disableRipple>
@@ -135,12 +134,19 @@ export default function MenuButton({ article, lang }: MenuButtonProps) {
                     username={state.user?.username}
                     lang={lang}
                     compilations={article.compilations}
-                    isCompilatedValue={false}
                   />
                 )}
             </Typography>
           </MenuItem>
-          <SubscribeMenuItem user={user} lang={lang} onClose={handleClose} />
+          <MenuItem onClick={handleClose} disableRipple>
+            <Typography textAlign='center'>
+              <SubscribeMenuItem
+                user={user}
+                lang={lang}
+                onClose={handleClose}
+              />
+            </Typography>
+          </MenuItem>
         </MenuList>
       </StyledMenu>
     </>
