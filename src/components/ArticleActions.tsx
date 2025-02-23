@@ -8,7 +8,7 @@ import React, { useState } from 'react';
 import { ArticleProgressBar } from '@/components/ArticleProgressBar';
 import { useAuth } from '@/components/AuthProvider';
 import MenuButton from '@/components/MenuButton';
-import { like } from '@/helpers/articleApi';
+import { like, unlike } from '@/helpers/articleApi';
 import { Article, Language } from '@/types';
 
 type SearchProps = {
@@ -37,14 +37,12 @@ export const ArticleActions = ({ id, lang, articleData }: SearchProps) => {
     checked: boolean,
   ) => {
     if (state.isAuthenticated) {
-      await like(id).then(() => {
-        setIsLiked(checked);
-        if (isLiked) {
-          setLikeCount((prevState) => prevState - 1);
-        } else {
-          setLikeCount((prevState) => prevState + 1);
-        }
-      });
+      setIsLiked(checked);
+      if (checked) {
+        await like(id).then(() => setLikeCount((prevState) => prevState + 1));
+      } else {
+        await unlike(id).then(() => setLikeCount((prevState) => prevState - 1));
+      }
     }
   };
 
