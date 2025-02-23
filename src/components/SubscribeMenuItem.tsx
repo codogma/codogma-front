@@ -22,15 +22,13 @@ export const SubscribeMenuItem: React.FC<CustomPopoverProps> = ({
   lang,
   onClose,
 }) => {
-  const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(
-    null,
-  );
+  const [anchorEl, setAnchorEl] = React.useState<HTMLElement | null>(null);
   const [isSubscribed, setIsSubscribed] = useState<boolean>(user?.isSubscribed);
   const { state } = useAuth();
   const { t } = useTranslation(lang, 'authors');
   const id = 'simple-popover';
 
-  const handleChange = () => {
+  const handleChange = (event: React.MouseEvent<HTMLElement>) => {
     if (onClose) {
       onClose();
     }
@@ -44,6 +42,8 @@ export const SubscribeMenuItem: React.FC<CustomPopoverProps> = ({
           setIsSubscribed(response.isSubscribed),
         );
       }
+    } else {
+      setAnchorEl(event.currentTarget);
     }
   };
 

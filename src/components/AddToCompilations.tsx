@@ -50,7 +50,6 @@ interface AddToCompilationsProps {
   readonly username?: string;
   readonly lang: string;
   readonly compilations: GetCompilation[];
-  readonly isCompilatedValue: boolean;
   readonly onClose?: () => void;
 }
 
@@ -63,7 +62,6 @@ export const AddToCompilations: React.FC<AddToCompilationsProps> = ({
   username,
   lang,
   compilations,
-  isCompilatedValue,
   onClose,
 }) => {
   const [open, setOpen] = useState(false);
@@ -74,7 +72,7 @@ export const AddToCompilations: React.FC<AddToCompilationsProps> = ({
     useState<GetCompilation[]>(compilations);
   const [inputCompilationValue, setInputCompilationValue] =
     useState<string>('');
-  const [isCompilated, setIsCompilated] = useState(isCompilatedValue);
+  const [isCompilated, setIsCompilated] = useState(compilations.length > 0);
   const { t } = useTranslation(lang, 'compilations');
 
   const zodForm = useForm<z.infer<typeof BookmarkScheme>>({

@@ -9,7 +9,7 @@ interface PopoverElementProps {
   readonly destination: string;
   readonly popoverId: string;
   readonly lang: string;
-  readonly btnEl: HTMLButtonElement | null;
+  readonly btnEl: HTMLElement | null;
   readonly onClose?: () => void;
 }
 
