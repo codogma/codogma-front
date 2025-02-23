@@ -72,6 +72,7 @@ export default function Page({ params: { lng, id } }: PageProps) {
               state.user?.role !== UserRole.ROLE_ADMIN && (
                 <AddToCompilations
                   id={id}
+                  username={state.user?.username}
                   lang={lng}
                   compilations={article.compilations}
                 />

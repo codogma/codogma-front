@@ -46,5 +46,8 @@
   "en": "English language",
   "ru": "Russian language",
   "createNotificationBtn": "Create notification",
-  "adminPanelBtn": "Admin panel"
+  "adminPanelBtn": "Admin panel",
+  "addToCompilation": "Add to compilation",
+  "subscribe": "Subscribe",
+  "unsubscribe": "Unsubscribe"
 }

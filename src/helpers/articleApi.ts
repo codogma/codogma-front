@@ -150,3 +150,12 @@ export const like = async (id: number): Promise<Article> => {
   });
   return response.data;
 };
+
+export const unlike = async (id: number): Promise<Article> => {
+  const response = await axiosInstance.delete(`/articles/${id}/unlike`);
+  dispatchCustomEvent('api', {
+    message: 'Unliked article',
+    severity: 'success',
+  });
+  return response.data;
+};

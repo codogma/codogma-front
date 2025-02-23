@@ -175,7 +175,7 @@ const NavBar = ({ lang }: NavBarProps) => {
               onClose={handleCloseUserMenu}
             >
               {!state.isAuthenticated ? (
-                <MenuList className='nav-menu-list'>
+                <MenuList className='menu-list'>
                   <MenuItem onClick={() => handleClickMenuItem('sign-up')}>
                     <Typography textAlign='center'>
                       <PersonAddAltRoundedIcon
@@ -193,7 +193,7 @@ const NavBar = ({ lang }: NavBarProps) => {
                   </MenuItem>
                 </MenuList>
               ) : (
-                <MenuList className='nav-menu-list'>
+                <MenuList className='menu-list'>
                   <MenuItem
                     onClick={() =>
                       handleClickMenuItem(`users/${state.user?.username}`)

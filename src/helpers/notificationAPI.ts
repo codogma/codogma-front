@@ -155,7 +155,7 @@ export const getNotifications = async (
   isRead?: boolean,
   page: number = 0,
   size: number = 10,
-  sort: string = 'updatedAt',
+  sort: string = 'createdAt',
   order: string = 'desc',
 ): Promise<GetNotificationsDTO> => {
   const response = await axiosInstance.get('/notifications', {

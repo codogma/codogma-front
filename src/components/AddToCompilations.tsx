@@ -2,6 +2,7 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Close as CloseIcon } from '@mui/icons-material';
 import PlaylistAddIcon from '@mui/icons-material/PlaylistAdd';
+import PlaylistAddCheckIcon from '@mui/icons-material/PlaylistAddCheck';
 import {
   Autocomplete,
   Box,
@@ -13,7 +14,9 @@ import {
   TextField,
 } from '@mui/material';
 import DialogContent from '@mui/material/DialogContent';
+import MenuItem from '@mui/material/MenuItem';
 import { styled } from '@mui/material/styles';
+import Typography from '@mui/material/Typography';
 import { keepPreviousData, useQuery } from '@tanstack/react-query';
 import React, { useEffect, useMemo, useState } from 'react';
 import {
@@ -47,6 +50,7 @@ interface AddToCompilationsProps {
   readonly username?: string;
   readonly lang: string;
   readonly compilations: GetCompilation[];
+  readonly onClose?: () => void;
 }
 
 const BookmarkScheme = z.object({
@@ -58,6 +62,7 @@ export const AddToCompilations: React.FC<AddToCompilationsProps> = ({
   username,
   lang,
   compilations,
+  onClose,
 }) => {
   const [open, setOpen] = useState(false);
   const [availableCompilations, setAvailableCompilations] = useState<
@@ -67,6 +72,7 @@ export const AddToCompilations: React.FC<AddToCompilationsProps> = ({
     useState<GetCompilation[]>(compilations);
   const [inputCompilationValue, setInputCompilationValue] =
     useState<string>('');
+  const [isCompilated, setIsCompilated] = useState(compilations.length > 0);
   const { t } = useTranslation(lang, 'compilations');
 
   const zodForm = useForm<z.infer<typeof BookmarkScheme>>({
@@ -133,10 +139,17 @@ export const AddToCompilations: React.FC<AddToCompilationsProps> = ({
     formData,
   ) => {
     const requestData = { ...formData };
-    addToCompilations(id, requestData.compilationIds).then(() => handleClose());
+    const compilationsIds: number[] = requestData.compilationIds;
+    addToCompilations(id, requestData.compilationIds).then(() => {
+      setIsCompilated(compilationsIds.length > 0);
+      handleClose();
+    });
   };
 
   const handleClickOpen = () => {
+    if (onClose) {
+      onClose();
+    }
     reset({
       compilationIds: selectedCompilations.map((compilation) => compilation.id),
     });
@@ -149,9 +162,20 @@ export const AddToCompilations: React.FC<AddToCompilationsProps> = ({
 
   return (
     <>
-      <IconButton color='inherit' onClick={handleClickOpen}>
-        <PlaylistAddIcon />
-      </IconButton>
+      <MenuItem onClick={handleClickOpen}>
+        <Typography textAlign='center'>
+          {isCompilated ? (
+            <>
+              <PlaylistAddCheckIcon />{' '}
+            </>
+          ) : (
+            <>
+              <PlaylistAddIcon />
+            </>
+          )}
+          {t('addToCompilation')}
+        </Typography>
+      </MenuItem>
       <BootstrapDialog aria-labelledby='customized-dialog-title' open={open}>
         <DialogTitle sx={{ m: 0, p: 2 }} id='customized-dialog-title'>
           {t('addToCompilation')}

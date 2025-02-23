@@ -32,6 +32,7 @@ import { useTranslation } from '@/app/i18n/client';
 import { useAuth } from '@/components/AuthProvider';
 import { CustomPagination } from '@/components/CustomPagination';
 import { EditNotification } from '@/components/EditNotification';
+import { dispatchCustomEvent } from '@/helpers/dispatchCustomEvent';
 import {
   deleteAllSystemNotifications,
   deleteNotification,
@@ -99,9 +100,16 @@ export const NotificationDialog = ({ lang }: NotificationsDialogProps) => {
   };
 
   const handleClickArticleModeration = (url: string, id: number) => {
-    router.push(url);
+    router.replace(url);
+    if (window.location.hash) {
+      window.history.replaceState(null, '', url);
+    }
     setOpen(false);
     readNotification(id).then(() => refetch());
+    dispatchCustomEvent('hashchange', {
+      message: '',
+      severity: 'success',
+    });
   };
 
   const onPageChange = (value: number) => {

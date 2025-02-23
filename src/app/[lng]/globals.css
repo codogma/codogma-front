@@ -75,7 +75,7 @@
     @apply sticky bg-limed-spruce-rgba shadow-none backdrop-blur-md dark:bg-woodsmoke-rgba !important;
   }
 
-  .nav-menu-list {
+  .menu-list {
     @apply p-0 !important;
   }
 

@@ -23,9 +23,7 @@ export const Bookmark: React.FC<BookmarkProps> = ({
   isBookmarkedValue,
   refetch,
 }) => {
-  const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(
-    null,
-  );
+  const [anchorEl, setAnchorEl] = React.useState<HTMLElement | null>(null);
   const [isBookmarked, setIsBookmarked] = useState(isBookmarkedValue);
   const { state } = useAuth();
   const { t } = useTranslation(lang, 'articles');
@@ -44,7 +42,7 @@ export const Bookmark: React.FC<BookmarkProps> = ({
         await unbookmark(id).then(() => refetch && refetch());
       }
     } else {
-      setAnchorEl(event.currentTarget as HTMLButtonElement);
+      setAnchorEl(event.currentTarget);
     }
   };
 

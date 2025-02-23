@@ -8,10 +8,10 @@ import React from 'react';
 
 import { useTranslation } from '@/app/i18n/client';
 import { AvatarImage } from '@/components/AvatarImage';
-import { ButtonWithPopover } from '@/components/ButtonWithPopover';
 import NavTabs, { TabProps } from '@/components/NavTabs';
+import { SubscribeMenuItem } from '@/components/SubscribeMenuItem';
 import { getUserByUsername } from '@/helpers/userApi';
-import { Language, User } from '@/types';
+import { GetUserDTO, Language } from '@/types';
 
 type PageParams = {
   username: string;
@@ -38,10 +38,12 @@ export default function Layout({
     { label: `${t('comments')}`, href: `/${lng}/users/${username}/comments` },
   ];
 
-  const { data: user, isFetching } = useQuery<User>({
+  const { data, isFetching } = useQuery<GetUserDTO>({
     queryKey: ['user', username],
     queryFn: () => getUserByUsername(username),
   });
+
+  const user: GetUserDTO = data as GetUserDTO;
 
   return (
     <section>
@@ -89,11 +91,7 @@ export default function Layout({
                   <p className='category-card-shortInfo'>{user?.shortInfo}</p>
                 </div>
               </div>
-              <ButtonWithPopover
-                username={username}
-                isSubscribedValue={user?.isSubscribed}
-                lang={lng}
-              />
+              <SubscribeMenuItem user={user} lang={lng} />
             </>
           )}
         </CardContent>

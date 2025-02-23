@@ -71,7 +71,9 @@ export const getUsers = async (
   return response.data;
 };
 
-export const getUserByUsername = async (username?: string): Promise<User> => {
+export const getUserByUsername = async (
+  username?: string,
+): Promise<GetUserDTO> => {
   const response = await axiosInstance.get(`/users/${username}`);
   return response.data;
 };

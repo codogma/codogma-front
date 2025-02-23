@@ -46,5 +46,8 @@
   "en": "Английского языка",
   "ru": "Русского языка",
   "createNotificationBtn": "Создать уведомление",
-  "adminPanelBtn": "Панель администратора"
+  "adminPanelBtn": "Панель администратора",
+  "addToCompilation": "Добавить в подборки",
+  "subscribe": "Подписаться",
+  "unsubscribe": "Отписатся"
 }
