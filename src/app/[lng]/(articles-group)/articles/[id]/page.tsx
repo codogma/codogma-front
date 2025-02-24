@@ -45,6 +45,7 @@ export default function Page({ params: { lng, id } }: PageProps) {
   });
 
   const articles: Article[] = (data ?? []) as Article[];
+  const hasArticles = articles && articles.length > 0;
 
   return (
     <>
@@ -135,8 +136,12 @@ export default function Page({ params: { lng, id } }: PageProps) {
       </Card>
       <ArticleActions lang={lng} articleData={article} id={id} />
       <CommentList articleId={id} lang={lng} />
-      <Typography component='div'>{t('recommendation')}</Typography>
-      <Articles lang={lng} articles={articles} loading={isFetching} />
+      {hasArticles && (
+        <>
+          <Typography component='div'>{t('recommendation')}</Typography>
+          <Articles lang={lng} articles={articles} loading={isFetching} />
+        </>
+      )}
     </>
   );
 }
