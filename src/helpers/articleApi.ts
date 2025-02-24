@@ -119,6 +119,18 @@ export const getArticleById = async (
   return response.data;
 };
 
+export const getRecommendationsArticleById = async (
+  id: number | undefined,
+): Promise<Article> => {
+  const response = await axiosInstance.get(`/articles/${id}/recommendations`);
+  return response.data;
+};
+
+export const getRecommendationsArticles = async (): Promise<Article[]> => {
+  const response = await axiosInstance.get('/articles/recommendations');
+  return response.data;
+};
+
 export const deleteArticle = async (id: number): Promise<void> => {
   await axiosInstance.delete(`/articles/${id}`);
   dispatchCustomEvent('api', {

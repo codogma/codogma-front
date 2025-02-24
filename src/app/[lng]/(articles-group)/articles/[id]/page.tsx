@@ -1,8 +1,10 @@
 'use client';
+import { Typography } from '@mui/material';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import Chip from '@mui/material/Chip';
 import Stack from '@mui/material/Stack';
+import { useQuery } from '@tanstack/react-query';
 import DOMPurify from 'dompurify';
 import Link from 'next/link';
 import React from 'react';
@@ -11,13 +13,15 @@ import { useTranslation } from '@/app/i18n/client';
 import { AddToCompilations } from '@/components/AddToCompilations';
 import { ArticleActions } from '@/components/ArticleActions';
 import { useArticle } from '@/components/ArticleProvider';
+import Articles from '@/components/Articles';
 import { useAuth } from '@/components/AuthProvider';
 import { AvatarImage } from '@/components/AvatarImage';
 import ButtonAlertDialog from '@/components/ButtonAlertDialog';
 import { CommentList } from '@/components/CommentList';
 import { useContentImageContext } from '@/components/ContentImageProvider';
 import { TimeAgo } from '@/components/TimeAgo';
-import { Language, UserRole } from '@/types';
+import { getRecommendationsArticleById } from '@/helpers/articleApi';
+import { Article, Language, UserRole } from '@/types';
 
 type PageParams = {
   lng: Language;
@@ -32,8 +36,16 @@ export default function Page({ params: { lng, id } }: PageProps) {
   const { article } = useArticle();
   const { state } = useAuth();
   const { processContent } = useContentImageContext();
-  const { t } = useTranslation(lng);
+  const { t } = useTranslation(lng, 'articles');
   const content = processContent(DOMPurify.sanitize(article.content));
+
+  const { data, isFetching } = useQuery<Article>({
+    queryKey: ['articles', id],
+    queryFn: () => getRecommendationsArticleById(id),
+  });
+
+  const articles: Article[] = (data ?? []) as Article[];
+  const hasArticles = articles && articles.length > 0;
 
   return (
     <>
@@ -78,6 +90,7 @@ export default function Page({ params: { lng, id } }: PageProps) {
                 />
               )}
           </div>
+          <h1 className='article-title'>{article.title}</h1>
           <div className='article-category'>
             {article.categories?.map((category) => (
               <span className='category-item' key={category.id}>
@@ -124,6 +137,12 @@ export default function Page({ params: { lng, id } }: PageProps) {
       </Card>
       <ArticleActions lang={lng} articleData={article} id={id} />
       <CommentList articleId={id} lang={lng} />
+      {hasArticles && (
+        <>
+          <Typography component='div'>{t('recommendation')}</Typography>
+          <Articles lang={lng} articles={articles} loading={isFetching} />
+        </>
+      )}
     </>
   );
 }
