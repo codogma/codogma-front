@@ -90,18 +90,17 @@ export default function Page({ params: { lng, id } }: PageProps) {
                 />
               )}
           </div>
-          <div className='article-category'>
-            {article.categories?.map((category) => (
-              <span className='category-item' key={category.id}>
-                <Link
-                  className='category-link'
-                  href={`/categories/${category.id}`}
-                >
-                  {category.name}
-                </Link>
-              </span>
-            ))}
-          </div>
+          <h1 className='article-title'>{article.title}</h1>
+          {article.categories?.map((category) => (
+            <span className='category-item' key={category.id}>
+              <Link
+                className='category-link'
+                href={`/categories/${category.id}`}
+              >
+                {category.name}
+              </Link>
+            </span>
+          ))}
           <div className='article-content'>{content}</div>
           <div className='article-presenter-meta'>
             <div className='article-category-pm'>
