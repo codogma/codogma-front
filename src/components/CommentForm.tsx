@@ -1,14 +1,15 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Box, Button, Link, TextField } from '@mui/material';
+import { Box, Button, Link } from '@mui/material';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import Typography from '@mui/material/Typography';
 import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
-import { useForm } from 'react-hook-form';
+import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
 import { z } from 'zod';
 
 import { useAuth } from '@/components/AuthProvider';
+import FormInput from '@/components/FormInput';
 import { createComment, updateComment } from '@/helpers/commentAPI';
 import { devConsoleError } from '@/helpers/devConsoleLogs';
 import { CreateComment, GetComment, UpdateComment } from '@/types';
@@ -22,8 +23,6 @@ interface CommentFormProps {
 }
 
 const CommentFormScheme = z.object({
-  articleId: z.number(),
-  parentCommentId: z.optional(z.number()),
   content: z
     .string()
     .min(10, 'Текст комментариев не может содержать менее 10 символов.')
@@ -44,14 +43,13 @@ export const CommentForm: React.FC<CommentFormProps> = ({
   const zodForm = useForm<z.infer<typeof CommentFormScheme>>({
     resolver: zodResolver(CommentFormScheme),
     defaultValues: {
-      articleId,
-      parentCommentId,
       content: '',
     },
   });
 
   const {
     reset,
+    handleSubmit,
     formState: { isSubmitSuccessful, errors },
   } = zodForm;
 
@@ -68,54 +66,66 @@ export const CommentForm: React.FC<CommentFormProps> = ({
     }
   }, [comment]);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-
+  const onSubmit: SubmitHandler<z.infer<typeof CommentFormScheme>> = (
+    formData,
+  ) => {
     if (comment) {
-      const updatedComment: UpdateComment = { content };
-      await updateComment(comment.id, updatedComment);
+      const updatedComment: UpdateComment = { content: formData.content };
+      updateComment(comment.id, updatedComment).then(() => setContent(''));
     } else {
-      const newComment: CreateComment = { content, articleId, parentCommentId };
-      await createComment(newComment);
+      const newComment: CreateComment = {
+        content: formData.content,
+        articleId,
+        parentCommentId,
+      };
+      createComment(newComment).then(() => setContent(''));
     }
-
-    setContent('');
     onCommentAdded();
   };
 
   return (
-    <Box
-      component='form'
-      onSubmit={handleSubmit}
-      sx={{ marginTop: 2, display: 'flex', flexDirection: 'column', gap: 2 }}
-    >
+    <>
       {state.isAuthenticated ? (
-        <>
-          <TextField
-            multiline
-            minRows={3}
-            value={content}
-            onChange={(e) => setContent(e.target.value)}
-            placeholder='Write your comment...'
-            variant='outlined'
-            fullWidth
-          />
-          <Box sx={{ display: 'flex', gap: 1 }}>
-            <Button type='submit' variant='outlined' size='small'>
-              {comment ? 'Update Comment' : 'Add Comment'}
-            </Button>
-            {onCancelEdit && (
-              <Button
-                variant='outlined'
-                color='warning'
-                size='small'
-                onClick={onCancelEdit}
-              >
-                Cancel
+        <FormProvider {...zodForm}>
+          <Box
+            component='form'
+            onSubmit={handleSubmit(onSubmit)}
+            sx={{
+              marginTop: 2,
+              display: 'flex',
+              flexDirection: 'column',
+              gap: 2,
+            }}
+          >
+            <FormInput
+              multiline
+              name='content'
+              minRows={3}
+              value={content}
+              onChange={(e) => setContent(e.target.value)}
+              placeholder='Write your comment...'
+              variant='outlined'
+              fullWidth
+              error={Boolean(errors.content?.message)}
+              helperText={errors.content?.message}
+            />
+            <Box sx={{ display: 'flex', gap: 1 }}>
+              <Button type='submit' variant='outlined' size='small'>
+                {comment ? 'Update Comment' : 'Add Comment'}
               </Button>
-            )}
+              {onCancelEdit && (
+                <Button
+                  variant='outlined'
+                  color='warning'
+                  size='small'
+                  onClick={onCancelEdit}
+                >
+                  Cancel
+                </Button>
+              )}
+            </Box>
           </Box>
-        </>
+        </FormProvider>
       ) : (
         <Card className='card-with-line'>
           <CardContent>
@@ -134,6 +144,6 @@ export const CommentForm: React.FC<CommentFormProps> = ({
           </CardContent>
         </Card>
       )}
-    </Box>
+    </>
   );
 };
