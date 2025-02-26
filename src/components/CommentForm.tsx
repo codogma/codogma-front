@@ -4,7 +4,7 @@ import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import Typography from '@mui/material/Typography';
 import { useRouter } from 'next/navigation';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
 import { z } from 'zod';
 
@@ -36,49 +36,53 @@ export const CommentForm: React.FC<CommentFormProps> = ({
   onCommentAdded,
   onCancelEdit,
 }) => {
-  const [content, setContent] = useState<string>('');
   const { state } = useAuth();
   const router = useRouter();
 
   const zodForm = useForm<z.infer<typeof CommentFormScheme>>({
     resolver: zodResolver(CommentFormScheme),
     defaultValues: {
-      content: '',
+      content: comment?.content ?? '',
     },
   });
 
   const {
     reset,
     handleSubmit,
+    setValue,
     formState: { isSubmitSuccessful, errors },
   } = zodForm;
 
   useEffect(() => {
     devConsoleError(errors);
     if (isSubmitSuccessful) {
-      reset(zodForm.getValues());
+      reset({ content: '' });
     }
   }, [isSubmitSuccessful, reset, errors, zodForm]);
 
   useEffect(() => {
     if (comment) {
-      setContent(comment.content);
+      setValue('content', comment.content);
+    } else {
+      setValue('content', '');
     }
-  }, [comment]);
+  }, [comment, setValue]);
 
-  const onSubmit: SubmitHandler<z.infer<typeof CommentFormScheme>> = (
+  const onSubmit: SubmitHandler<z.infer<typeof CommentFormScheme>> = async (
     formData,
   ) => {
     if (comment) {
-      const updatedComment: UpdateComment = { content: formData.content };
-      updateComment(comment.id, updatedComment).then(() => setContent(''));
+      const updatedComment: UpdateComment = {
+        content: formData.content,
+      };
+      await updateComment(comment.id, updatedComment);
     } else {
       const newComment: CreateComment = {
         content: formData.content,
         articleId,
         parentCommentId,
       };
-      createComment(newComment).then(() => setContent(''));
+      await createComment(newComment);
     }
     onCommentAdded();
   };
@@ -101,8 +105,6 @@ export const CommentForm: React.FC<CommentFormProps> = ({
               multiline
               name='content'
               minRows={3}
-              value={content}
-              onChange={(e) => setContent(e.target.value)}
               placeholder='Write your comment...'
               variant='outlined'
               fullWidth
