@@ -5,12 +5,12 @@ import CardContent from '@mui/material/CardContent';
 import Chip from '@mui/material/Chip';
 import Popover from '@mui/material/Popover';
 import Stack from '@mui/material/Stack';
+import { useQuery } from '@tanstack/react-query';
 import Link from 'next/link';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 
 import { useTranslation } from '@/app/i18n/client';
 import { useAuth } from '@/components/AuthProvider';
-import { devConsoleError } from '@/helpers/devConsoleLogs';
 import { getUserByUsername } from '@/helpers/userApi';
 import { GetUserDTO, Language } from '@/types';
 
@@ -24,24 +24,17 @@ type PageProps = {
 };
 
 export default function Page({ params: { lng, username } }: PageProps) {
-  const [user, setUser] = useState<GetUserDTO>();
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
   const [currentCategory, setCurrentCategory] = useState<number | null>(null);
   const { t } = useTranslation(lng);
   const { state } = useAuth();
 
-  useEffect(() => {
-    async function fetchData() {
-      try {
-        const userData = await getUserByUsername(username);
-        setUser(userData);
-      } catch (error) {
-        devConsoleError('Error fetching data:', error);
-      }
-    }
+  const { data } = useQuery<GetUserDTO>({
+    queryKey: ['user', username],
+    queryFn: () => getUserByUsername(username),
+  });
 
-    fetchData();
-  }, [username]);
+  const user: GetUserDTO = data as GetUserDTO;
 
   const handlePopoverOpen = (
     event: React.MouseEvent<HTMLElement>,
