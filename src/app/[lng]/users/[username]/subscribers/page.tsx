@@ -48,11 +48,12 @@ const Page = ({ params: { username, lng } }: PageProps) => {
       const byInfo = searchType === SearchType.INFO ? searchValue : undefined;
       return getUsers(
         undefined,
+        username,
         undefined,
         byTag,
         byInfo,
-        true,
         false,
+        true,
         currentPage,
         resultsPerPage,
       );

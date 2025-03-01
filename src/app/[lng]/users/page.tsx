@@ -39,6 +39,7 @@ export default function Page({ params: { lng } }: PageProps) {
       return getUsers(
         undefined,
         undefined,
+        undefined,
         byTag,
         byInfo,
         false,

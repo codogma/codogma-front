@@ -37,6 +37,7 @@ export const dataProvider: DataProvider = {
     const response = await getUsers(
       // Здесь можно передать конкретные параметры в зависимости от фильтров:
       filters?.categoryId,
+      filters?.targetUsername,
       filters?.role,
       filters?.tag,
       filters?.info,
