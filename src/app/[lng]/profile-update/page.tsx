@@ -4,6 +4,7 @@ import { ModeEditOutlineOutlined } from '@mui/icons-material';
 import { Badge, Box, Button } from '@mui/material';
 import IconButton from '@mui/material/IconButton';
 import { styled } from '@mui/material/styles';
+import { useQuery } from '@tanstack/react-query';
 import Link from 'next/link';
 import React, { MouseEvent, useEffect, useState } from 'react';
 import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
@@ -21,7 +22,7 @@ import {
   updateUser,
   UserUpdate,
 } from '@/helpers/userApi';
-import { Language, User } from '@/types';
+import { GetUserDTO, Language } from '@/types';
 
 const UserScheme = z.object({
   username: z.optional(
@@ -68,7 +69,6 @@ type PageProps = {
 function Page({ params: { lng } }: PageProps) {
   const { state } = useAuth();
   const username: string | undefined = state.user?.username;
-  const [user, setUser] = useState<User>();
   const [avatarFile, setAvatarFile] = useState<File>();
   const { t } = useTranslation(lng);
 
@@ -90,37 +90,30 @@ function Page({ params: { lng } }: PageProps) {
   const { handleSubmit } = zodForm;
 
   useEffect(() => {
-    async function fetchData() {
-      try {
-        const userData = await getUserByUsername(username);
-        setUser(userData);
+    zodForm.reset({
+      username: user.username,
+      avatar: undefined,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      bio: user.bio,
+      newEmail: user.email,
+      currentPassword: undefined,
+      newPassword: undefined,
+      shortInfo: user.shortInfo,
+    });
+  }, [zodForm]);
 
-        zodForm.reset({
-          username: userData.username,
-          avatar: undefined,
-          firstName: userData.firstName,
-          lastName: userData.lastName,
-          bio: userData.bio,
-          newEmail: userData.email,
-          currentPassword: undefined,
-          newPassword: undefined,
-          shortInfo: userData.shortInfo,
-        });
-      } catch (error) {
-        devConsoleError('Error fetching data: ' + error);
-      }
-    }
+  const { data } = useQuery<GetUserDTO>({
+    queryKey: ['user', username],
+    queryFn: () => getUserByUsername(username),
+  });
 
-    fetchData();
-  }, [username, zodForm]);
+  const user: GetUserDTO = data as GetUserDTO;
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
       setAvatarFile(file);
-      setUser((prev) =>
-        prev ? { ...prev, avatarUrl: URL.createObjectURL(file) } : prev,
-      );
     }
   };
 

@@ -11,14 +11,13 @@ import Paper from '@mui/material/Paper';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
-import DOMPurify from 'dompurify';
-import React, { FormEvent, useEffect, useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import React, { FormEvent, useState } from 'react';
 
 import { useTranslation } from '@/app/i18n/client';
 import Articles from '@/components/Articles';
-import { getArticles } from '@/helpers/articleApi';
-import { devConsoleError } from '@/helpers/devConsoleLogs';
-import { Article, Language } from '@/types';
+import { getArticles, GetArticlesDTO } from '@/helpers/articleApi';
+import { Language } from '@/types';
 
 type PageParams = {
   username: string;
@@ -34,10 +33,6 @@ export default function Layout({ params: { lng, username } }: PageProps) {
   const resultsPerPage20 = 20;
   const resultsPerPage30 = 30;
   const minPages = 2;
-  const [articles, setArticles] = useState<Article[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [totalPages, setTotalPages] = useState<number>(0);
-  const [totalElements, setTotalElements] = useState<number>(0);
   const [currentPage, setCurrentPage] = useState<number>(0);
   const [resultsPerPage, setResultsPerPage] =
     useState<number>(resultsPerPage10);
@@ -55,41 +50,33 @@ export default function Layout({ params: { lng, username } }: PageProps) {
     setAnchorEl(null);
   };
 
-  useEffect(() => {
-    async function fetchData(page: number) {
-      try {
-        let byTag: string | undefined = undefined;
-        let byContent: string | undefined = undefined;
-        if (searchType === 'tag') {
-          byTag = searchValue;
-        }
-        if (searchType === 'content') {
-          byContent = searchValue;
-        }
-        const { content, totalPages, totalElements } = await getArticles(
-          undefined,
-          undefined,
-          page,
-          resultsPerPage,
-          byTag,
-          byContent,
-          username,
-        );
-        content.map(
-          (article) => (article.content = DOMPurify.sanitize(article.content)),
-        );
-        setArticles(content);
-        setTotalPages(totalPages);
-        setTotalElements(totalElements);
-      } catch (error) {
-        devConsoleError('Error fetching data:', error);
-      } finally {
-        setLoading(false);
-      }
-    }
+  const { data, isPending } = useQuery<GetArticlesDTO>({
+    queryKey: [
+      'articles',
+      currentPage,
+      resultsPerPage,
+      searchType,
+      searchValue,
+      username,
+    ],
+    queryFn: () => {
+      const byTag = searchType === 'tag' ? searchValue : undefined;
+      const byContent = searchType === 'content' ? searchValue : undefined;
+      return getArticles(
+        undefined,
+        undefined,
+        currentPage,
+        resultsPerPage,
+        byTag,
+        byContent,
+        username,
+      );
+    },
+  });
 
-    fetchData(currentPage).then();
-  }, [currentPage, resultsPerPage, searchType, searchValue, username]);
+  const articles = data?.content || [];
+  const totalPages = data?.totalPages || 0;
+  const totalElements = data?.totalElements || 0;
 
   const handleSearchSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -168,7 +155,7 @@ export default function Layout({ params: { lng, username } }: PageProps) {
           <SearchIcon />
         </IconButton>
       </Paper>
-      <Articles lang={lng} articles={articles} loading={loading} />
+      <Articles lang={lng} articles={articles} loading={isPending} />
       {totalPages < minPages ? null : (
         <Stack
           spacing={2}
