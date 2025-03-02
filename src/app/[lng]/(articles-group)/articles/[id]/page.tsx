@@ -1,5 +1,5 @@
 'use client';
-import { Link as MuiLink, Typography } from '@mui/material';
+import { Typography } from '@mui/material';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import Chip from '@mui/material/Chip';
@@ -7,7 +7,6 @@ import Stack from '@mui/material/Stack';
 import { useQuery } from '@tanstack/react-query';
 import DOMPurify from 'dompurify';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
 import React from 'react';
 
 import { useTranslation } from '@/app/i18n/client';
@@ -38,22 +37,12 @@ export default function Page({ params: { lng, id } }: PageProps) {
   const { state } = useAuth();
   const { processContent } = useContentImageContext();
   const { t } = useTranslation(lng, 'articles');
-  const router = useRouter();
   const content = processContent(DOMPurify.sanitize(article.content));
 
   const { data, isFetching } = useQuery<Article>({
     queryKey: ['articles', id],
     queryFn: () => getRecommendationsArticleById(id),
   });
-
-  const handleClickMenuItem = (url: string, openInNewTab: boolean = false) => {
-    if (openInNewTab) {
-      const fullUrl = `/${lng}/${url}`;
-      window.open(fullUrl, '_blank');
-    } else {
-      router.push(`/${lng}/${url}`);
-    }
-  };
 
   const articles: Article[] = (data ?? []) as Article[];
   const hasArticles = articles && articles.length > 0;
@@ -122,7 +111,7 @@ export default function Page({ params: { lng, id } }: PageProps) {
                 <span className='category-item' key={category.id}>
                   <Link
                     className='category-link'
-                    href={`/categories/${category.id}`}
+                    href={`/${lng}/categories/${category.id}`}
                   >
                     {category.name}
                   </Link>
@@ -133,14 +122,12 @@ export default function Page({ params: { lng, id } }: PageProps) {
               Теги:{' '}
               {article.tags?.map((tag) => (
                 <span className='tag-item' key={tag.id}>
-                  <MuiLink
+                  <Link
                     className='tag-link'
-                    onClick={() =>
-                      handleClickMenuItem(
-                        `/articles#search-input&type=tag&tag=${tag.name}`,
-                      )
-                    }
-                  />
+                    href={`/${lng}/articles#search-input&type=tag&tag=${tag.name}`}
+                  >
+                    {tag.name}
+                  </Link>
                 </span>
               ))}
             </div>
