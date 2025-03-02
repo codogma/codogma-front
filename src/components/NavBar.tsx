@@ -62,6 +62,7 @@ const NavBar = ({ lang }: NavBarProps) => {
     }
     handleCloseUserMenu();
   };
+
   const handleOpenCompilationDialog = () => {
     setCompilationDialogOpen(true);
     handleCloseUserMenu();

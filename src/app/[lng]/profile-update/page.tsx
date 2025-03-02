@@ -69,7 +69,7 @@ type PageProps = {
 function Page({ params: { lng } }: PageProps) {
   const { state } = useAuth();
   const username: string | undefined = state.user?.username;
-  const [avatarFile, setAvatarFile] = useState<File>();
+  const [avatarUrl, setAvatarUrl] = useState<string>();
   const { t } = useTranslation(lng);
 
   const zodForm = useForm<z.infer<typeof UserScheme>>({
@@ -87,21 +87,7 @@ function Page({ params: { lng } }: PageProps) {
     },
   });
 
-  const { handleSubmit } = zodForm;
-
-  useEffect(() => {
-    zodForm.reset({
-      username: user.username,
-      avatar: undefined,
-      firstName: user.firstName,
-      lastName: user.lastName,
-      bio: user.bio,
-      newEmail: user.email,
-      currentPassword: undefined,
-      newPassword: undefined,
-      shortInfo: user.shortInfo,
-    });
-  }, [zodForm]);
+  const { reset, handleSubmit, setValue, trigger } = zodForm;
 
   const { data } = useQuery<GetUserDTO>({
     queryKey: ['user', username],
@@ -110,17 +96,32 @@ function Page({ params: { lng } }: PageProps) {
 
   const user: GetUserDTO = data as GetUserDTO;
 
+  useEffect(() => {
+    reset({
+      username: user?.username,
+      avatar: undefined,
+      firstName: user?.firstName,
+      lastName: user?.lastName,
+      bio: user?.bio,
+      newEmail: user?.email,
+      currentPassword: undefined,
+      newPassword: undefined,
+      shortInfo: user?.shortInfo,
+    });
+  }, [reset, user]);
+
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
-      setAvatarFile(file);
+      setAvatarUrl(URL.createObjectURL(file));
+      setValue('avatar', file);
+      trigger('avatar');
     }
   };
 
   const onSubmit: SubmitHandler<z.infer<typeof UserScheme>> = (formData) => {
     const updatedUserData: UserUpdate = {
       ...formData,
-      avatar: avatarFile,
     };
     devConsoleError(updatedUserData);
     updateUser(updatedUserData);
@@ -161,8 +162,9 @@ function Page({ params: { lng } }: PageProps) {
           >
             <AvatarImage
               alt={user?.username}
+              type='avatar'
               variant='rounded'
-              src={user?.avatarUrl}
+              src={avatarUrl ?? user?.avatarUrl}
               size={112}
             />
           </Badge>
