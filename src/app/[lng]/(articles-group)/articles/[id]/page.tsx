@@ -1,11 +1,12 @@
 'use client';
-import { Link, Typography } from '@mui/material';
+import { Link as MuiLink, Typography } from '@mui/material';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import Chip from '@mui/material/Chip';
 import Stack from '@mui/material/Stack';
 import { useQuery } from '@tanstack/react-query';
 import DOMPurify from 'dompurify';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import React from 'react';
 
@@ -132,16 +133,14 @@ export default function Page({ params: { lng, id } }: PageProps) {
               Теги:{' '}
               {article.tags?.map((tag) => (
                 <span className='tag-item' key={tag.id}>
-                  <Link
+                  <MuiLink
                     className='tag-link'
                     onClick={() =>
                       handleClickMenuItem(
                         `/articles#search-input&type=tag&tag=${tag.name}`,
                       )
                     }
-                  >
-                    {tag.name}
-                  </Link>
+                  />
                 </span>
               ))}
             </div>
