@@ -74,9 +74,9 @@ export default function Layout({ params: { lng, username } }: PageProps) {
     },
   });
 
-  const articles = data?.content || [];
-  const totalPages = data?.totalPages || 0;
-  const totalElements = data?.totalElements || 0;
+  const articles = data?.content ?? [];
+  const totalPages = data?.totalPages ?? 0;
+  const totalElements = data?.totalElements ?? 0;
 
   const handleSearchSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();

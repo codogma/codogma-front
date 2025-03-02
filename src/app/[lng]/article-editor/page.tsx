@@ -19,7 +19,7 @@ import MenuItem from '@mui/material/MenuItem';
 import { useTheme } from '@mui/material/styles';
 import { keepPreviousData, useMutation, useQuery } from '@tanstack/react-query';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   Controller,
   FormProvider,
@@ -128,7 +128,6 @@ const Page = ({ params: { lng } }: PageParams) => {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const paramId = searchParams.get(PARAM_ID);
-  const id = Number(paramId);
   const [stepOneData, setStepOneData] = useState<StepOneType>(null);
   const [reset, setReset] = useState<boolean>(false);
   const [stepTwoData, setStepTwoData] = useState<StepTwoType>(null);
@@ -150,6 +149,11 @@ const Page = ({ params: { lng } }: PageParams) => {
   >([]);
   const [prevData, setPrevData] = useState<UpdateDraftArticleDTO | null>(null);
   const { t } = useTranslation(lng, 'articleEditor');
+
+  const id = useMemo(() => {
+    const param = searchParams.get(PARAM_ID);
+    return Number(param) || 0;
+  }, [searchParams]);
 
   const zodStepOneForm = useForm<z.infer<typeof StepOneScheme>>({
     resolver: zodResolver(StepOneScheme),
@@ -209,21 +213,24 @@ const Page = ({ params: { lng } }: PageParams) => {
   const compilationsPages: GetCompilationsDTO =
     compilationsData as GetCompilationsDTO;
 
-  const { data: draftArticlesData, refetch } = useQuery<Article[]>({
-    queryKey: ['draftArticles'],
-    queryFn: () => getDraftArticles(),
-  });
+  const { data: draftArticlesData, refetch: refetchDraftArticlesData } =
+    useQuery<Article[]>({
+      queryKey: ['draftArticles'],
+      queryFn: () => getDraftArticles(),
+    });
 
-  const isValidId = (validatingId: number) => {
-    return !isNaN(validatingId) && validatingId > 0;
+  const isValidId = (validatingId: unknown) => {
+    return (
+      typeof validatingId === 'number' &&
+      validatingId > 0 &&
+      Number.isSafeInteger(validatingId)
+    );
   };
 
-  const { data: article } = useQuery<Article>({
+  const { data: article, isFetched } = useQuery<Article>({
     queryKey: ['article', id],
     queryFn: () => getDraftedArticleById(id),
-    enabled: () => {
-      return isValidId(id);
-    },
+    enabled: isValidId(id),
   });
 
   useEffect(() => {
@@ -233,70 +240,78 @@ const Page = ({ params: { lng } }: PageParams) => {
   }, [draftArticlesData]);
 
   const deleteArticleData = useCallback(() => {
-    setArticleId(0);
-    resetStepOne({ title: '', content: '' });
-    resetStepTwo({
-      language: lng,
-      originalArticleId: null,
-      previewContent: '',
-      categoryIds: [],
-      compilationIds: [],
-      tags: [],
+    refetchDraftArticlesData().then(() => {
+      setArticleId(0);
+      resetStepOne({ title: '', content: '' });
+      resetStepTwo({
+        language: lng,
+        originalArticleId: null,
+        previewContent: '',
+        categoryIds: [],
+        compilationIds: [],
+        tags: [],
+      });
+      setReset(true);
+      setPrevData(null);
+      setActiveStep(0);
+      setStepOneData(null);
+      setStepTwoData(null);
+      localStorage.removeItem(STEP_ONE_DATA);
+      localStorage.removeItem(STEP_TWO_DATA);
+      localStorage.removeItem(SELECTED_CATEGORIES);
+      localStorage.removeItem(SELECTED_COMPILATIONS);
+      localStorage.removeItem(ARTICLE_ID);
     });
-    setReset(true);
-    setPrevData(null);
-    setActiveStep(0);
-    setStepOneData(null);
-    setStepTwoData(null);
-    localStorage.removeItem(STEP_ONE_DATA);
-    localStorage.removeItem(STEP_TWO_DATA);
-    localStorage.removeItem(SELECTED_CATEGORIES);
-    localStorage.removeItem(SELECTED_COMPILATIONS);
-    localStorage.removeItem(ARTICLE_ID);
-  }, [resetStepOne, resetStepTwo, lng]);
+  }, [refetchDraftArticlesData, resetStepOne, resetStepTwo, lng]);
 
-  const handleDeleteArticle = (id: number) => {
-    deleteArticle(id).then(() => {
-      refetch().then((response) => {
-        if (Array.isArray(response.data)) {
-          setDraftArticles(response.data);
+  const handleDeleteArticle = useCallback(
+    (id: number) => {
+      deleteArticle(id).then(() => {
+        refetchDraftArticlesData().then((response) => {
+          if (Array.isArray(response.data)) {
+            setDraftArticles(response.data);
+          }
+        });
+        if (id === articleId) {
+          deleteArticleData();
         }
       });
-      if (id === articleId) {
-        deleteArticleData();
-      }
-    });
-  };
+    },
+    [articleId, deleteArticleData, refetchDraftArticlesData],
+  );
 
   const setArticleData = useCallback(
-    (article: Article) => {
-      if (isValidId(article.id)) setArticleId(article.id);
-      localStorage.setItem(ARTICLE_ID, String(article.id));
+    (articleData: Article) => {
+      if (isValidId(articleData.id)) setArticleId(articleData.id);
+      localStorage.setItem(ARTICLE_ID, String(articleData.id));
       resetStepOne({
-        title: article.title,
-        content: article.content,
+        title: articleData.title,
+        content: articleData.content,
       });
       resetStepTwo({
-        language: article.language || lng,
-        originalArticleId: article.originalArticleId,
-        previewContent: article.previewContent,
-        categoryIds: article.categories.map((category) => category.id),
-        compilationIds: article.compilations.map(
+        language: articleData.language || lng,
+        originalArticleId: articleData.originalArticleId,
+        previewContent: articleData.previewContent,
+        categoryIds: articleData.categories.map((category) => category.id),
+        compilationIds: articleData.compilations.map(
           (compilation) => compilation.id,
         ),
-        tags: article.tags.map((tag) => tag.name),
+        tags: articleData.tags.map((tag) => tag.name),
       });
     },
     [resetStepOne, resetStepTwo, lng],
   );
 
-  const handleSelectArticle = (article: Article) => {
-    setArticleData(article);
-  };
+  const handleSelectArticle = useCallback(
+    (articleData: Article) => {
+      setArticleData(articleData);
+    },
+    [setArticleData],
+  );
 
-  const handleNewArticle = () => {
+  const handleNewArticle = useCallback(() => {
     deleteArticleData();
-  };
+  }, [deleteArticleData]);
 
   useEffect(() => {
     if (article) {
@@ -329,11 +344,14 @@ const Page = ({ params: { lng } }: PageParams) => {
       const parsedStepTwoData = JSON.parse(lsStepTwoData);
       resetStepTwo(parsedStepTwoData);
     }
-    route.replace(pathname);
+    if ((isFetched && paramId) || !isValidId(id)) route.replace(pathname);
   }, [
     article,
     categoriesPages,
     compilationsPages,
+    id,
+    isFetched,
+    paramId,
     pathname,
     resetStepOne,
     resetStepTwo,
@@ -424,7 +442,10 @@ const Page = ({ params: { lng } }: PageParams) => {
     placeholderData: keepPreviousData,
   });
 
-  const availableTags: string[] = tagObjects?.map((tag) => tag.name) ?? [];
+  const availableTags: string[] = useMemo(
+    () => tagObjects?.map((tag) => tag.name) ?? [],
+    [tagObjects],
+  );
 
   useEffect(() => {
     devConsoleError(Object.keys(errorsStepOne).length > 0);
@@ -474,7 +495,7 @@ const Page = ({ params: { lng } }: PageParams) => {
     mutationFn: (requestData: CreateDraftArticleDTO) =>
       createDraftArticle(requestData),
     onSuccess: (data) => {
-      refetch().then((response) => {
+      refetchDraftArticlesData().then((response) => {
         if (Array.isArray(response.data)) {
           setDraftArticles(response.data);
         }
@@ -491,7 +512,7 @@ const Page = ({ params: { lng } }: PageParams) => {
     mutationFn: (requestData: UpdateDraftArticleDTO) =>
       updateDraftArticle(articleId, requestData),
     onSuccess: () => {
-      refetch().then((response) => {
+      refetchDraftArticlesData().then((response) => {
         if (Array.isArray(response.data)) {
           setDraftArticles(response.data);
         }
@@ -544,78 +565,369 @@ const Page = ({ params: { lng } }: PageParams) => {
     zodStepOneForm,
   ]);
 
-  const onStepOneSubmit: SubmitHandler<z.infer<typeof StepOneScheme>> = (
-    formData,
-  ) => {
-    setStepOneData({ ...formData });
-    handleNext();
-  };
+  const onStepOneSubmit: SubmitHandler<z.infer<typeof StepOneScheme>> =
+    useCallback((formData) => {
+      setStepOneData({ ...formData });
+      handleNext();
+    }, []);
 
-  const onStepTwoSubmit: SubmitHandler<z.infer<typeof StepTwoScheme>> = (
-    formData,
-  ) => {
-    if (stepOneData && formData) {
-      const requestData: UpdateArticleDTO = {
-        ...stepOneData,
-        ...formData,
-      } as UpdateArticleDTO;
-      updateArticleMutate(requestData);
-    }
-    handleNext();
-    setStepOneData(null);
-    setStepTwoData(null);
-    setPrevData({});
-    localStorage.removeItem(STEP_ONE_DATA);
-    localStorage.removeItem(STEP_TWO_DATA);
-    localStorage.removeItem(SELECTED_CATEGORIES);
-    localStorage.removeItem(SELECTED_COMPILATIONS);
-    localStorage.removeItem(ARTICLE_ID);
-  };
+  const onStepTwoSubmit: SubmitHandler<z.infer<typeof StepTwoScheme>> =
+    useCallback(
+      (formData) => {
+        if (stepOneData && formData) {
+          const requestData: UpdateArticleDTO = {
+            ...stepOneData,
+            ...formData,
+          } as UpdateArticleDTO;
+          updateArticleMutate(requestData);
+        }
+        handleNext();
+        setStepOneData(null);
+        setStepTwoData(null);
+        setPrevData({});
+        localStorage.removeItem(STEP_ONE_DATA);
+        localStorage.removeItem(STEP_TWO_DATA);
+        localStorage.removeItem(SELECTED_CATEGORIES);
+        localStorage.removeItem(SELECTED_COMPILATIONS);
+        localStorage.removeItem(ARTICLE_ID);
+      },
+      [stepOneData, updateArticleMutate],
+    );
 
-  const onSubmit = () => {
+  const onSubmit = useCallback(() => {
     route.push(`/articles/${articleId}`);
-  };
+  }, [articleId, route]);
 
-  const steps: StepType[] = [
-    {
-      label: t('mainContent'),
-      stepContent: (
-        <FormProvider {...zodStepOneForm}>
-          <Box
-            component='form'
-            noValidate
-            autoComplete='off'
-            onSubmit={handleSubmitStepOne(onStepOneSubmit)}
-          >
-            <Box className='align-center mb-1 flex items-center'>
-              <FormInput
-                className='w-full flex-1'
-                name='title'
-                label={t('title')}
-                variant='standard'
-              />
-              {draftArticles.length > 0 && (
-                <LinkWithPopover
-                  draftArticles={draftArticles}
-                  onDeleteArticle={handleDeleteArticle}
-                  onSelectArticle={handleSelectArticle}
-                  lang={lng}
+  const steps: StepType[] = useMemo(
+    () => [
+      {
+        label: t('mainContent'),
+        stepContent: (
+          <FormProvider {...zodStepOneForm}>
+            <Box
+              component='form'
+              noValidate
+              autoComplete='off'
+              onSubmit={handleSubmitStepOne(onStepOneSubmit)}
+            >
+              <Box className='align-center mb-1 flex items-center'>
+                <FormInput
+                  className='w-full flex-1'
+                  name='title'
+                  label={t('title')}
+                  variant='standard'
                 />
+                {draftArticles.length > 0 && (
+                  <LinkWithPopover
+                    draftArticles={draftArticles}
+                    onDeleteArticle={handleDeleteArticle}
+                    onSelectArticle={handleSelectArticle}
+                    lang={lng}
+                  />
+                )}
+              </Box>
+              <Typography className='my-4'>{t('mainContent')}:</Typography>
+              {errorsStepOne.content?.message && (
+                <Typography variant='body2' color='error'>
+                  {errorsStepOne.content?.message}
+                </Typography>
               )}
+              <Controller
+                name='content'
+                control={controlStepOne}
+                render={({ field }) => (
+                  <TinyMCEEditor id='content' {...field} reset={reset} />
+                )}
+              />
+              <Box
+                sx={{
+                  display: 'flex',
+                  flexDirection: 'row',
+                  pt: 2,
+                  justifyContent: 'space-between',
+                }}
+              >
+                <Button onClick={() => handleNewArticle()}>
+                  {t('newArticle')}
+                </Button>
+                <Button type='submit'>{t('proceedToSettings')}</Button>
+              </Box>
             </Box>
-            <Typography className='my-4'>{t('mainContent')}:</Typography>
-            {errorsStepOne.content?.message && (
-              <Typography variant='body2' color='error'>
-                {errorsStepOne.content?.message}
-              </Typography>
-            )}
-            <Controller
-              name='content'
-              control={controlStepOne}
-              render={({ field }) => (
-                <TinyMCEEditor id='content' {...field} reset={reset} />
+          </FormProvider>
+        ),
+        error: Object.keys(errorsStepOne).length > 0,
+      },
+      {
+        label: t('settingsAndPreview'),
+        stepContent: (
+          <FormProvider {...zodStepTwoForm}>
+            <Box
+              component='form'
+              noValidate
+              autoComplete='off'
+              onSubmit={handleSubmitStepTwo(onStepTwoSubmit)}
+            >
+              <FormControl sx={{ mb: 1 }}>
+                <Controller
+                  name='language'
+                  control={controlStepTwo}
+                  render={({ field }) => (
+                    <TextField
+                      {...field}
+                      select
+                      label={t('language')}
+                      variant='standard'
+                      error={Boolean(errorsStepTwo.language?.message)}
+                      helperText={errorsStepTwo.language?.message}
+                    >
+                      {languageMenuItems.map(({ value, label }) => (
+                        <MenuItem key={value} value={value}>
+                          {label}
+                        </MenuItem>
+                      ))}
+                    </TextField>
+                  )}
+                />
+              </FormControl>
+              <FormControl sx={{ mb: 1 }} className='w-full'>
+                <Controller
+                  name='categoryIds'
+                  control={controlStepTwo}
+                  render={({ field }) => (
+                    <Autocomplete
+                      multiple
+                      id='categoryIds'
+                      options={availableCategories}
+                      getOptionLabel={(category) => category?.name}
+                      disableCloseOnSelect
+                      defaultValue={availableCategories.filter((category) =>
+                        field.value?.includes(category.id),
+                      )}
+                      isOptionEqualToValue={(option, value) =>
+                        option.id === value.id
+                      }
+                      onChange={(_, newValue) => {
+                        const normalizedValue: GetCategory[] = (
+                          newValue as GetCategory[]
+                        ).map((value) => {
+                          const existingCategory = availableCategories.find(
+                            (category) => category.id === value.id,
+                          );
+                          return existingCategory || value;
+                        });
+
+                        const uniqueCategoriesIds = new Set<number>();
+                        const uniqueSelectedCategories = new Set<GetCategory>();
+                        normalizedValue.forEach((category) => {
+                          uniqueCategoriesIds.add(category.id);
+                          uniqueSelectedCategories.add(category);
+                        });
+                        const arraySelectedCategories = Array.from(
+                          uniqueSelectedCategories,
+                        );
+                        setSelectedCategories(arraySelectedCategories);
+                        field.onChange(Array.from(uniqueCategoriesIds));
+                      }}
+                      onInputChange={(_, newInputValue) =>
+                        setInputCategoryValue(newInputValue)
+                      }
+                      renderTags={(value: GetCategory[], getTagProps) =>
+                        value.map((option: GetCategory, index: number) => {
+                          const { key, ...tagProps } = getTagProps({ index });
+                          return (
+                            <Chip
+                              {...tagProps}
+                              variant='outlined'
+                              label={option.name}
+                              key={key}
+                            />
+                          );
+                        })
+                      }
+                      inputValue={inputCategoryValue}
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          label={t('categories')}
+                          variant='standard'
+                          placeholder={t('selectCategories')}
+                          error={Boolean(errorsStepTwo.categoryIds?.message)}
+                          helperText={errorsStepTwo.categoryIds?.message}
+                        />
+                      )}
+                    />
+                  )}
+                />
+              </FormControl>
+              <FormControl sx={{ mb: 1 }} className='w-full'>
+                <Controller
+                  name='compilationIds'
+                  control={controlStepTwo}
+                  render={({ field }) => (
+                    <Autocomplete
+                      multiple
+                      id='compilationIds'
+                      options={availableCompilations}
+                      getOptionLabel={(compilation) => compilation?.title}
+                      disableCloseOnSelect
+                      defaultValue={availableCompilations.filter(
+                        (compilation) => field.value?.includes(compilation.id),
+                      )}
+                      isOptionEqualToValue={(option, value) =>
+                        option.id === value.id
+                      }
+                      onChange={(_, newValue) => {
+                        const normalizedValue: GetCompilation[] = (
+                          newValue as GetCompilation[]
+                        ).map((value) => {
+                          const existingCompilation =
+                            availableCompilations.find(
+                              (compilation) => compilation.id === value.id,
+                            );
+                          return existingCompilation || value;
+                        });
+                        const uniqueCompilationIds = new Set<number>();
+                        const uniqueSelectedCompilations =
+                          new Set<GetCompilation>();
+                        normalizedValue.forEach((compilation) => {
+                          uniqueCompilationIds.add(compilation.id);
+                          uniqueSelectedCompilations.add(compilation);
+                        });
+                        const arraySelectedCompilations = Array.from(
+                          uniqueSelectedCompilations,
+                        );
+                        setSelectedCompilations(arraySelectedCompilations);
+                        field.onChange(Array.from(uniqueCompilationIds));
+                      }}
+                      onInputChange={(_, newInputValue) =>
+                        setInputCompilationValue(newInputValue)
+                      }
+                      renderTags={(value: GetCompilation[], getTagProps) =>
+                        value.map((option: GetCompilation, index: number) => {
+                          const { key, ...tagProps } = getTagProps({ index });
+                          return (
+                            <Chip
+                              {...tagProps}
+                              variant='outlined'
+                              label={option.title}
+                              key={key}
+                            />
+                          );
+                        })
+                      }
+                      inputValue={inputCompilationValue}
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          label={t('compilations')}
+                          variant='standard'
+                          placeholder={t('selectCompilations')}
+                          error={Boolean(errorsStepTwo.compilationIds?.message)}
+                          helperText={errorsStepTwo.compilationIds?.message}
+                        />
+                      )}
+                    />
+                  )}
+                />
+              </FormControl>
+              <FormControl sx={{ mb: 1 }} className='w-full'>
+                <Controller
+                  name='tags'
+                  control={controlStepTwo}
+                  render={({ field }) => (
+                    <Autocomplete
+                      multiple
+                      id='tags'
+                      options={availableTags.filter(
+                        (tag) =>
+                          !field.value?.some(
+                            (value) =>
+                              value.toLowerCase() === tag.toLowerCase(),
+                          ),
+                      )}
+                      freeSolo
+                      defaultValue={field.value}
+                      isOptionEqualToValue={(option, value) => option === value}
+                      onChange={(_, newValue) => {
+                        const normalizedValue: string[] = (
+                          newValue as string[]
+                        ).map((value) => {
+                          const existingTag = availableTags.find(
+                            (tag) => tag.toLowerCase() === value.toLowerCase(),
+                          );
+                          return existingTag ?? value;
+                        });
+                        const uniqueTags = new Set<string>();
+                        normalizedValue.forEach((tag) => {
+                          uniqueTags.add(tag);
+                        });
+                        const arrayUniqueTags = Array.from(uniqueTags);
+                        field.onChange(arrayUniqueTags);
+                      }}
+                      onInputChange={(_, newInputValue) =>
+                        setInputTagValue(newInputValue)
+                      }
+                      renderTags={(value: Array<string>, getTagProps) =>
+                        value.map((option: string, index: number) => {
+                          const { key, ...tagProps } = getTagProps({ index });
+                          return (
+                            <Chip
+                              {...tagProps}
+                              variant='outlined'
+                              label={option}
+                              key={key}
+                            />
+                          );
+                        })
+                      }
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          variant='standard'
+                          label={t('tags')}
+                          placeholder={t('selectTags')}
+                        />
+                      )}
+                    />
+                  )}
+                />
+              </FormControl>
+              <Typography className='my-4'>{t('shortDescription')}</Typography>
+              {errorsStepTwo.previewContent?.message && (
+                <Typography variant='body2' color='error'>
+                  {errorsStepTwo.previewContent?.message}
+                </Typography>
               )}
-            />
+              <Controller
+                name='previewContent'
+                control={controlStepTwo}
+                render={({ field }) => (
+                  <TinyMCEEditor id='previewContent' {...field} reset={reset} />
+                )}
+              />
+              <Box
+                sx={{
+                  display: 'flex',
+                  flexDirection: 'row',
+                  pt: 2,
+                  justifyContent: 'space-between',
+                }}
+              >
+                <Button color='inherit' onClick={handleBack}>
+                  {t('backToPublication')}
+                </Button>
+                <Button type='submit'>{t('sendToModerate')}</Button>
+              </Box>
+            </Box>
+          </FormProvider>
+        ),
+        error: Object.keys(errorsStepTwo).length > 0,
+      },
+      {
+        label: t('success'),
+        stepContent: (
+          <>
+            {t('articleCreated')}
             <Box
               sx={{
                 display: 'flex',
@@ -627,301 +939,40 @@ const Page = ({ params: { lng } }: PageParams) => {
               <Button onClick={() => handleNewArticle()}>
                 {t('newArticle')}
               </Button>
-              <Button type='submit'>{t('proceedToSettings')}</Button>
-            </Box>
-          </Box>
-        </FormProvider>
-      ),
-      error: Object.keys(errorsStepOne).length > 0,
-    },
-    {
-      label: t('settingsAndPreview'),
-      stepContent: (
-        <FormProvider {...zodStepTwoForm}>
-          <Box
-            component='form'
-            noValidate
-            autoComplete='off'
-            onSubmit={handleSubmitStepTwo(onStepTwoSubmit)}
-          >
-            <FormControl sx={{ mb: 1 }}>
-              <Controller
-                name='language'
-                control={controlStepTwo}
-                render={({ field }) => (
-                  <TextField
-                    {...field}
-                    select
-                    label={t('language')}
-                    variant='standard'
-                    error={Boolean(errorsStepTwo.language?.message)}
-                    helperText={errorsStepTwo.language?.message}
-                  >
-                    {languageMenuItems.map(({ value, label }) => (
-                      <MenuItem key={value} value={value}>
-                        {label}
-                      </MenuItem>
-                    ))}
-                  </TextField>
-                )}
-              />
-            </FormControl>
-            <FormControl sx={{ mb: 1 }} className='w-full'>
-              <Controller
-                name='categoryIds'
-                control={controlStepTwo}
-                render={({ field }) => (
-                  <Autocomplete
-                    multiple
-                    id='categoryIds'
-                    options={availableCategories}
-                    getOptionLabel={(category) => category?.name}
-                    disableCloseOnSelect
-                    defaultValue={availableCategories.filter((category) =>
-                      field.value?.includes(category.id),
-                    )}
-                    isOptionEqualToValue={(option, value) =>
-                      option.id === value.id
-                    }
-                    onChange={(_, newValue) => {
-                      const normalizedValue: GetCategory[] = (
-                        newValue as GetCategory[]
-                      ).map((value) => {
-                        const existingCategory = availableCategories.find(
-                          (category) => category.id === value.id,
-                        );
-                        return existingCategory || value;
-                      });
-
-                      const uniqueCategoriesIds = new Set<number>();
-                      const uniqueSelectedCategories = new Set<GetCategory>();
-                      normalizedValue.forEach((category) => {
-                        uniqueCategoriesIds.add(category.id);
-                        uniqueSelectedCategories.add(category);
-                      });
-                      const arraySelectedCategories = Array.from(
-                        uniqueSelectedCategories,
-                      );
-                      setSelectedCategories(arraySelectedCategories);
-                      field.onChange(Array.from(uniqueCategoriesIds));
-                    }}
-                    onInputChange={(_, newInputValue) =>
-                      setInputCategoryValue(newInputValue)
-                    }
-                    renderTags={(value: GetCategory[], getTagProps) =>
-                      value.map((option: GetCategory, index: number) => {
-                        const { key, ...tagProps } = getTagProps({ index });
-                        return (
-                          <Chip
-                            {...tagProps}
-                            variant='outlined'
-                            label={option.name}
-                            key={key}
-                          />
-                        );
-                      })
-                    }
-                    inputValue={inputCategoryValue}
-                    renderInput={(params) => (
-                      <TextField
-                        {...params}
-                        label={t('categories')}
-                        variant='standard'
-                        placeholder={t('selectCategories')}
-                        error={Boolean(errorsStepTwo.categoryIds?.message)}
-                        helperText={errorsStepTwo.categoryIds?.message}
-                      />
-                    )}
-                  />
-                )}
-              />
-            </FormControl>
-            <FormControl sx={{ mb: 1 }} className='w-full'>
-              <Controller
-                name='compilationIds'
-                control={controlStepTwo}
-                render={({ field }) => (
-                  <Autocomplete
-                    multiple
-                    id='compilationIds'
-                    options={availableCompilations}
-                    getOptionLabel={(compilation) => compilation?.title}
-                    disableCloseOnSelect
-                    defaultValue={availableCompilations.filter((compilation) =>
-                      field.value?.includes(compilation.id),
-                    )}
-                    isOptionEqualToValue={(option, value) =>
-                      option.id === value.id
-                    }
-                    onChange={(_, newValue) => {
-                      const normalizedValue: GetCompilation[] = (
-                        newValue as GetCompilation[]
-                      ).map((value) => {
-                        const existingCompilation = availableCompilations.find(
-                          (compilation) => compilation.id === value.id,
-                        );
-                        return existingCompilation || value;
-                      });
-                      const uniqueCompilationIds = new Set<number>();
-                      const uniqueSelectedCompilations =
-                        new Set<GetCompilation>();
-                      normalizedValue.forEach((compilation) => {
-                        uniqueCompilationIds.add(compilation.id);
-                        uniqueSelectedCompilations.add(compilation);
-                      });
-                      const arraySelectedCompilations = Array.from(
-                        uniqueSelectedCompilations,
-                      );
-                      setSelectedCompilations(arraySelectedCompilations);
-                      field.onChange(Array.from(uniqueCompilationIds));
-                    }}
-                    onInputChange={(_, newInputValue) =>
-                      setInputCompilationValue(newInputValue)
-                    }
-                    renderTags={(value: GetCompilation[], getTagProps) =>
-                      value.map((option: GetCompilation, index: number) => {
-                        const { key, ...tagProps } = getTagProps({ index });
-                        return (
-                          <Chip
-                            {...tagProps}
-                            variant='outlined'
-                            label={option.title}
-                            key={key}
-                          />
-                        );
-                      })
-                    }
-                    inputValue={inputCompilationValue}
-                    renderInput={(params) => (
-                      <TextField
-                        {...params}
-                        label={t('compilations')}
-                        variant='standard'
-                        placeholder={t('selectCompilations')}
-                        error={Boolean(errorsStepTwo.compilationIds?.message)}
-                        helperText={errorsStepTwo.compilationIds?.message}
-                      />
-                    )}
-                  />
-                )}
-              />
-            </FormControl>
-            <FormControl sx={{ mb: 1 }} className='w-full'>
-              <Controller
-                name='tags'
-                control={controlStepTwo}
-                render={({ field }) => (
-                  <Autocomplete
-                    multiple
-                    id='tags'
-                    options={availableTags.filter(
-                      (tag) =>
-                        !field.value?.some(
-                          (value) => value.toLowerCase() === tag.toLowerCase(),
-                        ),
-                    )}
-                    freeSolo
-                    defaultValue={field.value}
-                    isOptionEqualToValue={(option, value) => option === value}
-                    onChange={(_, newValue) => {
-                      const normalizedValue: string[] = (
-                        newValue as string[]
-                      ).map((value) => {
-                        const existingTag = availableTags.find(
-                          (tag) => tag.toLowerCase() === value.toLowerCase(),
-                        );
-                        return existingTag ?? value;
-                      });
-                      const uniqueTags = new Set<string>();
-                      normalizedValue.forEach((tag) => {
-                        uniqueTags.add(tag);
-                      });
-                      const arrayUniqueTags = Array.from(uniqueTags);
-                      field.onChange(arrayUniqueTags);
-                    }}
-                    onInputChange={(_, newInputValue) =>
-                      setInputTagValue(newInputValue)
-                    }
-                    renderTags={(value: Array<string>, getTagProps) =>
-                      value.map((option: string, index: number) => {
-                        const { key, ...tagProps } = getTagProps({ index });
-                        return (
-                          <Chip
-                            {...tagProps}
-                            variant='outlined'
-                            label={option}
-                            key={key}
-                          />
-                        );
-                      })
-                    }
-                    renderInput={(params) => (
-                      <TextField
-                        {...params}
-                        variant='standard'
-                        label={t('tags')}
-                        placeholder={t('selectTags')}
-                      />
-                    )}
-                  />
-                )}
-              />
-            </FormControl>
-            <Typography className='my-4'>{t('shortDescription')}</Typography>
-            {errorsStepTwo.previewContent?.message && (
-              <Typography variant='body2' color='error'>
-                {errorsStepTwo.previewContent?.message}
-              </Typography>
-            )}
-            <Controller
-              name='previewContent'
-              control={controlStepTwo}
-              render={({ field }) => (
-                <TinyMCEEditor id='previewContent' {...field} reset={reset} />
-              )}
-            />
-            <Box
-              sx={{
-                display: 'flex',
-                flexDirection: 'row',
-                pt: 2,
-                justifyContent: 'space-between',
-              }}
-            >
-              <Button color='inherit' onClick={handleBack}>
-                {t('backToPublication')}
+              <Button type='button' onClick={onSubmit}>
+                {t('openArticle')}
               </Button>
-              <Button type='submit'>{t('sendToModerate')}</Button>
             </Box>
-          </Box>
-        </FormProvider>
-      ),
-      error: Object.keys(errorsStepTwo).length > 0,
-    },
-    {
-      label: t('success'),
-      stepContent: (
-        <>
-          {t('articleCreated')}
-          <Box
-            sx={{
-              display: 'flex',
-              flexDirection: 'row',
-              pt: 2,
-              justifyContent: 'space-between',
-            }}
-          >
-            <Button onClick={() => handleNewArticle()}>
-              {t('newArticle')}
-            </Button>
-            <Button type='button' onClick={onSubmit}>
-              {t('openArticle')}
-            </Button>
-          </Box>
-        </>
-      ),
-    },
-  ];
+          </>
+        ),
+      },
+    ],
+    [
+      availableCategories,
+      availableCompilations,
+      availableTags,
+      controlStepOne,
+      controlStepTwo,
+      draftArticles,
+      errorsStepOne,
+      errorsStepTwo,
+      handleDeleteArticle,
+      handleNewArticle,
+      handleSelectArticle,
+      handleSubmitStepOne,
+      handleSubmitStepTwo,
+      inputCategoryValue,
+      inputCompilationValue,
+      lng,
+      onStepOneSubmit,
+      onStepTwoSubmit,
+      onSubmit,
+      reset,
+      t,
+      zodStepOneForm,
+      zodStepTwoForm,
+    ],
+  );
 
   return (
     <section className='my-10'>
