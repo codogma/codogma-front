@@ -8,19 +8,6 @@ interface ContentImageContextType {
   processContent: (content: string) => ReactNode | null;
 }
 
-// const parseStyleString = (styleString: string): CSSProperties => {
-//   return styleString
-//     .split(';')
-//     .filter((style) => style.trim())
-//     .reduce((acc: CSSProperties, style) => {
-//       const [property, value] = style.split(':');
-//       if (property && value) {
-//         acc[property.trim() as keyof CSSProperties] = value.trim();
-//       }
-//       return acc;
-//     }, {});
-// };
-
 const parseStyleString = (styleString: string): Record<string, string> => {
   return styleString
     .split(';')

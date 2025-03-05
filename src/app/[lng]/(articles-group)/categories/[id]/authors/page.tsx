@@ -46,6 +46,7 @@ export default function Page({ params: { lng, id } }: PageProps) {
       const byInfo = searchType === SearchType.INFO ? searchValue : undefined;
       return getUsers(
         id,
+        undefined,
         UserRole.ROLE_AUTHOR,
         byTag,
         byInfo,

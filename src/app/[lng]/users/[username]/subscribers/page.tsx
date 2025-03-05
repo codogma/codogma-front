@@ -1,81 +1,94 @@
 'use client';
-import { Box, Skeleton } from '@mui/material';
-import Card from '@mui/material/Card';
-import CardContent from '@mui/material/CardContent';
-import Link from 'next/link';
-import React, { useEffect, useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import React, { useState } from 'react';
 
-import { AvatarImage } from '@/components/AvatarImage';
-import { devConsoleError } from '@/helpers/devConsoleLogs';
-import { getUserByUsername } from '@/helpers/userApi';
-import { User } from '@/types';
+import { CustomPagination } from '@/components/CustomPagination';
+import { Search } from '@/components/Search';
+import Users from '@/components/Users';
+import { contlCookie } from '@/constants/i18n';
+import { useEventListener } from '@/helpers/useEventListener';
+import { getUsers, GetUsersDTO } from '@/helpers/userApi';
+import { GetUserDTO, SearchType } from '@/types';
 
 type PageParams = {
   username: string;
+  lng: string;
 };
 
 type PageProps = {
   readonly params: PageParams;
 };
 
-const Page = ({ params }: PageProps) => {
-  const username: string = params.username;
-  const [subscribers, setSubscribers] = useState<User[]>([]);
-  const [loading, setLoading] = useState(true);
+const Page = ({ params: { username, lng } }: PageProps) => {
+  const [currentPage, setCurrentPage] = useState<number>(0);
+  const [resultsPerPage, setResultsPerPage] = useState<number>(10);
+  const [searchValue, setSearchValue] = useState<string>();
+  const [searchType, setSearchType] = useState<SearchType>(SearchType.INFO);
 
-  useEffect(() => {
-    async function fetchData() {
-      try {
-        const user = await getUserByUsername(username);
-        setSubscribers(user.subscribers);
-        setLoading(false);
-      } catch (error) {
-        devConsoleError('Error fetching data:', error);
-      }
-    }
+  const onSearchType = (type: SearchType) => {
+    setSearchType(type);
+  };
 
-    fetchData();
-  }, [username]);
+  const onSearchValue = (value: string) => {
+    setSearchValue(value);
+    setCurrentPage(0);
+  };
+
+  const { data, isFetching, refetch } = useQuery<GetUsersDTO>({
+    queryKey: [
+      'authors',
+      username,
+      currentPage,
+      resultsPerPage,
+      searchType,
+      searchValue,
+    ],
+    queryFn: () => {
+      const byTag = searchType === SearchType.TAG ? searchValue : undefined;
+      const byInfo = searchType === SearchType.INFO ? searchValue : undefined;
+      return getUsers(
+        undefined,
+        username,
+        undefined,
+        byTag,
+        byInfo,
+        false,
+        true,
+        currentPage,
+        resultsPerPage,
+      );
+    },
+  });
+
+  const subscribers: GetUserDTO[] = data?.content ?? [];
+  const totalPages = data?.totalPages ?? 0;
+  const totalElements = data?.totalElements ?? 0;
+
+  useEventListener(contlCookie, () => refetch());
+
+  const onPageChange = (value: number) => {
+    setCurrentPage(value);
+  };
+
+  const onResultsPerPageChange = (value: number) => {
+    setResultsPerPage(value);
+  };
 
   return (
     <>
-      {loading ? (
-        <Card className='card'>
-          <CardContent className='card-content'>
-            <Box className='meta-container'>
-              <Skeleton variant='rounded' width={32} height={32} />
-              <Skeleton variant='text' width={100} />
-            </Box>
-          </CardContent>
-        </Card>
-      ) : (
-        subscribers?.map((user) => (
-          <Card key={user.username} variant='outlined' className='card'>
-            <CardContent className='card-content'>
-              <Box className='meta-container'>
-                <>
-                  <AvatarImage
-                    className='article-user-avatar'
-                    src={user.avatarUrl}
-                    alt={user.username}
-                    variant='rounded'
-                    size={32}
-                  />
-                  <Link
-                    href={`/users/${user.username}`}
-                    className='subscribers-user-name'
-                  >
-                    @{user.username}
-                  </Link>
-                </>
-                <div className='subscribers-user-description'>
-                  {user.shortInfo}
-                </div>
-              </Box>
-            </CardContent>
-          </Card>
-        ))
-      )}
+      <Search
+        lang={lng}
+        onSearchType={onSearchType}
+        onSearchValue={onSearchValue}
+      />
+      <Users lang={lng} users={subscribers} loading={isFetching} />
+      <CustomPagination
+        lang={lng}
+        totalPages={totalPages}
+        totalElements={totalElements}
+        onCurrentPageChange={onPageChange}
+        onResultsPerPageChange={onResultsPerPageChange}
+      />
     </>
   );
 };

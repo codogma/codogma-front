@@ -2,9 +2,7 @@ import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { MenuList } from '@mui/material';
 import IconButton from '@mui/material/IconButton';
 import Menu, { MenuProps } from '@mui/material/Menu';
-import MenuItem from '@mui/material/MenuItem';
 import { alpha, styled } from '@mui/material/styles';
-import Typography from '@mui/material/Typography';
 import { useQuery } from '@tanstack/react-query';
 import * as React from 'react';
 import { useState } from 'react';
@@ -117,36 +115,25 @@ export default function MenuButton({ article, lang }: MenuButtonProps) {
         onClose={handleClose}
       >
         <MenuList className='menu-list'>
-          <MenuItem onClick={handleClose} disableRipple>
-            <Typography textAlign='center'>
-              {state.user?.username === article.username &&
-                state.user?.role === UserRole.ROLE_AUTHOR && (
-                  <ButtonAlertDialog articleId={article.id} lang={lang} />
-                )}
-            </Typography>
-          </MenuItem>
-          <MenuItem onClick={handleClose} disableRipple>
-            <Typography textAlign='center'>
-              {state.isAuthenticated &&
-                state.user?.role !== UserRole.ROLE_ADMIN && (
-                  <AddToCompilations
-                    id={article.id}
-                    username={state.user?.username}
-                    lang={lang}
-                    compilations={article.compilations}
-                  />
-                )}
-            </Typography>
-          </MenuItem>
-          <MenuItem onClick={handleClose} disableRipple>
-            <Typography textAlign='center'>
-              <SubscribeMenuItem
-                user={user}
+          {state.user?.username === article.username &&
+            state.user?.role === UserRole.ROLE_AUTHOR && (
+              <ButtonAlertDialog
+                articleId={article.id}
                 lang={lang}
                 onClose={handleClose}
               />
-            </Typography>
-          </MenuItem>
+            )}
+          {state.isAuthenticated &&
+            state.user?.role !== UserRole.ROLE_ADMIN && (
+              <AddToCompilations
+                id={article.id}
+                username={state.user?.username}
+                lang={lang}
+                compilations={article.compilations}
+                onClose={handleClose}
+              />
+            )}
+          <SubscribeMenuItem user={user} lang={lang} onClose={handleClose} />
         </MenuList>
       </StyledMenu>
     </>

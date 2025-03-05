@@ -44,6 +44,7 @@ export const updateUser = async (requestData: UserUpdate): Promise<User> => {
 
 export const getUsers = async (
   categoryId?: number,
+  targetUsername?: string,
   role?: UserRole,
   tag?: string,
   info?: string,
@@ -57,6 +58,7 @@ export const getUsers = async (
   const response = await axiosInstance.get(`/users`, {
     params: {
       categoryId,
+      targetUsername,
       role,
       tag,
       info,

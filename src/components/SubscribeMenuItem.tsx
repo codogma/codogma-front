@@ -53,7 +53,7 @@ export const SubscribeMenuItem: React.FC<CustomPopoverProps> = ({
 
   return state.user?.username !== user?.username ? (
     <>
-      <MenuItem onClick={handleChange}>
+      <MenuItem onClick={handleChange} disableRipple>
         <Typography textAlign='center'>
           {isSubscribed ? (
             <>

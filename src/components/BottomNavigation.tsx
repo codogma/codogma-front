@@ -15,6 +15,8 @@ import { useEffect, useState } from 'react';
 
 import { useTranslation } from '@/app/i18n/client';
 
+import { replaceUrlAndDispatchEvent } from '@/helpers/replaceUrlAndDispatchEvent';
+
 type FixedBottomNavigationProps = {
   readonly lang: string;
 };
@@ -23,14 +25,13 @@ export default function FixedBottomNavigation({
 }: FixedBottomNavigationProps) {
   const router = useRouter();
   const pathname = usePathname();
-
   const [value, setValue] = useState<
     'articles' | 'feed' | 'compilations' | undefined
   >();
   const { t } = useTranslation(lang);
 
   const handleChange = (
-    event: React.SyntheticEvent,
+    _event: React.SyntheticEvent,
     newValue: 'articles' | 'feed' | 'compilations',
   ) => {
     setValue(newValue);
@@ -48,8 +49,22 @@ export default function FixedBottomNavigation({
     }
   }, [lang, pathname]);
 
-  const handleClick = (url: string) => {
-    router.push(`/${lang}/${url}`);
+  const items = [
+    { value: 'articles', href: `/${lang}/articles`, icon: <ArticleIcon /> },
+    {
+      value: 'feed',
+      href: `/${lang}/feed`,
+      icon: <PlaylistAddCheckCircleIcon />,
+    },
+    {
+      value: 'compilations',
+      href: `/${lang}/compilations`,
+      icon: <ViewListIcon />,
+    },
+  ];
+
+  const handleClick = (href: string) => {
+    replaceUrlAndDispatchEvent(router, href);
   };
 
   return (
@@ -76,24 +91,15 @@ export default function FixedBottomNavigation({
           elevation={3}
         >
           <BottomNavigation showLabels value={value} onChange={handleChange}>
-            <BottomNavigationAction
-              label={t('articles')}
-              value='articles'
-              icon={<ArticleIcon />}
-              onClick={() => handleClick('articles')}
-            />
-            <BottomNavigationAction
-              label={t('feed')}
-              value='feed'
-              icon={<PlaylistAddCheckCircleIcon />}
-              onClick={() => handleClick('feed')}
-            />
-            <BottomNavigationAction
-              label={t('compilations')}
-              value='compilations'
-              icon={<ViewListIcon />}
-              onClick={() => handleClick('compilations')}
-            />
+            {items.map(({ value, href, icon }, index) => (
+              <BottomNavigationAction
+                key={index}
+                label={t(value)}
+                value={value}
+                icon={icon}
+                onClick={() => handleClick(href)}
+              />
+            ))}
           </BottomNavigation>
         </Paper>
       </Drawer>

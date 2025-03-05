@@ -87,7 +87,6 @@ export const ArticleActions = ({ id, lang, articleData }: SearchProps) => {
       <IconButton
         onClick={handleClick}
         aria-label='Comments'
-        color='inherit'
         sx={{ borderRadius: 8 }}
       >
         <CommentOutlinedIcon />

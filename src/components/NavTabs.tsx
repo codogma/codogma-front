@@ -2,8 +2,10 @@
 import Tab from '@mui/material/Tab';
 import Tabs from '@mui/material/Tabs';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import React from 'react';
+
+import { replaceUrlAndDispatchEvent } from '@/helpers/replaceUrlAndDispatchEvent';
 
 export interface TabProps {
   label: string;
@@ -15,6 +17,7 @@ type NavTabsProps = {
 };
 
 const NavTabs: React.FC<NavTabsProps> = ({ tabs }) => {
+  const router = useRouter();
   const pathname = usePathname();
 
   const shouldShowNavTabs = tabs.some((tab) => {
@@ -23,6 +26,10 @@ const NavTabs: React.FC<NavTabsProps> = ({ tabs }) => {
   });
 
   if (!shouldShowNavTabs) return null;
+
+  const handleClick = (href: string) => {
+    replaceUrlAndDispatchEvent(router, href);
+  };
 
   return (
     <div className='nav-tabs'>
@@ -34,6 +41,7 @@ const NavTabs: React.FC<NavTabsProps> = ({ tabs }) => {
             href={tab.href}
             label={tab.label}
             value={tab.href}
+            onClick={() => handleClick(tab.href)}
           />
         ))}
       </Tabs>

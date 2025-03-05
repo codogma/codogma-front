@@ -5,9 +5,16 @@ import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import Paper from '@mui/material/Paper';
 import TextField from '@mui/material/TextField';
-import React, { FormEvent, useEffect, useRef, useState } from 'react';
+import React, {
+  FormEvent,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 
 import { useTranslation } from '@/app/i18n/client';
+import { useEventListener } from '@/helpers/useEventListener';
 import { SearchType } from '@/types';
 
 type SearchProps = {
@@ -20,17 +27,63 @@ export const Search = ({ lang, onSearchType, onSearchValue }: SearchProps) => {
   const searchInputRef = useRef<HTMLInputElement>(null);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [searchType, setSearchType] = useState<SearchType>(SearchType.CONTENT);
+  const [searchValue, setSearchValue] = useState('');
   const { t } = useTranslation(lang);
 
-  useEffect(() => {
-    if (window.location.hash === '#search-input' && searchInputRef.current) {
-      searchInputRef.current.scrollIntoView({
-        behavior: 'smooth',
-        block: 'center',
-      });
-      searchInputRef.current.focus();
+  const parseHashParams = () => {
+    const hash = window.location.hash.substring(1);
+    const params: Record<string, string> = {};
+    hash.split('&').forEach((part) => {
+      const [key, value] = part.split('=');
+      if (key) {
+        params[key] = value ? decodeURIComponent(value) : '';
+      }
+    });
+    return params;
+  };
+
+  const handleHashChange = useCallback(() => {
+    if (window.location.hash.includes('#search-input')) {
+      if (searchInputRef.current) {
+        searchInputRef.current.scrollIntoView({
+          behavior: 'smooth',
+          block: 'center',
+        });
+        searchInputRef.current.focus();
+      }
+
+      const params = parseHashParams();
+      const typeParam = params['type'];
+      const tagParam = params['tag'];
+
+      if (
+        typeParam &&
+        Object.values(SearchType).includes(typeParam as SearchType)
+      ) {
+        const newType = typeParam as SearchType;
+        setSearchType(newType);
+        onSearchType(newType);
+      }
+
+      if (tagParam) {
+        setSearchValue(tagParam);
+        onSearchValue(tagParam);
+      }
+    } else {
+      setSearchType(SearchType.CONTENT);
+      setSearchValue('');
+      onSearchType(SearchType.CONTENT);
+      onSearchValue('');
     }
-  }, []);
+  }, [onSearchType, onSearchValue]);
+
+  useEffect(() => {
+    handleHashChange();
+  }, [handleHashChange]);
+
+  useEventListener('hashchange', () => {
+    handleHashChange();
+  });
 
   const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -44,8 +97,6 @@ export const Search = ({ lang, onSearchType, onSearchValue }: SearchProps) => {
 
   const handleSearchSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const formData = new FormData(event.currentTarget);
-    const searchValue = formData.get('search') as string;
     onSearchValue(searchValue);
   };
 
@@ -84,9 +135,10 @@ export const Search = ({ lang, onSearchType, onSearchValue }: SearchProps) => {
         label={`${t('searchBy')}${t(searchType)}`}
         id='search-input'
         inputRef={searchInputRef}
+        value={searchValue}
+        onChange={(e) => setSearchValue(e.target.value)}
         sx={{ ml: 1, flex: 1 }}
         size='small'
-        name='search'
       />
       <IconButton type='submit' sx={{ p: '10px' }} aria-label='search'>
         <SearchIcon />

@@ -111,7 +111,7 @@ export default function Page({ params: { lng, id } }: PageProps) {
                 <span className='category-item' key={category.id}>
                   <Link
                     className='category-link'
-                    href={`/categories/${category.id}`}
+                    href={`/${lng}/categories/${category.id}`}
                   >
                     {category.name}
                   </Link>
@@ -122,7 +122,10 @@ export default function Page({ params: { lng, id } }: PageProps) {
               Теги:{' '}
               {article.tags?.map((tag) => (
                 <span className='tag-item' key={tag.id}>
-                  <Link className='tag-link' href={`/categories/${tag.id}`}>
+                  <Link
+                    className='tag-link'
+                    href={`/${lng}/articles#search-input&type=tag&tag=${tag.name}`}
+                  >
                     {tag.name}
                   </Link>
                 </span>
