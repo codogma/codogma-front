@@ -5,9 +5,16 @@ import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import Paper from '@mui/material/Paper';
 import TextField from '@mui/material/TextField';
-import React, { FormEvent, useEffect, useRef, useState } from 'react';
+import React, {
+  FormEvent,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 
 import { useTranslation } from '@/app/i18n/client';
+import { useEventListener } from '@/helpers/useEventListener';
 import { SearchType } from '@/types';
 
 type SearchProps = {
@@ -23,19 +30,19 @@ export const Search = ({ lang, onSearchType, onSearchValue }: SearchProps) => {
   const [searchValue, setSearchValue] = useState('');
   const { t } = useTranslation(lang);
 
-  useEffect(() => {
-    const parseHashParams = () => {
-      const hash = window.location.hash.substring(1);
-      const params: Record<string, string> = {};
-      hash.split('&').forEach((part) => {
-        const [key, value] = part.split('=');
-        if (key) {
-          params[key] = value ? decodeURIComponent(value) : '';
-        }
-      });
-      return params;
-    };
+  const parseHashParams = () => {
+    const hash = window.location.hash.substring(1);
+    const params: Record<string, string> = {};
+    hash.split('&').forEach((part) => {
+      const [key, value] = part.split('=');
+      if (key) {
+        params[key] = value ? decodeURIComponent(value) : '';
+      }
+    });
+    return params;
+  };
 
+  const handleHashChange = useCallback(() => {
     if (window.location.hash.includes('#search-input')) {
       if (searchInputRef.current) {
         searchInputRef.current.scrollIntoView({
@@ -62,8 +69,21 @@ export const Search = ({ lang, onSearchType, onSearchValue }: SearchProps) => {
         setSearchValue(tagParam);
         onSearchValue(tagParam);
       }
+    } else {
+      setSearchType(SearchType.CONTENT);
+      setSearchValue('');
+      onSearchType(SearchType.CONTENT);
+      onSearchValue('');
     }
   }, [onSearchType, onSearchValue]);
+
+  useEffect(() => {
+    handleHashChange();
+  }, [handleHashChange]);
+
+  useEventListener('hashchange', () => {
+    handleHashChange();
+  });
 
   const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);

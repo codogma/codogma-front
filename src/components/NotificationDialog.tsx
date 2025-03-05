@@ -24,7 +24,7 @@ import { styled } from '@mui/material/styles';
 import Tooltip from '@mui/material/Tooltip';
 import Typography from '@mui/material/Typography';
 import { useQuery } from '@tanstack/react-query';
-import { useRouter } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import * as React from 'react';
 import { Fragment, useState } from 'react';
 
@@ -75,6 +75,7 @@ export const NotificationDialog = ({ lang }: NotificationsDialogProps) => {
   const { state } = useAuth();
   const { t } = useTranslation(lang, 'notifications');
   const router = useRouter();
+  const pathname = usePathname();
 
   const { data, refetch } = useQuery<GetNotificationsDTO>({
     queryKey: ['notifications', currentPage, resultsPerPage],
@@ -101,15 +102,31 @@ export const NotificationDialog = ({ lang }: NotificationsDialogProps) => {
 
   const handleClickArticleModeration = (url: string, id: number) => {
     router.replace(url);
-    if (window.location.hash) {
-      window.history.replaceState(null, '', url);
-    }
+    dispatchCustomEvent('remove-active', {
+      message: '',
+      severity: 'success',
+    });
     setOpen(false);
-    readNotification(id).then(() => refetch());
+    handleReadNotification(id);
+  };
+
+  const handleClickCommentModeration = (
+    url: string,
+    articleId: number,
+    notificationId: number,
+  ) => {
+    if (pathname.endsWith(`${articleId}`)) {
+      router.replace(url);
+      window.history.replaceState(null, '', url);
+    } else {
+      router.push(url);
+    }
     dispatchCustomEvent('hashchange', {
       message: '',
       severity: 'success',
     });
+    setOpen(false);
+    handleReadNotification(notificationId);
   };
 
   const onPageChange = (value: number) => {
@@ -185,7 +202,7 @@ export const NotificationDialog = ({ lang }: NotificationsDialogProps) => {
           >
             <List>
               {notifications?.map((notification, id) => (
-                <Fragment key={id}>
+                <Fragment key={notification.id}>
                   <BadgeDialog
                     invisible={
                       notification.read ||
@@ -282,8 +299,9 @@ export const NotificationDialog = ({ lang }: NotificationsDialogProps) => {
                                 NotificationType.COMMENT_REPLIED) && (
                               <Button
                                 onClick={() =>
-                                  handleClickArticleModeration(
+                                  handleClickCommentModeration(
                                     `/${lang}/articles/${notification.articleId}#comment-${notification.commentId}`,
+                                    notification.articleId,
                                     notification.id,
                                   )
                                 }

@@ -3,8 +3,6 @@ import clsx from 'clsx';
 import Image from 'next/image';
 import React, { FC } from 'react';
 
-import { devConsoleInfo } from '@/helpers/devConsoleLogs';
-
 interface DefaultImageProps extends BoxProps {
   readonly src: string;
   readonly alt?: string;
@@ -30,8 +28,6 @@ export const DefaultImage: FC<DefaultImageProps> = ({
   const hasWidth = isNaN(Number(widthVal));
   const hasHeight = isNaN(Number(heightVal));
   const useFill = hasWidth && hasHeight;
-
-  devConsoleInfo({ width, height, useFill });
   return (
     <Box
       {...props}

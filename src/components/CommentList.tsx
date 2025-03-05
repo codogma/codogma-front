@@ -3,7 +3,7 @@ import { LoadingButton } from '@mui/lab';
 import { Box, Button, Card, CardContent, Typography } from '@mui/material';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import Link from 'next/link';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 
 import { useTranslation } from '@/app/i18n/client';
 import { useAuth } from '@/components/AuthProvider';
@@ -27,7 +27,7 @@ export const CommentList: React.FC<CommentListProps> = ({
   const [editingComment, setEditingComment] = useState<GetComment | null>(null);
   const [replyToCommentId, setReplyToCommentId] = useState<number | null>(null);
   const [pageSize, setPageSize] = useState<number>(5);
-  const [isScrolled, setIsScrolled] = useState(false);
+  const scrollTarget = useRef<string | null>(null);
   const { state } = useAuth();
   const { t } = useTranslation(lang);
 
@@ -51,45 +51,77 @@ export const CommentList: React.FC<CommentListProps> = ({
     },
   );
 
-  const checkCommentExistenceOnLoad = useCallback(async () => {
-    if (isScrolled) return;
+  const removeActive = useCallback(async () => {
     document.querySelectorAll('.comment-card-link').forEach((el) => {
       el.classList.remove('active');
     });
-    const targetCommentId = window.location.hash.replace('#comment-', '');
-    if (!targetCommentId) return;
+  }, []);
 
-    let commentElement = document.getElementById(`comment-${targetCommentId}`);
+  const checkCommentExistenceOnLoad = useCallback(async () => {
+    if (window.location.hash.includes('#comment-')) {
+      await removeActive();
+      const targetCommentId = window.location.hash.replace('#comment-', '');
+      if (!targetCommentId) return;
+      scrollTarget.current = targetCommentId;
 
-    if (!commentElement) {
-      const page = data?.pages[data.pages.length - 1];
-      if (page?.totalElements) {
-        setPageSize(page.totalElements);
+      let commentElement = document.getElementById(
+        `comment-${targetCommentId}`,
+      );
+
+      if (!commentElement) {
+        const page = data?.pages[data.pages.length - 1];
+        if (page?.totalElements) {
+          setPageSize(page.totalElements);
+        }
+        await fetchNextPage();
+        commentElement = document.getElementById(`comment-${targetCommentId}`);
       }
-      await fetchNextPage();
-      commentElement = document.getElementById(`comment-${targetCommentId}`);
-    }
 
-    if (commentElement) {
-      commentElement.classList.add('active');
-      commentElement.scrollIntoView({
-        behavior: 'instant',
-        block: 'center',
-      });
-      setIsScrolled(true);
+      if (commentElement) {
+        requestAnimationFrame(() => {
+          commentElement.scrollIntoView({
+            behavior: 'smooth',
+            block: 'center',
+          });
+          commentElement.classList.add('active');
+        });
+      }
     }
-  }, [data, fetchNextPage, isScrolled]);
+  }, [data, fetchNextPage, removeActive]);
 
-  useEventListener('hashchange', () => {
-    setIsScrolled(false);
-    checkCommentExistenceOnLoad();
+  useEventListener('hashchange', async () => {
+    await checkCommentExistenceOnLoad();
+  });
+
+  useEventListener('remove-active', async () => {
+    scrollTarget.current = null;
+    await removeActive();
   });
 
   useEffect(() => {
-    if (window.location.hash) {
-      checkCommentExistenceOnLoad();
-    }
+    checkCommentExistenceOnLoad();
   }, [checkCommentExistenceOnLoad]);
+
+  useEffect(() => {
+    const observer = new MutationObserver(() => {
+      if (scrollTarget.current) {
+        const element = document.getElementById(
+          `comment-${scrollTarget.current}`,
+        );
+        element?.scrollIntoView({
+          behavior: 'auto',
+          block: 'center',
+        });
+      }
+    });
+
+    observer.observe(document.body, {
+      childList: true,
+      subtree: true,
+    });
+
+    return () => observer.disconnect();
+  }, []);
 
   const handleEdit = (comment: GetComment) => {
     setEditingComment(comment);

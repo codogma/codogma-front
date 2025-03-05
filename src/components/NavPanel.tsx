@@ -16,10 +16,11 @@ import {
 import Grid from '@mui/material/Grid2';
 import Tooltip from '@mui/material/Tooltip';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
 import { useTranslation } from '@/app/i18n/client';
+import { replaceUrlAndDispatchEvent } from '@/helpers/replaceUrlAndDispatchEvent';
 
 type NavPanelProps = {
   readonly lang: string;
@@ -30,6 +31,7 @@ export const NavPanel = ({ lang }: NavPanelProps) => {
   const theme = useTheme();
   const isMin = useMediaQuery(theme.breakpoints.down('lg'));
   const { t } = useTranslation(lang);
+  const router = useRouter();
   const [activeIndex, setActiveIndex] = useState<number | undefined>(undefined);
   const drawerWidth = isMin ? theme.spacing(7) : 'auto';
 
@@ -58,6 +60,10 @@ export const NavPanel = ({ lang }: NavPanelProps) => {
       icon: <ViewListIcon />,
     },
   ];
+
+  const handleClick = (href: string) => {
+    replaceUrlAndDispatchEvent(router, href);
+  };
 
   return (
     <Grid size={{ lg: 2, md: 1, sm: 0 }}>
@@ -90,7 +96,10 @@ export const NavPanel = ({ lang }: NavPanelProps) => {
                 >
                   <Link href={href}>
                     <ListItemButton
-                      onClick={() => setActiveIndex(index)}
+                      onClick={() => {
+                        handleClick(href);
+                        setActiveIndex(index);
+                      }}
                       selected={activeIndex === index}
                     >
                       <ListItemIcon
