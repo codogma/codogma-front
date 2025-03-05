@@ -16,10 +16,12 @@ import { useTranslation } from '@/app/i18n/client';
 type ButtonAlertDialogProps = {
   readonly lang: string;
   readonly articleId: number;
+  readonly onClose?: () => void;
 };
 export default function ButtonAlertDialog({
   lang,
   articleId,
+  onClose,
 }: ButtonAlertDialogProps) {
   const [open, setOpen] = useState(false);
   const { t } = useTranslation(lang, 'articles');
@@ -29,12 +31,15 @@ export default function ButtonAlertDialog({
   };
 
   const handleClickOpen = () => {
+    if (onClose) {
+      onClose();
+    }
     setOpen(true);
   };
 
   return (
     <>
-      <MenuItem onClick={handleClickOpen}>
+      <MenuItem onClick={handleClickOpen} disableRipple>
         <Typography textAlign='center'>
           <EditOutlinedIcon />
           {t('editBtn')}
