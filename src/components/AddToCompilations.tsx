@@ -162,17 +162,9 @@ export const AddToCompilations: React.FC<AddToCompilationsProps> = ({
 
   return (
     <>
-      <MenuItem onClick={handleClickOpen}>
+      <MenuItem onClick={handleClickOpen} disableRipple>
         <Typography textAlign='center'>
-          {isCompilated ? (
-            <>
-              <PlaylistAddCheckIcon />{' '}
-            </>
-          ) : (
-            <>
-              <PlaylistAddIcon />
-            </>
-          )}
+          {isCompilated ? <PlaylistAddCheckIcon /> : <PlaylistAddIcon />}
           {t('addToCompilation')}
         </Typography>
       </MenuItem>

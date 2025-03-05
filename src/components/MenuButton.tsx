@@ -130,6 +130,7 @@ export default function MenuButton({ article, lang }: MenuButtonProps) {
                 username={state.user?.username}
                 lang={lang}
                 compilations={article.compilations}
+                onClose={handleClose}
               />
             )}
           <SubscribeMenuItem user={user} lang={lang} onClose={handleClose} />
