@@ -96,6 +96,23 @@ export const getArticles = async (
   return response.data;
 };
 
+export const getViewed = async (
+  page: number = 0,
+  size: number = 5,
+  tag?: string,
+  content?: string,
+): Promise<GetArticlesDTO> => {
+  const response = await axiosInstance.get('/articles/viewed', {
+    params: {
+      tag,
+      content,
+      page,
+      size,
+    },
+  });
+  return response.data;
+};
+
 export const getDraftArticles = async (): Promise<Article[]> => {
   const response = await axiosInstance.get('/articles/drafts');
   return response.data;

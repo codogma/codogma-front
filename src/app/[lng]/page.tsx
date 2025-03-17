@@ -1,35 +1,35 @@
+'use client';
 import Typography from '@mui/material/Typography';
 import React from 'react';
 
-import { initTranslation } from '@/app/i18n';
+import { useTranslation } from '@/app/i18n/client';
+import { useAuth } from '@/components/AuthProvider';
 import Banner from '@/components/Banner';
 import Carousel from '@/components/Carousel';
-import NavTabs, { TabProps } from '@/components/NavTabs';
+import { MainTabs } from '@/components/MainTabs';
+import { Language } from '@/types';
 
 type PageProps = {
-  readonly params: { lng: string };
+  readonly params: { lng: Language };
 };
 
-export default async function Page({ params: { lng } }: PageProps) {
-  const tabs: TabProps[] = [
-    { label: 'History', href: `/` },
-    { label: 'Bookmarks', href: `/` },
-    { label: 'Subscriptions', href: `/` },
-  ];
-
-  const { t } = await initTranslation(lng, 'main');
+export default function Page({ params: { lng } }: PageProps) {
+  const { state } = useAuth();
+  const { t } = useTranslation(lng, 'main');
 
   return (
     <section>
       <Banner
         bannerData={{ welcome: t('welcome'), subWelcome: t('subWelcome') }}
       />
-      <section className='your-interest'>
-        <Typography variant='h3' className='your-interest-h3'>
-          Your interest
-        </Typography>
-        <NavTabs tabs={tabs} />
-      </section>
+      {state.isAuthenticated && (
+        <section className='your-interest'>
+          <Typography variant='h3' className='your-interest-h3'>
+            Your interest
+          </Typography>
+          <MainTabs lang={lng} />
+        </section>
+      )}
       <Carousel />
       {/*<Carousel/>*/}
       {/*<Carousel/>*/}
