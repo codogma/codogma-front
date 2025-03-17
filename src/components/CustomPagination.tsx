@@ -5,7 +5,7 @@ import Pagination from '@mui/material/Pagination';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { useTranslation } from '@/app/i18n/client';
 
@@ -31,38 +31,35 @@ export const CustomPagination = ({
   const [resultsPerPage, setResultsPerPage] = useState<number>(10);
   const { t } = useTranslation(lang);
 
+  useEffect(() => {
+    onCurrentPageChange(currentPage);
+  }, [currentPage, onCurrentPageChange]);
+
   const handlePageChange = (
-    event: React.ChangeEvent<unknown>,
+    _event: React.ChangeEvent<unknown>,
     value: number,
   ) => {
-    onCurrentPageChange(value - 1);
     setCurrentPage(value - 1);
   };
 
   const handleResultsPerPageChange = (event: SelectChangeEvent) => {
-    onCurrentPageChange(0);
-    setCurrentPage(0);
     const perPage = Number(event.target.value);
-    onResultsPerPageChange(perPage);
     setResultsPerPage(perPage);
+    setCurrentPage(0);
+    onResultsPerPageChange(perPage);
   };
 
   const handlePageChangeInput = (
     event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
     const value = Number(event.target.value);
+    let newPage = 0;
     if (value > 0 && value <= totalPages) {
-      onCurrentPageChange(value - 1);
-      setCurrentPage(value - 1);
+      newPage = value - 1;
+    } else if (value > totalPages) {
+      newPage = totalPages - 1;
     }
-    if (value === 0) {
-      onCurrentPageChange(0);
-      setCurrentPage(0);
-    }
-    if (value > totalPages) {
-      onCurrentPageChange(totalPages - 1);
-      setCurrentPage(totalPages - 1);
-    }
+    setCurrentPage(newPage);
   };
 
   return (
@@ -92,7 +89,6 @@ export const CustomPagination = ({
             label={t('layout')}
             id='page'
             size='small'
-            defaultValue={currentPage + 1}
             value={currentPage + 1}
             sx={{ width: 100 }}
             onChange={handlePageChangeInput}

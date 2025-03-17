@@ -68,8 +68,8 @@ export const getCategories = async (
   isFavorite?: boolean,
   page: number = 0,
   size: number = 10,
-  sort: string = 'name',
-  order: string = 'asc',
+  sort: string = 'createdAt',
+  order: string = 'desc',
 ): Promise<GetCategoriesDTO> => {
   const response = await axiosInstance.get('/categories', {
     params: {

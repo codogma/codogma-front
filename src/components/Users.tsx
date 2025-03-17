@@ -8,13 +8,13 @@ import React from 'react';
 import { useTranslation } from '@/app/i18n/client';
 import { useAuth } from '@/components/AuthProvider';
 import { AvatarImage } from '@/components/AvatarImage';
-import { SubscribeMenuItem } from '@/components/SubscribeMenuItem';
-import { GetUserDTO, UserRole } from '@/types';
+import MenuButton from '@/components/MenuButton';
+import { GetUserDTO, Language, UserRole } from '@/types';
 
 type AuthorsProps = {
   readonly users: GetUserDTO[];
   readonly loading?: boolean;
-  readonly lang: string;
+  readonly lang: Language;
 };
 
 export default function Users({ users, loading, lang }: AuthorsProps) {
@@ -107,7 +107,7 @@ export default function Users({ users, loading, lang }: AuthorsProps) {
                   </li>
                 </ul>
               </div>
-              <SubscribeMenuItem user={user} lang={lang} />
+              <MenuButton user={user} lang={lang} />
             </CardContent>
           </Card>
         ))

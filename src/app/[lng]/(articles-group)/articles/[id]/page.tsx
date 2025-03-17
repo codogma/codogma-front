@@ -124,7 +124,7 @@ export default function Page({ params: { lng, id } }: PageProps) {
                 <span className='tag-item' key={tag.id}>
                   <Link
                     className='tag-link'
-                    href={`/${lng}/articles#search-input&type=tag&tag=${tag.name}`}
+                    href={`/${lng}/articles?type=tag&value=${tag.name}`}
                   >
                     {tag.name}
                   </Link>

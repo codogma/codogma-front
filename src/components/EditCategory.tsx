@@ -17,6 +17,7 @@ import {
 import DialogActions from '@mui/material/DialogActions';
 import MenuItem from '@mui/material/MenuItem';
 import { styled } from '@mui/material/styles';
+import Typography from '@mui/material/Typography';
 import { useQuery } from '@tanstack/react-query';
 import React, { useEffect, useState } from 'react';
 import {
@@ -179,13 +180,9 @@ export const EditCategory = ({ id, lang, refetch }: EditCategoryProps) => {
 
   return (
     <>
-      <Button
-        className='article-btn'
-        variant='outlined'
-        onClick={handleClickOpen}
-      >
-        Редактировать
-      </Button>
+      <MenuItem onClick={handleClickOpen} disableRipple>
+        <Typography textAlign='center'>Редактировать</Typography>
+      </MenuItem>
       <BootstrapDialog aria-labelledby='customized-dialog-title' open={open}>
         <DialogTitle sx={{ m: 0, p: 2 }} id='customized-dialog-title'>
           {t('updateCategory')}

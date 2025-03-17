@@ -14,7 +14,9 @@ import {
   IconButton,
 } from '@mui/material';
 import DialogActions from '@mui/material/DialogActions';
+import MenuItem from '@mui/material/MenuItem';
 import { styled } from '@mui/material/styles';
+import Typography from '@mui/material/Typography';
 import React, { useEffect, useState } from 'react';
 import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
 import { z } from 'zod';
@@ -140,13 +142,9 @@ export const EditCompilation = ({
 
   return (
     <>
-      <Button
-        className='article-btn'
-        variant='outlined'
-        onClick={handleClickOpen}
-      >
-        Редактировать
-      </Button>
+      <MenuItem onClick={handleClickOpen} disableRipple>
+        <Typography textAlign='center'>Редактировать</Typography>
+      </MenuItem>
       <BootstrapDialog aria-labelledby='customized-dialog-title' open={open}>
         <DialogTitle sx={{ m: 0, p: 2 }} id='customized-dialog-title'>
           {t('updateCompilation')}

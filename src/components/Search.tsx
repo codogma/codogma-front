@@ -23,82 +23,99 @@ type SearchProps = {
   readonly onSearchValue: (value: string) => void;
 };
 
+const SEARCH_PARAMS = {
+  TYPE: 'type',
+  VALUE: 'value',
+} as const;
+
 export const Search = ({ lang, onSearchType, onSearchValue }: SearchProps) => {
   const searchInputRef = useRef<HTMLInputElement>(null);
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
   const [searchType, setSearchType] = useState<SearchType>(SearchType.CONTENT);
   const [searchValue, setSearchValue] = useState('');
   const { t } = useTranslation(lang);
 
-  const parseHashParams = () => {
-    const hash = window.location.hash.substring(1);
-    const params: Record<string, string> = {};
-    hash.split('&').forEach((part) => {
-      const [key, value] = part.split('=');
-      if (key) {
-        params[key] = value ? decodeURIComponent(value) : '';
+  const getSearchParams = useCallback(() => {
+    const params = new URLSearchParams(window.location.search);
+    return {
+      [SEARCH_PARAMS.TYPE]: params.get(SEARCH_PARAMS.TYPE),
+      [SEARCH_PARAMS.VALUE]: params.get(SEARCH_PARAMS.VALUE),
+    };
+  }, []);
+
+  const updateSearchParams = useCallback((params: Record<string, string>) => {
+    const newParams = new URLSearchParams(window.location.search);
+
+    Object.entries(params).forEach(([key, value]) => {
+      if (value) {
+        newParams.set(key, value);
+      } else {
+        newParams.delete(key);
       }
     });
-    return params;
-  };
 
-  const handleHashChange = useCallback(() => {
-    if (window.location.hash.includes('#search-input')) {
-      if (searchInputRef.current) {
-        searchInputRef.current.scrollIntoView({
-          behavior: 'smooth',
-          block: 'center',
-        });
-        searchInputRef.current.focus();
-      }
+    const newUrl = `${window.location.pathname}?${newParams.toString()}`;
+    window.history.replaceState(null, '', newUrl);
+  }, []);
 
-      const params = parseHashParams();
-      const typeParam = params['type'];
-      const tagParam = params['tag'];
+  const handleSearchChange = useCallback(() => {
+    const { type, value } = getSearchParams();
 
-      if (
-        typeParam &&
-        Object.values(SearchType).includes(typeParam as SearchType)
-      ) {
-        const newType = typeParam as SearchType;
-        setSearchType(newType);
-        onSearchType(newType);
-      }
-
-      if (tagParam) {
-        setSearchValue(tagParam);
-        onSearchValue(tagParam);
-      }
+    if (type && Object.values(SearchType).includes(type as SearchType)) {
+      const newType = type as SearchType;
+      setSearchType(newType);
+      onSearchType(newType);
+    }
+    if (value) {
+      setSearchValue(value);
+      onSearchValue(value);
+      searchInputRef.current?.focus();
     } else {
       setSearchType(SearchType.CONTENT);
       setSearchValue('');
       onSearchType(SearchType.CONTENT);
       onSearchValue('');
     }
-  }, [onSearchType, onSearchValue]);
+  }, [getSearchParams, onSearchType, onSearchValue]);
 
   useEffect(() => {
-    handleHashChange();
-  }, [handleHashChange]);
+    handleSearchChange();
+  }, [handleSearchChange]);
 
-  useEventListener('hashchange', () => {
-    handleHashChange();
-  });
+  useEventListener('searchOrHashChange', () => handleSearchChange());
 
-  const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorEl(event.currentTarget);
-  };
+  const handleMenuOpen = useCallback((e: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(e.currentTarget);
+  }, []);
 
-  const handleMenuClose = (type: SearchType) => {
-    onSearchType(type);
-    setSearchType(type);
+  const handleMenuClose = useCallback(() => {
     setAnchorEl(null);
-  };
+  }, []);
 
-  const handleSearchSubmit = (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    onSearchValue(searchValue);
-  };
+  const handleMenuSelect = useCallback(
+    (type: SearchType) => {
+      handleMenuClose();
+      setSearchType(type);
+      if (searchValue) onSearchType(type);
+      updateSearchParams({
+        [SEARCH_PARAMS.TYPE]: type,
+        [SEARCH_PARAMS.VALUE]: searchValue,
+      });
+    },
+    [handleMenuClose, onSearchType, searchValue, updateSearchParams],
+  );
+
+  const handleSubmit = useCallback(
+    (e: FormEvent<HTMLFormElement>) => {
+      e.preventDefault();
+      updateSearchParams({
+        [SEARCH_PARAMS.TYPE]: searchType,
+        [SEARCH_PARAMS.VALUE]: searchValue,
+      });
+      onSearchValue(searchValue);
+    },
+    [onSearchValue, searchType, searchValue, updateSearchParams],
+  );
 
   return (
     <Paper
@@ -113,7 +130,7 @@ export const Search = ({ lang, onSearchType, onSearchValue }: SearchProps) => {
         display: 'flex',
         alignItems: 'center',
       }}
-      onSubmit={handleSearchSubmit}
+      onSubmit={handleSubmit}
       variant='outlined'
     >
       <IconButton sx={{ p: '10px' }} aria-label='menu' onClick={handleMenuOpen}>
@@ -122,12 +139,12 @@ export const Search = ({ lang, onSearchType, onSearchValue }: SearchProps) => {
       <Menu
         anchorEl={anchorEl}
         open={Boolean(anchorEl)}
-        onClose={() => handleMenuClose(searchType)}
+        onClose={handleMenuClose}
       >
-        <MenuItem onClick={() => handleMenuClose(SearchType.CONTENT)}>
+        <MenuItem onClick={() => handleMenuSelect(SearchType.CONTENT)}>
           {t('searchContent')}
         </MenuItem>
-        <MenuItem onClick={() => handleMenuClose(SearchType.TAG)}>
+        <MenuItem onClick={() => handleMenuSelect(SearchType.TAG)}>
           {t('searchTags')}
         </MenuItem>
       </Menu>

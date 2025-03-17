@@ -1,5 +1,5 @@
 'use client';
-import { Badge, Button, Skeleton } from '@mui/material';
+import { Badge, Skeleton } from '@mui/material';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import IconButton from '@mui/material/IconButton';
@@ -10,11 +10,8 @@ import { useTranslation } from '@/app/i18n/client';
 import { useAuth } from '@/components/AuthProvider';
 import { AvatarImage } from '@/components/AvatarImage';
 import { Bookmark } from '@/components/Bookmark';
-import { EditCompilation } from '@/components/EditCompilation';
-import {
-  deleteCompilation,
-  getCompilationById,
-} from '@/helpers/compilationApi';
+import MenuButton from '@/components/MenuButton';
+import { getCompilationById } from '@/helpers/compilationApi';
 import { GetCompilation, Language } from '@/types';
 
 type PageParams = {
@@ -40,10 +37,6 @@ export default function Layout({
     queryKey: ['compilation', id],
     queryFn: () => getCompilationById(id),
   });
-
-  const handleDelete = () => {
-    deleteCompilation(id);
-  };
 
   return (
     <section>
@@ -100,21 +93,7 @@ export default function Layout({
                 )}
               </div>
               {state.user?.username === compilation?.ownerName && (
-                <>
-                  <EditCompilation
-                    compilationData={compilation}
-                    lang={lng}
-                    id={id}
-                    refetch={refetch}
-                  />
-                  <Button
-                    className='article-btn'
-                    variant='outlined'
-                    onClick={handleDelete}
-                  >
-                    Удалить
-                  </Button>
-                </>
+                <MenuButton compilation={compilation} lang={lng} />
               )}
             </>
           )}
