@@ -66,13 +66,14 @@ export const Search = ({ lang, onSearchType, onSearchValue }: SearchProps) => {
       setSearchType(newType);
       onSearchType(newType);
     }
-
     if (value) {
       setSearchValue(value);
       onSearchValue(value);
       searchInputRef.current?.focus();
     } else {
+      setSearchType(SearchType.CONTENT);
       setSearchValue('');
+      onSearchType(SearchType.CONTENT);
       onSearchValue('');
     }
   }, [getSearchParams, onSearchType, onSearchValue]);
@@ -81,9 +82,7 @@ export const Search = ({ lang, onSearchType, onSearchValue }: SearchProps) => {
     handleSearchChange();
   }, [handleSearchChange]);
 
-  useEventListener('hashchange', () => {
-    handleSearchChange();
-  });
+  useEventListener('searchOrHashChange', () => handleSearchChange());
 
   const handleMenuOpen = useCallback((e: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(e.currentTarget);

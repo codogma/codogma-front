@@ -3,12 +3,13 @@ import ThumbUpOutlinedIcon from '@mui/icons-material/ThumbUpOutlined';
 import Checkbox from '@mui/material/Checkbox';
 import IconButton from '@mui/material/IconButton';
 import Paper from '@mui/material/Paper';
-import React, { useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import React from 'react';
 
 import { ArticleProgressBar } from '@/components/ArticleProgressBar';
 import { useAuth } from '@/components/AuthProvider';
 import MenuButton from '@/components/MenuButton';
-import { like, unlike } from '@/helpers/articleApi';
+import { getArticleById, like, unlike } from '@/helpers/articleApi';
 import { Article, Language } from '@/types';
 
 type SearchProps = {
@@ -18,9 +19,14 @@ type SearchProps = {
 };
 
 export const ArticleActions = ({ id, lang, articleData }: SearchProps) => {
-  const [isLiked, setIsLiked] = useState(articleData.isLiked);
-  const [likeCount, setLikeCount] = useState(articleData.likeCount);
   const { state } = useAuth();
+
+  const { data: article, refetch } = useQuery({
+    queryKey: ['article', id],
+    queryFn: () => getArticleById(id),
+    initialData: articleData,
+    staleTime: Infinity,
+  });
 
   const handleClick = () => {
     const commentElement = document.getElementById(`comments`);
@@ -37,11 +43,10 @@ export const ArticleActions = ({ id, lang, articleData }: SearchProps) => {
     checked: boolean,
   ) => {
     if (state.isAuthenticated) {
-      setIsLiked(checked);
       if (checked) {
-        await like(id).then(() => setLikeCount((prevState) => prevState + 1));
+        await like(id).then(() => refetch());
       } else {
-        await unlike(id).then(() => setLikeCount((prevState) => prevState - 1));
+        await unlike(id).then(() => refetch());
       }
     }
   };
@@ -68,18 +73,18 @@ export const ArticleActions = ({ id, lang, articleData }: SearchProps) => {
       aria-label='Article Actions'
     >
       <Checkbox
-        checked={isLiked}
+        checked={article.isLiked}
         onChange={handleChange}
         icon={
           <>
             <ThumbUpOutlinedIcon />
-            <div className='ml-1 text-base leading-5'>{likeCount}</div>
+            <div className='ml-1 text-base leading-5'>{article.likeCount}</div>
           </>
         }
         checkedIcon={
           <>
             <ThumbUpOutlinedIcon color='inherit' />
-            <div className='ml-1 text-base leading-5'>{likeCount}</div>
+            <div className='ml-1 text-base leading-5'>{article.likeCount}</div>
           </>
         }
         inputProps={{ 'aria-label': 'Like' }}
@@ -90,11 +95,9 @@ export const ArticleActions = ({ id, lang, articleData }: SearchProps) => {
         sx={{ borderRadius: 8 }}
       >
         <CommentOutlinedIcon />
-        <div className='ml-1 text-base leading-5'>
-          {articleData.commentsCount}
-        </div>
+        <div className='ml-1 text-base leading-5'>{article.commentsCount}</div>
       </IconButton>
-      <MenuButton article={articleData} lang={lang} />
+      <MenuButton article={article} lang={lang} />
       <ArticleProgressBar lang={lang} articleData={articleData} />
     </Paper>
   );

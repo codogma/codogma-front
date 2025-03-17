@@ -89,7 +89,7 @@ export const CommentList: React.FC<CommentListProps> = ({
     }
   }, [data, fetchNextPage, removeActive]);
 
-  useEventListener('hashchange', async () => {
+  useEventListener('searchOrHashChange', async () => {
     await checkCommentExistenceOnLoad();
   });
 

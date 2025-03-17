@@ -121,7 +121,7 @@ export const NotificationDialog = ({ lang }: NotificationsDialogProps) => {
     } else {
       router.push(url);
     }
-    dispatchCustomEvent('hashchange', {
+    dispatchCustomEvent('searchOrHashChange', {
       message: '',
       severity: 'success',
     });

@@ -7,10 +7,10 @@ export const replaceUrlAndDispatchEvent = (
   url: string,
 ) => {
   router.replace(url);
-  if (window.location.hash) {
+  if (window.location.search || window.location.hash) {
     window.history.replaceState(null, '', url);
   }
-  dispatchCustomEvent('hashchange', {
+  dispatchCustomEvent('searchOrHashChange', {
     message: '',
     severity: 'success',
   });
