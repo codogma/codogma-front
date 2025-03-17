@@ -1,12 +1,5 @@
 'use client';
-import {
-  Badge,
-  Button,
-  Card,
-  CardContent,
-  IconButton,
-  Skeleton,
-} from '@mui/material';
+import { Badge, Card, CardContent, IconButton, Skeleton } from '@mui/material';
 import Link from 'next/link';
 import React from 'react';
 
@@ -14,14 +7,13 @@ import { useTranslation } from '@/app/i18n/client';
 import { useAuth } from '@/components/AuthProvider';
 import { AvatarImage } from '@/components/AvatarImage';
 import { Bookmark } from '@/components/Bookmark';
-import { EditCompilation } from '@/components/EditCompilation';
-import { deleteCompilation } from '@/helpers/compilationApi';
-import { GetCompilation } from '@/types';
+import MenuButton from '@/components/MenuButton';
+import { GetCompilation, Language } from '@/types';
 
 type CompilationsProps = {
   readonly compilations: GetCompilation[];
   readonly loading: boolean;
-  readonly lang: string;
+  readonly lang: Language;
   readonly isHiddenBookmarks?: boolean;
   readonly refetch?: () => void;
 };
@@ -35,10 +27,6 @@ export default function Compilations({
 }: CompilationsProps) {
   const { state } = useAuth();
   const { t } = useTranslation(lang);
-
-  const handleDelete = (compilationId: number) => {
-    deleteCompilation(compilationId);
-  };
 
   return (
     <>
@@ -101,7 +89,8 @@ export default function Compilations({
                     </p>
                   </li>
                 </ul>
-                {!isHiddenBookmarks && (
+                {!isHiddenBookmarks &&
+                state.user?.username === compilation.ownerName ? (
                   <Bookmark
                     username={compilation.ownerName}
                     lang={lang}
@@ -109,23 +98,8 @@ export default function Compilations({
                     isBookmarkedValue={compilation.isBookmarked}
                     refetch={refetch}
                   />
-                )}
-                {state.user?.username === compilation.ownerName && (
-                  <>
-                    <EditCompilation
-                      compilationData={compilation}
-                      lang={lang}
-                      id={compilation.id}
-                      refetch={refetch}
-                    />
-                    <Button
-                      className='article-btn'
-                      variant='outlined'
-                      onClick={() => handleDelete(compilation.id)}
-                    >
-                      Удалить
-                    </Button>
-                  </>
+                ) : (
+                  <MenuButton compilation={compilation} lang={lang} />
                 )}
               </div>
             </CardContent>

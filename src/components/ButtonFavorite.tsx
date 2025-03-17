@@ -1,5 +1,6 @@
 'use client';
-import { Button } from '@mui/material';
+import FavoriteIcon from '@mui/icons-material/Favorite';
+import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import Checkbox from '@mui/material/Checkbox';
 import React, { useState } from 'react';
 
@@ -46,10 +47,8 @@ export const ButtonFavorite: React.FC<CustomFavoriteProps> = ({
       <Checkbox
         checked={isFavorite}
         onChange={handleChange}
-        icon={<Button className='article-btn'>{t('addToFavorite')}</Button>}
-        checkedIcon={
-          <Button className='article-red-btn'>{t('removeFromFavorite')}</Button>
-        }
+        icon={<FavoriteBorderIcon />}
+        checkedIcon={<FavoriteIcon color='error' />}
         inputProps={{ 'aria-label': 'Favorites' }}
       />
     </>

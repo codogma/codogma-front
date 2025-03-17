@@ -9,8 +9,8 @@ import React from 'react';
 import { useTranslation } from '@/app/i18n/client';
 import { useAuth } from '@/components/AuthProvider';
 import { AvatarImage } from '@/components/AvatarImage';
-import { ButtonFavorite } from '@/components/ButtonFavorite';
 import { EditCategory } from '@/components/EditCategory';
+import MenuButton from '@/components/MenuButton';
 import NavTabs, { TabProps } from '@/components/NavTabs';
 import { getCategoryById } from '@/helpers/categoryApi';
 import { GetCategory, Language, UserRole } from '@/types';
@@ -93,11 +93,7 @@ export default function Layout({
               )}
               {state.isAuthenticated &&
                 state.user?.role !== UserRole.ROLE_ADMIN && (
-                  <ButtonFavorite
-                    id={id}
-                    lang={lng}
-                    isFavoriteValue={category?.isFavorite}
-                  />
+                  <MenuButton category={category} lang={lng} />
                 )}
             </>
           )}

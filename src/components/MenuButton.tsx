@@ -2,7 +2,9 @@ import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { MenuList } from '@mui/material';
 import IconButton from '@mui/material/IconButton';
 import Menu, { MenuProps } from '@mui/material/Menu';
+import MenuItem from '@mui/material/MenuItem';
 import { alpha, styled } from '@mui/material/styles';
+import Typography from '@mui/material/Typography';
 import { useQuery } from '@tanstack/react-query';
 import * as React from 'react';
 import { useState } from 'react';
@@ -11,9 +13,19 @@ import { useTranslation } from '@/app/i18n/client';
 import { AddToCompilations } from '@/components/AddToCompilations';
 import { useAuth } from '@/components/AuthProvider';
 import ButtonAlertDialog from '@/components/ButtonAlertDialog';
+import { EditCategory } from '@/components/EditCategory';
+import { EditCompilation } from '@/components/EditCompilation';
 import { SubscribeMenuItem } from '@/components/SubscribeMenuItem';
+import { deleteCompilation } from '@/helpers/compilationApi';
 import { getUserByUsername } from '@/helpers/userApi';
-import { Article, GetUserDTO, Language, UserRole } from '@/types';
+import {
+  Article,
+  GetCategory,
+  GetCompilation,
+  GetUserDTO,
+  Language,
+  UserRole,
+} from '@/types';
 
 const StyledMenu = styled((props: MenuProps) => (
   <Menu
@@ -59,22 +71,35 @@ const StyledMenu = styled((props: MenuProps) => (
 }));
 
 type MenuButtonProps = {
-  readonly article: Article;
+  readonly article?: Article;
   readonly lang: Language;
+  readonly compilation?: GetCompilation;
+  readonly user?: GetUserDTO;
+  readonly category?: GetCategory;
+  readonly refetch?: () => void;
 };
 
-export default function MenuButton({ article, lang }: MenuButtonProps) {
+export default function MenuButton({
+  article,
+  lang,
+  compilation,
+  user,
+  category,
+  refetch,
+}: MenuButtonProps) {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const { state } = useAuth();
   const open = Boolean(anchorEl);
   const { t } = useTranslation(lang);
 
   const { data } = useQuery<GetUserDTO>({
-    queryKey: ['user', article.username],
-    queryFn: () => getUserByUsername(article.username),
+    queryKey: ['user', article?.username],
+    queryFn: () => getUserByUsername(article?.username),
   });
 
-  const user: GetUserDTO = data as GetUserDTO;
+  const userDTO: GetUserDTO = data as GetUserDTO;
+
+  const userData = article !== undefined ? userDTO : user;
 
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -82,6 +107,10 @@ export default function MenuButton({ article, lang }: MenuButtonProps) {
 
   const handleClose = () => {
     setAnchorEl(null);
+  };
+
+  const handleDelete = (compilationId: number) => {
+    deleteCompilation(compilationId);
   };
 
   return (
@@ -115,7 +144,8 @@ export default function MenuButton({ article, lang }: MenuButtonProps) {
         onClose={handleClose}
       >
         <MenuList className='menu-list'>
-          {state.user?.username === article.username &&
+          {article &&
+            state.user?.username === article?.username &&
             state.user?.role === UserRole.ROLE_AUTHOR && (
               <ButtonAlertDialog
                 articleId={article.id}
@@ -123,7 +153,8 @@ export default function MenuButton({ article, lang }: MenuButtonProps) {
                 onClose={handleClose}
               />
             )}
-          {state.isAuthenticated &&
+          {article &&
+            state.isAuthenticated &&
             state.user?.role !== UserRole.ROLE_ADMIN && (
               <AddToCompilations
                 id={article.id}
@@ -133,7 +164,31 @@ export default function MenuButton({ article, lang }: MenuButtonProps) {
                 onClose={handleClose}
               />
             )}
-          <SubscribeMenuItem user={user} lang={lang} onClose={handleClose} />
+          {userData && (
+            <SubscribeMenuItem
+              user={userData}
+              lang={lang}
+              onClose={handleClose}
+            />
+          )}
+          {category && state.user?.role === UserRole.ROLE_ADMIN && (
+            <EditCategory id={category.id} lang={lang} refetch={refetch} />
+          )}
+          {compilation && (
+            <EditCompilation
+              compilationData={compilation}
+              lang={lang}
+              id={compilation?.id ?? 0}
+            />
+          )}
+          {compilation && (
+            <MenuItem
+              onClick={() => handleDelete(compilation.id)}
+              disableRipple
+            >
+              <Typography textAlign='center'>Удалить подборку</Typography>
+            </MenuItem>
+          )}
         </MenuList>
       </StyledMenu>
     </>

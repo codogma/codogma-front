@@ -15,7 +15,7 @@ import { useTranslation } from '@/app/i18n/client';
 import { useAuth } from '@/components/AuthProvider';
 import { AvatarImage } from '@/components/AvatarImage';
 import { ButtonFavorite } from '@/components/ButtonFavorite';
-import { EditCategory } from '@/components/EditCategory';
+import MenuButton from '@/components/MenuButton';
 import { GetCategory, Language, UserRole } from '@/types';
 
 type CategoriesProps = {
@@ -113,23 +113,22 @@ export default function Categories({
               </div>
               <CardActions className='m-0 p-0'>
                 <Stack direction='row' spacing={2}>
-                  {state.user?.role === UserRole.ROLE_ADMIN && (
-                    <EditCategory
-                      id={category?.id}
+                  {state.isAuthenticated &&
+                  state.user?.role !== UserRole.ROLE_ADMIN ? (
+                    <ButtonFavorite
+                      id={category.id}
+                      lang={lang}
+                      isFavoriteValue={category?.isFavorite}
+                    />
+                  ) : (
+                    <MenuButton
+                      category={category}
                       lang={lang}
                       refetch={refetch}
                     />
                   )}
                 </Stack>
               </CardActions>
-              {state.isAuthenticated &&
-                state.user?.role !== UserRole.ROLE_ADMIN && (
-                  <ButtonFavorite
-                    id={category.id}
-                    lang={lang}
-                    isFavoriteValue={category?.isFavorite}
-                  />
-                )}
             </CardContent>
           </Card>
         ))

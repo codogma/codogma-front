@@ -9,15 +9,14 @@ import Link from 'next/link';
 import React from 'react';
 
 import { useTranslation } from '@/app/i18n/client';
-import { AddToCompilations } from '@/components/AddToCompilations';
 import { useAuth } from '@/components/AuthProvider';
 import { AvatarImage } from '@/components/AvatarImage';
-import ButtonAlertDialog from '@/components/ButtonAlertDialog';
+import MenuButton from '@/components/MenuButton';
 import { TimeAgo } from '@/components/TimeAgo';
-import { Article, UserRole } from '@/types';
+import { Article, Language, UserRole } from '@/types';
 
 type ArticlesProps = {
-  readonly lang: string;
+  readonly lang: Language;
   readonly articles: Article[];
   readonly loading: boolean;
 };
@@ -81,12 +80,7 @@ export default function Articles({ lang, articles, loading }: ArticlesProps) {
                 )}
                 {state.isAuthenticated &&
                   state.user?.role !== UserRole.ROLE_ADMIN && (
-                    <AddToCompilations
-                      id={article.id}
-                      username={state.user?.username}
-                      lang={lang}
-                      compilations={article.compilations}
-                    />
+                    <MenuButton article={article} lang={lang} />
                   )}
               </div>
               <Link href={`/articles/${article.id}`} className='article-title'>
@@ -117,7 +111,7 @@ export default function Articles({ lang, articles, loading }: ArticlesProps) {
                 </Link>
                 {state.user?.username === article.username &&
                   state.user.role === UserRole.ROLE_AUTHOR && (
-                    <ButtonAlertDialog articleId={article.id} lang={lang} />
+                    <MenuButton article={article} lang={lang} />
                   )}
               </Stack>
             </CardActions>

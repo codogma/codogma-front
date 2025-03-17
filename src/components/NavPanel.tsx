@@ -33,7 +33,7 @@ export const NavPanel = ({ lang }: NavPanelProps) => {
   const { t } = useTranslation(lang);
   const router = useRouter();
   const [activeIndex, setActiveIndex] = useState<number | undefined>(undefined);
-  const drawerWidth = isMin ? theme.spacing(7) : 'auto';
+  const drawerWidth = isMin ? theme.spacing(9) : 'auto';
 
   useEffect(() => {
     if (pathname === `/${lang}/articles`) {
@@ -96,6 +96,12 @@ export const NavPanel = ({ lang }: NavPanelProps) => {
                 >
                   <Link href={href}>
                     <ListItemButton
+                      sx={{
+                        flexDirection: { xs: 'column', lg: 'row' },
+                        display: 'flex',
+                        alignItems: { xs: 'center', lg: 'left' },
+                        justifyItems: { xs: 'center', lg: 'left' },
+                      }}
                       onClick={() => {
                         handleClick(href);
                         setActiveIndex(index);
@@ -105,14 +111,21 @@ export const NavPanel = ({ lang }: NavPanelProps) => {
                       <ListItemIcon
                         sx={{
                           minWidth: 0,
-                          mr: 1,
+                          mr: { xs: 0, lg: 1 },
                         }}
                       >
                         {icon}
                       </ListItemIcon>
                       <ListItemText
                         primary={text}
-                        sx={{ opacity: isMin ? 0 : 1 }}
+                        sx={{
+                          '& .MuiTypography-root': {
+                            fontSize: {
+                              xs: '0.75rem',
+                              lg: '1rem',
+                            },
+                          },
+                        }}
                       />
                     </ListItemButton>
                   </Link>
