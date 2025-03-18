@@ -27,7 +27,7 @@ export default function Page({ params: { lng } }: PageProps) {
           <Typography variant='h3' className='your-interest-h3'>
             Your interest
           </Typography>
-          <MainTabs lang={lng} />
+          <MainTabs lang={lng} username={state.user?.username} />
         </section>
       )}
       <Carousel />

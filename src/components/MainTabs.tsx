@@ -1,8 +1,10 @@
 'use client';
+import ArrowCircleRightOutlinedIcon from '@mui/icons-material/ArrowCircleRightOutlined';
 import { TabContext, TabList, TabPanel } from '@mui/lab';
 import { Box } from '@mui/material';
 import Tab from '@mui/material/Tab';
 import { useQuery } from '@tanstack/react-query';
+import Link from 'next/link';
 import React from 'react';
 
 import { useTranslation } from '@/app/i18n/client';
@@ -12,22 +14,12 @@ import { GetArticlesDTO, getViewed } from '@/helpers/articleApi';
 import { getCompilations, GetCompilationsDTO } from '@/helpers/compilationApi';
 import { Language } from '@/types';
 
-export interface TabProps {
-  label: string;
-  href: string;
-}
-
-// const tabs: TabProps[] = [
-//   { label: 'History', href: `/` },
-//   { label: 'Bookmarks', href: `/` },
-//   { label: 'Subscriptions', href: `/` },
-// ];
-
 type MainTabsProps = {
   readonly lang: Language;
+  readonly username?: string;
 };
 
-export const MainTabs: React.FC<MainTabsProps> = ({ lang }) => {
+export const MainTabs: React.FC<MainTabsProps> = ({ lang, username }) => {
   const [value, setValue] = React.useState('1');
   // const router = useRouter();
   const { t } = useTranslation(lang);
@@ -42,7 +34,7 @@ export const MainTabs: React.FC<MainTabsProps> = ({ lang }) => {
 
   const history = viewedData?.content ?? [];
 
-  const { data, isFetching: isFetchingBookmarks } =
+  const { data: bookmarksData, isFetching: isFetchingBookmarks } =
     useQuery<GetCompilationsDTO>({
       queryKey: ['compilations'],
       queryFn: () => {
@@ -50,7 +42,17 @@ export const MainTabs: React.FC<MainTabsProps> = ({ lang }) => {
       },
     });
 
-  const bookmarks = data?.content ?? [];
+  const bookmarks = bookmarksData?.content ?? [];
+
+  const { data: myCompilationsData, isFetching: isFetchingMyCompilations } =
+    useQuery<GetCompilationsDTO>({
+      queryKey: ['compilations', username],
+      queryFn: () => {
+        return getCompilations(undefined, undefined, username, false, 0, 5);
+      },
+    });
+
+  const myCompilations = myCompilationsData?.content ?? [];
 
   const handleChange = (event: React.SyntheticEvent, newValue: string) => {
     setValue(newValue);
@@ -68,6 +70,12 @@ export const MainTabs: React.FC<MainTabsProps> = ({ lang }) => {
         </Box>
         <TabPanel value='1'>
           <Articles lang={lang} articles={history} loading={isFetchingViewed} />
+          <Link href={`/${lang}/users/${username}/history`}>
+            <Box className='link'>
+              <ArrowCircleRightOutlinedIcon sx={{ mr: 1 }} />
+              {t('historyLink')}
+            </Box>
+          </Link>
         </TabPanel>
         <TabPanel value='2'>
           <Compilations
@@ -75,8 +83,26 @@ export const MainTabs: React.FC<MainTabsProps> = ({ lang }) => {
             loading={isFetchingBookmarks}
             lang={lang}
           />
+          <Link href={`/${lang}/bookmarks`}>
+            <Box className='link'>
+              <ArrowCircleRightOutlinedIcon sx={{ mr: 1 }} />
+              {t('bookmarksLink')}
+            </Box>
+          </Link>
         </TabPanel>
-        <TabPanel value='3'>Item Three</TabPanel>
+        <TabPanel value='3'>
+          <Compilations
+            compilations={myCompilations}
+            loading={isFetchingMyCompilations}
+            lang={lang}
+          />
+          <Link href={`/${lang}/my-compilations`}>
+            <Box className='link'>
+              <ArrowCircleRightOutlinedIcon sx={{ mr: 1 }} />
+              {t('myCompilationsLink')}
+            </Box>
+          </Link>
+        </TabPanel>
       </TabContext>
     </Box>
   );

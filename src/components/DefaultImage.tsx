@@ -28,6 +28,8 @@ export const DefaultImage: FC<DefaultImageProps> = ({
   const hasWidth = isNaN(Number(widthVal));
   const hasHeight = isNaN(Number(heightVal));
   const useFill = hasWidth && hasHeight;
+  const imageStyle = useFill ? { ...style, height: undefined } : style;
+
   return (
     <Box
       {...props}
@@ -40,7 +42,7 @@ export const DefaultImage: FC<DefaultImageProps> = ({
         alt={alt}
         priority={priority}
         quality={quality}
-        style={style}
+        style={imageStyle}
         className={clsx('object-cover', className)}
         {...(useFill
           ? { fill: true }
