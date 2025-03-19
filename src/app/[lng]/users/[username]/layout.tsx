@@ -8,8 +8,8 @@ import React from 'react';
 
 import { useTranslation } from '@/app/i18n/client';
 import { AvatarImage } from '@/components/AvatarImage';
+import MenuButton from '@/components/MenuButton';
 import NavTabs, { TabProps } from '@/components/NavTabs';
-import { SubscribeMenuItem } from '@/components/SubscribeMenuItem';
 import { getUserByUsername } from '@/helpers/userApi';
 import { GetUserDTO, Language } from '@/types';
 
@@ -91,7 +91,7 @@ export default function Layout({
                   <p className='category-card-shortInfo'>{user?.shortInfo}</p>
                 </div>
               </div>
-              <SubscribeMenuItem user={user} lang={lng} />
+              <MenuButton user={user} lang={lng} />
             </>
           )}
         </CardContent>
