@@ -89,8 +89,7 @@ export default function Compilations({
                     </p>
                   </li>
                 </ul>
-                {!isHiddenBookmarks &&
-                state.user?.username === compilation.ownerName ? (
+                {!isHiddenBookmarks && (
                   <Bookmark
                     username={compilation.ownerName}
                     lang={lang}
@@ -98,7 +97,8 @@ export default function Compilations({
                     isBookmarkedValue={compilation.isBookmarked}
                     refetch={refetch}
                   />
-                ) : (
+                )}
+                {state.user?.username === compilation?.ownerName && (
                   <MenuButton compilation={compilation} lang={lang} />
                 )}
               </div>

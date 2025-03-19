@@ -16,6 +16,7 @@ import ButtonAlertDialog from '@/components/ButtonAlertDialog';
 import { EditCategory } from '@/components/EditCategory';
 import { EditCompilation } from '@/components/EditCompilation';
 import { SubscribeMenuItem } from '@/components/SubscribeMenuItem';
+import { deleteCategory } from '@/helpers/categoryApi';
 import { deleteCompilation } from '@/helpers/compilationApi';
 import { getUserByUsername } from '@/helpers/userApi';
 import {
@@ -113,6 +114,10 @@ export default function MenuButton({
     deleteCompilation(compilationId);
   };
 
+  const handleDeleteCategory = (categoryId: number) => {
+    deleteCategory(categoryId);
+  };
+
   return (
     <>
       <IconButton
@@ -187,6 +192,14 @@ export default function MenuButton({
               disableRipple
             >
               <Typography textAlign='center'>Удалить подборку</Typography>
+            </MenuItem>
+          )}
+          {category && (
+            <MenuItem
+              onClick={() => handleDeleteCategory(category.id)}
+              disableRipple
+            >
+              <Typography textAlign='center'>Удалить категорию</Typography>
             </MenuItem>
           )}
         </MenuList>
