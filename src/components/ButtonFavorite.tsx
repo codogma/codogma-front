@@ -6,11 +6,11 @@ import React, { useState } from 'react';
 
 import { useTranslation } from '@/app/i18n/client';
 import { useAuth } from '@/components/AuthProvider';
+import { PopoverElement } from '@/components/PopoverElement';
 import { favorite, unfavorite } from '@/helpers/categoryApi';
 
 interface CustomFavoriteProps {
   readonly id: number;
-  readonly username?: string;
   readonly lang: string;
   readonly isFavoriteValue?: boolean;
   readonly refetch?: () => void;
@@ -18,14 +18,15 @@ interface CustomFavoriteProps {
 
 export const ButtonFavorite: React.FC<CustomFavoriteProps> = ({
   id,
-  username,
   lang,
   isFavoriteValue,
   refetch,
 }) => {
+  const [anchorEl, setAnchorEl] = React.useState<HTMLElement | null>(null);
   const [isFavorite, setIsFavorite] = useState(isFavoriteValue);
   const { state } = useAuth();
   const { t } = useTranslation(lang, 'categories');
+  const popoverId = 'simple-popover';
 
   const handleChange = async (
     event: React.ChangeEvent<HTMLInputElement>,
@@ -39,10 +40,16 @@ export const ButtonFavorite: React.FC<CustomFavoriteProps> = ({
       } else {
         await unfavorite(id).then(() => refetch && refetch());
       }
+    } else {
+      setAnchorEl(event.currentTarget);
     }
   };
 
-  return state.user?.username !== username ? (
+  const handlePopoverClose = () => {
+    setAnchorEl(null);
+  };
+
+  return (
     <>
       <Checkbox
         checked={isFavorite}
@@ -51,6 +58,15 @@ export const ButtonFavorite: React.FC<CustomFavoriteProps> = ({
         checkedIcon={<FavoriteIcon color='error' />}
         inputProps={{ 'aria-label': 'Favorites' }}
       />
+      {!state.isAuthenticated && (
+        <PopoverElement
+          popoverId={popoverId}
+          btnEl={anchorEl}
+          onClose={handlePopoverClose}
+          destination={t('popoverFavorite')}
+          lang={lang}
+        />
+      )}
     </>
-  ) : null;
+  );
 };
