@@ -9,7 +9,7 @@ import React from 'react';
 import { useTranslation } from '@/app/i18n/client';
 import { useAuth } from '@/components/AuthProvider';
 import { AvatarImage } from '@/components/AvatarImage';
-import { EditCategory } from '@/components/EditCategory';
+import { ButtonFavorite } from '@/components/ButtonFavorite';
 import MenuButton from '@/components/MenuButton';
 import NavTabs, { TabProps } from '@/components/NavTabs';
 import { getCategoryById } from '@/helpers/categoryApi';
@@ -88,13 +88,15 @@ export default function Layout({
                   </p>
                 </div>
               </div>
-              {state.user?.role === UserRole.ROLE_ADMIN && (
-                <EditCategory id={id} lang={lng} refetch={refetch} />
+              {state.user?.role !== UserRole.ROLE_ADMIN ? (
+                <ButtonFavorite
+                  lang={lng}
+                  isFavoriteValue={category?.isFavorite}
+                  id={id}
+                />
+              ) : (
+                <MenuButton category={category} lang={lng} refetch={refetch} />
               )}
-              {state.isAuthenticated &&
-                state.user?.role !== UserRole.ROLE_ADMIN && (
-                  <MenuButton category={category} lang={lng} />
-                )}
             </>
           )}
         </CardContent>

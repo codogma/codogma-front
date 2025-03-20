@@ -113,12 +113,11 @@ export default function Categories({
               </div>
               <CardActions className='m-0 p-0'>
                 <Stack direction='row' spacing={2}>
-                  {state.isAuthenticated &&
-                  state.user?.role !== UserRole.ROLE_ADMIN ? (
+                  {state.user?.role !== UserRole.ROLE_ADMIN ? (
                     <ButtonFavorite
-                      id={category.id}
                       lang={lang}
                       isFavoriteValue={category?.isFavorite}
+                      id={category.id}
                     />
                   ) : (
                     <MenuButton

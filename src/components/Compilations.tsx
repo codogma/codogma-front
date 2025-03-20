@@ -14,7 +14,6 @@ type CompilationsProps = {
   readonly compilations: GetCompilation[];
   readonly loading: boolean;
   readonly lang: Language;
-  readonly isHiddenBookmarks?: boolean;
   readonly refetch?: () => void;
 };
 
@@ -22,7 +21,6 @@ export default function Compilations({
   compilations,
   loading,
   lang,
-  isHiddenBookmarks,
   refetch,
 }: CompilationsProps) {
   const { state } = useAuth();
@@ -89,8 +87,7 @@ export default function Compilations({
                     </p>
                   </li>
                 </ul>
-                {!isHiddenBookmarks &&
-                state.user?.username === compilation.ownerName ? (
+                {state.user?.username !== compilation?.ownerName ? (
                   <Bookmark
                     username={compilation.ownerName}
                     lang={lang}

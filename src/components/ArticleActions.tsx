@@ -25,7 +25,6 @@ export const ArticleActions = ({ id, lang, articleData }: SearchProps) => {
     queryKey: ['article', id],
     queryFn: () => getArticleById(id),
     initialData: articleData,
-    staleTime: Infinity,
   });
 
   const handleClick = () => {

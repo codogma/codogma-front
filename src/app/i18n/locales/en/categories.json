@@ -11,6 +11,7 @@
   "createCategory": "Create category",
   "updateCategory": "Update category",
   "save": "Save",
+  "popoverFavorite": "to add to favorites",
   "minText": "The category name for {} cannot be less than 2 characters",
   "maxText": "The category name for {} cannot contain more than 50 characters"
 }
