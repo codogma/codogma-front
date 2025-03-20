@@ -83,7 +83,6 @@ export default function Page({ params: { lng } }: PageProps) {
         lang={lng}
         loading={isFetching}
         compilations={compilations}
-        isHiddenBookmarks
       />
       <CustomPagination
         lang={lng}

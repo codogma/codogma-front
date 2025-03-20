@@ -186,7 +186,7 @@ export default function MenuButton({
               id={compilation?.id ?? 0}
             />
           )}
-          {compilation && (
+          {state.user?.username === compilation?.ownerName && compilation && (
             <MenuItem
               onClick={() => handleDelete(compilation.id)}
               disableRipple
@@ -194,7 +194,7 @@ export default function MenuButton({
               <Typography textAlign='center'>Удалить подборку</Typography>
             </MenuItem>
           )}
-          {category && (
+          {state.user?.role === UserRole.ROLE_ADMIN && category && (
             <MenuItem
               onClick={() => handleDeleteCategory(category.id)}
               disableRipple

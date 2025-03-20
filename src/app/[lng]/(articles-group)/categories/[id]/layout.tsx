@@ -88,8 +88,7 @@ export default function Layout({
                   </p>
                 </div>
               </div>
-              {state.isAuthenticated &&
-              state.user?.role !== UserRole.ROLE_ADMIN ? (
+              {state.user?.role !== UserRole.ROLE_ADMIN ? (
                 <ButtonFavorite
                   lang={lng}
                   isFavoriteValue={category?.isFavorite}
