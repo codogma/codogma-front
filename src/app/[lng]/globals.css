@@ -91,15 +91,15 @@
     @apply border-green-600 shadow-[0_4px_12px_#548121] !important;
   }
 
-  @media (min-width: 900px) {
+  @media (min-width: 600px) {
     .card {
-      @apply min-w-96 !important;
+      @apply max-w-96 !important;
     }
   }
 
-  @media (min-width: 600px) {
+  @media (min-width: 0px) {
     .card {
-      @apply min-w-full mb-4 bg-white pb-4 pl-5 pr-5 pt-4 text-mine-shaft dark:bg-bunker !important;
+      @apply mb-4 bg-white pb-4 pl-5 pr-5 pt-4 text-mine-shaft dark:bg-bunker !important;
     }
   }
 
