@@ -39,7 +39,7 @@ export default function Categories({
       {loading ? (
         <Card variant='outlined' className='card'>
           <CardContent className='card-content'>
-            <div className='meta-container'>
+            <div className='card-header'>
               <Skeleton variant='rounded' width={48} height={48} />
               <ul>
                 <li>
@@ -59,7 +59,7 @@ export default function Categories({
         categories.map((category) => (
           <Card key={category.id} variant='outlined' className='card'>
             <CardContent className='card-content'>
-              <div className='meta-container'>
+              <div className='card-header'>
                 <Badge
                   className='items-start'
                   overlap='circular'

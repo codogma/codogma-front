@@ -34,7 +34,7 @@ export default function Page({ params: { lng } }: PageProps) {
     <>
       <Card key={article.id} variant='outlined' className='card'>
         <CardContent className='card-content'>
-          <div className='meta-container'>
+          <div className='card-header'>
             <AvatarImage
               alt={article.username}
               className='article-user-avatar'

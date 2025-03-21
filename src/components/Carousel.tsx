@@ -1,148 +1,121 @@
 'use client';
-import { Box, Card, CardContent, Typography } from '@mui/material';
+import { Box, CardActions, CardHeader, Skeleton } from '@mui/material';
+import Card from '@mui/material/Card';
+import CardContent from '@mui/material/CardContent';
+import Stack from '@mui/material/Stack';
 import React from 'react';
 import { Autoplay, Navigation, Pagination } from 'swiper/modules';
 import { Swiper, SwiperSlide } from 'swiper/react';
+
 import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
+import { ArticleCard } from '@/components/ArticleCard';
+import { Article, Language } from '@/types';
 
-interface DataItem {
-  type: string;
-  title: string;
-  description: string;
-  author: string;
-}
-
-const data: DataItem[] = [
-  {
-    type: 'Book',
-    title: 'Artificial Intelligence of Things (AIoT)',
-    description:
-      'Artificial Intelligence of Things (AIoT): Current and Future Trends brings together researchers and developers...',
-    author: 'By Fadi Al-Turjman, Fahriye Altinay, & Zehra Altinay Gazi',
-  },
-  {
-    type: 'Book',
-    title: 'The Internet of Things (IoT)',
-    description:
-      'A comprehensive introduction to the Internet of Things, covering all major aspects and trends...',
-    author: 'By John Doe, Jane Smith',
-  },
-  {
-    type: 'Book',
-    title: 'Artificial Intelligence of Things (AIoT)',
-    description:
-      'Artificial Intelligence of Things (AIoT): Current and Future Trends brings together researchers and developers...',
-    author: 'By Fadi Al-Turjman, Fahriye Altinay, & Zehra Altinay Gazi',
-  },
-  {
-    type: 'Book',
-    title: 'The Internet of Things (IoT)',
-    description:
-      'A comprehensive introduction to the Internet of Things, covering all major aspects and trends...',
-    author: 'By John Doe, Jane Smith',
-  },
-  {
-    type: 'Book',
-    title: 'Artificial Intelligence of Things (AIoT)',
-    description:
-      'Artificial Intelligence of Things (AIoT): Current and Future Trends brings together researchers and developers...',
-    author: 'By Fadi Al-Turjman, Fahriye Altinay, & Zehra Altinay Gazi',
-  },
-  {
-    type: 'Book',
-    title: 'The Internet of Things (IoT)',
-    description:
-      'A comprehensive introduction to the Internet of Things, covering all major aspects and trends...',
-    author: 'By John Doe, Jane Smith',
-  },
-  {
-    type: 'Book',
-    title: 'Artificial Intelligence of Things (AIoT)',
-    description:
-      'Artificial Intelligence of Things (AIoT): Current and Future Trends brings together researchers and developers...',
-    author: 'By Fadi Al-Turjman, Fahriye Altinay, & Zehra Altinay Gazi',
-  },
-  {
-    type: 'Book',
-    title: 'The Internet of Things (IoT)',
-    description:
-      'A comprehensive introduction to the Internet of Things, covering all major aspects and trends...',
-    author: 'By John Doe, Jane Smith',
-  },
-  {
-    type: 'Book',
-    title: 'The Internet of Things (IoT)',
-    description:
-      'A comprehensive introduction to the Internet of Things, covering all major aspects and trends...',
-    author: 'By John Doe, Jane Smith',
-  },
-];
-
-const Carousel: React.FC = () => {
-  return (
-    <Box sx={{ width: 'auto', margin: 'auto', padding: '20px 0' }}>
-      <Typography variant='h5' gutterBottom>
-        Recently Added
-      </Typography>
-      <Swiper
-        modules={[Autoplay, Pagination, Navigation]}
-        spaceBetween={30}
-        slidesPerView={3}
-        slidesPerGroup={3}
-        navigation={true}
-        pagination={{ clickable: true }}
-        autoplay={{
-          delay: 20000,
-          disableOnInteraction: false,
-        }}
-        loop={true}
-        className='swiper'
-      >
-        {data.map((item, index) => (
-          <SwiperSlide key={index}>
-            <Box sx={{ backgroundColor: '#f5f5f5', borderRadius: 2 }}>
-              <Card
-                sx={{
-                  height: 300,
-                  display: 'flex',
-                  flexDirection: 'column',
-                  justifyContent: 'space-between',
-                }}
-                variant='outlined'
-              >
-                <CardContent sx={{ flexGrow: 1 }}>
-                  <Typography variant='subtitle1' color='text.secondary'>
-                    {item.type}
-                  </Typography>
-                  <Typography variant='h6' gutterBottom>
-                    {item.title}
-                  </Typography>
-                  <Typography
-                    variant='body2'
-                    color='text.secondary'
-                    sx={{
-                      display: '-webkit-box',
-                      WebkitBoxOrient: 'vertical',
-                      WebkitLineClamp: 3,
-                      overflow: 'hidden',
-                      textOverflow: 'ellipsis',
-                    }}
-                  >
-                    {item.description}
-                  </Typography>
-                  <Typography variant='caption' display='block' gutterBottom>
-                    {item.author}
-                  </Typography>
-                </CardContent>
-              </Card>
-            </Box>
-          </SwiperSlide>
-        ))}
-      </Swiper>
-    </Box>
-  );
+type CarouselProps = {
+  readonly lang: Language;
+  readonly articles: Article[];
+  readonly isLoading: boolean;
 };
 
-export default Carousel;
+export const Carousel = ({
+  lang,
+  articles: data,
+  isLoading,
+}: CarouselProps) => {
+  return (
+    <Swiper
+      modules={[Autoplay, Pagination, Navigation]}
+      spaceBetween={30}
+      slidesPerView={'auto'}
+      navigation={true}
+      pagination={{ clickable: true }}
+      autoplay={{
+        delay: 20000,
+        disableOnInteraction: false,
+      }}
+      loop={true}
+      className='swiper'
+    >
+      {isLoading
+        ? Array(3)
+            .fill(null)
+            .map((_, index) => (
+              <SwiperSlide key={`skeleton-${index}`}>
+                <Box sx={{ backgroundColor: '#f5f5f5', borderRadius: 2 }}>
+                  <Card variant='outlined' className='card'>
+                    <CardHeader
+                      avatar={
+                        <Skeleton
+                          variant='rectangular'
+                          width={32}
+                          height={32}
+                          sx={{ borderRadius: 1 }}
+                        />
+                      }
+                      action={
+                        <Skeleton variant='circular' width={32} height={32} />
+                      }
+                      title={
+                        <Skeleton
+                          variant='text'
+                          width={80}
+                          height={24}
+                          sx={{ fontSize: '1rem' }}
+                        />
+                      }
+                      subheader={
+                        <Skeleton
+                          variant='text'
+                          width={100}
+                          height={20}
+                          sx={{ fontSize: '0.875rem' }}
+                        />
+                      }
+                      className='card-header'
+                    />
+                    <CardContent className='card-content'>
+                      <Skeleton
+                        variant='text'
+                        width='80%'
+                        height={32}
+                        sx={{ fontSize: '1.5rem', mb: 2 }}
+                      />
+                      <Stack direction='row' spacing={1} sx={{ mb: 2 }}>
+                        {[1, 2, 3].map((n) => (
+                          <Skeleton
+                            key={n}
+                            variant='text'
+                            width={70}
+                            height={24}
+                            sx={{ borderRadius: 4 }}
+                          />
+                        ))}
+                      </Stack>
+                      <Skeleton variant='text' width='100%' height={20} />
+                      <Skeleton variant='text' width='90%' height={20} />
+                      <Skeleton
+                        variant='text'
+                        width='85%'
+                        height={20}
+                        sx={{ mb: 2 }}
+                      />
+                    </CardContent>
+                    <CardActions sx={{ px: 2, pb: 2 }}>
+                      <Skeleton variant='rounded' width={120} height={36} />
+                    </CardActions>
+                  </Card>
+                </Box>
+              </SwiperSlide>
+            ))
+        : data?.map((item, index) => (
+            <SwiperSlide key={index}>
+              <Box sx={{ backgroundColor: '#f5f5f5', borderRadius: 2 }}>
+                <ArticleCard article={item} lang={lang} />
+              </Box>
+            </SwiperSlide>
+          ))}
+    </Swiper>
+  );
+};

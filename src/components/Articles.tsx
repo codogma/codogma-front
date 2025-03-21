@@ -24,7 +24,7 @@ export default function Articles({ lang, articles, loading }: ArticlesProps) {
       {loading ? (
         <Card variant='outlined' className='card'>
           <CardContent className='card-content'>
-            <div className='meta-container'>
+            <div className='card-header'>
               <Skeleton variant='rounded' width={32} height={32} />
               <Skeleton variant='text' width={300} />
             </div>

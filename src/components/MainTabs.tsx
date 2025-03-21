@@ -8,7 +8,7 @@ import Link from 'next/link';
 import React from 'react';
 
 import { useTranslation } from '@/app/i18n/client';
-import Articles from '@/components/Articles';
+import { Carousel } from '@/components/Carousel';
 import Compilations from '@/components/Compilations';
 import { GetArticlesDTO, getViewed } from '@/helpers/articleApi';
 import { getCompilations, GetCompilationsDTO } from '@/helpers/compilationApi';
@@ -36,7 +36,7 @@ export const MainTabs: React.FC<MainTabsProps> = ({ lang, username }) => {
 
   const { data: bookmarksData, isFetching: isFetchingBookmarks } =
     useQuery<GetCompilationsDTO>({
-      queryKey: ['compilations'],
+      queryKey: ['bookmarks'],
       queryFn: () => {
         return getCompilations(undefined, undefined, undefined, true, 0, 5);
       },
@@ -69,7 +69,11 @@ export const MainTabs: React.FC<MainTabsProps> = ({ lang, username }) => {
           </TabList>
         </Box>
         <TabPanel value='1'>
-          <Articles lang={lang} articles={history} loading={isFetchingViewed} />
+          <Carousel
+            articles={history}
+            isLoading={isFetchingViewed}
+            lang={lang}
+          />
           <Link href={`/${lang}/users/${username}/history`}>
             <Box className='link'>
               <ArrowCircleRightOutlinedIcon sx={{ mr: 1 }} />

@@ -1,8 +1,7 @@
-import { Button, CardHeader } from '@mui/material';
+import { Button, CardHeader, CardMedia } from '@mui/material';
 import Card from '@mui/material/Card';
 import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
-import Chip from '@mui/material/Chip';
 import Stack from '@mui/material/Stack';
 import Link from 'next/link';
 import React from 'react';
@@ -10,6 +9,7 @@ import React from 'react';
 import { useTranslation } from '@/app/i18n/client';
 import { useAuth } from '@/components/AuthProvider';
 import { AvatarImage } from '@/components/AvatarImage';
+import { DefaultImage } from '@/components/DefaultImage';
 import MenuButton from '@/components/MenuButton';
 import { TimeAgo } from '@/components/TimeAgo';
 import { Article, Language, UserRole } from '@/types';
@@ -24,7 +24,7 @@ export const ArticleCard = ({ article, lang }: ArticleCardProps) => {
   const { t } = useTranslation(lang);
 
   return (
-    <Card key={article.id} variant='outlined' className='card'>
+    <Card key={article.id} variant='outlined' className='article-card card'>
       <CardHeader
         avatar={
           <AvatarImage
@@ -56,15 +56,22 @@ export const ArticleCard = ({ article, lang }: ArticleCardProps) => {
             lang={lang}
           />
         }
-        className='meta-container'
+        className='card-header'
       />
-      {(state.user?.username === article.username ||
-        state.user?.role === UserRole.ROLE_ADMIN) && (
-        <Stack direction='row' spacing={1}>
-          <Chip label={article.status} variant='outlined' />
-          <Chip label={article.language.toUpperCase()} variant='outlined' />
-        </Stack>
-      )}
+      <CardMedia>
+        <DefaultImage
+          position='relative'
+          src='/images/banner.png'
+          width={318}
+        />
+      </CardMedia>
+      {/*{(state.user?.username === article.username ||*/}
+      {/*  state.user?.role === UserRole.ROLE_ADMIN) && (*/}
+      {/*  <Stack direction='row' spacing={1}>*/}
+      {/*    <Chip label={article.status} variant='outlined' />*/}
+      {/*    <Chip label={article.language.toUpperCase()} variant='outlined' />*/}
+      {/*  </Stack>*/}
+      {/*)}*/}
       <CardContent className='card-content'>
         <Link href={`/articles/${article.id}`} className='article-title'>
           {article.title}

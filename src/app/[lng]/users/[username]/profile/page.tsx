@@ -95,7 +95,7 @@ export default function Page({ params: { lng, username } }: PageProps) {
                       >
                         <Card>
                           <CardContent>
-                            <div className='meta-container'>
+                            <div className='card-header'>
                               <div className='category-card-name'>
                                 {category.name}
                               </div>

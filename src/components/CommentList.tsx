@@ -154,7 +154,7 @@ export const CommentList: React.FC<CommentListProps> = ({
         className='card comment-card-link'
       >
         <CardContent className='card-content'>
-          <Box className='meta-container'>
+          <Box className='card-header'>
             <AvatarImage
               className='article-user-avatar'
               src={comment.user.avatarUrl}

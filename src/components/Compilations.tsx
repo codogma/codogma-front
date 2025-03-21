@@ -31,7 +31,7 @@ export default function Compilations({
       {loading ? (
         <Card variant='outlined' className='card'>
           <CardContent className='card-content'>
-            <div className='meta-container'>
+            <div className='card-header'>
               <Skeleton variant='rounded' width={48} height={48} />
               <ul>
                 <li>
@@ -51,7 +51,7 @@ export default function Compilations({
         compilations?.map((compilation) => (
           <Card key={compilation.id} variant='outlined' className='card'>
             <CardContent className='card-content'>
-              <div className='meta-container'>
+              <div className='card-header'>
                 <Badge
                   className='items-start'
                   overlap='circular'

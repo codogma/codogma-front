@@ -1,16 +1,17 @@
 'use client';
-import { Typography } from '@mui/material';
+import {
+  CardActions,
+  CardContent,
+  CardHeader,
+  Typography,
+} from '@mui/material';
 import Card from '@mui/material/Card';
-import CardContent from '@mui/material/CardContent';
-import Chip from '@mui/material/Chip';
-import Stack from '@mui/material/Stack';
 import { useQuery } from '@tanstack/react-query';
 import DOMPurify from 'dompurify';
 import Link from 'next/link';
 import React from 'react';
 
 import { useTranslation } from '@/app/i18n/client';
-import { AddToCompilations } from '@/components/AddToCompilations';
 import { ArticleActions } from '@/components/ArticleActions';
 import { useArticle } from '@/components/ArticleProvider';
 import Articles from '@/components/Articles';
@@ -50,8 +51,8 @@ export default function Page({ params: { lng, id } }: PageProps) {
   return (
     <>
       <Card key={id} id={`article-${id}`} variant='outlined' className='card'>
-        <CardContent className='card-content'>
-          <div className='meta-container'>
+        <CardHeader
+          avatar={
             <AvatarImage
               alt={article.username}
               className='article-user-avatar'
@@ -59,37 +60,25 @@ export default function Page({ params: { lng, id } }: PageProps) {
               variant='rounded'
               size={32}
             />
+          }
+          title={
             <Link
-              className='article-user-name'
               href={`/users/${article.username}`}
+              className='article-user-name'
             >
               {article.username}
             </Link>
+          }
+          subheader={
             <TimeAgo
               datetime={article.createdAt}
               className='article-datetime'
               lang={lng}
             />
-            {(state.user?.username === article.username ||
-              state.user?.role === UserRole.ROLE_ADMIN) && (
-              <Stack direction='row' spacing={1}>
-                <Chip label={article.status} variant='outlined' />
-                <Chip
-                  label={article.language.toUpperCase()}
-                  variant='outlined'
-                />
-              </Stack>
-            )}
-            {state.isAuthenticated &&
-              state.user?.role !== UserRole.ROLE_ADMIN && (
-                <AddToCompilations
-                  id={id}
-                  username={state.user?.username}
-                  lang={lng}
-                  compilations={article.compilations}
-                />
-              )}
-          </div>
+          }
+          className='card-header'
+        />
+        <CardContent className='card-content'>
           <h1 className='article-title'>{article.title}</h1>
           <div className='article-category'>
             {article.categories?.map((category) => (
@@ -104,39 +93,39 @@ export default function Page({ params: { lng, id } }: PageProps) {
             ))}
           </div>
           <div className='article-content'>{content}</div>
-          <div className='article-presenter-meta'>
-            <div className='article-category-pm'>
-              Категории:{' '}
-              {article.categories?.map((category) => (
-                <span className='category-item' key={category.id}>
-                  <Link
-                    className='category-link'
-                    href={`/${lng}/categories/${category.id}`}
-                  >
-                    {category.name}
-                  </Link>
-                </span>
-              ))}
-            </div>
-            <div className='article-tag-pm'>
-              Теги:{' '}
-              {article.tags?.map((tag) => (
-                <span className='tag-item' key={tag.id}>
-                  <Link
-                    className='tag-link'
-                    href={`/${lng}/articles?type=tag&value=${tag.name}`}
-                  >
-                    {tag.name}
-                  </Link>
-                </span>
-              ))}
-            </div>
-          </div>
           {state.user?.username === article.username &&
             state.user?.role === UserRole.ROLE_AUTHOR && (
               <ButtonAlertDialog articleId={id} lang={lng} />
             )}
         </CardContent>
+        <CardActions className='article-presenter-meta'>
+          <div className='article-category-pm'>
+            Категории:{' '}
+            {article.categories?.map((category) => (
+              <span className='category-item' key={category.id}>
+                <Link
+                  className='category-link'
+                  href={`/${lng}/categories/${category.id}`}
+                >
+                  {category.name}
+                </Link>
+              </span>
+            ))}
+          </div>
+          <div className='article-tag-pm'>
+            Теги:{' '}
+            {article.tags?.map((tag) => (
+              <span className='tag-item' key={tag.id}>
+                <Link
+                  className='tag-link'
+                  href={`/${lng}/articles?type=tag&value=${tag.name}`}
+                >
+                  {tag.name}
+                </Link>
+              </span>
+            ))}
+          </div>
+        </CardActions>
       </Card>
       <ArticleActions lang={lng} articleData={article} id={id} />
       <CommentList articleId={id} lang={lng} />
