@@ -91,7 +91,7 @@ export const TinyMCEEditor = ({
             formData.append('image', blobInfo.blob());
             uploadImage(formData)
               .then((url) => {
-                resolve(url);
+                resolve(`${process.env.NEXT_PUBLIC_BASE_URL}${url}`);
               })
               .catch((error) => {
                 devConsoleError('Failed to upload image:', error);

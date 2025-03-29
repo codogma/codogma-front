@@ -1,5 +1,4 @@
-import { Box, BoxProps, Typography } from '@mui/material';
-import clsx from 'clsx';
+import { Box, BoxProps, SxProps, Theme, Typography } from '@mui/material';
 import Image from 'next/image';
 import React, { FC } from 'react';
 
@@ -10,6 +9,7 @@ interface DefaultImageProps extends BoxProps {
   readonly quality?: number;
   readonly width?: BoxProps['width'];
   readonly height?: BoxProps['height'];
+  readonly sx?: SxProps<Theme>;
 }
 
 export const DefaultImage: FC<DefaultImageProps> = ({
@@ -21,6 +21,7 @@ export const DefaultImage: FC<DefaultImageProps> = ({
   height,
   style,
   className,
+  sx,
   ...props
 }) => {
   const widthVal = width ?? height;
@@ -28,7 +29,6 @@ export const DefaultImage: FC<DefaultImageProps> = ({
   const hasWidth = isNaN(Number(widthVal));
   const hasHeight = isNaN(Number(heightVal));
   const useFill = hasWidth && hasHeight;
-  const imageStyle = useFill ? { ...style, height: undefined } : style;
 
   return (
     <Box
@@ -36,14 +36,19 @@ export const DefaultImage: FC<DefaultImageProps> = ({
       width={width ?? '100%'}
       height={height ?? '100%'}
       textAlign='center'
+      sx={sx}
     >
       <Image
         src={src}
         alt={alt}
         priority={priority}
         quality={quality}
-        style={imageStyle}
-        className={clsx('object-cover', className)}
+        className={className}
+        style={{
+          ...style,
+          objectFit: 'cover',
+          transition: 'transform 0.4s ease',
+        }}
         {...(useFill
           ? { fill: true }
           : { width: Number(widthVal), height: Number(heightVal) })}

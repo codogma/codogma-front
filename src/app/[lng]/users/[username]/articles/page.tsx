@@ -22,7 +22,7 @@ type PageProps = {
 
 export default function Layout({ params: { lng, username } }: PageProps) {
   const [currentPage, setCurrentPage] = useState<number>(0);
-  const [resultsPerPage, setResultsPerPage] = useState<number>(10);
+  const [resultsPerPage, setResultsPerPage] = useState<number>(12);
   const [searchValue, setSearchValue] = useState<string>();
   const [searchType, setSearchType] = useState<string>('content');
   const { processContent } = useContentImageContext();
@@ -92,6 +92,7 @@ export default function Layout({ params: { lng, username } }: PageProps) {
         lang={lng}
         totalPages={totalPages}
         totalElements={totalElements}
+        resultsPerPageStart={resultsPerPage}
         onCurrentPageChange={onPageChange}
         onResultsPerPageChange={onResultsPerPageChange}
       />

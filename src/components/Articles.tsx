@@ -1,5 +1,5 @@
 'use client';
-import { Skeleton, Theme, useMediaQuery } from '@mui/material';
+import { Skeleton } from '@mui/material';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import Grid from '@mui/material/Grid2';
@@ -16,7 +16,6 @@ type ArticlesProps = {
 };
 
 export default function Articles({ lang, articles, loading }: ArticlesProps) {
-  const isSmall = useMediaQuery<Theme>((theme) => theme.breakpoints.down('xs'));
   const { t } = useTranslation(lang);
 
   return (
@@ -39,25 +38,22 @@ export default function Articles({ lang, articles, loading }: ArticlesProps) {
             </div>
           </CardContent>
         </Card>
-      ) : isSmall ? (
+      ) : (
         <Grid
           container
-          direction='column'
-          sx={{
-            justifyContent: 'flex-start',
-            alignItems: 'center',
-          }}
+          direction={{ xs: 'column', sm: 'row' }}
+          spacing={1}
+          // sx={{
+          //   justifyContent: 'space-between',
+          //   alignItems: 'center',
+          // }}
         >
           {articles?.map((article) => (
-            <ArticleCard key={article.id} article={article} lang={lang} />
+            <Grid key={article.id} size={{ xs: 12, sm: 6, lg: 4 }}>
+              <ArticleCard article={article} lang={lang} />
+            </Grid>
           ))}
         </Grid>
-      ) : (
-        <>
-          {articles?.map((article) => (
-            <ArticleCard key={article.id} article={article} lang={lang} />
-          ))}
-        </>
       )}
     </>
   );

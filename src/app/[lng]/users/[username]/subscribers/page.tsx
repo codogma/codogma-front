@@ -8,11 +8,11 @@ import Users from '@/components/Users';
 import { contlCookie } from '@/constants/i18n';
 import { useEventListener } from '@/helpers/useEventListener';
 import { getUsers, GetUsersDTO } from '@/helpers/userApi';
-import { GetUserDTO, SearchType } from '@/types';
+import { GetUserDTO, Language, SearchType } from '@/types';
 
 type PageParams = {
   username: string;
-  lng: string;
+  lng: Language;
 };
 
 type PageProps = {
@@ -21,7 +21,7 @@ type PageProps = {
 
 const Page = ({ params: { username, lng } }: PageProps) => {
   const [currentPage, setCurrentPage] = useState<number>(0);
-  const [resultsPerPage, setResultsPerPage] = useState<number>(10);
+  const [resultsPerPage, setResultsPerPage] = useState<number>(12);
   const [searchValue, setSearchValue] = useState<string>();
   const [searchType, setSearchType] = useState<SearchType>(SearchType.INFO);
 
@@ -86,6 +86,7 @@ const Page = ({ params: { username, lng } }: PageProps) => {
         lang={lng}
         totalPages={totalPages}
         totalElements={totalElements}
+        resultsPerPageStart={resultsPerPage}
         onCurrentPageChange={onPageChange}
         onResultsPerPageChange={onResultsPerPageChange}
       />

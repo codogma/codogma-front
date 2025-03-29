@@ -13,7 +13,6 @@ import {
   useMediaQuery,
   useTheme,
 } from '@mui/material';
-import Grid from '@mui/material/Grid2';
 import Tooltip from '@mui/material/Tooltip';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
@@ -33,7 +32,7 @@ export const NavPanel = ({ lang }: NavPanelProps) => {
   const { t } = useTranslation(lang);
   const router = useRouter();
   const [activeIndex, setActiveIndex] = useState<number | undefined>(undefined);
-  const drawerWidth = isMin ? theme.spacing(9) : 'auto';
+  const drawerWidth = isMin ? theme.spacing(10) : 'auto';
 
   useEffect(() => {
     if (pathname === `/${lang}/articles`) {
@@ -66,75 +65,73 @@ export const NavPanel = ({ lang }: NavPanelProps) => {
   };
 
   return (
-    <Grid size={{ lg: 2, md: 1, sm: 0 }}>
-      <Box component='nav' sx={{ width: drawerWidth }}>
-        <Drawer
-          variant='permanent'
-          sx={{
-            display: { xs: 'none', md: 'block' },
-            flexShrink: 0,
-            whiteSpace: 'nowrap',
-            '& .MuiDrawer-paper': {
-              boxSizing: 'border-box',
-              width: drawerWidth,
-              top: 'initial',
-              left: 'initial',
-              bottom: 'initial',
-            },
-          }}
-          open
-        >
-          <List>
-            {items.map(({ text, href, icon }, index) => (
-              <ListItem key={text} disablePadding sx={{ display: 'block' }}>
-                <Tooltip
-                  title={text}
-                  arrow
-                  placement='right'
-                  sx={{ display: { sm: 'block', xl: 'none' } }}
-                  disableHoverListener={!isMin}
-                >
-                  <Link href={href}>
-                    <ListItemButton
+    <Box component='nav' sx={{ width: drawerWidth }}>
+      <Drawer
+        variant='permanent'
+        sx={{
+          display: { xs: 'none', md: 'block' },
+          flexShrink: 0,
+          whiteSpace: 'nowrap',
+          '& .MuiDrawer-paper': {
+            boxSizing: 'border-box',
+            width: drawerWidth,
+            top: 'initial',
+            left: 'initial',
+            bottom: 'initial',
+          },
+        }}
+        open
+      >
+        <List>
+          {items.map(({ text, href, icon }, index) => (
+            <ListItem key={text} disablePadding sx={{ display: 'block' }}>
+              <Tooltip
+                title={text}
+                arrow
+                placement='right'
+                sx={{ display: { sm: 'block', xl: 'none' } }}
+                disableHoverListener={!isMin}
+              >
+                <Link href={href}>
+                  <ListItemButton
+                    sx={{
+                      flexDirection: { xs: 'column', lg: 'row' },
+                      display: 'flex',
+                      alignItems: { xs: 'center', lg: 'left' },
+                      justifyItems: { xs: 'center', lg: 'left' },
+                    }}
+                    onClick={() => {
+                      handleClick(href);
+                      setActiveIndex(index);
+                    }}
+                    selected={activeIndex === index}
+                  >
+                    <ListItemIcon
                       sx={{
-                        flexDirection: { xs: 'column', lg: 'row' },
-                        display: 'flex',
-                        alignItems: { xs: 'center', lg: 'left' },
-                        justifyItems: { xs: 'center', lg: 'left' },
+                        minWidth: 0,
+                        mr: { xs: 0, lg: 1 },
                       }}
-                      onClick={() => {
-                        handleClick(href);
-                        setActiveIndex(index);
-                      }}
-                      selected={activeIndex === index}
                     >
-                      <ListItemIcon
-                        sx={{
-                          minWidth: 0,
-                          mr: { xs: 0, lg: 1 },
-                        }}
-                      >
-                        {icon}
-                      </ListItemIcon>
-                      <ListItemText
-                        primary={text}
-                        sx={{
-                          '& .MuiTypography-root': {
-                            fontSize: {
-                              xs: '0.75rem',
-                              lg: '1rem',
-                            },
+                      {icon}
+                    </ListItemIcon>
+                    <ListItemText
+                      primary={text}
+                      sx={{
+                        '& .MuiTypography-root': {
+                          fontSize: {
+                            xs: '0.75rem',
+                            lg: '1rem',
                           },
-                        }}
-                      />
-                    </ListItemButton>
-                  </Link>
-                </Tooltip>
-              </ListItem>
-            ))}
-          </List>
-        </Drawer>
-      </Box>
-    </Grid>
+                        },
+                      }}
+                    />
+                  </ListItemButton>
+                </Link>
+              </Tooltip>
+            </ListItem>
+          ))}
+        </List>
+      </Drawer>
+    </Box>
   );
 };

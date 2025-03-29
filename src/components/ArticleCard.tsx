@@ -1,14 +1,19 @@
-import { Button, CardHeader, CardMedia } from '@mui/material';
+import InfoIcon from '@mui/icons-material/Info';
+import { Box, Button, CardHeader, CardMedia, Collapse } from '@mui/material';
 import Card from '@mui/material/Card';
 import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
+import IconButton from '@mui/material/IconButton';
 import Stack from '@mui/material/Stack';
+import Typography from '@mui/material/Typography';
+import DOMPurify from 'dompurify';
 import Link from 'next/link';
-import React from 'react';
+import React, { useState } from 'react';
 
 import { useTranslation } from '@/app/i18n/client';
 import { useAuth } from '@/components/AuthProvider';
 import { AvatarImage } from '@/components/AvatarImage';
+import { useContentImageContext } from '@/components/ContentImageProvider';
 import { DefaultImage } from '@/components/DefaultImage';
 import MenuButton from '@/components/MenuButton';
 import { TimeAgo } from '@/components/TimeAgo';
@@ -21,10 +26,15 @@ type ArticleCardProps = {
 
 export const ArticleCard = ({ article, lang }: ArticleCardProps) => {
   const { state } = useAuth();
+  const { processContent } = useContentImageContext();
   const { t } = useTranslation(lang);
+  const previewContent = processContent(
+    DOMPurify.sanitize(article.previewContent),
+  );
+  const [expanded, setExpanded] = useState(false);
 
   return (
-    <Card key={article.id} variant='outlined' className='article-card card'>
+    <Card key={article.id} variant='outlined' className='card'>
       <CardHeader
         avatar={
           <AvatarImage
@@ -58,38 +68,74 @@ export const ArticleCard = ({ article, lang }: ArticleCardProps) => {
         }
         className='card-header'
       />
-      <CardMedia>
-        <DefaultImage
-          position='relative'
-          src='/images/banner.png'
-          width={318}
-        />
-      </CardMedia>
-      {/*{(state.user?.username === article.username ||*/}
-      {/*  state.user?.role === UserRole.ROLE_ADMIN) && (*/}
-      {/*  <Stack direction='row' spacing={1}>*/}
-      {/*    <Chip label={article.status} variant='outlined' />*/}
-      {/*    <Chip label={article.language.toUpperCase()} variant='outlined' />*/}
-      {/*  </Stack>*/}
-      {/*)}*/}
-      <CardContent className='card-content'>
-        <Link href={`/articles/${article.id}`} className='article-title'>
-          {article.title}
-        </Link>
-        <div className='article-category'>
-          {article.categories?.map((category) => (
-            <span className='category-item' key={category.id}>
-              <Link
-                className='category-link'
-                href={`/categories/${category.id}`}
+      <Box className='card-media' onMouseLeave={() => setExpanded(false)}>
+        <Collapse in={!expanded} timeout={{ enter: 300, exit: 300 }}>
+          <CardMedia className='card-media'>
+            <DefaultImage
+              src={
+                article.imageUrl &&
+                `${process.env.NEXT_PUBLIC_BASE_URL}${article.imageUrl}`
+              }
+              top={0}
+              left={0}
+              zIndex={0}
+              className='scale-x-100 transition-transform will-change-transform'
+            />
+            <Box
+              sx={{
+                position: 'absolute',
+                bottom: 0,
+                left: 0,
+                right: 0,
+                background: 'rgba(0,0,0,0.6)',
+                color: 'white',
+                p: 1,
+              }}
+            >
+              <Stack
+                direction='row'
+                justifyContent='center'
+                alignItems='center'
+                spacing={1}
               >
-                {category.name}
-              </Link>
-            </span>
-          ))}
-        </div>
-        <div className='article-content'>{article.previewContentNode}</div>
-      </CardContent>
+                <Typography
+                  variant='subtitle1'
+                  sx={{
+                    flexGrow: 1,
+                    lineHeight: 1.2,
+                    whiteSpace: 'normal',
+                    wordBreak: 'break-word',
+                    maxHeight: '4.8em',
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
+                    display: '-webkit-box',
+                    WebkitLineClamp: 4,
+                    WebkitBoxOrient: 'vertical',
+                  }}
+                >
+                  <Link href={`/articles/${article.id}`}>{article.title}</Link>
+                </Typography>
+                <IconButton
+                  sx={{
+                    color: 'white',
+                    flexShrink: 0,
+                  }}
+                  aria-label={`info about ${article.title}`}
+                  onMouseEnter={() => setExpanded(true)}
+                  onClick={() => setExpanded(true)}
+                >
+                  <InfoIcon />
+                </IconButton>
+              </Stack>
+            </Box>
+          </CardMedia>
+        </Collapse>
+        <Collapse in={expanded} timeout={{ enter: 300, exit: 300 }}>
+          <CardContent className='card-content'>
+            <div className='article-preview-content'>{previewContent}</div>
+          </CardContent>
+        </Collapse>
+      </Box>
       <CardActions>
         <Stack direction='row' spacing={2}>
           <Link href={`/articles/${article.id}`}>

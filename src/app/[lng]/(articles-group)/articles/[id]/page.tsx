@@ -15,14 +15,12 @@ import { useTranslation } from '@/app/i18n/client';
 import { ArticleActions } from '@/components/ArticleActions';
 import { useArticle } from '@/components/ArticleProvider';
 import Articles from '@/components/Articles';
-import { useAuth } from '@/components/AuthProvider';
 import { AvatarImage } from '@/components/AvatarImage';
-import ButtonAlertDialog from '@/components/ButtonAlertDialog';
 import { CommentList } from '@/components/CommentList';
 import { useContentImageContext } from '@/components/ContentImageProvider';
 import { TimeAgo } from '@/components/TimeAgo';
 import { getRecommendationsArticleById } from '@/helpers/articleApi';
-import { Article, Language, UserRole } from '@/types';
+import { Article, Language } from '@/types';
 
 type PageParams = {
   lng: Language;
@@ -35,7 +33,6 @@ type PageProps = {
 
 export default function Page({ params: { lng, id } }: PageProps) {
   const { article } = useArticle();
-  const { state } = useAuth();
   const { processContent } = useContentImageContext();
   const { t } = useTranslation(lng, 'articles');
   const content = processContent(DOMPurify.sanitize(article.content));
@@ -80,51 +77,39 @@ export default function Page({ params: { lng, id } }: PageProps) {
         />
         <CardContent className='card-content'>
           <h1 className='article-title'>{article.title}</h1>
-          <div className='article-category'>
-            {article.categories?.map((category) => (
-              <span className='category-item' key={category.id}>
-                <Link
-                  className='category-link'
-                  href={`/categories/${category.id}`}
-                >
-                  {category.name}
-                </Link>
-              </span>
-            ))}
-          </div>
           <div className='article-content'>{content}</div>
-          {state.user?.username === article.username &&
-            state.user?.role === UserRole.ROLE_AUTHOR && (
-              <ButtonAlertDialog articleId={id} lang={lng} />
-            )}
         </CardContent>
         <CardActions className='article-presenter-meta'>
-          <div className='article-category-pm'>
-            Категории:{' '}
-            {article.categories?.map((category) => (
-              <span className='category-item' key={category.id}>
-                <Link
-                  className='category-link'
-                  href={`/${lng}/categories/${category.id}`}
-                >
-                  {category.name}
-                </Link>
-              </span>
-            ))}
-          </div>
-          <div className='article-tag-pm'>
-            Теги:{' '}
-            {article.tags?.map((tag) => (
-              <span className='tag-item' key={tag.id}>
-                <Link
-                  className='tag-link'
-                  href={`/${lng}/articles?type=tag&value=${tag.name}`}
-                >
-                  {tag.name}
-                </Link>
-              </span>
-            ))}
-          </div>
+          <section>
+            <span className='article-pm-list-title'>{t('categories')}:</span>
+            <ul className='article-pm-list'>
+              {article.categories?.map((category) => (
+                <li className='category-item' key={category.id}>
+                  <Link
+                    className='category-link'
+                    href={`/${lng}/categories/${category.id}`}
+                  >
+                    {category.name}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </section>
+          <section>
+            <span className='article-pm-list-title'>{t('tags')}:</span>
+            <ul className='article-pm-list'>
+              {article.tags?.map((tag) => (
+                <li className='tag-item' key={tag.id}>
+                  <Link
+                    className='tag-link'
+                    href={`/${lng}/articles?type=tag&value=${tag.name}`}
+                  >
+                    {tag.name}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </section>
         </CardActions>
       </Card>
       <ArticleActions lang={lng} articleData={article} id={id} />

@@ -112,6 +112,7 @@ export type Article = {
   isBookmarked: boolean;
   language: Language;
   originalArticleId: number;
+  imageUrl: string;
   previewContent: string;
   previewContentNode?: ReactNode;
   content: string;

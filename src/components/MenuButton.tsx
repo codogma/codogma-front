@@ -94,13 +94,19 @@ export default function MenuButton({
   const { t } = useTranslation(lang);
 
   const { data } = useQuery<GetUserDTO>({
-    queryKey: ['user', article?.username],
-    queryFn: () => getUserByUsername(article?.username),
+    queryKey: [
+      'user',
+      article?.username,
+      user?.username,
+      compilation?.ownerName,
+    ],
+    queryFn: () =>
+      getUserByUsername(
+        article?.username ?? user?.username ?? compilation?.ownerName,
+      ),
   });
 
   const userDTO: GetUserDTO = data as GetUserDTO;
-
-  const userData = article !== undefined ? userDTO : user;
 
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -169,9 +175,9 @@ export default function MenuButton({
                 onClose={handleClose}
               />
             )}
-          {userData && (
+          {userDTO && (
             <SubscribeMenuItem
-              user={userData}
+              user={userDTO}
               lang={lang}
               onClose={handleClose}
             />

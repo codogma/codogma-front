@@ -12,6 +12,7 @@ export type UpdateDraftArticleDTO = {
   language?: Language | null;
   originalArticleId?: number | null;
   title?: string | null;
+  imageUrl?: string | null;
   previewContent?: string | null;
   content?: string | null;
   categoryIds?: number[] | null;
@@ -23,6 +24,7 @@ export type UpdateArticleDTO = {
   language: Language;
   originalArticleId?: number | null;
   title: string;
+  imageUrl: string;
   previewContent: string;
   content: string;
   categoryIds: number[];
