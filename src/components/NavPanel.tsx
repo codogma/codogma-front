@@ -32,7 +32,6 @@ export const NavPanel = ({ lang }: NavPanelProps) => {
   const { t } = useTranslation(lang);
   const router = useRouter();
   const [activeIndex, setActiveIndex] = useState<number | undefined>(undefined);
-  const drawerWidth = isMin ? theme.spacing(10) : 'auto';
 
   useEffect(() => {
     if (pathname === `/${lang}/articles`) {
@@ -65,24 +64,25 @@ export const NavPanel = ({ lang }: NavPanelProps) => {
   };
 
   return (
-    <Box component='nav' sx={{ width: drawerWidth }}>
+    <Box component='nav'>
       <Drawer
         variant='permanent'
         sx={{
           display: { xs: 'none', md: 'block' },
-          flexShrink: 0,
-          whiteSpace: 'nowrap',
           '& .MuiDrawer-paper': {
             boxSizing: 'border-box',
-            width: drawerWidth,
-            top: 'initial',
-            left: 'initial',
-            bottom: 'initial',
+            position: 'relative',
+            height: { xs: 0, md: '100vh' },
           },
         }}
         open
+        slotProps={{
+          root: {
+            keepMounted: true,
+          },
+        }}
       >
-        <List>
+        <List sx={{ overflowY: 'auto', overflowX: 'hidden' }}>
           {items.map(({ text, href, icon }, index) => (
             <ListItem key={text} disablePadding sx={{ display: 'block' }}>
               <Tooltip
@@ -92,7 +92,7 @@ export const NavPanel = ({ lang }: NavPanelProps) => {
                 sx={{ display: { sm: 'block', xl: 'none' } }}
                 disableHoverListener={!isMin}
               >
-                <Link href={href}>
+                <Link href={href} scroll={false}>
                   <ListItemButton
                     sx={{
                       flexDirection: { xs: 'column', lg: 'row' },

@@ -26,11 +26,30 @@ export const ContainerWithNavigations = ({
     <Box className='flex min-h-screen flex-col'>
       <NavBar lang={lang} />
       <Container maxWidth='xl'>
-        <Grid container spacing={2} rowGap={0} direction='row' columns={30}>
-          <Grid size={{ lg: 5, md: 3, sm: 0 }}>
+        <Grid
+          container
+          spacing={1}
+          rowGap={0}
+          direction='row'
+          columns={12}
+          display='flex'
+          sx={{
+            flex: 1,
+            alignItems: 'flex-start',
+          }}
+        >
+          <Grid
+            size={{ md: 'auto', xs: 0 }}
+            sx={{
+              position: 'sticky',
+              top: 64,
+              height: { xs: 'auto', md: 'calc(100vh - 64px)' },
+              overflow: 'hidden',
+            }}
+          >
             <NavPanel lang={lang} />
           </Grid>
-          <Grid size={{ lg: 25, md: 27, sm: 30 }}>{children}</Grid>
+          <Grid size={{ md: 'grow', xs: 12 }}>{children}</Grid>
         </Grid>
       </Container>
       <BottomNavigation lang={lang} />

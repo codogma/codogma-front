@@ -6,7 +6,7 @@ export const replaceUrlAndDispatchEvent = (
   router: AppRouterInstance,
   url: string,
 ) => {
-  router.replace(url);
+  router.replace(url, { scroll: false });
   if (window.location.search || window.location.hash) {
     window.history.replaceState(null, '', url);
   }

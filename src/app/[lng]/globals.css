@@ -96,11 +96,23 @@
   }
 
   .card-header {
-    @apply p-2.5 flex flex-nowrap items-start gap-1 !important;
+    @apply flex flex-nowrap items-start gap-1 p-2.5 !important;
+
+    & .MuiCardHeader-title {
+      @apply leading-3 !important;
+    }
+
+    & .MuiCardHeader-subheader {
+      @apply leading-3 !important;
+    }
   }
 
   .card-media {
-    @apply relative overflow-hidden self-stretch object-cover w-full aspect-video;
+    @apply relative aspect-video w-full self-stretch overflow-hidden object-cover;
+  }
+
+  .card-content {
+    @apply flex flex-col gap-1 p-2.5 !important;
   }
 
   .article-user-avatar {
@@ -151,15 +163,8 @@
     @apply relative !important;
   }
 
-  /*TODO fix or remove*/
-  .card-content {
-  }
-
   .article-preview-content {
-    @apply mb-4 text-sm break-words
-    xs:line-clamp-[8] xs:max-h-[10rem]
-    md:line-clamp-[10] md:max-h-[12rem]
-    text-ellipsis leading-4 flex-grow whitespace-normal font-medium dark:text-alto;
+    @apply mb-4 flex-grow text-ellipsis whitespace-normal break-words text-sm font-medium leading-4 dark:text-alto;
   }
 
   .article-content {
@@ -167,7 +172,7 @@
   }
 
   .article-presenter-meta {
-    @apply p-4 box-border grid gap-6 text-base leading-[180%] text-horizon !important;
+    @apply box-border grid gap-6 p-4 text-base leading-[180%] text-horizon !important;
 
     section {
       @apply ml-0 !important;
@@ -179,11 +184,11 @@
   }
 
   .article-pm-list {
-    @apply inline list-none m-0 p-0
+    @apply m-0 inline list-none p-0;
   }
 
   .category-item {
-    @apply inline list-none m-0 p-0;
+    @apply m-0 inline list-none p-0;
   }
 
   .category-link {
@@ -199,7 +204,7 @@
   }
 
   .tag-item {
-    @apply inline list-none m-0 p-0;
+    @apply m-0 inline list-none p-0;
   }
 
   .tag-item::after {

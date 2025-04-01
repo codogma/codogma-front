@@ -1,3 +1,4 @@
+import { BrokenImage } from '@mui/icons-material';
 import { Box, BoxProps, SxProps, Theme, Typography } from '@mui/material';
 import Image from 'next/image';
 import React, { FC } from 'react';
@@ -9,6 +10,7 @@ interface DefaultImageProps extends BoxProps {
   readonly quality?: number;
   readonly width?: BoxProps['width'];
   readonly height?: BoxProps['height'];
+  readonly position?: BoxProps['position'];
   readonly sx?: SxProps<Theme>;
 }
 
@@ -19,6 +21,7 @@ export const DefaultImage: FC<DefaultImageProps> = ({
   quality = 80,
   width,
   height,
+  position = 'relative',
   style,
   className,
   sx,
@@ -29,6 +32,9 @@ export const DefaultImage: FC<DefaultImageProps> = ({
   const hasWidth = isNaN(Number(widthVal));
   const hasHeight = isNaN(Number(heightVal));
   const useFill = hasWidth && hasHeight;
+  const size = useFill
+    ? { fill: true }
+    : { width: Number(widthVal), height: Number(heightVal) };
 
   return (
     <Box
@@ -36,23 +42,34 @@ export const DefaultImage: FC<DefaultImageProps> = ({
       width={width ?? '100%'}
       height={height ?? '100%'}
       textAlign='center'
+      position={position}
       sx={sx}
     >
-      <Image
-        src={src}
-        alt={alt}
-        priority={priority}
-        quality={quality}
-        className={className}
-        style={{
-          ...style,
-          objectFit: 'cover',
-          transition: 'transform 0.4s ease',
-        }}
-        {...(useFill
-          ? { fill: true }
-          : { width: Number(widthVal), height: Number(heightVal) })}
-      />
+      {src ? (
+        <Image
+          src={src}
+          alt={alt}
+          priority={priority}
+          quality={quality}
+          className={className}
+          sizes='(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw'
+          style={{
+            ...style,
+            objectFit: 'cover',
+            transition: 'transform 0.4s ease',
+          }}
+          {...size}
+        />
+      ) : (
+        <BrokenImage
+          className='text-limed-spruce-rgba dark:text-white'
+          sx={{
+            width: '100%',
+            height: '100%',
+            objectFit: 'cover',
+          }}
+        />
+      )}
       {alt && (
         <Typography variant='body1' color='textSecondary' mt={1} mb={1}>
           {alt}

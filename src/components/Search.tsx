@@ -59,8 +59,11 @@ export const Search = ({ lang, onSearchType, onSearchValue }: SearchProps) => {
   }, []);
 
   const handleSearchChange = useCallback(() => {
+    window.scrollTo({
+      top: 0,
+      behavior: 'instant',
+    });
     const { type, value } = getSearchParams();
-
     if (type && Object.values(SearchType).includes(type as SearchType)) {
       const newType = type as SearchType;
       setSearchType(newType);

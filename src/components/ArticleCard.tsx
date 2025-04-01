@@ -3,6 +3,7 @@ import { Box, Button, CardHeader, CardMedia, Collapse } from '@mui/material';
 import Card from '@mui/material/Card';
 import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
+import Chip from '@mui/material/Chip';
 import IconButton from '@mui/material/IconButton';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
@@ -27,7 +28,7 @@ type ArticleCardProps = {
 export const ArticleCard = ({ article, lang }: ArticleCardProps) => {
   const { state } = useAuth();
   const { processContent } = useContentImageContext();
-  const { t } = useTranslation(lang);
+  const { t } = useTranslation(lang, 'articles');
   const previewContent = processContent(
     DOMPurify.sanitize(article.previewContent),
   );
@@ -131,8 +132,34 @@ export const ArticleCard = ({ article, lang }: ArticleCardProps) => {
           </CardMedia>
         </Collapse>
         <Collapse in={expanded} timeout={{ enter: 300, exit: 300 }}>
-          <CardContent className='card-content'>
-            <div className='article-preview-content'>{previewContent}</div>
+          <CardContent component='div' className='card-content aspect-[16/8]'>
+            {(state.user?.username === article.username ||
+              state.user?.role === UserRole.ROLE_ADMIN) && (
+              <Stack direction='row' spacing={1}>
+                <Chip
+                  size='small'
+                  color='primary'
+                  label={t(article.status.toLowerCase())}
+                  variant='outlined'
+                />
+                <Chip
+                  size='small'
+                  color='success'
+                  label={t(article.language.toLowerCase() + '_short')}
+                  variant='outlined'
+                />
+              </Stack>
+            )}
+            <Box
+              sx={{
+                height: '100%',
+                overflowY: 'auto',
+                scrollbarWidth: 'thin',
+                pr: 1,
+              }}
+            >
+              <div className='article-preview-content'>{previewContent}</div>
+            </Box>
           </CardContent>
         </Collapse>
       </Box>

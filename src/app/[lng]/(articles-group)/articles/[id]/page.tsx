@@ -87,6 +87,7 @@ export default function Page({ params: { lng, id } }: PageProps) {
                 <li className='category-item' key={category.id}>
                   <Link
                     className='category-link'
+                    scroll={false}
                     href={`/${lng}/categories/${category.id}`}
                   >
                     {category.name}
@@ -102,6 +103,7 @@ export default function Page({ params: { lng, id } }: PageProps) {
                 <li className='tag-item' key={tag.id}>
                   <Link
                     className='tag-link'
+                    scroll={false}
                     href={`/${lng}/articles?type=tag&value=${tag.name}`}
                   >
                     {tag.name}
