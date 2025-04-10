@@ -11,6 +11,7 @@ import { useState } from 'react';
 
 import { useTranslation } from '@/app/i18n/client';
 import { AddToCompilations } from '@/components/AddToCompilations';
+import { ArticlesDnD } from '@/components/ArticlesDnD';
 import { useAuth } from '@/components/AuthProvider';
 import ButtonAlertDialog from '@/components/ButtonAlertDialog';
 import { EditCategory } from '@/components/EditCategory';
@@ -20,7 +21,7 @@ import { deleteCategory } from '@/helpers/categoryApi';
 import { deleteCompilation } from '@/helpers/compilationApi';
 import { getUserByUsername } from '@/helpers/userApi';
 import {
-  Article,
+  GetArticle,
   GetCategory,
   GetCompilation,
   GetUserDTO,
@@ -72,7 +73,7 @@ const StyledMenu = styled((props: MenuProps) => (
 }));
 
 type MenuButtonProps = {
-  readonly article?: Article;
+  readonly article?: GetArticle;
   readonly lang: Language;
   readonly compilation?: GetCompilation;
   readonly user?: GetUserDTO;
@@ -183,13 +184,26 @@ export default function MenuButton({
             />
           )}
           {category && state.user?.role === UserRole.ROLE_ADMIN && (
-            <EditCategory id={category.id} lang={lang} refetch={refetch} />
+            <EditCategory
+              id={category.id}
+              lang={lang}
+              refetch={refetch}
+              onClose={handleClose}
+            />
           )}
           {compilation && (
             <EditCompilation
               compilationData={compilation}
               lang={lang}
-              id={compilation?.id ?? 0}
+              onClose={handleClose}
+            />
+          )}
+          {state.user?.username === compilation?.ownerName && compilation && (
+            <ArticlesDnD
+              compilationData={compilation}
+              lang={lang}
+              onClose={handleClose}
+              refetch={refetch}
             />
           )}
           {state.user?.username === compilation?.ownerName && compilation && (

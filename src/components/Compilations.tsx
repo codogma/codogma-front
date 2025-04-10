@@ -1,13 +1,11 @@
 'use client';
-import { Badge, Card, CardContent, IconButton, Skeleton } from '@mui/material';
-import Link from 'next/link';
+import { Card, CardContent, Skeleton } from '@mui/material';
+import Grid from '@mui/material/Grid2';
 import React from 'react';
 
 import { useTranslation } from '@/app/i18n/client';
 import { useAuth } from '@/components/AuthProvider';
-import { AvatarImage } from '@/components/AvatarImage';
-import { Bookmark } from '@/components/Bookmark';
-import MenuButton from '@/components/MenuButton';
+import { CompilationCard } from '@/components/CompilationCard';
 import { GetCompilation, Language } from '@/types';
 
 type CompilationsProps = {
@@ -48,60 +46,18 @@ export default function Compilations({
           </CardContent>
         </Card>
       ) : (
-        compilations?.map((compilation) => (
-          <Card key={compilation.id} variant='outlined' className='card'>
-            <CardContent className='card-content'>
-              <div className='card-header'>
-                <Badge
-                  className='items-start'
-                  overlap='circular'
-                  anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-                  badgeContent={
-                    <IconButton
-                      component='label'
-                      color='inherit'
-                      sx={{ p: 0 }}
-                    />
-                  }
-                >
-                  <AvatarImage
-                    alt={compilation.title}
-                    className='category-img'
-                    variant='rounded'
-                    src={compilation.imageUrl}
-                    size={48}
-                  />
-                </Badge>
-                <ul>
-                  <li>
-                    <Link
-                      href={`/compilations/${compilation.id}`}
-                      className='category-name'
-                    >
-                      {compilation.title}
-                    </Link>
-                  </li>
-                  <li>
-                    <p className='category-description'>
-                      {compilation.description}
-                    </p>
-                  </li>
-                </ul>
-                {state.user?.username !== compilation?.ownerName ? (
-                  <Bookmark
-                    username={compilation.ownerName}
-                    lang={lang}
-                    id={compilation.id}
-                    isBookmarkedValue={compilation.isBookmarked}
-                    refetch={refetch}
-                  />
-                ) : (
-                  <MenuButton compilation={compilation} lang={lang} />
-                )}
-              </div>
-            </CardContent>
-          </Card>
-        ))
+        <Grid container direction={{ xs: 'column', sm: 'row' }} spacing={1}>
+          {compilations?.map((compilation) => (
+            <Grid key={compilation.id} size={{ xs: 12, sm: 6, lg: 4 }}>
+              <CompilationCard
+                key={compilation.id}
+                compilation={compilation}
+                lang={lang}
+                refetch={refetch}
+              />
+            </Grid>
+          ))}
+        </Grid>
       )}
     </>
   );

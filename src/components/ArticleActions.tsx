@@ -10,12 +10,12 @@ import { ArticleProgressBar } from '@/components/ArticleProgressBar';
 import { useAuth } from '@/components/AuthProvider';
 import MenuButton from '@/components/MenuButton';
 import { getArticleById, like, unlike } from '@/helpers/articleApi';
-import { Article, Language } from '@/types';
+import { GetArticle, Language } from '@/types';
 
 type SearchProps = {
   readonly id: number;
   readonly lang: Language;
-  readonly articleData: Article;
+  readonly articleData: GetArticle;
 };
 
 export const ArticleActions = ({ id, lang, articleData }: SearchProps) => {

@@ -18,10 +18,10 @@ import { useContentImageContext } from '@/components/ContentImageProvider';
 import { DefaultImage } from '@/components/DefaultImage';
 import MenuButton from '@/components/MenuButton';
 import { TimeAgo } from '@/components/TimeAgo';
-import { Article, Language, UserRole } from '@/types';
+import { GetArticle, Language, UserRole } from '@/types';
 
 type ArticleCardProps = {
-  readonly article: Article;
+  readonly article: GetArticle;
   readonly lang: Language;
 };
 

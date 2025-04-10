@@ -44,11 +44,13 @@ export default function Categories({
           </CardContent>
         </Card>
       ) : (
-        categories.map((category) => (
-          <Grid key={category.id} size={{ xs: 12, sm: 6, lg: 4 }}>
-            <CategoryCard category={category} lang={lang} />
-          </Grid>
-        ))
+        <Grid container direction={{ xs: 'column', sm: 'row' }} spacing={1}>
+          {categories.map((category) => (
+            <Grid key={category.id} size={{ xs: 12, sm: 6, lg: 4 }}>
+              <CategoryCard category={category} lang={lang} />
+            </Grid>
+          ))}
+        </Grid>
       )}
     </>
   );

@@ -61,17 +61,17 @@ const BootstrapDialog = styled(Dialog)(({ theme }) => ({
 }));
 
 type EditCompilationProps = {
-  readonly id: number;
   readonly lang: string;
-  readonly compilationData: GetCompilation | undefined;
+  readonly compilationData: GetCompilation;
   readonly refetch?: () => void;
+  readonly onClose?: () => void;
 };
 
 export const EditCompilation = ({
-  id,
   lang,
   compilationData,
   refetch,
+  onClose,
 }: EditCompilationProps) => {
   const [open, setOpen] = useState(false);
   const [imageFile, setImageFile] = useState<File>();
@@ -124,7 +124,7 @@ export const EditCompilation = ({
   ) => {
     const requestData = { ...formData, image: imageFile };
     devConsoleError(requestData);
-    updateCompilation(id, requestData).then(() => {
+    updateCompilation(compilationData.id, requestData).then(() => {
       if (refetch) {
         refetch();
       }
@@ -133,6 +133,9 @@ export const EditCompilation = ({
   };
 
   const handleClickOpen = () => {
+    if (onClose) {
+      onClose();
+    }
     setOpen(true);
   };
 

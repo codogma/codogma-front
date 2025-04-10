@@ -7,11 +7,11 @@ import React from 'react';
 
 import { useTranslation } from '@/app/i18n/client';
 import { ArticleCard } from '@/components/ArticleCard';
-import { Article, Language } from '@/types';
+import { GetArticle, Language } from '@/types';
 
 type ArticlesProps = {
   readonly lang: Language;
-  readonly articles: Article[];
+  readonly articles: GetArticle[];
   readonly loading: boolean;
 };
 

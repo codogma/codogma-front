@@ -1,6 +1,7 @@
 'use client';
 import {
   Badge,
+  Box,
   Card,
   CardActions,
   CardContent,
@@ -38,7 +39,7 @@ export default function CategoryCard({
       sx={{ display: 'flex', flexDirection: 'row' }}
       key={category.id}
       variant='outlined'
-      className='card'
+      className='card max-h-32'
     >
       <CardContent sx={{ flex: '1 0 auto' }}>
         <Typography component='div' variant='h5'>
@@ -53,19 +54,27 @@ export default function CategoryCard({
         >
           <p className='category-description'>{category.description}</p>
         </Typography>
-        <CardActions className='m-0 p-0'>
-          <Stack direction='row' spacing={2}>
-            {state.user?.role !== UserRole.ROLE_ADMIN ? (
-              <ButtonFavorite
-                lang={lang}
-                isFavoriteValue={category?.isFavorite}
-                id={category.id}
-              />
-            ) : (
-              <MenuButton category={category} lang={lang} refetch={refetch} />
-            )}
-          </Stack>
-        </CardActions>
+        <Box sx={{ display: 'flex', alignItems: 'center', pl: 1, pb: 1 }}>
+          <IconButton aria-label='category'>
+            <CardActions className='m-0 p-0'>
+              <Stack direction='row' spacing={2}>
+                {state.user?.role !== UserRole.ROLE_ADMIN ? (
+                  <ButtonFavorite
+                    lang={lang}
+                    isFavoriteValue={category?.isFavorite}
+                    id={category.id}
+                  />
+                ) : (
+                  <MenuButton
+                    category={category}
+                    lang={lang}
+                    refetch={refetch}
+                  />
+                )}
+              </Stack>
+            </CardActions>
+          </IconButton>
+        </Box>
       </CardContent>
       {/*<ul>*/}
       {/*  <li>*/}

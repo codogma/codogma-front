@@ -2,14 +2,14 @@
 import { useRouter } from 'next/navigation';
 import React, { createContext, useContext } from 'react';
 
-import { Article } from '@/types';
+import { GetArticle } from '@/types';
 
 interface ArticleContextType {
-  article: Article;
+  article: GetArticle;
 }
 
 const ArticleContext = createContext<ArticleContextType>({
-  article: {} as Article,
+  article: {} as GetArticle,
 });
 
 export const useArticle = () => useContext(ArticleContext);
@@ -19,7 +19,7 @@ export const ArticleProvider = ({
   article,
 }: {
   readonly children: React.ReactNode;
-  readonly article: Article;
+  readonly article: GetArticle;
 }) => {
   const router = useRouter();
   if (!article) {

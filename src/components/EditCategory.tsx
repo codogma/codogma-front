@@ -65,9 +65,15 @@ type EditCategoryProps = {
   readonly id: number;
   readonly lang: Language;
   readonly refetch?: () => void;
+  readonly onClose?: () => void;
 };
 
-export const EditCategory = ({ id, lang, refetch }: EditCategoryProps) => {
+export const EditCategory = ({
+  id,
+  lang,
+  refetch,
+  onClose,
+}: EditCategoryProps) => {
   const [open, setOpen] = useState(false);
   const [imageUrl, setImageUrl] = useState<string | undefined>();
   const [selectedLang, setSelectedLang] = useState<Language>(lang);
@@ -171,7 +177,12 @@ export const EditCategory = ({ id, lang, refetch }: EditCategoryProps) => {
   };
 
   const handleClickOpen = () => {
-    refetchCategoryData().then(() => setOpen(true));
+    refetchCategoryData().then(() => {
+      if (onClose) {
+        onClose();
+      }
+      setOpen(true);
+    });
   };
 
   const handleClose = () => {

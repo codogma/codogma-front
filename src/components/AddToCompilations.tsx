@@ -267,7 +267,7 @@ export const AddToCompilations: React.FC<AddToCompilationsProps> = ({
                   />
                 )}
               />
-              <Button type='submit'>{t('add')}</Button>
+              <Button type='submit'>{t('save')}</Button>
             </Box>
           </FormProvider>
         </DialogContent>

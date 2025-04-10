@@ -13,12 +13,12 @@ import Popover from '@mui/material/Popover';
 import React, { useEffect, useState } from 'react';
 
 import { useTranslation } from '@/app/i18n/client';
-import { Article, Language } from '@/types';
+import { GetArticle, Language } from '@/types';
 
 type LinkWithPopoverProps = {
-  readonly draftArticles: Article[];
+  readonly draftArticles: GetArticle[];
   readonly onDeleteArticle: (id: number) => void;
-  readonly onSelectArticle: (article: Article) => void;
+  readonly onSelectArticle: (article: GetArticle) => void;
   readonly lang: string;
 };
 
@@ -65,7 +65,7 @@ export const LinkWithPopover = ({
     setAnchorEl(null);
   };
 
-  const handleSelectArticle = (article: Article) => {
+  const handleSelectArticle = (article: GetArticle) => {
     onSelectArticle(article);
     handleClose();
   };

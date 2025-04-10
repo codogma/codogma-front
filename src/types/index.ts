@@ -54,7 +54,7 @@ export type User = {
   subscriptions: User[] | [];
   favorites: GetCategory[] | [];
   avatarUrl: string;
-  articles: Article[] | [];
+  articles: GetArticle[] | [];
   categories: GetCategory[];
   shortInfo: string;
 };
@@ -93,6 +93,8 @@ export type GetCompilation = {
   ownerName: string;
   ownerAvatarUrl: string;
   imageUrl: string;
+  createdAt: Date;
+  articles: GetArticle[];
 };
 
 export type GetNotification = {
@@ -105,7 +107,7 @@ export type GetNotification = {
   read: boolean;
 };
 
-export type Article = {
+export type GetArticle = {
   id: number;
   status: string;
   title: string;
@@ -132,7 +134,7 @@ export type Article = {
 export interface GetComment {
   id: number;
   content: string;
-  article: Article;
+  article: GetArticle;
   parentCommentId?: number;
   user: User;
   replies?: GetComment[];

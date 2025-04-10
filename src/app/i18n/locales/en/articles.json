@@ -1,7 +1,7 @@
 {
   "articlesDescription": "Articles CODOGMA",
-  "addCommentBtn": "Add Comment",
-  "updateCommentBtn": "Update Comment",
+  "addCommentBtn": "Add comment",
+  "updateCommentBtn": "Update comment",
   "writeComment": "Write your comment...",
   "comments": "Comments",
   "dialogTitle": "Do you agree to these terms and wish to proceed?",
@@ -17,5 +17,6 @@
   "published": "published",
   "moderation": "moderation",
   "hidden": "hidden",
-  "blocked": "blocked"
+  "blocked": "blocked",
+  "sortArticles": "Sort articles"
 }

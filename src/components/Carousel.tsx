@@ -11,11 +11,11 @@ import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 import { ArticleCard } from '@/components/ArticleCard';
-import { Article, Language } from '@/types';
+import { GetArticle, Language } from '@/types';
 
 type CarouselProps = {
   readonly lang: Language;
-  readonly articles: Article[];
+  readonly articles: GetArticle[];
   readonly isLoading: boolean;
 };
 

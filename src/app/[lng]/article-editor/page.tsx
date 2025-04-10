@@ -64,7 +64,7 @@ import { devConsoleError } from '@/helpers/devConsoleLogs';
 import { uploadImage } from '@/helpers/imageUploadApi';
 import { getTagsByName } from '@/helpers/tagApi';
 import {
-  Article,
+  GetArticle,
   GetCategory,
   GetCompilation,
   GetTag,
@@ -151,7 +151,7 @@ const Page = ({ params: { lng } }: PageParams) => {
   const [stepTwoData, setStepTwoData] = useState<StepTwoType>(null);
   const [activeStep, setActiveStep] = useState<number>(0);
   const [articleId, setArticleId] = useState<number>(0);
-  const [draftArticles, setDraftArticles] = useState<Article[]>([]);
+  const [draftArticles, setDraftArticles] = useState<GetArticle[]>([]);
   const [inputCategoryValue, setInputCategoryValue] = useState<string>('');
   const [inputCompilationValue, setInputCompilationValue] =
     useState<string>('');
@@ -235,7 +235,7 @@ const Page = ({ params: { lng } }: PageParams) => {
     compilationsData as GetCompilationsDTO;
 
   const { data: draftArticlesData, refetch: refetchDraftArticlesData } =
-    useQuery<Article[]>({
+    useQuery<GetArticle[]>({
       queryKey: ['draftArticles'],
       queryFn: () => getDraftArticles(),
     });
@@ -248,7 +248,7 @@ const Page = ({ params: { lng } }: PageParams) => {
     );
   };
 
-  const { data: article, isFetched } = useQuery<Article>({
+  const { data: article, isFetched } = useQuery<GetArticle>({
     queryKey: ['article', id],
     queryFn: () => getDraftedArticleById(id),
     enabled: isValidId(id),
@@ -303,7 +303,7 @@ const Page = ({ params: { lng } }: PageParams) => {
   );
 
   const setArticleData = useCallback(
-    (articleData: Article) => {
+    (articleData: GetArticle) => {
       if (isValidId(articleData.id)) setArticleId(articleData.id);
       localStorage.setItem(ARTICLE_ID, String(articleData.id));
       resetStepOne({
@@ -326,7 +326,7 @@ const Page = ({ params: { lng } }: PageParams) => {
   );
 
   const handleSelectArticle = useCallback(
-    (articleData: Article) => {
+    (articleData: GetArticle) => {
       setArticleData(articleData);
     },
     [setArticleData],
