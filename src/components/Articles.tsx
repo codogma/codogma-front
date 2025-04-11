@@ -1,28 +1,21 @@
 'use client';
-import { Button, Skeleton } from '@mui/material';
+import { Skeleton } from '@mui/material';
 import Card from '@mui/material/Card';
-import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
-import Chip from '@mui/material/Chip';
-import Stack from '@mui/material/Stack';
-import Link from 'next/link';
+import Grid from '@mui/material/Grid2';
 import React from 'react';
 
 import { useTranslation } from '@/app/i18n/client';
-import { useAuth } from '@/components/AuthProvider';
-import { AvatarImage } from '@/components/AvatarImage';
-import MenuButton from '@/components/MenuButton';
-import { TimeAgo } from '@/components/TimeAgo';
-import { Article, Language, UserRole } from '@/types';
+import { ArticleCard } from '@/components/ArticleCard';
+import { GetArticle, Language } from '@/types';
 
 type ArticlesProps = {
   readonly lang: Language;
-  readonly articles: Article[];
+  readonly articles: GetArticle[];
   readonly loading: boolean;
 };
 
 export default function Articles({ lang, articles, loading }: ArticlesProps) {
-  const { state } = useAuth();
   const { t } = useTranslation(lang);
 
   return (
@@ -30,7 +23,7 @@ export default function Articles({ lang, articles, loading }: ArticlesProps) {
       {loading ? (
         <Card variant='outlined' className='card'>
           <CardContent className='card-content'>
-            <div className='meta-container'>
+            <div className='card-header'>
               <Skeleton variant='rounded' width={32} height={32} />
               <Skeleton variant='text' width={300} />
             </div>
@@ -46,77 +39,21 @@ export default function Articles({ lang, articles, loading }: ArticlesProps) {
           </CardContent>
         </Card>
       ) : (
-        articles?.map((article) => (
-          <Card key={article.id} variant='outlined' className='card'>
-            <CardContent className='card-content'>
-              <div className='meta-container'>
-                <AvatarImage
-                  alt={article.username}
-                  className='article-user-avatar'
-                  src={article.authorAvatarUrl}
-                  variant='rounded'
-                  size={32}
-                />
-                <Link
-                  href={`/users/${article.username}`}
-                  className='article-user-name'
-                >
-                  {article.username}
-                </Link>
-                <TimeAgo
-                  datetime={article.createdAt}
-                  className='article-datetime'
-                  lang={lang}
-                />
-                {(state.user?.username === article.username ||
-                  state.user?.role === UserRole.ROLE_ADMIN) && (
-                  <Stack direction='row' spacing={1}>
-                    <Chip label={article.status} variant='outlined' />
-                    <Chip
-                      label={article.language.toUpperCase()}
-                      variant='outlined'
-                    />
-                  </Stack>
-                )}
-                {state.isAuthenticated &&
-                  state.user?.role !== UserRole.ROLE_ADMIN && (
-                    <MenuButton article={article} lang={lang} />
-                  )}
-              </div>
-              <Link href={`/articles/${article.id}`} className='article-title'>
-                {article.title}
-              </Link>
-              <div className='article-category'>
-                {article.categories?.map((category) => (
-                  <span className='category-item' key={category.id}>
-                    <Link
-                      className='category-link'
-                      href={`/categories/${category.id}`}
-                    >
-                      {category.name}
-                    </Link>
-                  </span>
-                ))}
-              </div>
-              <div className='article-content'>
-                {article.previewContentNode}
-              </div>
-            </CardContent>
-            <CardActions>
-              <Stack direction='row' spacing={2}>
-                <Link href={`/articles/${article.id}`}>
-                  <Button className='article-btn' variant='outlined'>
-                    {t('readMoreBtn')}
-                  </Button>
-                </Link>
-                {state.user?.username === article.username &&
-                  state.user.role === UserRole.ROLE_AUTHOR && (
-                    <MenuButton article={article} lang={lang} />
-                  )}
-              </Stack>
-            </CardActions>
-          </Card>
-        ))
+        <Grid
+          container
+          direction={{ xs: 'column', sm: 'row' }}
+          spacing={1}
+          // sx={{
+          //   justifyContent: 'space-between',
+          //   alignItems: 'center',
+          // }}
+        >
+          {articles?.map((article) => (
+            <Grid key={article.id} size={{ xs: 12, sm: 6, lg: 4 }}>
+              <ArticleCard article={article} lang={lang} />
+            </Grid>
+          ))}
+        </Grid>
       )}
     </>
   );

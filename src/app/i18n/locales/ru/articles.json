@@ -12,5 +12,11 @@
   "popoverBookmark": "чтобы добавить статью в подборки",
   "popoverSignup": "Зарегистрироваться",
   "editBtn": "Редактировать",
-  "recommendation": "Рекомендации:"
+  "recommendation": "Рекомендации:",
+  "draft": "черновик",
+  "published": "опубликована",
+  "moderation": "модерация",
+  "hidden": "скрыта",
+  "blocked": "заблокирована",
+  "sortArticles": "Сортировка статей"
 }

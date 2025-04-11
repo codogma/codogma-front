@@ -1,11 +1,14 @@
 'use client';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { CloudDone } from '@mui/icons-material';
+import { CloudDone, ModeEditOutlineOutlined } from '@mui/icons-material';
 import {
   Autocomplete,
+  Badge,
   Box,
   Button,
   Chip,
+  FormHelperText,
+  IconButton,
   Step,
   StepIcon,
   StepIconProps,
@@ -16,7 +19,7 @@ import {
 } from '@mui/material';
 import FormControl from '@mui/material/FormControl';
 import MenuItem from '@mui/material/MenuItem';
-import { useTheme } from '@mui/material/styles';
+import { styled, useTheme } from '@mui/material/styles';
 import { keepPreviousData, useMutation, useQuery } from '@tanstack/react-query';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
@@ -30,6 +33,7 @@ import { z } from 'zod';
 
 import { useTranslation } from '@/app/i18n/client';
 import { useAuth } from '@/components/AuthProvider';
+import { AvatarImage } from '@/components/AvatarImage';
 import FormInput from '@/components/FormInput';
 import { LinkWithPopover } from '@/components/LinkWithPopover';
 import { TinyMCEEditor } from '@/components/TinyMCEEditor';
@@ -57,14 +61,27 @@ import {
   GetCompilationsDTO,
 } from '@/helpers/compilationApi';
 import { devConsoleError } from '@/helpers/devConsoleLogs';
+import { uploadImage } from '@/helpers/imageUploadApi';
 import { getTagsByName } from '@/helpers/tagApi';
 import {
-  Article,
+  GetArticle,
   GetCategory,
   GetCompilation,
   GetTag,
   Language,
 } from '@/types';
+
+const VisuallyHiddenInput = styled('input')({
+  clip: 'rect(0 0 0 0)',
+  clipPath: 'inset(50%)',
+  height: 1,
+  overflow: 'hidden',
+  position: 'absolute',
+  bottom: 0,
+  left: 0,
+  whiteSpace: 'nowrap',
+  width: 1,
+});
 
 type PageParams = {
   readonly params: { lng: Language };
@@ -87,6 +104,7 @@ const StepOneScheme = z.object({
 const StepTwoScheme = z.object({
   language: z.nativeEnum(Language),
   originalArticleId: z.number().optional().nullable(),
+  imageUrl: z.string().min(1, 'Изображение обязательно для загрузки.'),
   previewContent: z.string().min(1, 'Краткое описание не может быть пустым.'),
   categoryIds: z.array(z.number()).min(1, 'Выберите хотя бы одну категорию.'),
   compilationIds: z.array(z.number()).optional().default([]),
@@ -133,7 +151,7 @@ const Page = ({ params: { lng } }: PageParams) => {
   const [stepTwoData, setStepTwoData] = useState<StepTwoType>(null);
   const [activeStep, setActiveStep] = useState<number>(0);
   const [articleId, setArticleId] = useState<number>(0);
-  const [draftArticles, setDraftArticles] = useState<Article[]>([]);
+  const [draftArticles, setDraftArticles] = useState<GetArticle[]>([]);
   const [inputCategoryValue, setInputCategoryValue] = useState<string>('');
   const [inputCompilationValue, setInputCompilationValue] =
     useState<string>('');
@@ -179,6 +197,7 @@ const Page = ({ params: { lng } }: PageParams) => {
     defaultValues: {
       language: lng,
       originalArticleId: null,
+      imageUrl: '',
       previewContent: '',
       categoryIds: [],
       compilationIds: [],
@@ -194,6 +213,8 @@ const Page = ({ params: { lng } }: PageParams) => {
       isSubmitSuccessful: isSubmitSuccessfulStepTwo,
       errors: errorsStepTwo,
     },
+    setValue,
+    trigger,
     watch: watchStepTwo,
   } = zodStepTwoForm;
 
@@ -214,7 +235,7 @@ const Page = ({ params: { lng } }: PageParams) => {
     compilationsData as GetCompilationsDTO;
 
   const { data: draftArticlesData, refetch: refetchDraftArticlesData } =
-    useQuery<Article[]>({
+    useQuery<GetArticle[]>({
       queryKey: ['draftArticles'],
       queryFn: () => getDraftArticles(),
     });
@@ -227,7 +248,7 @@ const Page = ({ params: { lng } }: PageParams) => {
     );
   };
 
-  const { data: article, isFetched } = useQuery<Article>({
+  const { data: article, isFetched } = useQuery<GetArticle>({
     queryKey: ['article', id],
     queryFn: () => getDraftedArticleById(id),
     enabled: isValidId(id),
@@ -246,6 +267,7 @@ const Page = ({ params: { lng } }: PageParams) => {
       resetStepTwo({
         language: lng,
         originalArticleId: null,
+        imageUrl: '',
         previewContent: '',
         categoryIds: [],
         compilationIds: [],
@@ -281,7 +303,7 @@ const Page = ({ params: { lng } }: PageParams) => {
   );
 
   const setArticleData = useCallback(
-    (articleData: Article) => {
+    (articleData: GetArticle) => {
       if (isValidId(articleData.id)) setArticleId(articleData.id);
       localStorage.setItem(ARTICLE_ID, String(articleData.id));
       resetStepOne({
@@ -291,6 +313,7 @@ const Page = ({ params: { lng } }: PageParams) => {
       resetStepTwo({
         language: articleData.language || lng,
         originalArticleId: articleData.originalArticleId,
+        imageUrl: articleData.imageUrl,
         previewContent: articleData.previewContent,
         categoryIds: articleData.categories.map((category) => category.id),
         compilationIds: articleData.compilations.map(
@@ -303,7 +326,7 @@ const Page = ({ params: { lng } }: PageParams) => {
   );
 
   const handleSelectArticle = useCallback(
-    (articleData: Article) => {
+    (articleData: GetArticle) => {
       setArticleData(articleData);
     },
     [setArticleData],
@@ -312,6 +335,26 @@ const Page = ({ params: { lng } }: PageParams) => {
   const handleNewArticle = useCallback(() => {
     deleteArticleData();
   }, [deleteArticleData]);
+
+  const handleFileChange = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      const file = event.target.files?.[0];
+      if (file) {
+        const formData = new FormData();
+        formData.append('image', file);
+        uploadImage(formData)
+          .then((imageUrl) => {
+            // resolve(`${process.env.NEXT_PUBLIC_BASE_URL}${imageUrl}`);
+            setValue('imageUrl', imageUrl);
+            trigger('imageUrl');
+          })
+          .catch((error) => {
+            devConsoleError('Failed to upload image:', error);
+          });
+      }
+    },
+    [setValue, trigger],
+  );
 
   useEffect(() => {
     if (article) {
@@ -892,6 +935,52 @@ const Page = ({ params: { lng } }: PageParams) => {
                   )}
                 />
               </FormControl>
+              <FormControl sx={{ mb: 1 }}>
+                <Controller
+                  name='imageUrl'
+                  control={controlStepTwo}
+                  render={({ field }) => (
+                    <Badge
+                      overlap='circular'
+                      anchorOrigin={{
+                        vertical: 'bottom',
+                        horizontal: 'right',
+                      }}
+                      badgeContent={
+                        <IconButton
+                          component='label'
+                          color='inherit'
+                          sx={{ p: 0, m: 0 }}
+                        >
+                          <ModeEditOutlineOutlined color='primary' />
+                          <VisuallyHiddenInput
+                            id='imageUrl'
+                            name='imageUrl'
+                            type='file'
+                            onChange={handleFileChange}
+                          />
+                        </IconButton>
+                      }
+                    >
+                      <AvatarImage
+                        type='image'
+                        variant='rounded'
+                        src={field.value}
+                        size={112}
+                        fontSize='large'
+                      />
+                    </Badge>
+                  )}
+                />
+              </FormControl>
+              {errorsStepTwo.imageUrl && (
+                <FormHelperText
+                  id='image-text'
+                  error={!!errorsStepTwo.imageUrl}
+                >
+                  {errorsStepTwo?.imageUrl.message}
+                </FormHelperText>
+              )}
               <Typography className='my-4'>{t('shortDescription')}</Typography>
               {errorsStepTwo.previewContent?.message && (
                 <Typography variant='body2' color='error'>
@@ -957,6 +1046,7 @@ const Page = ({ params: { lng } }: PageParams) => {
       errorsStepOne,
       errorsStepTwo,
       handleDeleteArticle,
+      handleFileChange,
       handleNewArticle,
       handleSelectArticle,
       handleSubmitStepOne,

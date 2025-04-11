@@ -20,7 +20,7 @@ type PageProps = {
 
 const Page = ({ params: { lng } }: PageProps) => {
   const [currentPage, setCurrentPage] = useState<number>(0);
-  const [resultsPerPage, setResultsPerPage] = useState<number>(10);
+  const [resultsPerPage, setResultsPerPage] = useState<number>(12);
   const [searchValue, setSearchValue] = useState<string>();
   const [searchType, setSearchType] = useState<SearchType>(SearchType.CONTENT);
   const { processContent } = useContentImageContext();
@@ -92,6 +92,7 @@ const Page = ({ params: { lng } }: PageProps) => {
         lang={lng}
         totalPages={totalPages}
         totalElements={totalElements}
+        resultsPerPageStart={resultsPerPage}
         onCurrentPageChange={onPageChange}
         onResultsPerPageChange={onResultsPerPageChange}
       />

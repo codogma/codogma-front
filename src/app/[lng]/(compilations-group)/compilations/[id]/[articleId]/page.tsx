@@ -24,22 +24,22 @@ import { GetArticle, Language } from '@/types';
 
 type PageParams = {
   lng: Language;
-  id: number;
+  articleId: number;
 };
 
 type PageProps = {
   readonly params: PageParams;
 };
 
-export default function Page({ params: { lng, id } }: PageProps) {
+export default function Page({ params: { lng, articleId } }: PageProps) {
   const { article } = useArticle();
   const { processContent } = useContentImageContext();
   const { t } = useTranslation(lng, 'articles');
   const content = processContent(DOMPurify.sanitize(article.content));
 
   const { data, isFetching } = useQuery<GetArticle>({
-    queryKey: ['articles', id],
-    queryFn: () => getRecommendationsArticleById(id),
+    queryKey: ['articles', articleId],
+    queryFn: () => getRecommendationsArticleById(articleId),
   });
 
   const articles: GetArticle[] = (data ?? []) as GetArticle[];
@@ -47,7 +47,12 @@ export default function Page({ params: { lng, id } }: PageProps) {
 
   return (
     <>
-      <Card key={id} id={`article-${id}`} variant='outlined' className='card'>
+      <Card
+        key={articleId}
+        id={`article-${articleId}`}
+        variant='outlined'
+        className='card'
+      >
         <CardHeader
           avatar={
             <AvatarImage
@@ -114,8 +119,8 @@ export default function Page({ params: { lng, id } }: PageProps) {
           </section>
         </CardActions>
       </Card>
-      <ArticleActions lang={lng} articleData={article} id={id} />
-      <CommentList articleId={id} lang={lng} />
+      <ArticleActions lang={lng} articleData={article} id={articleId} />
+      <CommentList articleId={articleId} lang={lng} />
       {hasArticles && (
         <>
           <Typography component='div'>{t('recommendation')}</Typography>

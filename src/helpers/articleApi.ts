@@ -1,7 +1,7 @@
 import { axiosInstance } from '@/helpers/axiosInstance';
 import { dispatchCustomEvent } from '@/helpers/dispatchCustomEvent';
 // import { getT } from '@/helpers/getT';
-import { Article, Language } from '@/types';
+import { GetArticle, Language } from '@/types';
 
 export type CreateDraftArticleDTO = {
   title: string;
@@ -12,6 +12,7 @@ export type UpdateDraftArticleDTO = {
   language?: Language | null;
   originalArticleId?: number | null;
   title?: string | null;
+  imageUrl?: string | null;
   previewContent?: string | null;
   content?: string | null;
   categoryIds?: number[] | null;
@@ -23,6 +24,7 @@ export type UpdateArticleDTO = {
   language: Language;
   originalArticleId?: number | null;
   title: string;
+  imageUrl: string;
   previewContent: string;
   content: string;
   categoryIds: number[];
@@ -33,12 +35,12 @@ export type UpdateArticleDTO = {
 export type GetArticlesDTO = {
   totalElements: number;
   totalPages: number;
-  content: Article[];
+  content: GetArticle[];
 };
 
 export const createDraftArticle = async (
   requestData: CreateDraftArticleDTO,
-): Promise<Article> => {
+): Promise<GetArticle> => {
   const response = await axiosInstance.post('/articles/drafts', requestData);
   // const message = await getT('articleCreated', 'articles');
   dispatchCustomEvent('api', {
@@ -62,7 +64,7 @@ export const updateDraftArticle = async (
 export const updateArticle = async (
   id: number | undefined,
   requestData: UpdateArticleDTO,
-): Promise<Article> => {
+): Promise<GetArticle> => {
   const response = await axiosInstance.put(`/articles/${id}`, requestData);
   dispatchCustomEvent('api', {
     message: 'Article sent to moderation',
@@ -96,14 +98,31 @@ export const getArticles = async (
   return response.data;
 };
 
-export const getDraftArticles = async (): Promise<Article[]> => {
+export const getViewed = async (
+  page: number = 0,
+  size: number = 5,
+  tag?: string,
+  content?: string,
+): Promise<GetArticlesDTO> => {
+  const response = await axiosInstance.get('/articles/viewed', {
+    params: {
+      tag,
+      content,
+      page,
+      size,
+    },
+  });
+  return response.data;
+};
+
+export const getDraftArticles = async (): Promise<GetArticle[]> => {
   const response = await axiosInstance.get('/articles/drafts');
   return response.data;
 };
 
 export const getDraftedArticleById = async (
   id: number | undefined,
-): Promise<Article> => {
+): Promise<GetArticle> => {
   const response = await axiosInstance.get(`/articles/${id}/draft`);
   dispatchCustomEvent('api', {
     message: 'Article status changed to “Draft”',
@@ -114,19 +133,19 @@ export const getDraftedArticleById = async (
 
 export const getArticleById = async (
   id: number | undefined,
-): Promise<Article> => {
+): Promise<GetArticle> => {
   const response = await axiosInstance.get(`/articles/${id}`);
   return response.data;
 };
 
 export const getRecommendationsArticleById = async (
   id: number | undefined,
-): Promise<Article> => {
+): Promise<GetArticle> => {
   const response = await axiosInstance.get(`/articles/${id}/recommendations`);
   return response.data;
 };
 
-export const getRecommendationsArticles = async (): Promise<Article[]> => {
+export const getRecommendationsArticles = async (): Promise<GetArticle[]> => {
   const response = await axiosInstance.get('/articles/recommendations');
   return response.data;
 };
@@ -142,7 +161,7 @@ export const deleteArticle = async (id: number): Promise<void> => {
 export const addToCompilations = async (
   id: number,
   compilationIds: number[],
-): Promise<Article> => {
+): Promise<GetArticle> => {
   const response = await axiosInstance.post(
     `/articles/${id}/add-to-compilations`,
     { compilationIds },
@@ -154,7 +173,7 @@ export const addToCompilations = async (
   return response.data;
 };
 
-export const like = async (id: number): Promise<Article> => {
+export const like = async (id: number): Promise<GetArticle> => {
   const response = await axiosInstance.post(`/articles/${id}/like`);
   dispatchCustomEvent('api', {
     message: 'Liked article',
@@ -163,7 +182,7 @@ export const like = async (id: number): Promise<Article> => {
   return response.data;
 };
 
-export const unlike = async (id: number): Promise<Article> => {
+export const unlike = async (id: number): Promise<GetArticle> => {
   const response = await axiosInstance.delete(`/articles/${id}/unlike`);
   dispatchCustomEvent('api', {
     message: 'Unliked article',

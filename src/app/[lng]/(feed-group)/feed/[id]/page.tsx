@@ -34,7 +34,7 @@ export default function Page({ params: { lng } }: PageProps) {
     <>
       <Card key={article.id} variant='outlined' className='card'>
         <CardContent className='card-content'>
-          <div className='meta-container'>
+          <div className='card-header'>
             <AvatarImage
               alt={article.username}
               className='article-user-avatar'
@@ -94,7 +94,11 @@ export default function Page({ params: { lng } }: PageProps) {
           </div>
           {state.user?.username === article.username &&
             state.user?.role === UserRole.ROLE_AUTHOR && (
-              <ButtonAlertDialog articleId={article.id} lang={lng} />
+              <ButtonAlertDialog
+                articleId={article.id}
+                lang={lng}
+                status={article.status}
+              />
             )}
         </CardContent>
       </Card>

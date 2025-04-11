@@ -34,7 +34,6 @@ const Banner = ({ bannerData: { welcome, subWelcome } }: BannerProps) => {
     >
       <DefaultImage
         src='/images/banner.png'
-        alt='Banner Background'
         position='absolute'
         top={0}
         left={0}

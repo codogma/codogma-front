@@ -27,13 +27,16 @@ export const AvatarImage: React.FC<AvatarImageProps> = ({
   const [imageSrc, setImageSrc] = useState<string>('');
   useEffect(() => {
     const fetchAvatar = async () => {
-      if (src?.startsWith('blob:' || 'http')) {
+      if (src?.startsWith('blob' || 'http')) {
         setImageSrc(src);
       } else if (alt) {
-        const avatarUrl = src
+        const imageUrl = src
           ? `${process.env.NEXT_PUBLIC_BASE_URL}${src}`
           : await generateAvatarUrl(alt, size);
-        setImageSrc(avatarUrl);
+        setImageSrc(imageUrl);
+      } else if (src) {
+        const imageUrl = `${process.env.NEXT_PUBLIC_BASE_URL}${src}`;
+        setImageSrc(imageUrl);
       }
     };
 

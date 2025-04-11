@@ -1,7 +1,7 @@
 import { axiosInstance } from '@/helpers/axiosInstance';
 import { devConsoleInfo } from '@/helpers/devConsoleLogs';
 import { dispatchCustomEvent } from '@/helpers/dispatchCustomEvent';
-import { Article, GetCompilation } from '@/types';
+import { GetArticle, GetCompilation } from '@/types';
 
 export type GetCompilationsDTO = {
   totalElements: number;
@@ -13,6 +13,13 @@ export type CompilationCreate = {
   title: string;
   image?: File;
   description?: string;
+};
+
+export type UpdateCompilationDTO = {
+  image?: File;
+  title?: string;
+  description?: string;
+  articleIds?: number[];
 };
 
 export const getCompilations = async (
@@ -72,7 +79,7 @@ export const createCompilation = async (
   });
 };
 
-export const bookmark = async (id: number): Promise<Article> => {
+export const bookmark = async (id: number): Promise<GetArticle> => {
   const response = await axiosInstance.post(`/compilations/${id}/bookmark`);
   dispatchCustomEvent('api', {
     message: 'You have successfully added the compilation to your bookmarks',
@@ -81,7 +88,7 @@ export const bookmark = async (id: number): Promise<Article> => {
   return response.data;
 };
 
-export const unbookmark = async (id: number): Promise<Article> => {
+export const unbookmark = async (id: number): Promise<GetArticle> => {
   const response = await axiosInstance.delete(`/compilations/${id}/unbookmark`);
   dispatchCustomEvent('api', {
     message:
@@ -93,11 +100,7 @@ export const unbookmark = async (id: number): Promise<Article> => {
 
 export const updateCompilation = async (
   id: number,
-  requestData: {
-    image?: File;
-    title?: string;
-    description?: string;
-  },
+  requestData: UpdateCompilationDTO,
 ): Promise<GetCompilation> => {
   const response = await axiosInstance.put(`/compilations/${id}`, requestData, {
     headers: {

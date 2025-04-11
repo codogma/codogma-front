@@ -50,7 +50,7 @@ export default function Layout({
       <Card variant='outlined' className='card'>
         <CardContent className='card-content'>
           {isFetching ? (
-            <div className='meta-container'>
+            <div className='card-header'>
               <Skeleton className='category-img' variant='rounded' />
               <div>
                 <h1 className='category-card-name'>
@@ -63,7 +63,7 @@ export default function Layout({
             </div>
           ) : (
             <>
-              <div className='meta-container'>
+              <div className='card-header'>
                 <Badge
                   className='items-start'
                   overlap='circular'

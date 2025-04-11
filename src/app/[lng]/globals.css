@@ -92,15 +92,27 @@
   }
 
   .card {
-    @apply mb-4 bg-white pb-4 pl-5 pr-5 pt-4 text-mine-shaft dark:bg-bunker !important;
+    @apply mb-4 bg-white text-mine-shaft dark:bg-bunker !important;
+  }
+
+  .card-header {
+    @apply flex flex-nowrap items-start gap-1 p-2.5 !important;
+
+    & .MuiCardHeader-title {
+      @apply leading-3 !important;
+    }
+
+    & .MuiCardHeader-subheader {
+      @apply leading-3 !important;
+    }
+  }
+
+  .card-media {
+    @apply relative aspect-video w-full self-stretch overflow-hidden object-cover;
   }
 
   .card-content {
-    @apply p-0 !important;
-  }
-
-  .meta-container {
-    @apply mb-2 flex flex-nowrap items-start gap-1;
+    @apply flex flex-col gap-1 p-2.5 !important;
   }
 
   .article-user-avatar {
@@ -120,7 +132,7 @@
   }
 
   .article-title {
-    @apply mb-4 mt-3 flex space-x-2 font-[inherit] text-xl leading-[1.3] text-mine-shaft no-underline dark:text-alto !important;
+    @apply mb-4 flex space-x-2 font-[inherit] text-xl leading-[1.3] text-mine-shaft no-underline dark:text-alto !important;
   }
 
   .article-title:visited {
@@ -151,6 +163,38 @@
     @apply relative !important;
   }
 
+  .article-preview-content {
+    @apply mb-4 flex-grow text-ellipsis whitespace-normal break-words text-sm font-medium leading-4 dark:text-alto;
+  }
+
+  .article-content {
+    @apply mb-4 dark:text-alto;
+  }
+
+  .article-presenter-meta {
+    @apply box-border grid gap-6 p-4 text-base leading-[180%] text-horizon !important;
+
+    section {
+      @apply ml-0 !important;
+    }
+  }
+
+  .article-pm-list-title {
+    @apply mr-1 font-bold text-mine-shaft;
+  }
+
+  .article-pm-list {
+    @apply m-0 inline list-none p-0;
+  }
+
+  .category-item {
+    @apply m-0 inline list-none p-0;
+  }
+
+  .category-link {
+    @apply inline-flex text-base font-medium leading-7 no-underline !important;
+  }
+
   .category-item::after {
     content: ', ';
   }
@@ -159,12 +203,20 @@
     content: '';
   }
 
+  .tag-item {
+    @apply m-0 inline list-none p-0;
+  }
+
   .tag-item::after {
     content: ', ';
   }
 
   .tag-item:last-child::after {
     content: '';
+  }
+
+  .tag-link {
+    @apply inline-flex text-base font-medium leading-7 no-underline !important;
   }
 
   .subscribers-user-name {
@@ -187,10 +239,6 @@
     @apply mt-auto bg-shark p-4 text-white shadow !important;
   }
 
-  .article-content {
-    @apply mb-4 dark:text-alto;
-  }
-
   .article-btn {
     @apply inline-flex h-auto max-h-[36px] cursor-pointer items-center rounded-sm border border-solid border-horizon bg-transparent px-3 py-0 text-[0.8125rem] leading-[1.6875rem] text-horizon no-underline dark:border-deepsky-blue dark:text-deepsky-blue !important;
   }
@@ -199,32 +247,20 @@
     @apply border border-solid border-transparent bg-astral text-white dark:bg-deepsky-blue !important;
   }
 
+  .link {
+    @apply inline-flex items-center text-horizon no-underline dark:text-alto;
+  }
+
+  .link:hover {
+    @apply text-deepsky-blue dark:bg-deepsky-blue;
+  }
+
   .article-red-btn {
     @apply inline-flex h-auto max-h-[36px] cursor-pointer items-center rounded-sm border border-solid border-red bg-transparent px-3 py-0 text-[0.8125rem] leading-[1.6875rem] text-red no-underline dark:border-red dark:text-red !important;
   }
 
   .article-red-btn:hover {
     @apply border border-solid border-transparent bg-red text-white dark:bg-red !important;
-  }
-
-  .article-presenter-meta {
-    @apply mx-0 my-6 box-border grid max-w-[780px] gap-6 text-base leading-[180%] text-horizon;
-  }
-
-  .article-category-pm {
-    @apply mr-1 font-bold text-mine-shaft;
-  }
-
-  .category-link {
-    @apply inline-flex text-base font-medium leading-7 text-horizon no-underline !important;
-  }
-
-  .article-tag-pm {
-    @apply mr-1 font-bold text-mine-shaft;
-
-    .tag-link {
-      @apply inline-flex text-base font-medium leading-7 text-horizon no-underline !important;
-    }
   }
 }
 
@@ -262,14 +298,6 @@
 
 .category-tags {
   @apply mt-2 pr-2;
-}
-
-.tag-item::after {
-  content: ', ';
-}
-
-.tag-item:last-child::after {
-  content: '';
 }
 
 .tag-name {
@@ -341,4 +369,8 @@
   --swiper-navigation-top-offset: 90%;
   --swiper-navigation-sides-offset: 10px;
   --swiper-navigation-color: #1976d2;
+}
+
+.swiper-slide {
+  @apply max-w-80;
 }

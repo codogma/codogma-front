@@ -87,7 +87,7 @@ export default function Page({ params: { username, lng } }: PageProps) {
         <Card variant='outlined' className='card'>
           <CardContent className='card-content'>
             <Skeleton variant='text' width={250} />
-            <div className='meta-container'>
+            <div className='card-header'>
               <Skeleton variant='rounded' width={32} height={32} />
               <p>
                 <Skeleton variant='text' width={100} />
@@ -109,7 +109,7 @@ export default function Page({ params: { username, lng } }: PageProps) {
               <Box className='py-4'>
                 <Divider />
               </Box>
-              <Box className='meta-container'>
+              <Box className='card-header'>
                 <AvatarImage
                   className='article-user-avatar'
                   src={comment.user.avatarUrl}

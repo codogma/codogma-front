@@ -1,36 +1,58 @@
+'use client';
+import { Box } from '@mui/material';
 import Typography from '@mui/material/Typography';
+import { useQuery } from '@tanstack/react-query';
 import React from 'react';
 
-import { initTranslation } from '@/app/i18n';
+import { useTranslation } from '@/app/i18n/client';
+import { useAuth } from '@/components/AuthProvider';
 import Banner from '@/components/Banner';
-import Carousel from '@/components/Carousel';
-import NavTabs, { TabProps } from '@/components/NavTabs';
+import { Carousel } from '@/components/Carousel';
+import { MainTabs } from '@/components/MainTabs';
+import { getArticles, GetArticlesDTO } from '@/helpers/articleApi';
+import { Language } from '@/types';
 
 type PageProps = {
-  readonly params: { lng: string };
+  readonly params: { lng: Language };
 };
 
-export default async function Page({ params: { lng } }: PageProps) {
-  const tabs: TabProps[] = [
-    { label: 'History', href: `/` },
-    { label: 'Bookmarks', href: `/` },
-    { label: 'Subscriptions', href: `/` },
-  ];
+export default function Page({ params: { lng } }: PageProps) {
+  const { state } = useAuth();
+  const { t } = useTranslation(lng, 'main');
 
-  const { t } = await initTranslation(lng, 'main');
+  const { data: recentlyData, isFetching: isFetchingRecently } =
+    useQuery<GetArticlesDTO>({
+      queryKey: ['recentlyArticles'],
+      queryFn: () => {
+        return getArticles(undefined, undefined, 0, 5);
+      },
+    });
+
+  const recentlyAdded = recentlyData?.content ?? [];
 
   return (
     <section>
       <Banner
         bannerData={{ welcome: t('welcome'), subWelcome: t('subWelcome') }}
       />
-      <section className='your-interest'>
-        <Typography variant='h3' className='your-interest-h3'>
-          Your interest
+      {state.isAuthenticated && (
+        <section className='your-interest'>
+          <Typography variant='h3' className='your-interest-h3'>
+            Your interest
+          </Typography>
+          <MainTabs lang={lng} username={state.user?.username} />
+        </section>
+      )}
+      <Box sx={{ width: 'auto', margin: 'auto', padding: '20px 0' }}>
+        <Typography variant='h5' gutterBottom>
+          Recently Added
         </Typography>
-        <NavTabs tabs={tabs} />
-      </section>
-      <Carousel />
+        <Carousel
+          articles={recentlyAdded}
+          isLoading={isFetchingRecently}
+          lang={lng}
+        />
+      </Box>
       {/*<Carousel/>*/}
       {/*<Carousel/>*/}
       {/*<section className="carousels-section">*/}

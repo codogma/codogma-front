@@ -6,5 +6,5 @@ export const uploadImage = async (formData: FormData): Promise<string> => {
       'Content-Type': 'multipart/form-data',
     },
   });
-  return `${process.env.NEXT_PUBLIC_BASE_URL}${response.data}`;
+  return response.data;
 };

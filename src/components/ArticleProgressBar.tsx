@@ -3,11 +3,11 @@ import React from 'react';
 
 import { useTranslation } from '@/app/i18n/client';
 import { useArticleProgress } from '@/helpers/useArticleProgress';
-import { Article } from '@/types';
+import { GetArticle } from '@/types';
 
 type ArticleProgressBarProps = {
   readonly lang: string;
-  readonly articleData: Article;
+  readonly articleData: GetArticle;
 };
 
 export const ArticleProgressBar = ({

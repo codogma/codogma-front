@@ -1,10 +1,8 @@
 'use client';
 import { useQuery } from '@tanstack/react-query';
-import DOMPurify from 'dompurify';
 import React, { useState } from 'react';
 
 import Articles from '@/components/Articles';
-import { useContentImageContext } from '@/components/ContentImageProvider';
 import { CustomPagination } from '@/components/CustomPagination';
 import { Search } from '@/components/Search';
 import { contlCookie } from '@/constants/i18n';
@@ -20,10 +18,9 @@ type PageProps = {
 
 export default function Page({ params: { lng } }: PageProps) {
   const [currentPage, setCurrentPage] = useState<number>(0);
-  const [resultsPerPage, setResultsPerPage] = useState<number>(10);
+  const [resultsPerPage, setResultsPerPage] = useState<number>(12);
   const [searchValue, setSearchValue] = useState<string>();
   const [searchType, setSearchType] = useState<SearchType>(SearchType.CONTENT);
-  const { processContent } = useContentImageContext();
 
   const onSearchType = (type: SearchType) => {
     setSearchType(type);
@@ -57,13 +54,7 @@ export default function Page({ params: { lng } }: PageProps) {
     },
   });
 
-  const content = data?.content ?? [];
-  const articles = content.map((article) => ({
-    ...article,
-    previewContentNode: processContent(
-      DOMPurify.sanitize(article.previewContent),
-    ),
-  }));
+  const articles = data?.content ?? [];
   const totalPages = data?.totalPages ?? 0;
   const totalElements = data?.totalElements ?? 0;
 
@@ -89,6 +80,7 @@ export default function Page({ params: { lng } }: PageProps) {
         lang={lng}
         totalPages={totalPages}
         totalElements={totalElements}
+        resultsPerPageStart={resultsPerPage}
         onCurrentPageChange={onPageChange}
         onResultsPerPageChange={onResultsPerPageChange}
       />

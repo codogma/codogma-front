@@ -21,7 +21,7 @@ type PageProps = {
 export default function Layout({ params: { id, lng } }: PageProps) {
   const categoryId = id;
   const [currentPage, setCurrentPage] = useState<number>(0);
-  const [resultsPerPage, setResultsPerPage] = useState<number>(10);
+  const [resultsPerPage, setResultsPerPage] = useState<number>(12);
   const [searchValue, setSearchValue] = useState<string>();
   const [searchType, setSearchType] = useState<string>('content');
   const { t } = useTranslation(lng, 'articles');
@@ -82,6 +82,7 @@ export default function Layout({ params: { id, lng } }: PageProps) {
         lang={lng}
         totalPages={totalPages}
         totalElements={totalElements}
+        resultsPerPageStart={resultsPerPage}
         onCurrentPageChange={onPageChange}
         onResultsPerPageChange={onResultsPerPageChange}
       />

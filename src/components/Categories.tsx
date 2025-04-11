@@ -1,35 +1,23 @@
 'use client';
-import {
-  Badge,
-  Card,
-  CardActions,
-  CardContent,
-  IconButton,
-  Skeleton,
-  Stack,
-} from '@mui/material';
-import Link from 'next/link';
+import { Card, CardContent, Skeleton } from '@mui/material';
+import Grid from '@mui/material/Grid2';
 import React from 'react';
 
 import { useTranslation } from '@/app/i18n/client';
 import { useAuth } from '@/components/AuthProvider';
-import { AvatarImage } from '@/components/AvatarImage';
-import { ButtonFavorite } from '@/components/ButtonFavorite';
-import MenuButton from '@/components/MenuButton';
-import { GetCategory, Language, UserRole } from '@/types';
+import CategoryCard from '@/components/CategoryCard';
+import { GetCategory, Language } from '@/types';
 
 type CategoriesProps = {
   readonly categories: GetCategory[];
   readonly loading: boolean;
   readonly lang: Language;
-  readonly refetch?: () => void;
 };
 
 export default function Categories({
   categories,
   loading,
   lang,
-  refetch,
 }: CategoriesProps) {
   const { state } = useAuth();
   const { t } = useTranslation(lang);
@@ -39,7 +27,7 @@ export default function Categories({
       {loading ? (
         <Card variant='outlined' className='card'>
           <CardContent className='card-content'>
-            <div className='meta-container'>
+            <div className='card-header'>
               <Skeleton variant='rounded' width={48} height={48} />
               <ul>
                 <li>
@@ -56,81 +44,13 @@ export default function Categories({
           </CardContent>
         </Card>
       ) : (
-        categories.map((category) => (
-          <Card key={category.id} variant='outlined' className='card'>
-            <CardContent className='card-content'>
-              <div className='meta-container'>
-                <Badge
-                  className='items-start'
-                  overlap='circular'
-                  anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-                  badgeContent={
-                    <IconButton
-                      component='label'
-                      color='inherit'
-                      sx={{ p: 0 }}
-                    />
-                  }
-                >
-                  <AvatarImage
-                    alt={category.name}
-                    className='category-img'
-                    variant='rounded'
-                    src={category.imageUrl}
-                    size={48}
-                  />
-                </Badge>
-                <ul>
-                  <li>
-                    <Link
-                      href={`/categories/${category.id}`}
-                      className='category-name'
-                    >
-                      {category.name}
-                    </Link>
-                  </li>
-                  <li>
-                    <p className='category-description'>
-                      {category.description}
-                    </p>
-                  </li>
-                  <li>
-                    <div className='category-tags'>
-                      {category.tags?.map((tag) => (
-                        <span className='tag-item' key={tag.id}>
-                          <Link
-                            key={tag.id}
-                            href={`/tags/${tag.id}`}
-                            className='tag-name'
-                          >
-                            {tag.name}
-                          </Link>
-                        </span>
-                      ))}
-                    </div>
-                  </li>
-                </ul>
-              </div>
-              <CardActions className='m-0 p-0'>
-                <Stack direction='row' spacing={2}>
-                  {state.user?.role !== UserRole.ROLE_ADMIN ? (
-                    <ButtonFavorite
-                      lang={lang}
-                      isFavoriteValue={category?.isFavorite}
-                      id={category.id}
-                    />
-                  ) : (
-                    <MenuButton
-                      category={category}
-                      lang={lang}
-                      refetch={refetch}
-                    />
-                  )}
-                </Stack>
-              </CardActions>
-            </CardContent>
-          </Card>
-        ))
+        <Grid container direction={{ xs: 'column', sm: 'row' }} spacing={1}>
+          {categories.map((category) => (
+            <Grid key={category.id} size={{ xs: 12, sm: 6, lg: 4 }}>
+              <CategoryCard category={category} lang={lang} />
+            </Grid>
+          ))}
+        </Grid>
       )}
     </>
   );

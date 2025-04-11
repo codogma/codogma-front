@@ -42,6 +42,7 @@ const NavTabs: React.FC<NavTabsProps> = ({ tabs }) => {
             label={tab.label}
             value={tab.href}
             onClick={() => handleClick(tab.href)}
+            scroll={false}
           />
         ))}
       </Tabs>

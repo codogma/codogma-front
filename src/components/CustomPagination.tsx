@@ -13,6 +13,7 @@ type PaginationProps = {
   readonly lang: string;
   readonly totalPages: number;
   readonly totalElements: number;
+  readonly resultsPerPageStart?: number;
   readonly onCurrentPageChange: (value: number) => void;
   readonly onResultsPerPageChange: (value: number) => void;
 };
@@ -21,14 +22,16 @@ export const CustomPagination = ({
   lang,
   totalPages = 0,
   totalElements = 0,
+  resultsPerPageStart = 10,
   onCurrentPageChange,
   onResultsPerPageChange,
 }: PaginationProps) => {
-  const resultsPerPage10 = 10;
-  const resultsPerPage20 = 20;
-  const resultsPerPage30 = 30;
+  const resultsPerPage1 = resultsPerPageStart;
+  const resultsPerPage2 = resultsPerPageStart * 2;
+  const resultsPerPage3 = resultsPerPageStart * 3;
   const [currentPage, setCurrentPage] = useState<number>(0);
-  const [resultsPerPage, setResultsPerPage] = useState<number>(10);
+  const [resultsPerPage, setResultsPerPage] =
+    useState<number>(resultsPerPageStart);
   const { t } = useTranslation(lang);
 
   useEffect(() => {
@@ -64,7 +67,7 @@ export const CustomPagination = ({
 
   return (
     <>
-      {totalElements <= 10 ? null : (
+      {totalElements <= resultsPerPageStart ? null : (
         <Stack
           spacing={2}
           sx={{
@@ -96,7 +99,7 @@ export const CustomPagination = ({
           <FormControl
             sx={{ width: 150 }}
             size='small'
-            disabled={totalElements <= resultsPerPage10}
+            disabled={totalElements <= resultsPerPage1}
           >
             <InputLabel id='select-label'>{t('paginationPages')}</InputLabel>
             <Select
@@ -107,12 +110,12 @@ export const CustomPagination = ({
               onChange={handleResultsPerPageChange}
               variant='standard'
             >
-              <MenuItem value={resultsPerPage10}>{resultsPerPage10}</MenuItem>
-              {totalElements > resultsPerPage10 && (
-                <MenuItem value={resultsPerPage20}>{resultsPerPage20}</MenuItem>
+              <MenuItem value={resultsPerPage1}>{resultsPerPage1}</MenuItem>
+              {totalElements > resultsPerPage1 && (
+                <MenuItem value={resultsPerPage2}>{resultsPerPage2}</MenuItem>
               )}
-              {totalElements > resultsPerPage20 && (
-                <MenuItem value={resultsPerPage30}>{resultsPerPage30}</MenuItem>
+              {totalElements > resultsPerPage2 && (
+                <MenuItem value={resultsPerPage3}>{resultsPerPage3}</MenuItem>
               )}
             </Select>
           </FormControl>

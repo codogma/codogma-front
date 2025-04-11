@@ -9,7 +9,7 @@ import { GetArticle } from '@/types';
 
 type LayoutProps = {
   readonly children: ReactNode;
-  readonly params: { id: number; lng: string };
+  readonly params: { id: number; lng: string; articleId: number };
 };
 
 async function fetchArticleById(id: number): Promise<GetArticle> {
@@ -17,17 +17,17 @@ async function fetchArticleById(id: number): Promise<GetArticle> {
 }
 
 export async function generateMetadata(
-  { params: { id } }: LayoutProps,
+  { params: { id, articleId } }: LayoutProps,
   parent: ResolvingMetadata,
 ): Promise<Metadata> {
   const article = await fetchArticleById(id);
   const metadataBase = (await parent).metadataBase;
   return {
     alternates: {
-      canonical: `/articles/${id}`,
+      canonical: `/compilations/${id}/article/${articleId}`,
       languages: {
-        en: `/en/articles/${id}`,
-        ru: `/ru/articles/${id}`,
+        en: `/en/compilations/${id}/article/${articleId}`,
+        ru: `/ru/compilations/${id}/article/${articleId}`,
       },
     },
     title: article.title,
@@ -44,8 +44,8 @@ export async function generateMetadata(
 
 export default async function Layout({
   children,
-  params: { id },
+  params: { articleId },
 }: LayoutProps) {
-  const article = await fetchArticleById(id);
+  const article = await fetchArticleById(articleId);
   return <ArticleProvider article={article}>{children}</ArticleProvider>;
 }

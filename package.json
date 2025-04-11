@@ -19,6 +19,8 @@
     ]
   },
   "dependencies": {
+    "@dnd-kit/helpers": "^0.0.10",
+    "@dnd-kit/react": "^0.0.10",
     "@emotion/cache": "^11.13.1",
     "@emotion/react": "^11.13.3",
     "@emotion/server": "^11.11.0",
