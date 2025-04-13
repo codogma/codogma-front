@@ -74,12 +74,12 @@ export const MainTabs: React.FC<MainTabsProps> = ({ lang, username }) => {
             isLoading={isFetchingViewed}
             lang={lang}
           />
-          <Link href={`/${lang}/users/${username}/history`}>
-            <Box className='link'>
+          <Box className='link'>
+            <Link href={`/${lang}/users/${username}/history`}>
               <ArrowCircleRightOutlinedIcon sx={{ mr: 1 }} />
               {t('historyLink')}
-            </Box>
-          </Link>
+            </Link>
+          </Box>
         </TabPanel>
         <TabPanel value='2'>
           <Compilations

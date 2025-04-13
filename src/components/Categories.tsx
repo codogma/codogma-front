@@ -12,12 +12,14 @@ type CategoriesProps = {
   readonly categories: GetCategory[];
   readonly loading: boolean;
   readonly lang: Language;
+  readonly refetch?: () => void;
 };
 
 export default function Categories({
   categories,
   loading,
   lang,
+  refetch,
 }: CategoriesProps) {
   const { state } = useAuth();
   const { t } = useTranslation(lang);
@@ -47,7 +49,7 @@ export default function Categories({
         <Grid container direction={{ xs: 'column', sm: 'row' }} spacing={1}>
           {categories.map((category) => (
             <Grid key={category.id} size={{ xs: 12, sm: 6, lg: 4 }}>
-              <CategoryCard category={category} lang={lang} />
+              <CategoryCard lang={lang} category={category} refetch={refetch} />
             </Grid>
           ))}
         </Grid>

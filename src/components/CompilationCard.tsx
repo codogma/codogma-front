@@ -220,7 +220,20 @@ export const CompilationCard = ({
               }}
             >
               <div className='article-preview-content'>
-                {compilation.description}
+                <p>
+                  <b>Описание:</b>
+                </p>
+                <p>{compilation.description}</p>
+              </div>
+              <div className='article-preview-content'>
+                <ul>
+                  <b>Список статей:</b>
+                </ul>
+                <li>{compilation.description}</li>
+                <li>{compilation.description}</li>
+                <li>{compilation.description}</li>
+                <li>{compilation.description}</li>
+                <li>{compilation.description}</li>
               </div>
             </Box>
           </CardContent>

@@ -1,6 +1,7 @@
 'use client';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
+import { SxProps, Theme } from '@mui/material';
 import Checkbox from '@mui/material/Checkbox';
 import React, { useState } from 'react';
 
@@ -14,6 +15,8 @@ interface CustomFavoriteProps {
   readonly lang: string;
   readonly isFavoriteValue?: boolean;
   readonly refetch?: () => void;
+  readonly sx?: SxProps<Theme>;
+  readonly style?: React.CSSProperties;
 }
 
 export const ButtonFavorite: React.FC<CustomFavoriteProps> = ({
@@ -21,6 +24,8 @@ export const ButtonFavorite: React.FC<CustomFavoriteProps> = ({
   lang,
   isFavoriteValue,
   refetch,
+  sx,
+  style,
 }) => {
   const [anchorEl, setAnchorEl] = React.useState<HTMLElement | null>(null);
   const [isFavorite, setIsFavorite] = useState(isFavoriteValue);
@@ -54,9 +59,10 @@ export const ButtonFavorite: React.FC<CustomFavoriteProps> = ({
       <Checkbox
         checked={isFavorite}
         onChange={handleChange}
-        icon={<FavoriteBorderIcon />}
+        icon={<FavoriteBorderIcon style={style} />}
         checkedIcon={<FavoriteIcon color='error' />}
         inputProps={{ 'aria-label': 'Favorites' }}
+        sx={sx}
       />
       {!state.isAuthenticated && (
         <PopoverElement
