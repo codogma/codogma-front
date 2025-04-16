@@ -35,7 +35,7 @@ export const CompilationCard = ({
   const items = [1, 2, 3, 4, 5];
 
   return (
-    <Card key={compilation.id} variant='outlined' className='card'>
+    <Card variant='outlined' className='card'>
       <CardHeader
         avatar={
           <AvatarImage
@@ -224,16 +224,23 @@ export const CompilationCard = ({
                   <b>Описание:</b>
                 </p>
                 <p>{compilation.description}</p>
-              </div>
-              <div className='article-preview-content'>
-                <ul>
+                <div>
                   <b>Список статей:</b>
+                </div>
+                <ul>
+                  {compilation.articles.map((article) => (
+                    <span key={article.id}>
+                      <li key={article.id} className='link'>
+                        <Link
+                          className='link'
+                          href={`/compilations/${compilation.id}/${article.id}`}
+                        >
+                          {article.title}
+                        </Link>
+                      </li>
+                    </span>
+                  ))}
                 </ul>
-                <li>{compilation.description}</li>
-                <li>{compilation.description}</li>
-                <li>{compilation.description}</li>
-                <li>{compilation.description}</li>
-                <li>{compilation.description}</li>
               </div>
             </Box>
           </CardContent>

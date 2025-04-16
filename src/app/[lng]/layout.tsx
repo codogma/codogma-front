@@ -1,4 +1,4 @@
-import { CssBaseline, StyledEngineProvider } from '@mui/material';
+import { Container, CssBaseline, StyledEngineProvider } from '@mui/material';
 import { AppRouterCacheProvider } from '@mui/material-nextjs/v14-appRouter';
 import { Metadata } from 'next';
 import { Inter } from 'next/font/google';
@@ -76,9 +76,9 @@ export default async function Layout({
                   <CssBaseline />
                   <ContainerWithNavigations lang={lng}>
                     <ButtonBackToTop>
-                      <main className='grow'>
+                      <Container className='content'>
                         <ContentImageProvider>{children}</ContentImageProvider>
-                      </main>
+                      </Container>
                     </ButtonBackToTop>
                     <Footer lang={lng} />
                     <CustomizedSnackbars />

@@ -1,5 +1,5 @@
 'use client';
-import { Box, Container, Grid2 as Grid } from '@mui/material';
+import { Container, Grid2 as Grid } from '@mui/material';
 import { usePathname } from 'next/navigation';
 import React, { ReactNode } from 'react';
 
@@ -23,21 +23,10 @@ export const ContainerWithNavigations = ({
     return children;
   }
   return (
-    <Box className='flex min-h-screen flex-col'>
+    <>
       <NavBar lang={lang} />
       <Container maxWidth='xl'>
-        <Grid
-          container
-          spacing={1}
-          rowGap={0}
-          direction='row'
-          columns={12}
-          display='flex'
-          sx={{
-            flex: 1,
-            alignItems: 'flex-start',
-          }}
-        >
+        <Grid container spacing={1} rowGap={0} direction='row' columns={12}>
           <Grid
             size={{ md: 'auto', xs: 0 }}
             sx={{
@@ -49,10 +38,15 @@ export const ContainerWithNavigations = ({
           >
             <NavPanel lang={lang} />
           </Grid>
-          <Grid size={{ md: 'grow', xs: 12 }}>{children}</Grid>
+          <Grid
+            size={{ md: 'grow', xs: 12 }}
+            className='flex flex-col flex-wrap justify-between'
+          >
+            {children}
+          </Grid>
         </Grid>
       </Container>
       <BottomNavigation lang={lang} />
-    </Box>
+    </>
   );
 };

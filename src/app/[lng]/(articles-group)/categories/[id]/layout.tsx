@@ -1,4 +1,6 @@
 'use client';
+import ArticleIcon from '@mui/icons-material/Article';
+import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
 import { Badge, Skeleton } from '@mui/material';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
@@ -33,8 +35,16 @@ export default function Layout({
   const { state } = useAuth();
   const { t } = useTranslation(lng);
   const tabs: TabProps[] = [
-    { label: t('articles'), href: `/${lng}/categories/${id}/articles` },
-    { label: t('authors'), href: `/${lng}/categories/${id}/authors` },
+    {
+      icon: <ArticleIcon />,
+      label: t('articles'),
+      href: `/${lng}/categories/${id}/articles`,
+    },
+    {
+      icon: <PeopleAltIcon />,
+      label: t('authors'),
+      href: `/${lng}/categories/${id}/authors`,
+    },
   ];
 
   const { data: category, isFetching } = useQuery<GetCategory>({

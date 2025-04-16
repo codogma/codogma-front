@@ -1,4 +1,7 @@
 'use client';
+import FavoriteIcon from '@mui/icons-material/Favorite';
+import PlaylistAddCheckCircleIcon from '@mui/icons-material/PlaylistAddCheckCircle';
+import SubscriptionsIcon from '@mui/icons-material/Subscriptions';
 import React, { ReactNode } from 'react';
 
 import { useTranslation } from '@/app/i18n/client';
@@ -13,12 +16,18 @@ type LayoutProps = {
 function Layout({ params: { lng }, children }: LayoutProps) {
   const { t } = useTranslation(lng);
   const tabs: TabProps[] = [
-    { label: `${t('feed')}`, href: `/${lng}/feed` },
     {
+      icon: <PlaylistAddCheckCircleIcon />,
+      label: `${t('feed')}`,
+      href: `/${lng}/feed`,
+    },
+    {
+      icon: <FavoriteIcon />,
       label: `${t('favoriteCategories')}`,
       href: `/${lng}/favorite-categories`,
     },
     {
+      icon: <SubscriptionsIcon />,
       label: `${t('subscriptions')}`,
       href: `/${lng}/subscriptions`,
     },

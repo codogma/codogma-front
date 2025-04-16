@@ -1,8 +1,13 @@
 'use client';
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import ArrowCircleRightOutlinedIcon from '@mui/icons-material/ArrowCircleRightOutlined';
+import BookIcon from '@mui/icons-material/Book';
+import HistoryIcon from '@mui/icons-material/History';
+import ViewListIcon from '@mui/icons-material/ViewList';
 import { TabContext, TabList, TabPanel } from '@mui/lab';
-import { Box } from '@mui/material';
+import { Badge, Box } from '@mui/material';
 import Tab from '@mui/material/Tab';
+import { TabOwnProps } from '@mui/material/Tab/Tab';
 import { useQuery } from '@tanstack/react-query';
 import Link from 'next/link';
 import React from 'react';
@@ -15,6 +20,7 @@ import { getCompilations, GetCompilationsDTO } from '@/helpers/compilationApi';
 import { Language } from '@/types';
 
 type MainTabsProps = {
+  readonly icon: TabOwnProps['icon'];
   readonly lang: Language;
   readonly username?: string;
 };
@@ -62,10 +68,53 @@ export const MainTabs: React.FC<MainTabsProps> = ({ lang, username }) => {
     <Box className='nav-tabs'>
       <TabContext value={value}>
         <Box sx={{ borderBottom: 1, borderColor: 'divider' }} className='tabs'>
-          <TabList onChange={handleChange} aria-label='lab API tabs example'>
-            <Tab label={t('history')} value='1' />
-            <Tab label={t('bookmarks')} value='2' />
-            <Tab label={t('myCompilations')} value='3' />
+          <TabList
+            onChange={handleChange}
+            variant='scrollable'
+            scrollButtons='auto'
+            aria-label='scrollable auto tabs example'
+          >
+            <Tab
+              icon={<HistoryIcon />}
+              iconPosition='start'
+              label={t('history')}
+              value='1'
+              sx={{ minHeight: 'auto', textTransform: 'none' }}
+            />
+            <Tab
+              icon={<BookIcon />}
+              iconPosition='start'
+              label={t('bookmarks')}
+              value='2'
+              sx={{ minHeight: 'auto', textTransform: 'none' }}
+            />
+            <Tab
+              icon={
+                <Badge
+                  badgeContent={
+                    <AccountCircleIcon
+                      sx={{
+                        marginLeft: -1,
+                        marginBottom: 2,
+                        backgroundColor: 'white',
+                        borderRadius: 5,
+                        fontSize: 15,
+                      }}
+                    />
+                  }
+                  anchorOrigin={{
+                    vertical: 'bottom',
+                    horizontal: 'right',
+                  }}
+                >
+                  <ViewListIcon />
+                </Badge>
+              }
+              iconPosition='start'
+              label={t('myCompilations')}
+              value='3'
+              sx={{ minHeight: 'auto', textTransform: 'none' }}
+            />
           </TabList>
         </Box>
         <TabPanel value='1'>

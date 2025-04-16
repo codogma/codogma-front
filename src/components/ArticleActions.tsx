@@ -54,7 +54,7 @@ export const ArticleActions = ({ id, lang, articleData }: SearchProps) => {
     <Paper
       sx={{
         position: 'sticky',
-        bottom: 20,
+        bottom: { sm: 60, md: 20 },
         minWidth: 100,
         width: 'fit-content',
         height: 52,

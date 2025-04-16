@@ -38,7 +38,7 @@ export default function CategoryCard({
   const [expanded, setExpanded] = useState(false);
 
   return (
-    <Card key={category.id} variant='outlined' className='card'>
+    <Card variant='outlined' className='card'>
       <Box className='card-media' onMouseLeave={() => setExpanded(false)}>
         <Collapse in={!expanded} timeout={{ enter: 300, exit: 300 }}>
           <CardMedia className='card-media'>
@@ -152,25 +152,29 @@ export default function CategoryCard({
               }}
             >
               <div className='article-preview-content'>
-                {category.description}
+                <p>
+                  <b>Описание:</b>
+                </p>
+                <p>{category.description}</p>
+                <ul>
+                  <b>Популярные теги:</b>
+                  <li>
+                    <div className='category-tags'>
+                      {category.tags?.map((tag) => (
+                        <span className='tag-item' key={tag.id}>
+                          <Link
+                            key={tag.id}
+                            href={`/${lang}/articles?type=tag&value=${tag.name}`}
+                            className='tag-name'
+                          >
+                            {tag.name}
+                          </Link>
+                        </span>
+                      ))}
+                    </div>
+                  </li>
+                </ul>
               </div>
-              <ul>
-                <li>
-                  <div className='category-tags'>
-                    {category.tags?.map((tag) => (
-                      <span className='tag-item' key={tag.id}>
-                        <Link
-                          key={tag.id}
-                          href={`/tags/${tag.id}`}
-                          className='tag-name'
-                        >
-                          {tag.name}
-                        </Link>
-                      </span>
-                    ))}
-                  </div>
-                </li>
-              </ul>
             </Box>
           </CardContent>
         </Collapse>

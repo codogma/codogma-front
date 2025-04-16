@@ -1,5 +1,6 @@
 'use client';
 import Tab from '@mui/material/Tab';
+import { TabOwnProps } from '@mui/material/Tab/Tab';
 import Tabs from '@mui/material/Tabs';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
@@ -8,6 +9,7 @@ import React from 'react';
 import { replaceUrlAndDispatchEvent } from '@/helpers/replaceUrlAndDispatchEvent';
 
 export interface TabProps {
+  icon: TabOwnProps['icon'];
   label: string;
   href: string;
 }
@@ -33,16 +35,27 @@ const NavTabs: React.FC<NavTabsProps> = ({ tabs }) => {
 
   return (
     <div className='nav-tabs'>
-      <Tabs value={pathname} className='tabs'>
+      <Tabs
+        value={pathname}
+        className='tabs'
+        variant='scrollable'
+        scrollButtons='auto'
+        aria-label='scrollable auto tabs example'
+      >
         {tabs.map((tab, index) => (
           <Tab
             key={index}
+            icon={tab.icon}
+            iconPosition='start'
             component={Link}
             href={tab.href}
             label={tab.label}
             value={tab.href}
             onClick={() => handleClick(tab.href)}
             scroll={false}
+            sx={{
+              minHeight: 48,
+            }}
           />
         ))}
       </Tabs>
