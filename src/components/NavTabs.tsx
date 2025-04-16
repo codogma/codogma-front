@@ -37,10 +37,10 @@ const NavTabs: React.FC<NavTabsProps> = ({ tabs }) => {
     <div className='nav-tabs'>
       <Tabs
         value={pathname}
-        className='tabs'
         variant='scrollable'
-        scrollButtons='auto'
-        aria-label='scrollable auto tabs example'
+        scrollButtons
+        allowScrollButtonsMobile
+        aria-label='scrollable force tabs example'
       >
         {tabs.map((tab, index) => (
           <Tab
@@ -53,9 +53,7 @@ const NavTabs: React.FC<NavTabsProps> = ({ tabs }) => {
             value={tab.href}
             onClick={() => handleClick(tab.href)}
             scroll={false}
-            sx={{
-              minHeight: 48,
-            }}
+            sx={{ minHeight: 'auto', textTransform: 'none' }}
           />
         ))}
       </Tabs>

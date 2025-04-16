@@ -71,8 +71,9 @@ export const MainTabs: React.FC<MainTabsProps> = ({ lang, username }) => {
           <TabList
             onChange={handleChange}
             variant='scrollable'
-            scrollButtons='auto'
-            aria-label='scrollable auto tabs example'
+            scrollButtons
+            allowScrollButtonsMobile
+            aria-label='scrollable force tabs example'
           >
             <Tab
               icon={<HistoryIcon />}
