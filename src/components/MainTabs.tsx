@@ -1,11 +1,9 @@
 'use client';
-import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import ArrowCircleRightOutlinedIcon from '@mui/icons-material/ArrowCircleRightOutlined';
 import BookIcon from '@mui/icons-material/Book';
 import HistoryIcon from '@mui/icons-material/History';
-import ViewListIcon from '@mui/icons-material/ViewList';
 import { TabContext, TabList, TabPanel } from '@mui/lab';
-import { Badge, Box, TabOwnProps } from '@mui/material';
+import { Box, TabOwnProps } from '@mui/material';
 import Tab from '@mui/material/Tab';
 import { useQuery } from '@tanstack/react-query';
 import Link from 'next/link';
@@ -14,6 +12,7 @@ import React from 'react';
 import { useTranslation } from '@/app/i18n/client';
 import { Carousel } from '@/components/Carousel';
 import Compilations from '@/components/Compilations';
+import { MyCompilationsBadge } from '@/components/MyCompilationsBadge';
 import { GetArticlesDTO, getViewed } from '@/helpers/articleApi';
 import { getCompilations, GetCompilationsDTO } from '@/helpers/compilationApi';
 import { Language } from '@/types';
@@ -39,27 +38,7 @@ export const MainTabs: React.FC<MainTabsProps> = ({ lang, username }) => {
     {
       value: '3',
       label: t('myCompilations'),
-      icon: (
-        <Badge
-          badgeContent={
-            <AccountCircleIcon
-              sx={{
-                marginLeft: -1,
-                marginBottom: 2,
-                backgroundColor: 'white',
-                borderRadius: 5,
-                fontSize: 15,
-              }}
-            />
-          }
-          anchorOrigin={{
-            vertical: 'bottom',
-            horizontal: 'right',
-          }}
-        >
-          <ViewListIcon />
-        </Badge>
-      ),
+      icon: <MyCompilationsBadge />,
     },
   ];
 

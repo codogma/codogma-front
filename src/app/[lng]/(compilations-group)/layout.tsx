@@ -1,11 +1,10 @@
 'use client';
-import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import ClassIcon from '@mui/icons-material/Class';
 import ViewListIcon from '@mui/icons-material/ViewList';
-import { Badge } from '@mui/material';
 import React, { ReactNode } from 'react';
 
 import { useTranslation } from '@/app/i18n/client';
+import { MyCompilationsBadge } from '@/components/MyCompilationsBadge';
 import NavTabs, { TabProps } from '@/components/NavTabs';
 
 type LayoutProps = {
@@ -27,27 +26,7 @@ function Layout({ params: { lng }, children }: LayoutProps) {
       href: `/${lng}/bookmarks`,
     },
     {
-      icon: (
-        <Badge
-          badgeContent={
-            <AccountCircleIcon
-              sx={{
-                marginLeft: -1,
-                marginBottom: 2,
-                backgroundColor: 'white',
-                borderRadius: 5,
-                fontSize: 15,
-              }}
-            />
-          }
-          anchorOrigin={{
-            vertical: 'bottom',
-            horizontal: 'right',
-          }}
-        >
-          <ViewListIcon />
-        </Badge>
-      ),
+      icon: <MyCompilationsBadge />,
       label: `${t('myCompilations')}`,
       href: `/${lng}/my-compilations`,
     },
