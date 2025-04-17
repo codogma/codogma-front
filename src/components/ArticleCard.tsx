@@ -9,6 +9,7 @@ import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import DOMPurify from 'dompurify';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import React, { useState } from 'react';
 
 import { useTranslation } from '@/app/i18n/client';
@@ -27,6 +28,13 @@ type ArticleCardProps = {
 
 export const ArticleCard = ({ article, lang }: ArticleCardProps) => {
   const { state } = useAuth();
+  const pathname = usePathname();
+  let urlPrefix = '';
+  if (pathname.includes('compilations')) {
+    urlPrefix = pathname;
+  } else {
+    urlPrefix = `/${lang}/articles`;
+  }
   const { processContent } = useContentImageContext();
   const { t } = useTranslation(lang, 'articles');
   const previewContent = processContent(
@@ -35,7 +43,7 @@ export const ArticleCard = ({ article, lang }: ArticleCardProps) => {
   const [expanded, setExpanded] = useState(false);
 
   return (
-    <Card key={article.id} variant='outlined' className='card'>
+    <Card variant='outlined' className='card'>
       <CardHeader
         avatar={
           <AvatarImage
@@ -114,7 +122,9 @@ export const ArticleCard = ({ article, lang }: ArticleCardProps) => {
                     WebkitBoxOrient: 'vertical',
                   }}
                 >
-                  <Link href={`/articles/${article.id}`}>{article.title}</Link>
+                  <Link href={`${urlPrefix}/${article.id}`}>
+                    {article.title}
+                  </Link>
                 </Typography>
                 <IconButton
                   sx={{
@@ -165,7 +175,7 @@ export const ArticleCard = ({ article, lang }: ArticleCardProps) => {
       </Box>
       <CardActions>
         <Stack direction='row' spacing={2}>
-          <Link href={`/articles/${article.id}`}>
+          <Link href={`${urlPrefix}/${article.id}`}>
             <Button className='article-btn' variant='outlined'>
               {t('readMoreBtn')}
             </Button>

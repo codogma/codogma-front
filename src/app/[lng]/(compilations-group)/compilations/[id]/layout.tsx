@@ -1,15 +1,17 @@
 'use client';
-import { Badge, Skeleton } from '@mui/material';
+import { CardHeader, Skeleton } from '@mui/material';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
-import IconButton from '@mui/material/IconButton';
+import Typography from '@mui/material/Typography';
 import { useQuery } from '@tanstack/react-query';
-import React from 'react';
+import Link from 'next/link';
+import React, { useState } from 'react';
 
 import { useTranslation } from '@/app/i18n/client';
 import { useAuth } from '@/components/AuthProvider';
 import { AvatarImage } from '@/components/AvatarImage';
 import { Bookmark } from '@/components/Bookmark';
+import { CompilationProvider } from '@/components/CompilationProvider';
 import MenuButton from '@/components/MenuButton';
 import { getCompilationById } from '@/helpers/compilationApi';
 import { GetCompilation, Language } from '@/types';
@@ -17,8 +19,6 @@ import { GetCompilation, Language } from '@/types';
 type PageParams = {
   id: number;
   lng: Language;
-  isHiddenBookmarks?: boolean;
-  refetch?: () => void;
 };
 
 type PageProps = {
@@ -26,12 +26,18 @@ type PageProps = {
   readonly children: React.ReactNode;
 };
 
-export default function Layout({
-  params: { id, lng, isHiddenBookmarks, refetch },
-  children,
-}: PageProps) {
+export default function Layout({ params: { id, lng }, children }: PageProps) {
   const { state } = useAuth();
+  const [isRefetch, setIsRefetch] = useState<boolean>(false);
   const { t } = useTranslation(lng);
+
+  const refetch = () => {
+    setIsRefetch(true);
+  };
+
+  const resetRefetch = () => {
+    setIsRefetch(false);
+  };
 
   const { data: compilation, isFetching } = useQuery<GetCompilation>({
     queryKey: ['compilation', id],
@@ -39,7 +45,7 @@ export default function Layout({
   });
 
   return (
-    <section>
+    <section className='grid gap-2'>
       <Card variant='outlined' className='card'>
         <CardContent className='card-content'>
           {isFetching ? (
@@ -55,51 +61,56 @@ export default function Layout({
               </div>
             </div>
           ) : (
-            <>
-              <div className='card-header'>
-                <Badge
-                  className='items-start'
-                  overlap='circular'
-                  anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-                  badgeContent={
-                    <IconButton
-                      component='label'
-                      color='inherit'
-                      sx={{ p: 0 }}
-                    />
-                  }
-                >
-                  <AvatarImage
-                    alt={compilation?.title}
-                    className='category-img'
-                    variant='rounded'
-                    src={compilation?.imageUrl}
-                    size={48}
-                  />
-                </Badge>
-                <div>
-                  <h1 className='category-card-name'>{compilation?.title}</h1>
-                  <p className='category-card-description'>
-                    {compilation?.description}
-                  </p>
-                </div>
-                {!isHiddenBookmarks && (
+            <CardHeader
+              avatar={
+                <AvatarImage
+                  alt={compilation?.title}
+                  className='category-img'
+                  variant='rounded'
+                  src={compilation?.imageUrl}
+                  size={48}
+                />
+              }
+              action={
+                state.user?.username !== compilation?.ownerName ? (
                   <Bookmark
+                    username={compilation?.ownerName}
                     lang={lng}
                     id={id}
                     isBookmarkedValue={compilation?.isBookmarked}
                     refetch={refetch}
                   />
-                )}
-              </div>
-              {state.user?.username === compilation?.ownerName && (
-                <MenuButton compilation={compilation} lang={lng} />
-              )}
-            </>
+                ) : (
+                  <MenuButton
+                    compilation={compilation}
+                    lang={lng}
+                    refetch={refetch}
+                  />
+                )
+              }
+              title={
+                <Link
+                  href={`/compilations/${id}`}
+                  className='category-card-name'
+                >
+                  {compilation?.title}
+                </Link>
+              }
+              subheader={
+                <Typography className='category-card-description'>
+                  {compilation?.description}
+                </Typography>
+              }
+              className='card-header'
+            />
           )}
         </CardContent>
       </Card>
-      {children}
+      <div className='box-border min-w-0'>
+        <CompilationProvider isRefetch={isRefetch} resetRefetch={resetRefetch}>
+          {children}
+        </CompilationProvider>
+      </div>
     </section>
   );
 }

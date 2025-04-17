@@ -1,4 +1,7 @@
 'use server';
+import ArticleIcon from '@mui/icons-material/Article';
+import CategoryIcon from '@mui/icons-material/Category';
+import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
 import React, { ReactNode } from 'react';
 
 import { initTranslation } from '@/app/i18n';
@@ -15,9 +18,21 @@ export default async function Layout({
 }: LayoutProps) {
   const { t } = await initTranslation(lng);
   const tabs: TabProps[] = [
-    { label: `${t('articles')}`, href: `/${lng}/articles` },
-    { label: `${t('categories')}`, href: `/${lng}/categories` },
-    { label: `${t('authors')}`, href: `/${lng}/authors` },
+    {
+      icon: <ArticleIcon />,
+      label: `${t('articles')}`,
+      href: `/${lng}/articles`,
+    },
+    {
+      icon: <CategoryIcon />,
+      label: `${t('categories')}`,
+      href: `/${lng}/categories`,
+    },
+    {
+      icon: <PeopleAltIcon />,
+      label: `${t('authors')}`,
+      href: `/${lng}/authors`,
+    },
   ];
   return (
     <>

@@ -1,4 +1,8 @@
 'use client';
+import ArticleIcon from '@mui/icons-material/Article';
+import CommentIcon from '@mui/icons-material/Comment';
+import PeopleIcon from '@mui/icons-material/People';
+import PersonIcon from '@mui/icons-material/Person';
 import { Badge, Skeleton } from '@mui/material';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
@@ -29,13 +33,26 @@ export default function Layout({
 }: PageProps) {
   const { t } = useTranslation(lng);
   const tabs: TabProps[] = [
-    { label: `${t('profile')}`, href: `/${lng}/users/${username}/profile` },
-    { label: `${t('articles')}`, href: `/${lng}/users/${username}/articles` },
     {
+      icon: <PersonIcon />,
+      label: `${t('profile')}`,
+      href: `/${lng}/users/${username}/profile`,
+    },
+    {
+      icon: <ArticleIcon />,
+      label: `${t('articles')}`,
+      href: `/${lng}/users/${username}/articles`,
+    },
+    {
+      icon: <PeopleIcon />,
       label: `${t('subscribers')}`,
       href: `/${lng}/users/${username}/subscribers`,
     },
-    { label: `${t('comments')}`, href: `/${lng}/users/${username}/comments` },
+    {
+      icon: <CommentIcon />,
+      label: `${t('comments')}`,
+      href: `/${lng}/users/${username}/comments`,
+    },
   ];
 
   const { data, isFetching } = useQuery<GetUserDTO>({

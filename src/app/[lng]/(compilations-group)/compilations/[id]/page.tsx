@@ -1,9 +1,10 @@
 'use client';
 import { useQuery } from '@tanstack/react-query';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { useTranslation } from '@/app/i18n/client';
 import Articles from '@/components/Articles';
+import { useCompilation } from '@/components/CompilationProvider';
 import { CustomPagination } from '@/components/CustomPagination';
 import { Search } from '@/components/Search';
 import { getArticles, GetArticlesDTO } from '@/helpers/articleApi';
@@ -18,12 +19,13 @@ type PageProps = {
   readonly params: PageParams;
 };
 
-export default function Layout({ params: { id, lng } }: PageProps) {
+export default function Page({ params: { id, lng } }: PageProps) {
   const compilationId = id;
   const [currentPage, setCurrentPage] = useState<number>(0);
   const [resultsPerPage, setResultsPerPage] = useState<number>(12);
   const [searchValue, setSearchValue] = useState<string>();
   const [searchType, setSearchType] = useState<string>('content');
+  const { isRefetch, resetRefetch } = useCompilation();
   const { t } = useTranslation(lng, 'compilations');
 
   const onSearchType = (type: string) => {
@@ -35,7 +37,7 @@ export default function Layout({ params: { id, lng } }: PageProps) {
     setCurrentPage(0);
   };
 
-  const { data, isPending } = useQuery<GetArticlesDTO>({
+  const { data, isPending, refetch } = useQuery<GetArticlesDTO>({
     queryKey: [
       'articles',
       compilationId,
@@ -62,6 +64,12 @@ export default function Layout({ params: { id, lng } }: PageProps) {
   const articles = data?.content || [];
   const totalPages = data?.totalPages || 0;
   const totalElements = data?.totalElements || 0;
+
+  useEffect(() => {
+    if (isRefetch) {
+      refetch().then(() => resetRefetch());
+    }
+  }, [isRefetch, refetch, resetRefetch]);
 
   const onPageChange = (value: number) => {
     setCurrentPage(value);

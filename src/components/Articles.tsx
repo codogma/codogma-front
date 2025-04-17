@@ -39,15 +39,7 @@ export default function Articles({ lang, articles, loading }: ArticlesProps) {
           </CardContent>
         </Card>
       ) : (
-        <Grid
-          container
-          direction={{ xs: 'column', sm: 'row' }}
-          spacing={1}
-          // sx={{
-          //   justifyContent: 'space-between',
-          //   alignItems: 'center',
-          // }}
-        >
+        <Grid container direction={{ xs: 'column', sm: 'row' }} spacing={1}>
           {articles?.map((article) => (
             <Grid key={article.id} size={{ xs: 12, sm: 6, lg: 4 }}>
               <ArticleCard article={article} lang={lang} />

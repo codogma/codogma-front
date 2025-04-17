@@ -1,5 +1,6 @@
 'use client';
 import { Box } from '@mui/material';
+import { TabOwnProps } from '@mui/material/Tab/Tab';
 import Typography from '@mui/material/Typography';
 import { useQuery } from '@tanstack/react-query';
 import React from 'react';
@@ -13,10 +14,10 @@ import { getArticles, GetArticlesDTO } from '@/helpers/articleApi';
 import { Language } from '@/types';
 
 type PageProps = {
-  readonly params: { lng: Language };
+  readonly params: { lng: Language; icon: TabOwnProps['icon'] };
 };
 
-export default function Page({ params: { lng } }: PageProps) {
+export default function Page({ params: { lng, icon } }: PageProps) {
   const { state } = useAuth();
   const { t } = useTranslation(lng, 'main');
 
@@ -38,14 +39,14 @@ export default function Page({ params: { lng } }: PageProps) {
       {state.isAuthenticated && (
         <section className='your-interest'>
           <Typography variant='h3' className='your-interest-h3'>
-            Your interest
+            {t('yourInterests')}
           </Typography>
-          <MainTabs lang={lng} username={state.user?.username} />
+          <MainTabs lang={lng} icon={icon} username={state.user?.username} />
         </section>
       )}
       <Box sx={{ width: 'auto', margin: 'auto', padding: '20px 0' }}>
         <Typography variant='h5' gutterBottom>
-          Recently Added
+          {t('recentlyAdded')}
         </Typography>
         <Carousel
           articles={recentlyAdded}

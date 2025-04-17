@@ -20,14 +20,14 @@ export async function generateMetadata(
   { params: { id, articleId } }: LayoutProps,
   parent: ResolvingMetadata,
 ): Promise<Metadata> {
-  const article = await fetchArticleById(id);
+  const article = await fetchArticleById(articleId);
   const metadataBase = (await parent).metadataBase;
   return {
     alternates: {
-      canonical: `/compilations/${id}/article/${articleId}`,
+      canonical: `/compilations/${id}/${articleId}`,
       languages: {
-        en: `/en/compilations/${id}/article/${articleId}`,
-        ru: `/ru/compilations/${id}/article/${articleId}`,
+        en: `/en/compilations/${id}/${articleId}`,
+        ru: `/ru/compilations/${id}/${articleId}`,
       },
     },
     title: article.title,
