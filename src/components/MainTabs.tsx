@@ -115,7 +115,7 @@ export const MainTabs: React.FC<MainTabsProps> = ({ lang, username }) => {
                 iconPosition='start'
                 label={tab.label}
                 value={tab.value}
-                sx={{ minHeight: 'auto', textTransform: 'none' }}
+                sx={{ minHeight: '48px', textTransform: 'none' }}
               />
             ))}
           </TabList>
