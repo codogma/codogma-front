@@ -26,20 +26,21 @@ export const ContainerWithNavigations = ({
     <>
       <NavBar lang={lang} />
       <Container maxWidth='xl'>
-        <Grid container spacing={1} rowGap={0} direction='row' columns={12}>
+        <Grid container spacing={1} direction='row' columns={12}>
           <Grid
-            size={{ md: 'auto', xs: 0 }}
             sx={{
               position: 'sticky',
               top: 64,
               height: { xs: 'auto', md: 'calc(100vh - 64px)' },
               overflow: 'hidden',
+              display: { xs: 'none', md: 'block' },
             }}
           >
             <NavPanel lang={lang} />
           </Grid>
           <Grid
             size={{ md: 'grow', xs: 12 }}
+            columnGap={1}
             className='flex flex-col flex-wrap justify-between'
           >
             {children}

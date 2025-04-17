@@ -45,7 +45,7 @@ export default function Layout({ params: { id, lng }, children }: PageProps) {
   });
 
   return (
-    <section>
+    <section className='grid gap-2'>
       <Card variant='outlined' className='card'>
         <CardContent className='card-content'>
           {isFetching ? (
@@ -106,9 +106,11 @@ export default function Layout({ params: { id, lng }, children }: PageProps) {
           )}
         </CardContent>
       </Card>
-      <CompilationProvider isRefetch={isRefetch} resetRefetch={resetRefetch}>
-        {children}
-      </CompilationProvider>
+      <div className='box-border min-w-0'>
+        <CompilationProvider isRefetch={isRefetch} resetRefetch={resetRefetch}>
+          {children}
+        </CompilationProvider>
+      </div>
     </section>
   );
 }

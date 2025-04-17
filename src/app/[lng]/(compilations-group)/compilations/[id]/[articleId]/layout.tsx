@@ -24,10 +24,10 @@ export async function generateMetadata(
   const metadataBase = (await parent).metadataBase;
   return {
     alternates: {
-      canonical: `/compilations/${id}/articles/${articleId}`,
+      canonical: `/compilations/${id}/${articleId}`,
       languages: {
-        en: `/en/compilations/${id}/articles/${articleId}`,
-        ru: `/ru/compilations/${id}/articles/${articleId}`,
+        en: `/en/compilations/${id}/${articleId}`,
+        ru: `/ru/compilations/${id}/${articleId}`,
       },
     },
     title: article.title,

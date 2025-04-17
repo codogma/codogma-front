@@ -221,11 +221,11 @@ export const CompilationCard = ({
             >
               <div className='article-preview-content'>
                 <p>
-                  <b>Описание:</b>
+                  <b>{t('description')}:</b>
                 </p>
                 <p>{compilation.description}</p>
                 <div>
-                  <b>Список статей:</b>
+                  <b>{t('listOfArticles')}:</b>
                 </div>
                 <ul>
                   {compilation.articles.map((article) => (

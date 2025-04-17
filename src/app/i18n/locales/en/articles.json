@@ -18,5 +18,7 @@
   "moderation": "moderation",
   "hidden": "hidden",
   "blocked": "blocked",
-  "sortArticles": "Sort articles"
+  "sortArticles": "Sort articles",
+  "description": "Description",
+  "listOfArticles": "List of articles"
 }

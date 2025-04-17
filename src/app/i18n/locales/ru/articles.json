@@ -18,5 +18,7 @@
   "moderation": "модерация",
   "hidden": "скрыта",
   "blocked": "заблокирована",
-  "sortArticles": "Сортировка статей"
+  "sortArticles": "Сортировка статей",
+  "description": "Описание",
+  "listOfArticles": "Список статей"
 }

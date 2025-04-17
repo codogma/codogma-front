@@ -34,7 +34,7 @@ export default function CategoryCard({
   refetch,
 }: CategoryCardProps) {
   const { state } = useAuth();
-  const { t } = useTranslation(lang);
+  const { t } = useTranslation(lang, 'categories');
   const [expanded, setExpanded] = useState(false);
 
   return (
@@ -153,11 +153,11 @@ export default function CategoryCard({
             >
               <div className='article-preview-content'>
                 <p>
-                  <b>Описание:</b>
+                  <b>{t('description')}:</b>
                 </p>
                 <p>{category.description}</p>
                 <ul>
-                  <b>Популярные теги:</b>
+                  <b>{t('popularTags')}:</b>
                   <li>
                     <div className='category-tags'>
                       {category.tags?.map((tag) => (

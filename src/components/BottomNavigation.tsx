@@ -6,7 +6,6 @@ import {
   BottomNavigation,
   BottomNavigationAction,
   Box,
-  Drawer,
   Paper,
 } from '@mui/material';
 import { usePathname, useRouter } from 'next/navigation';
@@ -14,7 +13,6 @@ import * as React from 'react';
 import { useEffect, useState } from 'react';
 
 import { useTranslation } from '@/app/i18n/client';
-
 import { replaceUrlAndDispatchEvent } from '@/helpers/replaceUrlAndDispatchEvent';
 
 type FixedBottomNavigationProps = {
@@ -68,41 +66,29 @@ export default function FixedBottomNavigation({
   };
 
   return (
-    <Box>
-      <Drawer
-        variant='permanent'
-        sx={{
-          pb: 7,
-          display: { xs: 'block', md: 'none' },
-          flexShrink: 0,
-          whiteSpace: 'nowrap',
-          '& .MuiDrawer-paper': {
-            boxSizing: 'border-box',
-            width: 200,
-            top: 'initial',
-            left: 'initial',
-            bottom: 'initial',
-          },
-        }}
-        open
-      >
-        <Paper
-          sx={{ position: 'fixed', bottom: 0, left: 0, right: 0 }}
-          elevation={3}
-        >
-          <BottomNavigation showLabels value={value} onChange={handleChange}>
-            {items.map(({ value, href, icon }, index) => (
-              <BottomNavigationAction
-                key={index}
-                label={t(value)}
-                value={value}
-                icon={icon}
-                onClick={() => handleClick(href)}
-              />
-            ))}
-          </BottomNavigation>
-        </Paper>
-      </Drawer>
+    <Box
+      sx={{
+        position: 'fixed',
+        bottom: 0,
+        left: 0,
+        right: 0,
+        display: { xs: 'block', md: 'none' },
+        zIndex: 10,
+      }}
+    >
+      <Paper elevation={3}>
+        <BottomNavigation showLabels value={value} onChange={handleChange}>
+          {items.map(({ value, href, icon }, index) => (
+            <BottomNavigationAction
+              key={index}
+              label={t(value)}
+              value={value}
+              icon={icon}
+              onClick={() => handleClick(href)}
+            />
+          ))}
+        </BottomNavigation>
+      </Paper>
     </Box>
   );
 }
