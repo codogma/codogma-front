@@ -1,7 +1,7 @@
 'use client';
 import ArticleIcon from '@mui/icons-material/Article';
 import CommentIcon from '@mui/icons-material/Comment';
-import PeopleIcon from '@mui/icons-material/People';
+import HowToRegIcon from '@mui/icons-material/HowToReg';
 import PersonIcon from '@mui/icons-material/Person';
 import { Badge, Skeleton } from '@mui/material';
 import Card from '@mui/material/Card';
@@ -44,7 +44,7 @@ export default function Layout({
       href: `/${lng}/users/${username}/articles`,
     },
     {
-      icon: <PeopleIcon />,
+      icon: <HowToRegIcon />,
       label: `${t('subscribers')}`,
       href: `/${lng}/users/${username}/subscribers`,
     },
