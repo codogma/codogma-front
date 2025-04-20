@@ -164,8 +164,11 @@ export default function CategoryCard({
                         <span className='tag-item' key={tag.id}>
                           <Link
                             key={tag.id}
-                            href={`/${lang}/articles?type=tag&value=${tag.name}`}
                             className='tag-name'
+                            href={{
+                              pathname: `/${lang}/articles`,
+                              query: { type: 'tag', value: tag.name },
+                            }}
                           >
                             {tag.name}
                           </Link>

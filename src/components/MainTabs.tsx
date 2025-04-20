@@ -7,13 +7,15 @@ import { Box, TabOwnProps } from '@mui/material';
 import Tab from '@mui/material/Tab';
 import { useQuery } from '@tanstack/react-query';
 import Link from 'next/link';
-import React from 'react';
+import React, { useState } from 'react';
 
 import { useTranslation } from '@/app/i18n/client';
 import { Carousel } from '@/components/Carousel';
 import Compilations from '@/components/Compilations';
+import { CustomPagination } from '@/components/CustomPagination';
 import { MyCompilationsBadge } from '@/components/MyCompilationsBadge';
-import { GetArticlesDTO, getViewed } from '@/helpers/articleApi';
+import { Search } from '@/components/Search';
+import { getArticles, GetArticlesDTO } from '@/helpers/articleApi';
 import { getCompilations, GetCompilationsDTO } from '@/helpers/compilationApi';
 import { Language } from '@/types';
 
@@ -30,6 +32,10 @@ type MainTab = {
 
 export const MainTabs: React.FC<MainTabsProps> = ({ lang, username }) => {
   const [value, setValue] = React.useState('1');
+  const [currentPage, setCurrentPage] = useState<number>(0);
+  const [resultsPerPage, setResultsPerPage] = useState<number>(12);
+  const [searchValue, setSearchValue] = useState<string>();
+  const [searchType, setSearchType] = useState<string>('content');
   const { t } = useTranslation(lang);
 
   const tabs: MainTab[] = [
@@ -42,15 +48,40 @@ export const MainTabs: React.FC<MainTabsProps> = ({ lang, username }) => {
     },
   ];
 
+  const onSearchType = (type: string) => {
+    setSearchType(type);
+  };
+
+  const onSearchValue = (value: string) => {
+    setSearchValue(value);
+    setCurrentPage(0);
+  };
+
   const { data: viewedData, isFetching: isFetchingViewed } =
     useQuery<GetArticlesDTO>({
-      queryKey: ['articles'],
+      queryKey: [
+        'history',
+        currentPage,
+        resultsPerPage,
+        searchType,
+        searchValue,
+      ],
       queryFn: () => {
-        return getViewed();
+        return getArticles(undefined, undefined, 0, 5);
       },
     });
 
   const history = viewedData?.content ?? [];
+  const totalPages = viewedData?.totalPages ?? 0;
+  const totalElements = viewedData?.totalElements ?? 0;
+
+  const onPageChange = (value: number) => {
+    setCurrentPage(value);
+  };
+
+  const onResultsPerPageChange = (value: number) => {
+    setResultsPerPage(value);
+  };
 
   const { data: bookmarksData, isFetching: isFetchingBookmarks } =
     useQuery<GetCompilationsDTO>({
@@ -79,7 +110,7 @@ export const MainTabs: React.FC<MainTabsProps> = ({ lang, username }) => {
   return (
     <Box className='nav-tabs'>
       <TabContext value={value}>
-        <Box sx={{ borderBottom: 1, borderColor: 'divider' }} className='tabs'>
+        <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
           <TabList
             onChange={handleChange}
             variant='scrollable'
@@ -100,17 +131,31 @@ export const MainTabs: React.FC<MainTabsProps> = ({ lang, username }) => {
           </TabList>
         </Box>
         <TabPanel value='1'>
+          <Search
+            lang={lang}
+            onSearchType={onSearchType}
+            onSearchValue={onSearchValue}
+          />
           <Carousel
             articles={history}
             isLoading={isFetchingViewed}
             lang={lang}
           />
-          <Box className='link'>
-            <Link href={`/${lang}/users/${username}/history`}>
+          <CustomPagination
+            lang={lang}
+            totalPages={totalPages}
+            totalElements={totalElements}
+            resultsPerPageStart={resultsPerPage}
+            onCurrentPageChange={onPageChange}
+            onResultsPerPageChange={onResultsPerPageChange}
+          />
+
+          <Link href={`/${lang}/users/${username}/history`}>
+            <Box className='link'>
               <ArrowCircleRightOutlinedIcon sx={{ mr: 1 }} />
               {t('historyLink')}
-            </Link>
-          </Box>
+            </Box>
+          </Link>
         </TabPanel>
         <TabPanel value='2'>
           <Compilations

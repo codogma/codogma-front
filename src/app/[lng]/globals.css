@@ -85,10 +85,6 @@
 
   .nav-tabs {
     @apply mb-2 bg-white dark:bg-bunker;
-
-    .tabs {
-      @apply pl-5 pr-5;
-    }
   }
 
   .comment-card-link.active {

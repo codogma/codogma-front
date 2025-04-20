@@ -100,7 +100,10 @@ export default function Article({ lng, id }: ArticleProps) {
                   <Link
                     className='tag-link'
                     scroll={false}
-                    href={`/${lng}/articles?type=tag&value=${tag.name}`}
+                    href={{
+                      pathname: `/${lng}/articles`,
+                      query: { type: 'tag', value: tag.name },
+                    }}
                   >
                     {tag.name}
                   </Link>
