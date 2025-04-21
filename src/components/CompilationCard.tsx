@@ -15,6 +15,7 @@ import { AvatarImage } from '@/components/AvatarImage';
 import { Bookmark } from '@/components/Bookmark';
 import { DefaultImage } from '@/components/DefaultImage';
 import MenuButton from '@/components/MenuButton';
+import { Scrollbar } from '@/components/Scrollbar';
 import { TimeAgo } from '@/components/TimeAgo';
 import { GetCompilation, Language } from '@/types';
 
@@ -211,14 +212,7 @@ export const CompilationCard = ({
         </Collapse>
         <Collapse in={expanded} timeout={{ enter: 300, exit: 300 }}>
           <CardContent component='div' className='card-content aspect-[16/8]'>
-            <Box
-              sx={{
-                height: '100%',
-                overflowY: 'auto',
-                scrollbarWidth: 'thin',
-                pr: 1,
-              }}
-            >
+            <Scrollbar style={{ height: '100%' }}>
               <div className='compilation-preview-content'>
                 <section>
                   <b>{t('description')}:</b>
@@ -239,7 +233,7 @@ export const CompilationCard = ({
                   </ul>
                 </section>
               </div>
-            </Box>
+            </Scrollbar>
           </CardContent>
         </Collapse>
       </Box>
