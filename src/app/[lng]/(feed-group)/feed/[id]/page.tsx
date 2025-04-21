@@ -94,11 +94,7 @@ export default function Page({ params: { lng } }: PageProps) {
           </div>
           {state.user?.username === article.username &&
             state.user?.role === UserRole.ROLE_AUTHOR && (
-              <ButtonAlertDialog
-                articleId={article.id}
-                lang={lng}
-                status={article.status}
-              />
+              <ButtonAlertDialog articleId={article.id} lang={lng} />
             )}
         </CardContent>
       </Card>

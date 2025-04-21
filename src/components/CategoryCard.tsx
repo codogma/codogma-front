@@ -151,32 +151,28 @@ export default function CategoryCard({
                 pr: 1,
               }}
             >
-              <div className='article-preview-content'>
-                <p>
+              <div className='category-preview-content'>
+                <section>
                   <b>{t('description')}:</b>
-                </p>
-                <p>{category.description}</p>
-                <ul>
+                  <p>{category.description}</p>
+                </section>
+                <section>
                   <b>{t('popularTags')}:</b>
-                  <li>
-                    <div className='category-tags'>
-                      {category.tags?.map((tag) => (
-                        <span className='tag-item' key={tag.id}>
-                          <Link
-                            key={tag.id}
-                            className='tag-name'
-                            href={{
-                              pathname: `/${lang}/articles`,
-                              query: { type: 'tag', value: tag.name },
-                            }}
-                          >
-                            {tag.name}
-                          </Link>
-                        </span>
-                      ))}
-                    </div>
-                  </li>
-                </ul>
+                  <ul>
+                    {category.tags?.map((tag) => (
+                      <li key={tag.id} className='tag-item'>
+                        <Link
+                          href={{
+                            pathname: `/${lang}/articles`,
+                            query: { type: 'tag', value: tag.name },
+                          }}
+                        >
+                          <span className='tag-name'>{tag.name}</span>
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                </section>
               </div>
             </Box>
           </CardContent>

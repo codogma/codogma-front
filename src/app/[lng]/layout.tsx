@@ -1,8 +1,9 @@
-import { Container, CssBaseline, StyledEngineProvider } from '@mui/material';
+import { Container, StyledEngineProvider } from '@mui/material';
 import { AppRouterCacheProvider } from '@mui/material-nextjs/v14-appRouter';
 import { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import './globals.css';
+
 import React, { ReactNode } from 'react';
 
 import { initTranslation } from '@/app/i18n';
@@ -66,14 +67,13 @@ export default async function Layout({
   params: { lng },
 }: RootLayoutProps) {
   return (
-    <html lang={lng}>
+    <html lang={lng} suppressHydrationWarning>
       <body className={inter.className}>
         <StyledEngineProvider injectFirst>
           <AppRouterCacheProvider>
             <ColorModeProvider>
               <ReactQueryProvider>
                 <AuthProvider>
-                  <CssBaseline />
                   <ContainerWithNavigations lang={lng}>
                     <ButtonBackToTop>
                       <Container className='content'>

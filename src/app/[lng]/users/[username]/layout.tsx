@@ -1,4 +1,5 @@
 'use client';
+import ArrowCircleRightOutlinedIcon from '@mui/icons-material/ArrowCircleRightOutlined';
 import ArticleIcon from '@mui/icons-material/Article';
 import CommentIcon from '@mui/icons-material/Comment';
 import HowToRegIcon from '@mui/icons-material/HowToReg';
@@ -52,6 +53,11 @@ export default function Layout({
       icon: <CommentIcon />,
       label: `${t('comments')}`,
       href: `/${lng}/users/${username}/comments`,
+    },
+    {
+      icon: <ArrowCircleRightOutlinedIcon />,
+      label: `${t('history')}`,
+      href: `/${lng}/users/${username}/history`,
     },
   ];
 

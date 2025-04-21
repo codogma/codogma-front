@@ -18,6 +18,7 @@ import { AvatarImage } from '@/components/AvatarImage';
 import { useContentImageContext } from '@/components/ContentImageProvider';
 import { DefaultImage } from '@/components/DefaultImage';
 import MenuButton from '@/components/MenuButton';
+import { Scrollbar } from '@/components/Scrollbar';
 import { TimeAgo } from '@/components/TimeAgo';
 import { GetArticle, Language, UserRole } from '@/types';
 
@@ -160,16 +161,9 @@ export const ArticleCard = ({ article, lang }: ArticleCardProps) => {
                 />
               </Stack>
             )}
-            <Box
-              sx={{
-                height: '100%',
-                overflowY: 'auto',
-                scrollbarWidth: 'thin',
-                pr: 1,
-              }}
-            >
+            <Scrollbar style={{ height: '100%' }}>
               <div className='article-preview-content'>{previewContent}</div>
-            </Box>
+            </Scrollbar>
           </CardContent>
         </Collapse>
       </Box>

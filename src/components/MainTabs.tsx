@@ -7,15 +7,13 @@ import { Box, TabOwnProps } from '@mui/material';
 import Tab from '@mui/material/Tab';
 import { useQuery } from '@tanstack/react-query';
 import Link from 'next/link';
-import React, { useState } from 'react';
+import React from 'react';
 
 import { useTranslation } from '@/app/i18n/client';
 import { Carousel } from '@/components/Carousel';
 import Compilations from '@/components/Compilations';
-import { CustomPagination } from '@/components/CustomPagination';
 import { MyCompilationsBadge } from '@/components/MyCompilationsBadge';
-import { Search } from '@/components/Search';
-import { getArticles, GetArticlesDTO } from '@/helpers/articleApi';
+import { GetArticlesDTO, getViewed } from '@/helpers/articleApi';
 import { getCompilations, GetCompilationsDTO } from '@/helpers/compilationApi';
 import { Language } from '@/types';
 
@@ -32,10 +30,6 @@ type MainTab = {
 
 export const MainTabs: React.FC<MainTabsProps> = ({ lang, username }) => {
   const [value, setValue] = React.useState('1');
-  const [currentPage, setCurrentPage] = useState<number>(0);
-  const [resultsPerPage, setResultsPerPage] = useState<number>(12);
-  const [searchValue, setSearchValue] = useState<string>();
-  const [searchType, setSearchType] = useState<string>('content');
   const { t } = useTranslation(lang);
 
   const tabs: MainTab[] = [
@@ -48,40 +42,15 @@ export const MainTabs: React.FC<MainTabsProps> = ({ lang, username }) => {
     },
   ];
 
-  const onSearchType = (type: string) => {
-    setSearchType(type);
-  };
-
-  const onSearchValue = (value: string) => {
-    setSearchValue(value);
-    setCurrentPage(0);
-  };
-
   const { data: viewedData, isFetching: isFetchingViewed } =
     useQuery<GetArticlesDTO>({
-      queryKey: [
-        'history',
-        currentPage,
-        resultsPerPage,
-        searchType,
-        searchValue,
-      ],
+      queryKey: ['history'],
       queryFn: () => {
-        return getArticles(undefined, undefined, 0, 5);
+        return getViewed();
       },
     });
 
   const history = viewedData?.content ?? [];
-  const totalPages = viewedData?.totalPages ?? 0;
-  const totalElements = viewedData?.totalElements ?? 0;
-
-  const onPageChange = (value: number) => {
-    setCurrentPage(value);
-  };
-
-  const onResultsPerPageChange = (value: number) => {
-    setResultsPerPage(value);
-  };
 
   const { data: bookmarksData, isFetching: isFetchingBookmarks } =
     useQuery<GetCompilationsDTO>({
@@ -131,28 +100,14 @@ export const MainTabs: React.FC<MainTabsProps> = ({ lang, username }) => {
           </TabList>
         </Box>
         <TabPanel value='1'>
-          <Search
-            lang={lang}
-            onSearchType={onSearchType}
-            onSearchValue={onSearchValue}
-          />
           <Carousel
             articles={history}
             isLoading={isFetchingViewed}
             lang={lang}
           />
-          <CustomPagination
-            lang={lang}
-            totalPages={totalPages}
-            totalElements={totalElements}
-            resultsPerPageStart={resultsPerPage}
-            onCurrentPageChange={onPageChange}
-            onResultsPerPageChange={onResultsPerPageChange}
-          />
-
           <Link href={`/${lang}/users/${username}/history`}>
             <Box className='link'>
-              <ArrowCircleRightOutlinedIcon sx={{ mr: 1 }} />
+              <ArrowCircleRightOutlinedIcon />
               {t('historyLink')}
             </Box>
           </Link>
@@ -165,7 +120,7 @@ export const MainTabs: React.FC<MainTabsProps> = ({ lang, username }) => {
           />
           <Link href={`/${lang}/bookmarks`}>
             <Box className='link'>
-              <ArrowCircleRightOutlinedIcon sx={{ mr: 1 }} />
+              <ArrowCircleRightOutlinedIcon />
               {t('bookmarksLink')}
             </Box>
           </Link>
@@ -178,7 +133,7 @@ export const MainTabs: React.FC<MainTabsProps> = ({ lang, username }) => {
           />
           <Link href={`/${lang}/my-compilations`}>
             <Box className='link'>
-              <ArrowCircleRightOutlinedIcon sx={{ mr: 1 }} />
+              <ArrowCircleRightOutlinedIcon />
               {t('myCompilationsLink')}
             </Box>
           </Link>

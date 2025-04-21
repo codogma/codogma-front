@@ -160,7 +160,7 @@ export default function MenuButton({
             state.user?.username === article?.username &&
             state.user?.role === UserRole.ROLE_AUTHOR && (
               <ButtonAlertDialog
-                articleId={article.id}
+                article={article}
                 lang={lang}
                 onClose={handleClose}
               />

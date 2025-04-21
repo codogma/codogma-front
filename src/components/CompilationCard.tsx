@@ -219,28 +219,25 @@ export const CompilationCard = ({
                 pr: 1,
               }}
             >
-              <div className='article-preview-content'>
-                <p>
+              <div className='compilation-preview-content'>
+                <section>
                   <b>{t('description')}:</b>
-                </p>
-                <p>{compilation.description}</p>
-                <div>
+                  <p>{compilation.description}</p>
+                </section>
+                <section>
                   <b>{t('listOfArticles')}:</b>
-                </div>
-                <ul>
-                  {compilation.articles.map((article) => (
-                    <span key={article.id}>
-                      <li key={article.id} className='link'>
+                  <ul>
+                    {compilation.articles.map((article) => (
+                      <li key={article.id}>
                         <Link
-                          className='link'
                           href={`/compilations/${compilation.id}/${article.id}`}
                         >
-                          {article.title}
+                          <span className='link'>{article.title}</span>
                         </Link>
                       </li>
-                    </span>
-                  ))}
-                </ul>
+                    ))}
+                  </ul>
+                </section>
               </div>
             </Box>
           </CardContent>

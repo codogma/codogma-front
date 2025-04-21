@@ -1,3 +1,5 @@
+@import 'overlayscrollbars/overlayscrollbars.css';
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -11,7 +13,15 @@
 @layer app {
   html,
   body {
-    scroll-behavior: smooth;
+    @apply scroll-smooth;
+  }
+
+  body {
+    @apply bg-seashell dark:bg-cod-gray !important;
+  }
+
+  .nav-app-bar {
+    @apply sticky bg-limed-spruce-rgba shadow-none backdrop-blur-md dark:bg-woodsmoke-rgba !important;
   }
 
   .content {
@@ -28,10 +38,6 @@
 
   #search-input {
     @apply scroll-mt-96;
-  }
-
-  body {
-    @apply bg-seashell dark:bg-cod-gray !important;
   }
 
   .breadcrumb {
@@ -73,10 +79,6 @@
   .tox-promotion,
   .tox-statusbar__branding {
     @apply hidden !important;
-  }
-
-  .nav-app-bar {
-    @apply sticky bg-limed-spruce-rgba shadow-none backdrop-blur-md dark:bg-woodsmoke-rgba !important;
   }
 
   .menu-list {
@@ -163,8 +165,10 @@
     @apply relative !important;
   }
 
-  .article-preview-content {
-    @apply mb-4 flex-grow text-ellipsis whitespace-normal break-words text-sm font-medium leading-4 dark:text-alto;
+  .article-preview-content,
+  .category-preview-content,
+  .compilation-preview-content {
+    @apply mb-4 pr-2 flex flex-grow flex-col gap-3 text-ellipsis whitespace-normal break-words text-sm font-medium leading-4 dark:text-alto;
   }
 
   .article-content {
@@ -204,7 +208,7 @@
   }
 
   .tag-item {
-    @apply m-0 inline list-none p-0;
+    @apply m-0 inline p-0;
   }
 
   .tag-item::after {
@@ -213,6 +217,14 @@
 
   .tag-item:last-child::after {
     content: '';
+  }
+
+  .tag-name {
+    @apply inline-flex text-sm leading-5 text-horizon dark:text-curious-blue no-underline !important;
+  }
+
+  .tag-name:hover {
+    @apply text-deepsky-blue !important;
   }
 
   .tag-link {
@@ -224,7 +236,7 @@
   }
 
   .subscribers-user-description {
-    @apply text-[0.8125rem] leading-4 text-mountain-mist dark:text-shady-lady !important;
+    @apply text-sm leading-4 text-mountain-mist dark:text-shady-lady !important;
   }
 
   .subscriptions-user-name {
@@ -232,7 +244,7 @@
   }
 
   .subscriptions-user-description {
-    @apply text-[0.8125rem] leading-4 text-mountain-mist dark:text-shady-lady !important;
+    @apply text-sm leading-4 text-mountain-mist dark:text-shady-lady !important;
   }
 
   .footer {
@@ -248,7 +260,7 @@
   }
 
   .link {
-    @apply mt-4 flex items-center text-horizon no-underline dark:text-alto;
+    @apply mt-4 flex items-center gap-1 flex-row justify-start text-horizon dark:text-curious-blue no-underline;
   }
 
   .link:hover {
@@ -293,15 +305,7 @@
 }
 
 .category-description {
-  @apply mt-2 text-[0.8125rem] leading-4 text-mountain-mist;
-}
-
-.category-tags {
-  @apply mt-2 pr-2;
-}
-
-.tag-name {
-  @apply text-[0.8125rem] leading-[1.125rem] text-horizon no-underline dark:text-deepsky-blue !important;
+  @apply mt-2 text-sm leading-4 text-mountain-mist;
 }
 
 .user-profile-description {
@@ -361,6 +365,37 @@
 
   .user-tag-item:last-child::after {
     content: '';
+  }
+}
+
+@layer components {
+  /* Светлая тема */
+  /* Темная тема */
+  .os-theme-light .os-scrollbar-handle {
+    @apply bg-gray-600 hover:bg-gray-500;
+  }
+
+  .os-theme-light .os-scrollbar-track {
+    @apply bg-gray-600/30 hover:bg-gray-500/50;
+  }
+
+
+  .dark .os-theme-dark .os-scrollbar-handle {
+    @apply bg-gray-100 hover:bg-gray-200;
+  }
+
+  .dark .os-theme-dark .os-scrollbar-track {
+    @apply bg-gray-100/30 hover:bg-gray-200/50;
+  }
+
+  /* Общие стили */
+  .os-scrollbar {
+    /* Ширина скроллбара (чем меньше тем больше) */
+    @apply p-0.5 !important;
+  }
+
+  .os-scrollbar-handle {
+    @apply rounded-lg transition-colors duration-200;
   }
 }
 
