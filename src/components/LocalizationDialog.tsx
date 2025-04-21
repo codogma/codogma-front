@@ -34,6 +34,7 @@ import { z } from 'zod';
 
 import { useTranslation } from '@/app/i18n/client';
 import { contlCookie, intlCookie, languageMenuItems } from '@/constants/i18n';
+import { Language } from '@/types';
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   '& .MuiDialogContent-root': {
@@ -48,7 +49,7 @@ const icon = <CheckBoxOutlineBlankIcon fontSize='small' />;
 const checkedIcon = <CheckBoxIcon fontSize='small' />;
 
 type LocalizationDialogProps = {
-  readonly lang: string;
+  readonly lang: Language;
 };
 
 const LocalizationDialogScheme = z.object({

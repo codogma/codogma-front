@@ -12,10 +12,10 @@ import { useRouter } from 'next/navigation';
 import React, { useState } from 'react';
 
 import { useTranslation } from '@/app/i18n/client';
-import { GetArticle } from '@/types';
+import { GetArticle, Language } from '@/types';
 
 type ButtonAlertDialogProps = {
-  readonly lang: string;
+  readonly lang: Language;
   readonly article: GetArticle;
   readonly onClose?: () => void;
 };

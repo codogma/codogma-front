@@ -4,10 +4,11 @@ import { ReactNode } from 'react';
 
 import { initTranslation } from '@/app/i18n';
 import { SignIn } from '@/components/SignIn';
+import { Language } from '@/types';
 
 type LayoutProps = {
   readonly children: ReactNode;
-  readonly params: { lng: string };
+  readonly params: { lng: Language };
 };
 
 export async function generateMetadata({

@@ -24,6 +24,7 @@ import { AvatarImage } from '@/components/AvatarImage';
 import FormInput from '@/components/FormInput';
 import { createCompilation } from '@/helpers/compilationApi';
 import { devConsoleError } from '@/helpers/devConsoleLogs';
+import { Language } from '@/types';
 
 const VisuallyHiddenInput = styled('input')({
   clip: 'rect(0 0 0 0)',
@@ -47,7 +48,7 @@ const BootstrapDialog = styled(Dialog)(({ theme }) => ({
 }));
 
 type CompilationDialogProps = {
-  readonly lang: string;
+  readonly lang: Language;
   readonly open: boolean;
   readonly onClose: () => void;
 };

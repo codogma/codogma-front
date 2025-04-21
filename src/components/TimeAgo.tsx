@@ -2,10 +2,12 @@ import { format, formatDistanceToNow } from 'date-fns';
 import { enUS, Locale, ru } from 'date-fns/locale';
 import React, { useEffect, useState } from 'react';
 
+import { Language } from '@/types';
+
 interface TimeAgoProps {
   readonly datetime: Date;
   readonly className?: string | undefined;
-  readonly lang: string;
+  readonly lang: Language;
 }
 
 export const TimeAgo: React.FC<TimeAgoProps> = ({

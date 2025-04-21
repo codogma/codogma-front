@@ -4,10 +4,11 @@ import { ReactNode } from 'react';
 
 import { initTranslation } from '@/app/i18n';
 import { getUserByUsername } from '@/helpers/userApi';
+import { Language } from '@/types';
 
 type LayoutProps = {
   readonly children: ReactNode;
-  readonly params: { username: string; lng: string };
+  readonly params: { username: string; lng: Language };
 };
 
 export async function generateMetadata({

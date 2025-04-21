@@ -15,10 +15,10 @@ import React, {
 
 import { useTranslation } from '@/app/i18n/client';
 import { useEventListener } from '@/helpers/useEventListener';
-import { SearchType } from '@/types';
+import { Language, SearchType } from '@/types';
 
 type SearchProps = {
-  readonly lang: string;
+  readonly lang: Language;
   readonly onSearchType: (type: SearchType) => void;
   readonly onSearchValue: (value: string) => void;
 };

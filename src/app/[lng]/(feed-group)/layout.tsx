@@ -7,10 +7,11 @@ import React, { ReactNode } from 'react';
 import { useTranslation } from '@/app/i18n/client';
 import NavTabs, { TabProps } from '@/components/NavTabs';
 import { WithAuth } from '@/components/WithAuth';
+import { Language } from '@/types';
 
 type LayoutProps = {
   readonly children: ReactNode;
-  readonly params: { lng: string };
+  readonly params: { lng: Language };
 };
 
 function Layout({ params: { lng }, children }: LayoutProps) {

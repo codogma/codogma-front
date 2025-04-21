@@ -19,7 +19,7 @@ type LinkWithPopoverProps = {
   readonly draftArticles: GetArticle[];
   readonly onDeleteArticle: (id: number) => void;
   readonly onSelectArticle: (article: GetArticle) => void;
-  readonly lang: string;
+  readonly lang: Language;
 };
 
 export const LinkWithPopover = ({

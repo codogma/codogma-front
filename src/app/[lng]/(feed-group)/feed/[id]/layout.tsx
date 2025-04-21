@@ -5,11 +5,11 @@ import { ReactNode } from 'react';
 import { ArticleProvider } from '@/components/ArticleProvider';
 import { getArticleById } from '@/helpers/articleApi';
 import { convertHtmlToText } from '@/helpers/convertHtmlToText';
-import { GetArticle } from '@/types';
+import { GetArticle, Language } from '@/types';
 
 type LayoutProps = {
   readonly children: ReactNode;
-  readonly params: { id: number; lng: string };
+  readonly params: { id: number; lng: Language };
 };
 
 async function fetchArticleById(id: number): Promise<GetArticle> {

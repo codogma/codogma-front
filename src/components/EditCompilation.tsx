@@ -26,7 +26,7 @@ import { AvatarImage } from '@/components/AvatarImage';
 import FormInput from '@/components/FormInput';
 import { updateCompilation } from '@/helpers/compilationApi';
 import { devConsoleError } from '@/helpers/devConsoleLogs';
-import { GetCompilation } from '@/types';
+import { GetCompilation, Language } from '@/types';
 
 const EditCompilationScheme = z.object({
   image: z.optional(z.instanceof(File)),
@@ -61,7 +61,7 @@ const BootstrapDialog = styled(Dialog)(({ theme }) => ({
 }));
 
 type EditCompilationProps = {
-  readonly lang: string;
+  readonly lang: Language;
   readonly compilationData: GetCompilation;
   readonly refetch?: () => void;
   readonly onClose?: () => void;

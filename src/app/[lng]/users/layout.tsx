@@ -3,10 +3,11 @@ import { Metadata } from 'next';
 import { ReactNode } from 'react';
 
 import { initTranslation } from '@/app/i18n';
+import { Language } from '@/types';
 
 type LayoutProps = {
   readonly children: ReactNode;
-  readonly params: { lng: string };
+  readonly params: { lng: Language };
 };
 
 export async function generateMetadata({

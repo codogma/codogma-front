@@ -3,10 +3,10 @@ import React from 'react';
 
 import { useTranslation } from '@/app/i18n/client';
 import { useArticleProgress } from '@/helpers/useArticleProgress';
-import { GetArticle } from '@/types';
+import { GetArticle, Language } from '@/types';
 
 type ArticleProgressBarProps = {
-  readonly lang: string;
+  readonly lang: Language;
   readonly articleData: GetArticle;
 };
 

@@ -1,6 +1,10 @@
 import { defaultNS, fallbackLng, languages } from '@/constants/i18n';
+import { Language } from '@/types';
 
-export function getOptions(lng: string = fallbackLng, ns: string = defaultNS) {
+export function getOptions(
+  lng: Language = fallbackLng,
+  ns: string = defaultNS,
+) {
   return {
     // debug: true,
     supportedLngs: languages,

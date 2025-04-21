@@ -7,10 +7,11 @@ import { useTranslation } from '@/app/i18n/client';
 import { useAuth } from '@/components/AuthProvider';
 import { PopoverElement } from '@/components/PopoverElement';
 import { bookmark, unbookmark } from '@/helpers/compilationApi';
+import { Language } from '@/types';
 
 interface BookmarkProps {
   readonly username?: string;
-  readonly lang: string;
+  readonly lang: Language;
   readonly id: number;
   readonly isBookmarkedValue?: boolean;
   readonly refetch?: () => void;

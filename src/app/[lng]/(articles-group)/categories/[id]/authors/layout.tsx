@@ -4,10 +4,11 @@ import { ReactNode } from 'react';
 
 import { initTranslation } from '@/app/i18n';
 import { getCategoryById } from '@/helpers/categoryApi';
+import { Language } from '@/types';
 
 type LayoutProps = {
   readonly children: ReactNode;
-  readonly params: { id: number; lng: string };
+  readonly params: { id: number; lng: Language };
 };
 
 export async function generateMetadata({
