@@ -83,7 +83,7 @@ export const NavPanel = ({ lang }: NavPanelProps) => {
           },
         }}
       >
-        <List sx={{ overflowY: 'auto', overflowX: 'hidden' }}>
+        <List sx={{ overflow: 'hidden' }}>
           {items.map(({ text, href, icon }, index) => (
             <ListItem key={text} disablePadding sx={{ display: 'block' }}>
               <Tooltip

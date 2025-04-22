@@ -5,7 +5,7 @@ import PlaylistAddCheckCircleIcon from '@mui/icons-material/PlaylistAddCheckCirc
 import React, { ReactNode } from 'react';
 
 import { useTranslation } from '@/app/i18n/client';
-import NavTabs, { TabProps } from '@/components/NavTabs';
+import { NavTabs, TabProps } from '@/components/NavTabs';
 import { WithAuth } from '@/components/WithAuth';
 import { Language } from '@/types';
 

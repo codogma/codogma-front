@@ -5,7 +5,7 @@ import React, { ReactNode } from 'react';
 
 import { useTranslation } from '@/app/i18n/client';
 import { MyCompilationsBadge } from '@/components/MyCompilationsBadge';
-import NavTabs, { TabProps } from '@/components/NavTabs';
+import { NavTabs, TabProps } from '@/components/NavTabs';
 import { Language } from '@/types';
 
 type LayoutProps = {

@@ -7,7 +7,7 @@ import { Box, TabOwnProps } from '@mui/material';
 import Tab from '@mui/material/Tab';
 import { useQuery } from '@tanstack/react-query';
 import Link from 'next/link';
-import React from 'react';
+import React, { useCallback, useLayoutEffect, useRef, useState } from 'react';
 
 import { useTranslation } from '@/app/i18n/client';
 import { Carousel } from '@/components/Carousel';
@@ -29,8 +29,10 @@ type MainTab = {
 };
 
 export const MainTabs: React.FC<MainTabsProps> = ({ lang, username }) => {
-  const [value, setValue] = React.useState('1');
+  const [value, setValue] = useState<number>(0);
   const { t } = useTranslation(lang);
+  const ref = useRef<HTMLDivElement>(null);
+  const [overflow, setOverflow] = useState<boolean>(false);
 
   const tabs: MainTab[] = [
     { value: '1', label: t('history'), icon: <HistoryIcon /> },
@@ -41,6 +43,21 @@ export const MainTabs: React.FC<MainTabsProps> = ({ lang, username }) => {
       icon: <MyCompilationsBadge />,
     },
   ];
+
+  useLayoutEffect(() => {
+    const observer = new ResizeObserver((entries) => {
+      for (const entry of entries) {
+        const listNode = entry.target.querySelector(
+          '[role="tablist"]',
+        ) as HTMLElement;
+        setOverflow(listNode.scrollWidth > listNode.clientWidth);
+      }
+    });
+    if (ref.current) {
+      observer.observe(ref.current);
+    }
+    return () => observer.disconnect();
+  }, []);
 
   const { data: viewedData, isFetching: isFetchingViewed } =
     useQuery<GetArticlesDTO>({
@@ -72,19 +89,22 @@ export const MainTabs: React.FC<MainTabsProps> = ({ lang, username }) => {
 
   const myCompilations = myCompilationsData?.content ?? [];
 
-  const handleChange = (event: React.SyntheticEvent, newValue: string) => {
-    setValue(newValue);
-  };
+  const handleChange = useCallback(
+    (_event: React.SyntheticEvent, newValue: number) => {
+      setValue(newValue);
+    },
+    [],
+  );
 
   return (
-    <Box className='nav-tabs'>
+    <div ref={ref} className='nav-tabs'>
       <TabContext value={value}>
         <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
           <TabList
             onChange={handleChange}
-            variant='scrollable'
-            scrollButtons
-            allowScrollButtonsMobile
+            variant={overflow ? 'scrollable' : 'standard'}
+            scrollButtons={overflow ? 'auto' : false}
+            allowScrollButtonsMobile={overflow}
             aria-label='scrollable force tabs example'
           >
             {tabs.map((tab) => (
@@ -93,13 +113,12 @@ export const MainTabs: React.FC<MainTabsProps> = ({ lang, username }) => {
                 icon={tab.icon}
                 iconPosition='start'
                 label={tab.label}
-                value={tab.value}
                 sx={{ minHeight: '48px', textTransform: 'none' }}
               />
             ))}
           </TabList>
         </Box>
-        <TabPanel value='1'>
+        <TabPanel value={0}>
           <Carousel
             articles={history}
             isLoading={isFetchingViewed}
@@ -112,7 +131,7 @@ export const MainTabs: React.FC<MainTabsProps> = ({ lang, username }) => {
             </Box>
           </Link>
         </TabPanel>
-        <TabPanel value='2'>
+        <TabPanel value={1}>
           <Compilations
             compilations={bookmarks}
             loading={isFetchingBookmarks}
@@ -125,7 +144,7 @@ export const MainTabs: React.FC<MainTabsProps> = ({ lang, username }) => {
             </Box>
           </Link>
         </TabPanel>
-        <TabPanel value='3'>
+        <TabPanel value={2}>
           <Compilations
             compilations={myCompilations}
             loading={isFetchingMyCompilations}
@@ -139,6 +158,6 @@ export const MainTabs: React.FC<MainTabsProps> = ({ lang, username }) => {
           </Link>
         </TabPanel>
       </TabContext>
-    </Box>
+    </div>
   );
 };

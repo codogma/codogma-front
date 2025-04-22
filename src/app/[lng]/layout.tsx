@@ -7,7 +7,7 @@ import React, { ReactNode } from 'react';
 
 import { initTranslation } from '@/app/i18n';
 import { AuthProvider } from '@/components/AuthProvider';
-import ButtonBackToTop from '@/components/ButtonBackToTop';
+import { ButtonBackToTop } from '@/components/ButtonBackToTop';
 import { ContainerWithNavigations } from '@/components/ContainerWithNavigations';
 import { ContentImageProvider } from '@/components/ContentImageProvider';
 import { CustomizedSnackbars } from '@/components/CustomizedSnackbars';

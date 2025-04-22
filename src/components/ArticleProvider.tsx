@@ -1,5 +1,5 @@
 'use client';
-import { useRouter } from 'next/navigation';
+import { redirect } from 'next/navigation';
 import React, { createContext, useContext } from 'react';
 
 import { GetArticle } from '@/types';
@@ -21,10 +21,8 @@ export const ArticleProvider = ({
   readonly children: React.ReactNode;
   readonly article: GetArticle;
 }) => {
-  const router = useRouter();
   if (!article) {
-    router.push('/not-found');
-    return null;
+    redirect('/not-found');
   }
   return (
     <ArticleContext.Provider value={{ article }}>

@@ -12,7 +12,7 @@ import { useAuth } from '@/components/AuthProvider';
 import { AvatarImage } from '@/components/AvatarImage';
 import { ButtonFavorite } from '@/components/ButtonFavorite';
 import MenuButton from '@/components/MenuButton';
-import NavTabs, { TabProps } from '@/components/NavTabs';
+import { NavTabs, TabProps } from '@/components/NavTabs';
 import { getCategoryById } from '@/helpers/categoryApi';
 import { GetCategory, Language, UserRole } from '@/types';
 

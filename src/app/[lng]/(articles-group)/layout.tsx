@@ -5,7 +5,7 @@ import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
 import React, { ReactNode } from 'react';
 
 import { initTranslation } from '@/app/i18n';
-import NavTabs, { TabProps } from '@/components/NavTabs';
+import { NavTabs, TabProps } from '@/components/NavTabs';
 import { Language } from '@/types';
 
 type LayoutProps = {

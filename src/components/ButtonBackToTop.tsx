@@ -1,32 +1,37 @@
 'use client';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
-import Box from '@mui/material/Box';
+import { Box } from '@mui/material';
 import Fab from '@mui/material/Fab';
 import Fade from '@mui/material/Fade';
 import useScrollTrigger from '@mui/material/useScrollTrigger';
 import * as React from 'react';
 
+import { useScrollContext } from './Scrollbar';
+
 interface Props {
-  readonly window?: () => Window;
-  readonly children?: React.ReactElement<unknown>;
+  readonly children: React.ReactNode;
 }
 
-function ScrollTop(props: Props) {
-  const { children, window } = props;
+function ScrollTop({ children }: Props) {
+  const { instance } = useScrollContext();
+  const viewport = instance?.elements().viewport;
 
   const trigger = useScrollTrigger({
-    target: window ? window() : undefined,
+    target: viewport || undefined,
     disableHysteresis: true,
     threshold: 100,
   });
 
-  const handleClick = (event: React.MouseEvent<HTMLDivElement>) => {
-    const anchor = (
-      (event.target as HTMLDivElement).ownerDocument || document
-    ).querySelector('#back-to-top-anchor');
+  const handleClick = () => {
+    if (!instance) return;
+
+    const anchor = instance
+      .elements()
+      .viewport?.querySelector('#back-to-top-anchor');
 
     if (anchor) {
       anchor.scrollIntoView({
+        behavior: 'smooth',
         block: 'center',
       });
     }
@@ -36,7 +41,6 @@ function ScrollTop(props: Props) {
     <Fade in={trigger}>
       <Box
         onClick={handleClick}
-        role='presentation'
         sx={{ position: 'fixed', bottom: 120, right: 16, zIndex: 100 }}
       >
         {children}
@@ -45,17 +49,16 @@ function ScrollTop(props: Props) {
   );
 }
 
-export default function BackToTop(props: Props) {
-  const { children } = props;
+export const ButtonBackToTop = ({ children }: Props) => {
   return (
     <React.Fragment>
       <div id='back-to-top-anchor' />
       {children}
-      <ScrollTop {...props}>
+      <ScrollTop>
         <Fab size='small' aria-label='scroll back to top'>
           <KeyboardArrowUpIcon />
         </Fab>
       </ScrollTop>
     </React.Fragment>
   );
-}
+};
