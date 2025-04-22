@@ -4,10 +4,11 @@ import { ReactNode } from 'react';
 
 import { useTranslation } from '@/app/i18n/client';
 import { useAuth } from '@/components/AuthProvider';
+import { Language } from '@/types';
 
 type SignInProps = {
   readonly children: ReactNode;
-  readonly lang: string;
+  readonly lang: Language;
 };
 
 export const SignIn = ({ children, lang }: SignInProps) => {

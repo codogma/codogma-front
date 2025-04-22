@@ -7,7 +7,6 @@ import { useQuery } from '@tanstack/react-query';
 import Link from 'next/link';
 import React, { useState } from 'react';
 
-import { useTranslation } from '@/app/i18n/client';
 import { useAuth } from '@/components/AuthProvider';
 import { AvatarImage } from '@/components/AvatarImage';
 import { Bookmark } from '@/components/Bookmark';
@@ -29,7 +28,6 @@ type PageProps = {
 export default function Layout({ params: { id, lng }, children }: PageProps) {
   const { state } = useAuth();
   const [isRefetch, setIsRefetch] = useState<boolean>(false);
-  const { t } = useTranslation(lng);
 
   const refetch = () => {
     setIsRefetch(true);

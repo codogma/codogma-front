@@ -9,11 +9,11 @@ import { useTranslation } from '@/app/i18n/client';
 import { useAuth } from '@/components/AuthProvider';
 import { PopoverElement } from '@/components/PopoverElement';
 import { subscribe, unsubscribe } from '@/helpers/userApi';
-import { GetUserDTO } from '@/types';
+import { GetUserDTO, Language } from '@/types';
 
 interface CustomPopoverProps {
   readonly user: GetUserDTO;
-  readonly lang: string;
+  readonly lang: Language;
   readonly onClose?: () => void;
 }
 

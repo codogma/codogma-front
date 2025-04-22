@@ -11,13 +11,13 @@ import { AvatarImage } from '@/components/AvatarImage';
 import { TimeAgo } from '@/components/TimeAgo';
 import { deleteComment, getComments } from '@/helpers/commentAPI';
 import { useEventListener } from '@/helpers/useEventListener';
-import { GetComment, UserRole } from '@/types';
+import { GetComment, Language, UserRole } from '@/types';
 
 import { CommentForm } from './CommentForm';
 
 interface CommentListProps {
   readonly articleId: number;
-  readonly lang: string;
+  readonly lang: Language;
 }
 
 export const CommentList: React.FC<CommentListProps> = ({

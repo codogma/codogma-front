@@ -1,17 +1,14 @@
 'use client';
 import { useQuery } from '@tanstack/react-query';
-import DOMPurify from 'dompurify';
 import React, { useState } from 'react';
 
 import Articles from '@/components/Articles';
-import { useContentImageContext } from '@/components/ContentImageProvider';
 import { CustomPagination } from '@/components/CustomPagination';
 import { Search } from '@/components/Search';
-import { getArticles, GetArticlesDTO } from '@/helpers/articleApi';
+import { GetArticlesDTO, getViewed } from '@/helpers/articleApi';
 import { Language, SearchType } from '@/types';
 
 type PageParams = {
-  username: string;
   lng: Language;
 };
 
@@ -19,12 +16,11 @@ type PageProps = {
   readonly params: PageParams;
 };
 
-export default function Layout({ params: { lng, username } }: PageProps) {
+export default function Layout({ params: { lng } }: PageProps) {
   const [currentPage, setCurrentPage] = useState<number>(0);
-  const [resultsPerPage, setResultsPerPage] = useState<number>(12);
+  const [resultsPerPage, setResultsPerPage] = useState<number>(5);
   const [searchValue, setSearchValue] = useState<string>();
   const [searchType, setSearchType] = useState<string>('content');
-  const { processContent } = useContentImageContext();
 
   const onSearchType = (type: string) => {
     setSearchType(type);
@@ -35,40 +31,26 @@ export default function Layout({ params: { lng, username } }: PageProps) {
     setCurrentPage(0);
   };
 
-  const { data, isPending } = useQuery<GetArticlesDTO>({
-    queryKey: [
-      'articles',
-      currentPage,
-      resultsPerPage,
-      searchType,
-      searchValue,
-      username,
-    ],
-    queryFn: () => {
-      const byTag = searchType === SearchType.TAG ? searchValue : undefined;
-      const byContent =
-        searchType === SearchType.CONTENT ? searchValue : undefined;
-      return getArticles(
-        undefined,
-        undefined,
+  const { data: viewedData, isFetching: isFetchingViewed } =
+    useQuery<GetArticlesDTO>({
+      queryKey: [
+        'history',
         currentPage,
         resultsPerPage,
-        byTag,
-        byContent,
-        username,
-      );
-    },
-  });
+        searchType,
+        searchValue,
+      ],
+      queryFn: () => {
+        const byTag = searchType === SearchType.TAG ? searchValue : undefined;
+        const byContent =
+          searchType === SearchType.CONTENT ? searchValue : undefined;
+        return getViewed(currentPage, resultsPerPage, byTag, byContent);
+      },
+    });
 
-  const content = data?.content ?? [];
-  const articles = content.map((article) => ({
-    ...article,
-    previewContentNode: processContent(
-      DOMPurify.sanitize(article.previewContent),
-    ),
-  }));
-  const totalPages = data?.totalPages ?? 0;
-  const totalElements = data?.totalElements ?? 0;
+  const history = viewedData?.content ?? [];
+  const totalPages = viewedData?.totalPages ?? 0;
+  const totalElements = viewedData?.totalElements ?? 0;
 
   const onPageChange = (value: number) => {
     setCurrentPage(value);
@@ -85,7 +67,7 @@ export default function Layout({ params: { lng, username } }: PageProps) {
         onSearchType={onSearchType}
         onSearchValue={onSearchValue}
       />
-      <Articles lang={lng} articles={articles} loading={isPending} />
+      <Articles lang={lng} articles={history} loading={isFetchingViewed} />
       <CustomPagination
         lang={lng}
         totalPages={totalPages}

@@ -6,5 +6,6 @@
   "subscriptionsByUser": "Subscriptions by user",
   "authorsDescription": "Authors CODOGMA",
   "writesInCategories": "Writes in categories:",
-  "popoverSubscribe": "to subscribe to a user"
+  "popoverSubscribe": "to subscribe to a user",
+  "browsingHistory": "Browsing history"
 }

@@ -5,7 +5,6 @@ import CardContent from '@mui/material/CardContent';
 import Grid from '@mui/material/Grid2';
 import React from 'react';
 
-import { useTranslation } from '@/app/i18n/client';
 import { ArticleCard } from '@/components/ArticleCard';
 import { GetArticle, Language } from '@/types';
 
@@ -16,8 +15,6 @@ type ArticlesProps = {
 };
 
 export default function Articles({ lang, articles, loading }: ArticlesProps) {
-  const { t } = useTranslation(lang);
-
   return (
     <>
       {loading ? (

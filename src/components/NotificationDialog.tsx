@@ -3,7 +3,6 @@ import NotificationsIcon from '@mui/icons-material/Notifications';
 import NotificationsActiveIcon from '@mui/icons-material/NotificationsActive';
 import WarningAmberIcon from '@mui/icons-material/WarningAmber';
 import {
-  Box,
   Button,
   ButtonGroup,
   CardActions,
@@ -32,6 +31,7 @@ import { useTranslation } from '@/app/i18n/client';
 import { useAuth } from '@/components/AuthProvider';
 import { CustomPagination } from '@/components/CustomPagination';
 import { EditNotification } from '@/components/EditNotification';
+import { Scrollbar } from '@/components/Scrollbar';
 import { dispatchCustomEvent } from '@/helpers/dispatchCustomEvent';
 import {
   deleteAllSystemNotifications,
@@ -187,14 +187,12 @@ export const NotificationDialog = ({ lang }: NotificationsDialogProps) => {
           <CloseIcon />
         </IconButton>
         <DialogContent dividers>
-          <Box
-            noValidate
-            component='form'
-            autoComplete='off'
-            sx={{
+          <Scrollbar
+            style={{
+              height: '100%',
               display: 'flex',
               flexDirection: 'column',
-              m: 'auto',
+              margin: 'auto',
               minWidth: 420,
               width: 'fit-content',
               gap: 2,
@@ -329,7 +327,7 @@ export const NotificationDialog = ({ lang }: NotificationsDialogProps) => {
                 </Fragment>
               ))}
             </List>
-          </Box>
+          </Scrollbar>
           <CustomPagination
             lang={lang}
             totalPages={totalPages}

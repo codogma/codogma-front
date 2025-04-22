@@ -3,8 +3,6 @@ import { Card, CardContent, Skeleton } from '@mui/material';
 import Grid from '@mui/material/Grid2';
 import React from 'react';
 
-import { useTranslation } from '@/app/i18n/client';
-import { useAuth } from '@/components/AuthProvider';
 import CategoryCard from '@/components/CategoryCard';
 import { GetCategory, Language } from '@/types';
 
@@ -21,9 +19,6 @@ export default function Categories({
   lang,
   refetch,
 }: CategoriesProps) {
-  const { state } = useAuth();
-  const { t } = useTranslation(lang);
-
   return (
     <>
       {loading ? (

@@ -1,16 +1,17 @@
 'use client';
-import FavoriteIcon from '@mui/icons-material/Favorite';
+import HowToRegIcon from '@mui/icons-material/HowToReg';
+import InterestsIcon from '@mui/icons-material/Interests';
 import PlaylistAddCheckCircleIcon from '@mui/icons-material/PlaylistAddCheckCircle';
-import SubscriptionsIcon from '@mui/icons-material/Subscriptions';
 import React, { ReactNode } from 'react';
 
 import { useTranslation } from '@/app/i18n/client';
 import NavTabs, { TabProps } from '@/components/NavTabs';
 import { WithAuth } from '@/components/WithAuth';
+import { Language } from '@/types';
 
 type LayoutProps = {
   readonly children: ReactNode;
-  readonly params: { lng: string };
+  readonly params: { lng: Language };
 };
 
 function Layout({ params: { lng }, children }: LayoutProps) {
@@ -22,12 +23,12 @@ function Layout({ params: { lng }, children }: LayoutProps) {
       href: `/${lng}/feed`,
     },
     {
-      icon: <FavoriteIcon />,
+      icon: <InterestsIcon />,
       label: `${t('favoriteCategories')}`,
       href: `/${lng}/favorite-categories`,
     },
     {
-      icon: <SubscriptionsIcon />,
+      icon: <HowToRegIcon />,
       label: `${t('subscriptions')}`,
       href: `/${lng}/subscriptions`,
     },

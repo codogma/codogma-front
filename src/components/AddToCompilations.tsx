@@ -34,7 +34,7 @@ import {
   getCompilationsByTitle,
   GetCompilationsDTO,
 } from '@/helpers/compilationApi';
-import { GetCompilation } from '@/types';
+import { GetCompilation, Language } from '@/types';
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   '& .MuiDialogContent-root': {
@@ -48,7 +48,7 @@ const BootstrapDialog = styled(Dialog)(({ theme }) => ({
 interface AddToCompilationsProps {
   readonly id: number;
   readonly username?: string;
-  readonly lang: string;
+  readonly lang: Language;
   readonly compilations: GetCompilation[];
   readonly onClose?: () => void;
 }

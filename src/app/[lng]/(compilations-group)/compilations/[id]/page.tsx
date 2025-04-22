@@ -2,7 +2,6 @@
 import { useQuery } from '@tanstack/react-query';
 import React, { useEffect, useState } from 'react';
 
-import { useTranslation } from '@/app/i18n/client';
 import Articles from '@/components/Articles';
 import { useCompilation } from '@/components/CompilationProvider';
 import { CustomPagination } from '@/components/CustomPagination';
@@ -26,7 +25,6 @@ export default function Page({ params: { id, lng } }: PageProps) {
   const [searchValue, setSearchValue] = useState<string>();
   const [searchType, setSearchType] = useState<string>('content');
   const { isRefetch, resetRefetch } = useCompilation();
-  const { t } = useTranslation(lng, 'compilations');
 
   const onSearchType = (type: string) => {
     setSearchType(type);

@@ -26,7 +26,7 @@ import { AvatarImage } from '@/components/AvatarImage';
 import FormInput from '@/components/FormInput';
 import { updateCompilation } from '@/helpers/compilationApi';
 import { devConsoleError } from '@/helpers/devConsoleLogs';
-import { GetCompilation } from '@/types';
+import { GetCompilation, Language } from '@/types';
 
 const EditCompilationScheme = z.object({
   image: z.optional(z.instanceof(File)),
@@ -61,7 +61,7 @@ const BootstrapDialog = styled(Dialog)(({ theme }) => ({
 }));
 
 type EditCompilationProps = {
-  readonly lang: string;
+  readonly lang: Language;
   readonly compilationData: GetCompilation;
   readonly refetch?: () => void;
   readonly onClose?: () => void;
@@ -146,7 +146,7 @@ export const EditCompilation = ({
   return (
     <>
       <MenuItem onClick={handleClickOpen} disableRipple>
-        <Typography textAlign='center'>Редактировать</Typography>
+        <Typography textAlign='center'>{t('edit')}</Typography>
       </MenuItem>
       <BootstrapDialog aria-labelledby='customized-dialog-title' open={open}>
         <DialogTitle sx={{ m: 0, p: 2 }} id='customized-dialog-title'>

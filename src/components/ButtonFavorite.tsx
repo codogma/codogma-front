@@ -9,10 +9,11 @@ import { useTranslation } from '@/app/i18n/client';
 import { useAuth } from '@/components/AuthProvider';
 import { PopoverElement } from '@/components/PopoverElement';
 import { favorite, unfavorite } from '@/helpers/categoryApi';
+import { Language } from '@/types';
 
 interface CustomFavoriteProps {
   readonly id: number;
-  readonly lang: string;
+  readonly lang: Language;
   readonly isFavoriteValue?: boolean;
   readonly refetch?: () => void;
   readonly sx?: SxProps<Theme>;

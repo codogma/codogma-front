@@ -1,10 +1,13 @@
 'use client';
 import Brightness4Icon from '@mui/icons-material/Brightness4';
 import Brightness7Icon from '@mui/icons-material/Brightness7';
+import { CssBaseline } from '@mui/material';
 import IconButton from '@mui/material/IconButton';
 import { createTheme, ThemeProvider, useTheme } from '@mui/material/styles';
 import Tooltip from '@mui/material/Tooltip';
 import * as React from 'react';
+
+import { Scrollbar } from '@/components/Scrollbar';
 
 const ColorModeContext = React.createContext({
   toggleColorMode: () => {},
@@ -46,13 +49,17 @@ export const ColorModeProvider = ({
         palette: {
           mode,
         },
+        cssVariables: true,
       }),
     [mode],
   );
 
   return (
     <ColorModeContext.Provider value={colorMode}>
-      <ThemeProvider theme={theme}>{children}</ThemeProvider>
+      <ThemeProvider theme={theme}>
+        <CssBaseline />
+        <Scrollbar>{children}</Scrollbar>
+      </ThemeProvider>
     </ColorModeContext.Provider>
   );
 };

@@ -6,10 +6,11 @@ import React, { ReactNode } from 'react';
 
 import { initTranslation } from '@/app/i18n';
 import NavTabs, { TabProps } from '@/components/NavTabs';
+import { Language } from '@/types';
 
 type LayoutProps = {
   readonly children: ReactNode;
-  readonly params: { lng: string };
+  readonly params: { lng: Language };
 };
 
 export default async function Layout({

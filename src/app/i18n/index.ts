@@ -2,9 +2,11 @@ import { createInstance, i18n } from 'i18next';
 import resourcesToBackend from 'i18next-resources-to-backend';
 import { initReactI18next } from 'react-i18next/initReactI18next';
 
+import { Language } from '@/types';
+
 import { getOptions } from './settings';
 
-const initI18next = async (lng: string, ns: string): Promise<i18n> => {
+const initI18next = async (lng: Language, ns: string): Promise<i18n> => {
   const i18nInstance = createInstance();
   await i18nInstance
     .use(initReactI18next)
@@ -19,7 +21,7 @@ const initI18next = async (lng: string, ns: string): Promise<i18n> => {
 };
 
 export async function initTranslation(
-  lng: string,
+  lng: Language,
   ns?: string | string[],
   options: { keyPrefix?: string } = {},
 ): Promise<{

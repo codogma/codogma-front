@@ -106,10 +106,10 @@ export const getViewed = async (
 ): Promise<GetArticlesDTO> => {
   const response = await axiosInstance.get('/articles/viewed', {
     params: {
-      tag,
-      content,
       page,
       size,
+      tag,
+      content,
     },
   });
   return response.data;

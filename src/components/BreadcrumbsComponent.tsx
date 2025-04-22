@@ -4,10 +4,11 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
 import { useTranslation } from '@/app/i18n/client';
+import { Language } from '@/types';
 
 interface BreadcrumbsComponentProps {
   readonly title?: string;
-  readonly lang: string;
+  readonly lang: Language;
   readonly depth: number;
 }
 

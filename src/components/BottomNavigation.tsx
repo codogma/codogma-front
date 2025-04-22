@@ -14,9 +14,10 @@ import { useEffect, useState } from 'react';
 
 import { useTranslation } from '@/app/i18n/client';
 import { replaceUrlAndDispatchEvent } from '@/helpers/replaceUrlAndDispatchEvent';
+import { Language } from '@/types';
 
 type FixedBottomNavigationProps = {
-  readonly lang: string;
+  readonly lang: Language;
 };
 export default function FixedBottomNavigation({
   lang,

@@ -97,7 +97,7 @@ export const ArticleActions = ({ id, lang, articleData }: SearchProps) => {
         <div className='ml-1 text-base leading-5'>{article.commentsCount}</div>
       </IconButton>
       <MenuButton article={article} lang={lang} />
-      <ArticleProgressBar lang={lang} articleData={articleData} />
+      <ArticleProgressBar articleData={articleData} />
     </Paper>
   );
 };

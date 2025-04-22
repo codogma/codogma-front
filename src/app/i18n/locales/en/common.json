@@ -57,5 +57,7 @@
   "adminPanelBtn": "Admin panel",
   "addToCompilation": "Add to compilation",
   "subscribe": "Subscribe",
-  "unsubscribe": "Unsubscribe"
+  "unsubscribe": "Unsubscribe",
+  "deleteCompilation": "Delete compilation",
+  "deleteCategory": "Delete category"
 }

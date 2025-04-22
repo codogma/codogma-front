@@ -8,22 +8,24 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import MenuItem from '@mui/material/MenuItem';
 import Typography from '@mui/material/Typography';
-import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import React, { useState } from 'react';
 
 import { useTranslation } from '@/app/i18n/client';
+import { GetArticle, Language } from '@/types';
 
 type ButtonAlertDialogProps = {
-  readonly lang: string;
-  readonly articleId: number;
+  readonly lang: Language;
+  readonly article: GetArticle;
   readonly onClose?: () => void;
 };
 export default function ButtonAlertDialog({
   lang,
-  articleId,
+  article,
   onClose,
 }: ButtonAlertDialogProps) {
   const [open, setOpen] = useState(false);
+  const router = useRouter();
   const { t } = useTranslation(lang, 'articles');
 
   const handleClose = () => {
@@ -37,35 +39,49 @@ export default function ButtonAlertDialog({
     setOpen(true);
   };
 
+  const handleClickEditLinkItem = () => {
+    router.push(`/${lang}/article-editor?id=${article.id}`);
+    handleClose();
+  };
+
   return (
     <>
-      <MenuItem onClick={handleClickOpen} disableRipple>
-        <Typography textAlign='center'>
-          <EditOutlinedIcon />
-          {t('editBtn')}
-        </Typography>
-      </MenuItem>
-      <Dialog
-        open={open}
-        onClose={handleClose}
-        aria-labelledby='alert-dialog-title'
-        aria-describedby='alert-dialog-description'
-      >
-        <DialogTitle id='alert-dialog-title'>{t('dialogTitle')}</DialogTitle>
-        <DialogContent>
-          <DialogContentText id='alert-dialog-description'>
-            {t('dialogDescription')}
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleClose}>{t('disagreeBtn')}</Button>
-          <Button onClick={handleClose}>
-            <Link href={`/${lang}/article-editor?id=${articleId}`}>
-              {t('agreeBtn')}
-            </Link>
-          </Button>
-        </DialogActions>
-      </Dialog>
+      {article.status === 'PUBLISHED' ? (
+        <>
+          <MenuItem onClick={handleClickOpen} disableRipple>
+            <Typography textAlign='center'>
+              <EditOutlinedIcon />
+              {t('editBtn')}
+            </Typography>
+          </MenuItem>
+          <Dialog
+            open={open}
+            onClose={handleClose}
+            aria-labelledby='alert-dialog-title'
+            aria-describedby='alert-dialog-description'
+          >
+            <DialogTitle id='alert-dialog-title'>
+              {t('dialogTitle')}
+            </DialogTitle>
+            <DialogContent>
+              <DialogContentText id='alert-dialog-description'>
+                {t('dialogDescription')}
+              </DialogContentText>
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={handleClose}>{t('disagreeBtn')}</Button>
+              <Button onClick={handleClickEditLinkItem}>{t('agreeBtn')}</Button>
+            </DialogActions>
+          </Dialog>
+        </>
+      ) : (
+        <MenuItem onClick={handleClickEditLinkItem} disableRipple>
+          <Typography textAlign='center'>
+            <EditOutlinedIcon />
+            {t('editBtn')}
+          </Typography>
+        </MenuItem>
+      )}
     </>
   );
 }

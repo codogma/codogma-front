@@ -1,21 +1,17 @@
 import { Box, LinearProgress } from '@mui/material';
 import React from 'react';
 
-import { useTranslation } from '@/app/i18n/client';
 import { useArticleProgress } from '@/helpers/useArticleProgress';
 import { GetArticle } from '@/types';
 
 type ArticleProgressBarProps = {
-  readonly lang: string;
   readonly articleData: GetArticle;
 };
 
 export const ArticleProgressBar = ({
-  lang,
   articleData,
 }: ArticleProgressBarProps) => {
   const { progress } = useArticleProgress(articleData.id);
-  const { t } = useTranslation(lang, 'articles');
 
   return (
     <Box

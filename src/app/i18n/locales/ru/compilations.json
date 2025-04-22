@@ -12,5 +12,6 @@
   "addToCompilation": "Добавить в подборку",
   "searchCompilations": "Поиск подборки",
   "add": "Добавить",
-  "updateCompilation": "Обновить подборку"
+  "updateCompilation": "Обновить подборку",
+  "edit": "Редактировать"
 }

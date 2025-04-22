@@ -10,6 +10,7 @@ import {
 } from 'react-i18next';
 
 import { intlCookie } from '@/constants/i18n';
+import { Language } from '@/types';
 
 import { getOptions } from './settings';
 
@@ -31,7 +32,7 @@ use(initReactI18next)
   });
 
 export function useTranslation(
-  lng: string,
+  lng: Language,
   ns?: string | string[],
   options: { keyPrefix?: string } = {},
 ) {

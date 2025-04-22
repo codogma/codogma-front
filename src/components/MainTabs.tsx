@@ -1,11 +1,9 @@
 'use client';
-import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import ArrowCircleRightOutlinedIcon from '@mui/icons-material/ArrowCircleRightOutlined';
 import BookIcon from '@mui/icons-material/Book';
 import HistoryIcon from '@mui/icons-material/History';
-import ViewListIcon from '@mui/icons-material/ViewList';
 import { TabContext, TabList, TabPanel } from '@mui/lab';
-import { Badge, Box, TabOwnProps } from '@mui/material';
+import { Box, TabOwnProps } from '@mui/material';
 import Tab from '@mui/material/Tab';
 import { useQuery } from '@tanstack/react-query';
 import Link from 'next/link';
@@ -14,6 +12,7 @@ import React from 'react';
 import { useTranslation } from '@/app/i18n/client';
 import { Carousel } from '@/components/Carousel';
 import Compilations from '@/components/Compilations';
+import { MyCompilationsBadge } from '@/components/MyCompilationsBadge';
 import { GetArticlesDTO, getViewed } from '@/helpers/articleApi';
 import { getCompilations, GetCompilationsDTO } from '@/helpers/compilationApi';
 import { Language } from '@/types';
@@ -39,33 +38,13 @@ export const MainTabs: React.FC<MainTabsProps> = ({ lang, username }) => {
     {
       value: '3',
       label: t('myCompilations'),
-      icon: (
-        <Badge
-          badgeContent={
-            <AccountCircleIcon
-              sx={{
-                marginLeft: -1,
-                marginBottom: 2,
-                backgroundColor: 'white',
-                borderRadius: 5,
-                fontSize: 15,
-              }}
-            />
-          }
-          anchorOrigin={{
-            vertical: 'bottom',
-            horizontal: 'right',
-          }}
-        >
-          <ViewListIcon />
-        </Badge>
-      ),
+      icon: <MyCompilationsBadge />,
     },
   ];
 
   const { data: viewedData, isFetching: isFetchingViewed } =
     useQuery<GetArticlesDTO>({
-      queryKey: ['articles'],
+      queryKey: ['history'],
       queryFn: () => {
         return getViewed();
       },
@@ -100,7 +79,7 @@ export const MainTabs: React.FC<MainTabsProps> = ({ lang, username }) => {
   return (
     <Box className='nav-tabs'>
       <TabContext value={value}>
-        <Box sx={{ borderBottom: 1, borderColor: 'divider' }} className='tabs'>
+        <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
           <TabList
             onChange={handleChange}
             variant='scrollable'
@@ -115,7 +94,7 @@ export const MainTabs: React.FC<MainTabsProps> = ({ lang, username }) => {
                 iconPosition='start'
                 label={tab.label}
                 value={tab.value}
-                sx={{ minHeight: 'auto', textTransform: 'none' }}
+                sx={{ minHeight: '48px', textTransform: 'none' }}
               />
             ))}
           </TabList>
@@ -126,12 +105,12 @@ export const MainTabs: React.FC<MainTabsProps> = ({ lang, username }) => {
             isLoading={isFetchingViewed}
             lang={lang}
           />
-          <Box className='link'>
-            <Link href={`/${lang}/users/${username}/history`}>
-              <ArrowCircleRightOutlinedIcon sx={{ mr: 1 }} />
+          <Link href={`/${lang}/users/${username}/history`}>
+            <Box className='link'>
+              <ArrowCircleRightOutlinedIcon />
               {t('historyLink')}
-            </Link>
-          </Box>
+            </Box>
+          </Link>
         </TabPanel>
         <TabPanel value='2'>
           <Compilations
@@ -141,7 +120,7 @@ export const MainTabs: React.FC<MainTabsProps> = ({ lang, username }) => {
           />
           <Link href={`/${lang}/bookmarks`}>
             <Box className='link'>
-              <ArrowCircleRightOutlinedIcon sx={{ mr: 1 }} />
+              <ArrowCircleRightOutlinedIcon />
               {t('bookmarksLink')}
             </Box>
           </Link>
@@ -154,7 +133,7 @@ export const MainTabs: React.FC<MainTabsProps> = ({ lang, username }) => {
           />
           <Link href={`/${lang}/my-compilations`}>
             <Box className='link'>
-              <ArrowCircleRightOutlinedIcon sx={{ mr: 1 }} />
+              <ArrowCircleRightOutlinedIcon />
               {t('myCompilationsLink')}
             </Box>
           </Link>

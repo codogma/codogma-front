@@ -4,11 +4,12 @@ import { useRouter } from 'next/navigation';
 import React from 'react';
 
 import { useTranslation } from '@/app/i18n/client';
+import { Language } from '@/types';
 
 interface PopoverElementProps {
   readonly destination: string;
   readonly popoverId: string;
-  readonly lang: string;
+  readonly lang: Language;
   readonly btnEl: HTMLElement | null;
   readonly onClose?: () => void;
 }

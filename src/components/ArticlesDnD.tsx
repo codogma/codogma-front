@@ -31,7 +31,7 @@ import {
   updateCompilation,
   UpdateCompilationDTO,
 } from '@/helpers/compilationApi';
-import { GetArticle, GetCompilation } from '@/types';
+import { GetArticle, GetCompilation, Language } from '@/types';
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   '& .MuiDialogContent-root': {
@@ -43,7 +43,7 @@ const BootstrapDialog = styled(Dialog)(({ theme }) => ({
 }));
 
 type ArticlesDnDProps = {
-  readonly lang: string;
+  readonly lang: Language;
   readonly compilationData: GetCompilation;
   readonly onClose: () => void;
   readonly refetch?: () => void;

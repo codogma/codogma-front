@@ -8,9 +8,10 @@ import TextField from '@mui/material/TextField';
 import React, { useEffect, useState } from 'react';
 
 import { useTranslation } from '@/app/i18n/client';
+import { Language } from '@/types';
 
 type PaginationProps = {
-  readonly lang: string;
+  readonly lang: Language;
   readonly totalPages: number;
   readonly totalElements: number;
   readonly resultsPerPageStart?: number;
