@@ -12,5 +12,6 @@
   "addToCompilation": "Add to compilation",
   "searchCompilations": "Search compilations",
   "add": "Add",
-  "updateCompilation": "Update compilation"
+  "updateCompilation": "Update compilation",
+  "edit": "Edit"
 }

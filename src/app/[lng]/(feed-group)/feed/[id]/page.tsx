@@ -5,7 +5,6 @@ import DOMPurify from 'dompurify';
 import Link from 'next/link';
 import React from 'react';
 
-import { useTranslation } from '@/app/i18n/client';
 import { useArticle } from '@/components/ArticleProvider';
 import { useAuth } from '@/components/AuthProvider';
 import { AvatarImage } from '@/components/AvatarImage'; // import { CommentList } from '@/components/CommentList';
@@ -27,7 +26,6 @@ export default function Page({ params: { lng } }: PageProps) {
   const { article } = useArticle();
   const { state } = useAuth();
   const { processContent } = useContentImageContext();
-  const { t } = useTranslation(lng);
   const content = processContent(DOMPurify.sanitize(article.content));
 
   return (
@@ -68,7 +66,7 @@ export default function Page({ params: { lng } }: PageProps) {
           </div>
           <div className='article-content'>{content}</div>
           <div className='article-presenter-meta'>
-            <div className='article-category-pm'>
+            <div>
               Категории:{' '}
               {article.categories?.map((category) => (
                 <span className='category-item' key={category.id}>
@@ -81,7 +79,7 @@ export default function Page({ params: { lng } }: PageProps) {
                 </span>
               ))}
             </div>
-            <div className='article-tag-pm'>
+            <div>
               Теги:{' '}
               {article.tags?.map((tag) => (
                 <span className='tag-item' key={tag.id}>

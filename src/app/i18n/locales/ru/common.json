@@ -57,5 +57,7 @@
   "adminPanelBtn": "Панель администратора",
   "addToCompilation": "Добавить в подборки",
   "subscribe": "Подписаться",
-  "unsubscribe": "Отписатся"
+  "unsubscribe": "Отписатся",
+  "deleteCompilation": "Удалить подборку",
+  "deleteCategory": "Удалить категорию"
 }

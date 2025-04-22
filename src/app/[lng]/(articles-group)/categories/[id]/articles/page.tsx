@@ -2,7 +2,6 @@
 import { useQuery } from '@tanstack/react-query';
 import React, { useState } from 'react';
 
-import { useTranslation } from '@/app/i18n/client';
 import Articles from '@/components/Articles';
 import { CustomPagination } from '@/components/CustomPagination';
 import { Search } from '@/components/Search';
@@ -24,7 +23,6 @@ export default function Layout({ params: { id, lng } }: PageProps) {
   const [resultsPerPage, setResultsPerPage] = useState<number>(12);
   const [searchValue, setSearchValue] = useState<string>();
   const [searchType, setSearchType] = useState<string>('content');
-  const { t } = useTranslation(lng, 'articles');
 
   const onSearchType = (type: string) => {
     setSearchType(type);

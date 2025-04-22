@@ -25,7 +25,7 @@
   }
 
   .content {
-    @apply grow max-w-full p-0 mb-2 !important;
+    @apply mb-2 max-w-full grow p-0 !important;
   }
 
   .card-with-line {
@@ -168,7 +168,7 @@
   .article-preview-content,
   .category-preview-content,
   .compilation-preview-content {
-    @apply mb-4 pr-2 flex flex-grow flex-col gap-3 text-ellipsis whitespace-normal break-words text-sm font-medium leading-4 dark:text-alto;
+    @apply mb-4 flex flex-grow flex-col gap-3 text-ellipsis whitespace-normal break-words pr-2 text-sm font-medium leading-4 dark:text-alto;
   }
 
   .article-content {
@@ -220,7 +220,7 @@
   }
 
   .tag-name {
-    @apply inline-flex text-sm leading-5 text-horizon dark:text-curious-blue no-underline !important;
+    @apply inline-flex text-sm leading-5 text-horizon no-underline dark:text-curious-blue !important;
   }
 
   .tag-name:hover {
@@ -260,7 +260,7 @@
   }
 
   .link {
-    @apply mt-4 flex items-center gap-1 flex-row justify-start text-horizon dark:text-curious-blue no-underline;
+    @apply mt-4 flex flex-row items-center justify-start gap-1 text-horizon no-underline dark:text-curious-blue;
   }
 
   .link:hover {
@@ -378,7 +378,6 @@
   .os-theme-light .os-scrollbar-track {
     @apply bg-gray-600/30 hover:bg-gray-500/50;
   }
-
 
   .dark .os-theme-dark .os-scrollbar-handle {
     @apply bg-gray-100 hover:bg-gray-200;

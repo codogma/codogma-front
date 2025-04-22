@@ -92,7 +92,7 @@ export default function MenuButton({
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const { state } = useAuth();
   const open = Boolean(anchorEl);
-  const { t } = useTranslation(lang);
+  const { t } = useTranslation(lang, 'common');
 
   const { data } = useQuery<GetUserDTO>({
     queryKey: [
@@ -211,7 +211,9 @@ export default function MenuButton({
               onClick={() => handleDelete(compilation.id)}
               disableRipple
             >
-              <Typography textAlign='center'>Удалить подборку</Typography>
+              <Typography textAlign='center'>
+                {t('deleteCompilation')}
+              </Typography>
             </MenuItem>
           )}
           {state.user?.role === UserRole.ROLE_ADMIN && category && (
@@ -219,7 +221,7 @@ export default function MenuButton({
               onClick={() => handleDeleteCategory(category.id)}
               disableRipple
             >
-              <Typography textAlign='center'>Удалить категорию</Typography>
+              <Typography textAlign='center'>{t('deleteCategory')}</Typography>
             </MenuItem>
           )}
         </MenuList>

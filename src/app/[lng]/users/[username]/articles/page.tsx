@@ -3,7 +3,6 @@ import { useQuery } from '@tanstack/react-query';
 import DOMPurify from 'dompurify';
 import React, { useState } from 'react';
 
-import { useTranslation } from '@/app/i18n/client';
 import Articles from '@/components/Articles';
 import { useContentImageContext } from '@/components/ContentImageProvider';
 import { CustomPagination } from '@/components/CustomPagination';
@@ -26,7 +25,6 @@ export default function Layout({ params: { lng, username } }: PageProps) {
   const [searchValue, setSearchValue] = useState<string>();
   const [searchType, setSearchType] = useState<string>('content');
   const { processContent } = useContentImageContext();
-  const { t } = useTranslation(lng, 'articles');
 
   const onSearchType = (type: string) => {
     setSearchType(type);
