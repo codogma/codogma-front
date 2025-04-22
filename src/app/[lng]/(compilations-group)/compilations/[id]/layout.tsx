@@ -1,7 +1,6 @@
 'use client';
 import { CardHeader, Skeleton } from '@mui/material';
 import Card from '@mui/material/Card';
-import CardContent from '@mui/material/CardContent';
 import Typography from '@mui/material/Typography';
 import { useQuery } from '@tanstack/react-query';
 import Link from 'next/link';
@@ -45,64 +44,59 @@ export default function Layout({ params: { id, lng }, children }: PageProps) {
   return (
     <section className='grid gap-2'>
       <Card variant='outlined' className='card'>
-        <CardContent className='card-content'>
-          {isFetching ? (
-            <div className='card-header'>
-              <Skeleton className='category-img' variant='rounded' />
-              <div>
-                <h1 className='category-card-name'>
-                  <Skeleton variant='text' width={150} />
-                </h1>
-                <p className='category-card-shortInfo'>
-                  <Skeleton variant='text' width={200} />
-                </p>
-              </div>
+        {isFetching ? (
+          <div className='card-header'>
+            <Skeleton className='category-img' variant='rounded' />
+            <div>
+              <h1 className='category-card-name'>
+                <Skeleton variant='text' width={150} />
+              </h1>
+              <p className='category-card-shortInfo'>
+                <Skeleton variant='text' width={200} />
+              </p>
             </div>
-          ) : (
-            <CardHeader
-              avatar={
-                <AvatarImage
-                  alt={compilation?.title}
-                  className='category-img'
-                  variant='rounded'
-                  src={compilation?.imageUrl}
-                  size={48}
+          </div>
+        ) : (
+          <CardHeader
+            avatar={
+              <AvatarImage
+                alt={compilation?.title}
+                className='category-img'
+                variant='rounded'
+                src={compilation?.imageUrl}
+                size={48}
+              />
+            }
+            action={
+              state.user?.username !== compilation?.ownerName ? (
+                <Bookmark
+                  username={compilation?.ownerName}
+                  lang={lng}
+                  id={id}
+                  isBookmarkedValue={compilation?.isBookmarked}
+                  refetch={refetch}
                 />
-              }
-              action={
-                state.user?.username !== compilation?.ownerName ? (
-                  <Bookmark
-                    username={compilation?.ownerName}
-                    lang={lng}
-                    id={id}
-                    isBookmarkedValue={compilation?.isBookmarked}
-                    refetch={refetch}
-                  />
-                ) : (
-                  <MenuButton
-                    compilation={compilation}
-                    lang={lng}
-                    refetch={refetch}
-                  />
-                )
-              }
-              title={
-                <Link
-                  href={`/compilations/${id}`}
-                  className='category-card-name'
-                >
-                  {compilation?.title}
-                </Link>
-              }
-              subheader={
-                <Typography className='category-card-description'>
-                  {compilation?.description}
-                </Typography>
-              }
-              className='card-header'
-            />
-          )}
-        </CardContent>
+              ) : (
+                <MenuButton
+                  compilation={compilation}
+                  lang={lng}
+                  refetch={refetch}
+                />
+              )
+            }
+            title={
+              <Link href={`/compilations/${id}`} className='category-card-name'>
+                {compilation?.title}
+              </Link>
+            }
+            subheader={
+              <Typography className='category-card-description'>
+                {compilation?.description}
+              </Typography>
+            }
+            className='card-header'
+          />
+        )}
       </Card>
       <div className='box-border min-w-0'>
         <CompilationProvider isRefetch={isRefetch} resetRefetch={resetRefetch}>

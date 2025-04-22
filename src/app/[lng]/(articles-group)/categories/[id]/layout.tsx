@@ -1,10 +1,9 @@
 'use client';
 import ArticleIcon from '@mui/icons-material/Article';
 import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
-import { Badge, Skeleton } from '@mui/material';
+import { CardHeader, Skeleton } from '@mui/material';
 import Card from '@mui/material/Card';
-import CardContent from '@mui/material/CardContent';
-import IconButton from '@mui/material/IconButton';
+import Typography from '@mui/material/Typography';
 import { useQuery } from '@tanstack/react-query';
 import React from 'react';
 
@@ -55,61 +54,58 @@ export default function Layout({
   return (
     <section>
       <Card variant='outlined' className='card'>
-        <CardContent className='card-content'>
-          {isFetching ? (
-            <div className='card-header'>
-              <Skeleton className='category-img' variant='rounded' />
-              <div>
-                <h1 className='category-card-name'>
-                  <Skeleton variant='text' width={150} />
-                </h1>
-                <p className='category-card-shortInfo'>
-                  <Skeleton variant='text' width={200} />
-                </p>
-              </div>
+        {isFetching ? (
+          <div className='card-header'>
+            <Skeleton className='category-img' variant='rounded' />
+            <div>
+              <h1 className='category-card-name'>
+                <Skeleton variant='text' width={150} />
+              </h1>
+              <p className='category-card-shortInfo'>
+                <Skeleton variant='text' width={200} />
+              </p>
             </div>
-          ) : (
-            <>
-              <div className='card-header'>
-                <Badge
-                  className='items-start'
-                  overlap='circular'
-                  anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-                  badgeContent={
-                    <IconButton
-                      component='label'
-                      color='inherit'
-                      sx={{ p: 0 }}
-                    />
-                  }
-                >
-                  <AvatarImage
-                    alt={category?.name}
-                    className='category-img'
-                    variant='rounded'
-                    src={category?.imageUrl}
-                    size={48}
-                  />
-                </Badge>
-                <div>
-                  <h1 className='category-card-name'>{category?.name}</h1>
-                  <p className='category-card-description'>
-                    {category?.description}
-                  </p>
-                </div>
-              </div>
-              {state.user?.role !== UserRole.ROLE_ADMIN ? (
-                <ButtonFavorite
-                  lang={lng}
-                  isFavoriteValue={category?.isFavorite}
-                  id={id}
+          </div>
+        ) : (
+          <>
+            <CardHeader
+              avatar={
+                <AvatarImage
+                  alt={category?.name}
+                  className='category-img'
+                  variant='rounded'
+                  src={category?.imageUrl}
+                  size={48}
                 />
-              ) : (
-                <MenuButton category={category} lang={lng} refetch={refetch} />
-              )}
-            </>
-          )}
-        </CardContent>
+              }
+              action={
+                state.user?.role !== UserRole.ROLE_ADMIN ? (
+                  <ButtonFavorite
+                    lang={lng}
+                    isFavoriteValue={category?.isFavorite}
+                    id={id}
+                  />
+                ) : (
+                  <MenuButton
+                    category={category}
+                    lang={lng}
+                    refetch={refetch}
+                  />
+                )
+              }
+              title={
+                <Typography className='category-card-name'>
+                  {category?.name}
+                </Typography>
+              }
+              subheader={
+                <Typography className='category-card-description'>
+                  {category?.description}
+                </Typography>
+              }
+            />
+          </>
+        )}
       </Card>
       <NavTabs tabs={tabs} />
       {children}
