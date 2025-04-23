@@ -28,7 +28,6 @@ type NavTabsProps = {
 export const NavTabs: React.FC<NavTabsProps> = memo(function NavTabs({ tabs }) {
   const router = useRouter();
   const pathname = usePathname();
-  const [value, setValue] = useState<string>(pathname);
   const ref = useRef<HTMLDivElement>(null);
   const [overflow, setOverflow] = useState<boolean>(false);
 
@@ -57,7 +56,6 @@ export const NavTabs: React.FC<NavTabsProps> = memo(function NavTabs({ tabs }) {
 
   const handleClick = useCallback(
     (href: string) => {
-      setValue(href);
       replaceUrlAndDispatchEvent(router, href);
     },
     [router],
@@ -68,7 +66,7 @@ export const NavTabs: React.FC<NavTabsProps> = memo(function NavTabs({ tabs }) {
   return (
     <div ref={ref} className='nav-tabs'>
       <Tabs
-        value={value}
+        value={pathname}
         variant={overflow ? 'scrollable' : 'standard'}
         scrollButtons={overflow ? 'auto' : false}
         allowScrollButtonsMobile={overflow}
