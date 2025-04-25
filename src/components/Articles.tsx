@@ -16,34 +16,39 @@ type ArticlesProps = {
 
 export default function Articles({ lang, articles, loading }: ArticlesProps) {
   return (
-    <>
-      {loading ? (
-        <Card variant='outlined' className='card'>
-          <CardContent className='card-content'>
-            <div className='card-header'>
-              <Skeleton variant='rounded' width={32} height={32} />
-              <Skeleton variant='text' width={300} />
-            </div>
-            <div>
-              <Skeleton variant='text' width={600} />
-            </div>
-            <div>
-              <Skeleton variant='text' width={600} />
-            </div>
-            <div>
-              <Skeleton variant='text' width={600} />
-            </div>
-          </CardContent>
-        </Card>
-      ) : (
-        <Grid container direction={{ xs: 'column', sm: 'row' }} spacing={1}>
-          {articles?.map((article) => (
-            <Grid key={article.id} size={{ xs: 12, sm: 6, lg: 4 }}>
-              <ArticleCard article={article} lang={lang} />
-            </Grid>
-          ))}
+    <Grid container spacing={2}>
+      {(loading ? Array.from(new Array(12)) : articles)?.map((article) => (
+        <Grid key={article.id} size={{ xs: 12, sm: 6, lg: 4 }}>
+          {article ? (
+            <ArticleCard article={article} lang={lang} />
+          ) : (
+            <Card variant='outlined' sx={{ width: '100%', p: 2 }}>
+              <CardContent>
+                <div style={{ display: 'flex', gap: 16, alignItems: 'center' }}>
+                  <Skeleton variant='rounded' width={40} height={40} />
+                  <div style={{ flex: 1 }}>
+                    <Skeleton
+                      variant='text'
+                      width='40%'
+                      height={20}
+                      sx={{ mt: 0.5 }}
+                    />
+                    <Skeleton variant='text' width='60%' height={24} />
+                  </div>
+                </div>
+                <Skeleton
+                  variant='rectangular'
+                  width='100%'
+                  height={160}
+                  sx={{ mt: 2, borderRadius: 1 }}
+                />
+                <Skeleton variant='text' width='80%' sx={{ mt: 2 }} />
+                <Skeleton variant='text' width='60%' sx={{ mt: 1 }} />
+              </CardContent>
+            </Card>
+          )}
         </Grid>
-      )}
-    </>
+      ))}
+    </Grid>
   );
 }
