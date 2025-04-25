@@ -18,32 +18,42 @@ export default function Articles({ lang, articles, loading }: ArticlesProps) {
   return (
     <Grid container spacing={2}>
       {(loading ? Array.from(new Array(12)) : articles)?.map((article) => (
-        <Grid key={article.id} size={{ xs: 12, sm: 6, lg: 4 }}>
+        <Grid key={article?.id} size={{ xs: 12, sm: 6, lg: 4 }}>
           {article ? (
             <ArticleCard article={article} lang={lang} />
           ) : (
-            <Card variant='outlined' sx={{ width: '100%', p: 2 }}>
+            <Card variant='outlined' className='card'>
               <CardContent>
                 <div style={{ display: 'flex', gap: 16, alignItems: 'center' }}>
-                  <Skeleton variant='rounded' width={40} height={40} />
+                  <Skeleton
+                    animation='wave'
+                    variant='rounded'
+                    width={40}
+                    height={40}
+                  />
                   <div style={{ flex: 1 }}>
                     <Skeleton
-                      variant='text'
-                      width='40%'
-                      height={20}
-                      sx={{ mt: 0.5 }}
+                      animation='wave'
+                      height={10}
+                      width='80%'
+                      style={{ marginBottom: 6 }}
                     />
-                    <Skeleton variant='text' width='60%' height={24} />
+                    <Skeleton animation='wave' height={10} width='40%' />
                   </div>
                 </div>
+              </CardContent>
+              <Skeleton
+                sx={{ height: 190 }}
+                animation='wave'
+                variant='rectangular'
+              />
+              <CardContent>
                 <Skeleton
-                  variant='rectangular'
-                  width='100%'
-                  height={160}
-                  sx={{ mt: 2, borderRadius: 1 }}
+                  animation='wave'
+                  height={10}
+                  style={{ marginBottom: 6 }}
                 />
-                <Skeleton variant='text' width='80%' sx={{ mt: 2 }} />
-                <Skeleton variant='text' width='60%' sx={{ mt: 1 }} />
+                <Skeleton animation='wave' height={10} width='80%' />
               </CardContent>
             </Card>
           )}
