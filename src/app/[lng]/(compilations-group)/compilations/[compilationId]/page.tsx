@@ -10,7 +10,7 @@ import { getArticles, GetArticlesDTO } from '@/helpers/articleApi';
 import { Language, SearchType } from '@/types';
 
 type PageParams = {
-  id: number;
+  compilationId: number;
   lng: Language;
 };
 
@@ -18,8 +18,7 @@ type PageProps = {
   readonly params: PageParams;
 };
 
-export default function Page({ params: { id, lng } }: PageProps) {
-  const compilationId = id;
+export default function Page({ params: { compilationId, lng } }: PageProps) {
   const [currentPage, setCurrentPage] = useState<number>(0);
   const [resultsPerPage, setResultsPerPage] = useState<number>(12);
   const [searchValue, setSearchValue] = useState<string>();
@@ -59,9 +58,9 @@ export default function Page({ params: { id, lng } }: PageProps) {
     },
   });
 
-  const articles = data?.content || [];
-  const totalPages = data?.totalPages || 0;
-  const totalElements = data?.totalElements || 0;
+  const articles = data?.content ?? [];
+  const totalPages = data?.totalPages ?? 0;
+  const totalElements = data?.totalElements ?? 0;
 
   useEffect(() => {
     if (isRefetch) {

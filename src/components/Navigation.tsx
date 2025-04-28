@@ -1,23 +1,24 @@
 'use client';
 import { Container, Grid2 as Grid } from '@mui/material';
-import { usePathname } from 'next/navigation';
+import { useParams, usePathname } from 'next/navigation';
 import React, { ReactNode } from 'react';
 
 import BottomNavigation from '@/components/BottomNavigation';
 import NavBar from '@/components/NavBar';
+import { useNavigationState } from '@/components/NavigationProvider';
 import { NavPanel } from '@/components/NavPanel';
+import { NavSidebar } from '@/components/NavSidebar';
 import { Language } from '@/types';
 
-type ContainerWithNavPanelProps = {
+type NavigationProps = {
   readonly lang: Language;
   readonly children: ReactNode;
 };
 
-export const ContainerWithNavigations = ({
-  lang,
-  children,
-}: ContainerWithNavPanelProps) => {
+export const Navigation = ({ lang, children }: NavigationProps) => {
+  const { article, compilation } = useNavigationState();
   const pathname = usePathname();
+  const { articleId } = useParams();
   const hasAdmin = pathname.startsWith(`/${lang}/admin`);
   if (hasAdmin) {
     return children;
@@ -45,6 +46,23 @@ export const ContainerWithNavigations = ({
           >
             {children}
           </Grid>
+          {!!articleId && (
+            <Grid
+              sx={{
+                position: 'sticky',
+                top: 64,
+                height: { xs: 'auto', md: 'calc(100vh - 64px)' },
+                overflow: 'hidden',
+                display: { xs: 'none', md: 'block' },
+              }}
+            >
+              <NavSidebar
+                lang={lang}
+                article={article}
+                compilation={compilation}
+              />
+            </Grid>
+          )}
         </Grid>
       </Container>
       <BottomNavigation lang={lang} />

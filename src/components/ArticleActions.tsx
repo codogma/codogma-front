@@ -13,17 +13,16 @@ import { getArticleById, like, unlike } from '@/helpers/articleApi';
 import { GetArticle, Language } from '@/types';
 
 type SearchProps = {
-  readonly id: number;
   readonly lang: Language;
   readonly articleData: GetArticle;
 };
 
-export const ArticleActions = ({ id, lang, articleData }: SearchProps) => {
+export const ArticleActions = ({ lang, articleData }: SearchProps) => {
   const { state } = useAuth();
 
   const { data: article, refetch } = useQuery({
-    queryKey: ['article', id],
-    queryFn: () => getArticleById(id),
+    queryKey: ['article', articleData.id],
+    queryFn: () => getArticleById(articleData.id),
     initialData: articleData,
   });
 
@@ -38,14 +37,14 @@ export const ArticleActions = ({ id, lang, articleData }: SearchProps) => {
   };
 
   const handleChange = async (
-    event: React.ChangeEvent<HTMLInputElement>,
+    _event: React.ChangeEvent<HTMLInputElement>,
     checked: boolean,
   ) => {
     if (state.isAuthenticated) {
       if (checked) {
-        await like(id).then(() => refetch());
+        await like(articleData.id).then(() => refetch());
       } else {
-        await unlike(id).then(() => refetch());
+        await unlike(articleData.id).then(() => refetch());
       }
     }
   };

@@ -224,7 +224,7 @@ export const CompilationCard = ({
                     {compilation.articles.map((article) => (
                       <li key={article.id}>
                         <Link
-                          href={`/compilations/${compilation.id}/${article.id}`}
+                          href={`/${lang}/compilations/${compilation.id}/${article.id}`}
                         >
                           <span className='link'>{article.title}</span>
                         </Link>

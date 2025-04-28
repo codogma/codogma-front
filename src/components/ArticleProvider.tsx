@@ -1,7 +1,8 @@
 'use client';
 import { redirect } from 'next/navigation';
-import React, { createContext, useContext } from 'react';
+import React, { createContext, useContext, useEffect } from 'react';
 
+import { useNavigationActions } from '@/components/NavigationProvider';
 import { GetArticle } from '@/types';
 
 interface ArticleContextType {
@@ -24,6 +25,14 @@ export const ArticleProvider = ({
   if (!article) {
     redirect('/not-found');
   }
+
+  const { setArticle } = useNavigationActions();
+
+  useEffect(() => {
+    setArticle(article);
+    return () => setArticle(undefined);
+  }, [article, setArticle]);
+
   return (
     <ArticleContext.Provider value={{ article }}>
       {children}

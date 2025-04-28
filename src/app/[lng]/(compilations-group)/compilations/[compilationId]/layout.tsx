@@ -4,18 +4,19 @@ import Card from '@mui/material/Card';
 import Typography from '@mui/material/Typography';
 import { useQuery } from '@tanstack/react-query';
 import Link from 'next/link';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { useAuth } from '@/components/AuthProvider';
 import { AvatarImage } from '@/components/AvatarImage';
 import { Bookmark } from '@/components/Bookmark';
 import { CompilationProvider } from '@/components/CompilationProvider';
 import MenuButton from '@/components/MenuButton';
+import { useNavigationActions } from '@/components/NavigationProvider';
 import { getCompilationById } from '@/helpers/compilationApi';
 import { GetCompilation, Language } from '@/types';
 
 type PageParams = {
-  id: number;
+  compilationId: number;
   lng: Language;
 };
 
@@ -24,8 +25,12 @@ type PageProps = {
   readonly children: React.ReactNode;
 };
 
-export default function Layout({ params: { id, lng }, children }: PageProps) {
+export default function Layout({
+  params: { compilationId, lng },
+  children,
+}: PageProps) {
   const { state } = useAuth();
+  const { setCompilation } = useNavigationActions();
   const [isRefetch, setIsRefetch] = useState<boolean>(false);
 
   const refetch = () => {
@@ -37,9 +42,14 @@ export default function Layout({ params: { id, lng }, children }: PageProps) {
   };
 
   const { data: compilation, isFetching } = useQuery<GetCompilation>({
-    queryKey: ['compilation', id],
-    queryFn: () => getCompilationById(id),
+    queryKey: ['compilation', compilationId],
+    queryFn: () => getCompilationById(compilationId),
   });
+
+  useEffect(() => {
+    setCompilation(compilation);
+    return () => setCompilation(undefined);
+  }, [compilation, setCompilation]);
 
   return (
     <section className='grid gap-2'>
@@ -72,7 +82,7 @@ export default function Layout({ params: { id, lng }, children }: PageProps) {
                 <Bookmark
                   username={compilation?.ownerName}
                   lang={lng}
-                  id={id}
+                  id={compilationId}
                   isBookmarkedValue={compilation?.isBookmarked}
                   refetch={refetch}
                 />
@@ -85,7 +95,10 @@ export default function Layout({ params: { id, lng }, children }: PageProps) {
               )
             }
             title={
-              <Link href={`/compilations/${id}`} className='category-card-name'>
+              <Link
+                href={`/compilations/${compilationId}`}
+                className='category-card-name'
+              >
                 {compilation?.title}
               </Link>
             }

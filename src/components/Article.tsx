@@ -24,18 +24,17 @@ import { GetArticle, Language } from '@/types';
 
 type ArticleProps = {
   readonly lng: Language;
-  readonly id: number;
 };
 
-export default function Article({ lng, id }: ArticleProps) {
+export default function Article({ lng }: ArticleProps) {
   const { article } = useArticle();
   const { processContent } = useContentImageContext();
   const { t } = useTranslation(lng, 'articles');
   const content = processContent(DOMPurify.sanitize(article.content));
 
   const { data, isFetching } = useQuery<GetArticle>({
-    queryKey: ['articles', id],
-    queryFn: () => getRecommendationsArticleById(id),
+    queryKey: ['articles', article.id],
+    queryFn: () => getRecommendationsArticleById(article.id),
   });
 
   const articles: GetArticle[] = (data ?? []) as GetArticle[];
@@ -43,7 +42,7 @@ export default function Article({ lng, id }: ArticleProps) {
 
   return (
     <>
-      <Card key={id} id={`article-${id}`} variant='outlined' className='card'>
+      <Card id={`article-${article.id}`} variant='outlined' className='card'>
         <CardHeader
           avatar={
             <AvatarImage
@@ -113,8 +112,8 @@ export default function Article({ lng, id }: ArticleProps) {
           </section>
         </CardActions>
       </Card>
-      <ArticleActions lang={lng} articleData={article} id={id} />
-      <CommentList articleId={id} lang={lng} />
+      <ArticleActions lang={lng} articleData={article} />
+      <CommentList articleId={article.id} lang={lng} />
       {hasArticles && (
         <>
           <Typography component='div'>{t('recommendation')}</Typography>

@@ -35,13 +35,13 @@ export const NavPanel = ({ lang }: NavPanelProps) => {
   const [activeIndex, setActiveIndex] = useState<number | undefined>(undefined);
 
   useEffect(() => {
-    if (pathname === `/${lang}/articles`) {
+    if (pathname.startsWith(`/${lang}/articles`)) {
       setActiveIndex(0);
-    } else if (pathname === `/${lang}/feed`) {
+    } else if (pathname.startsWith(`/${lang}/feed`)) {
       setActiveIndex(1);
-    } else if (pathname === `/${lang}/compilations`) {
+    } else if (pathname.startsWith(`/${lang}/compilations`)) {
       setActiveIndex(2);
-    } else if (pathname === `/${lang}`) {
+    } else if (pathname.startsWith(`/${lang}`)) {
       setActiveIndex(undefined);
     }
   }, [lang, pathname]);

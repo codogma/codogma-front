@@ -50,7 +50,7 @@ export function useArticleProgress(articleId: number) {
       viewport.removeEventListener('scroll', handleScroll);
       clearInterval(interval);
     };
-  }, [articleId]);
+  }, [articleId, instance]);
 
   return { progress, timeSpent };
 }

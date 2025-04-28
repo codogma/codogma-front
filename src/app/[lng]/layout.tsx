@@ -8,10 +8,11 @@ import React, { ReactNode } from 'react';
 import { initTranslation } from '@/app/i18n';
 import { AuthProvider } from '@/components/AuthProvider';
 import { ButtonBackToTop } from '@/components/ButtonBackToTop';
-import { ContainerWithNavigations } from '@/components/ContainerWithNavigations';
 import { ContentImageProvider } from '@/components/ContentImageProvider';
 import { CustomizedSnackbars } from '@/components/CustomizedSnackbars';
 import Footer from '@/components/Footer';
+import { Navigation } from '@/components/Navigation';
+import { NavigationProvider } from '@/components/NavigationProvider';
 import { ReactQueryProvider } from '@/components/ReactQueryProvider';
 import { ColorModeProvider } from '@/components/ThemeContext';
 import { Language } from '@/types';
@@ -73,15 +74,19 @@ export default async function Layout({
             <ColorModeProvider>
               <ReactQueryProvider>
                 <AuthProvider>
-                  <ContainerWithNavigations lang={lng}>
-                    <ButtonBackToTop>
-                      <Container className='content'>
-                        <ContentImageProvider>{children}</ContentImageProvider>
-                      </Container>
-                    </ButtonBackToTop>
-                    <Footer lang={lng} />
-                    <CustomizedSnackbars />
-                  </ContainerWithNavigations>
+                  <NavigationProvider>
+                    <Navigation lang={lng}>
+                      <ButtonBackToTop>
+                        <Container className='content'>
+                          <ContentImageProvider>
+                            {children}
+                          </ContentImageProvider>
+                        </Container>
+                      </ButtonBackToTop>
+                      <Footer lang={lng} />
+                      <CustomizedSnackbars />
+                    </Navigation>
+                  </NavigationProvider>
                 </AuthProvider>
               </ReactQueryProvider>
             </ColorModeProvider>

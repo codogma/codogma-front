@@ -1,5 +1,6 @@
 import { Editor } from '@tinymce/tinymce-react';
 import React, { useEffect, useRef } from 'react';
+import slugify from 'slugify';
 import { v4 as uuid } from 'uuid';
 
 import { devConsoleError } from '@/helpers/devConsoleLogs';
@@ -108,6 +109,39 @@ export const TinyMCEEditor = ({
               }
               return match;
             });
+          });
+
+          const processHeadings = () => {
+            const body = editor.getBody();
+            const slugCounts = new Map<string, number>();
+            Array.from(body.querySelectorAll('h1,h2,h3,h4,h5,h6')).forEach(
+              (heading) => {
+                const text = heading.textContent ?? '';
+                const baseSlug = slugify(text, { lower: true, strict: true });
+                const count = slugCounts.get(baseSlug) ?? 0;
+
+                slugCounts.set(baseSlug, count + 1);
+                const finalSlug = count > 0 ? `${baseSlug}-${count}` : baseSlug;
+
+                if (heading.id !== finalSlug) {
+                  editor.dom.setAttrib(heading, 'id', finalSlug);
+                }
+              },
+            );
+          };
+
+          // Дебаунс 300ms + RAF для производительности
+          let timeout: number;
+          editor.on('input change', () => {
+            cancelAnimationFrame(timeout);
+            timeout = requestAnimationFrame(() => {
+              processHeadings();
+            });
+          });
+
+          // Обработка при инициализации
+          editor.on('init', () => {
+            processHeadings();
           });
         },
         media_live_embeds: true,

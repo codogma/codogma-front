@@ -58,6 +58,7 @@
     "react-hook-form": "^7.53.0",
     "react-i18next": "^15.0.2",
     "sharp": "^0.33.5",
+    "slugify": "^1.6.6",
     "sockjs-client": "^1.6.1",
     "supports-color": "^10.0.0",
     "swiper": "^11.1.12",

@@ -35,6 +35,7 @@ export type UpdateArticleDTO = {
 export type GetArticlesDTO = {
   totalElements: number;
   totalPages: number;
+  number: number;
   content: GetArticle[];
 };
 
