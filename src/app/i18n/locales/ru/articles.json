@@ -20,5 +20,8 @@
   "blocked": "заблокирована",
   "sortArticles": "Сортировка статей",
   "description": "Описание",
-  "listOfArticles": "Список статей"
+  "listOfArticles": "Список статей",
+  "tableOfContents": "Оглавление",
+  "settings": "Настройки",
+  "hideNavigation": "Скрыть навигацию"
 }

@@ -128,7 +128,7 @@ export const ArticlesDnD = ({
             <List
               sx={{
                 width: '100%',
-                maxWidth: 360,
+                maxWidth: 500,
               }}
               className='inline-flex flex-col gap-2'
             >

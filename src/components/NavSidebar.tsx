@@ -178,7 +178,7 @@ export const NavSidebar = ({
       <DrawerHeader>
         <Stack spacing={1} direction='row' sx={{ alignItems: 'center' }}>
           <BallotOutlinedIcon />
-          <Typography variant='h6'>Список статей:</Typography>
+          <Typography variant='h6'>{t('listOfArticles')}:</Typography>
         </Stack>
         <IconButton onClick={() => setOpenArticles(false)}>
           <CloseIcon />
@@ -269,7 +269,7 @@ export const NavSidebar = ({
       <DrawerHeader>
         <Stack spacing={1} direction='row' sx={{ alignItems: 'center' }}>
           <ListAltOutlinedIcon />
-          <Typography variant='h6'>Оглавление:</Typography>
+          <Typography variant='h6'>{t('tableOfContents')}:</Typography>
         </Stack>
         <IconButton onClick={() => setOpenContents(false)}>
           <CloseIcon />
@@ -347,7 +347,7 @@ export const NavSidebar = ({
       <DrawerHeader>
         <Stack spacing={1} direction='row' sx={{ alignItems: 'center' }}>
           <SettingsApplicationsOutlinedIcon />
-          <Typography variant='h6'>Настройки:</Typography>
+          <Typography variant='h6'>{t('settings')}:</Typography>
         </Stack>
         <IconButton onClick={() => setOpenSettings(false)}>
           <CloseIcon />
@@ -376,7 +376,7 @@ export const NavSidebar = ({
       >
         <Box paddingTop={1}>
           <Tooltip
-            title='Скрыть навигацию'
+            title={t('hideNavigation')}
             arrow
             placement='left'
             sx={{ display: 'block' }}
@@ -394,7 +394,7 @@ export const NavSidebar = ({
         </Box>
         <Box>
           <Tooltip
-            title='Настройки'
+            title={t('settings')}
             arrow
             placement='left'
             sx={{ display: 'block' }}
@@ -415,7 +415,7 @@ export const NavSidebar = ({
         {!!compilationId && (
           <Box>
             <Tooltip
-              title='Список статей'
+              title={t('listOfArticles')}
               arrow
               placement='left'
               sx={{ display: 'block' }}
@@ -437,7 +437,7 @@ export const NavSidebar = ({
         {toc.length !== 0 && (
           <Box>
             <Tooltip
-              title='Оглавление'
+              title={t('tableOfContents')}
               arrow
               placement='left'
               sx={{ display: 'block' }}
