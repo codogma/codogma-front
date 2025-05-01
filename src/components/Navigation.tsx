@@ -16,7 +16,7 @@ type NavigationProps = {
 };
 
 export const Navigation = ({ lang, children }: NavigationProps) => {
-  const { article, compilation } = useNavigationState();
+  const { article, toc, compilation } = useNavigationState();
   const pathname = usePathname();
   const { articleId } = useParams();
   const hasAdmin = pathname.startsWith(`/${lang}/admin`);
@@ -59,6 +59,7 @@ export const Navigation = ({ lang, children }: NavigationProps) => {
               <NavSidebar
                 lang={lang}
                 article={article}
+                toc={toc}
                 compilation={compilation}
               />
             </Grid>

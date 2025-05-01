@@ -5,6 +5,7 @@ import { ReactNode } from 'react';
 import { ArticleProvider } from '@/components/ArticleProvider';
 import { getArticleById } from '@/helpers/articleApi';
 import { convertHtmlToText } from '@/helpers/convertHtmlToText';
+import { parseToc } from '@/helpers/parseToc';
 import { GetArticle, Language } from '@/types';
 
 type LayoutProps = {
@@ -47,5 +48,10 @@ export default async function Layout({
   params: { id },
 }: LayoutProps) {
   const article = await fetchArticleById(id);
-  return <ArticleProvider article={article}>{children}</ArticleProvider>;
+  const toc = await parseToc(article.content);
+  return (
+    <ArticleProvider article={article} toc={toc}>
+      {children}
+    </ArticleProvider>
+  );
 }

@@ -1,8 +1,8 @@
 'use client';
-import { Box, CardActions, CardHeader, Skeleton } from '@mui/material';
+import { Box, Skeleton } from '@mui/material';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
-import Stack from '@mui/material/Stack';
+import Grid from '@mui/material/Grid2';
 import React from 'react';
 import { Autoplay, Navigation, Pagination } from 'swiper/modules';
 import { Swiper, SwiperSlide } from 'swiper/react';
@@ -19,11 +19,7 @@ type CarouselProps = {
   readonly isLoading: boolean;
 };
 
-export const Carousel = ({
-  lang,
-  articles: data,
-  isLoading,
-}: CarouselProps) => {
+export const Carousel = ({ lang, articles, isLoading }: CarouselProps) => {
   return (
     <Swiper
       modules={[Autoplay, Pagination, Navigation]}
@@ -38,84 +34,72 @@ export const Carousel = ({
       loop={true}
       className='swiper'
     >
-      {isLoading
-        ? Array(3)
-            .fill(null)
-            .map((_, index) => (
-              <SwiperSlide key={`skeleton-${index}`}>
-                <Box sx={{ backgroundColor: '#f5f5f5', borderRadius: 2 }}>
-                  <Card variant='outlined' className='card'>
-                    <CardHeader
-                      avatar={
-                        <Skeleton
-                          variant='rectangular'
-                          width={32}
-                          height={32}
-                          sx={{ borderRadius: 1 }}
-                        />
-                      }
-                      action={
-                        <Skeleton variant='circular' width={32} height={32} />
-                      }
-                      title={
-                        <Skeleton
-                          variant='text'
-                          width={80}
-                          height={24}
-                          sx={{ fontSize: '1rem' }}
-                        />
-                      }
-                      subheader={
-                        <Skeleton
-                          variant='text'
-                          width={100}
-                          height={20}
-                          sx={{ fontSize: '0.875rem' }}
-                        />
-                      }
-                      className='card-header'
-                    />
-                    <CardContent className='card-content'>
-                      <Skeleton
-                        variant='text'
-                        width='80%'
-                        height={32}
-                        sx={{ fontSize: '1.5rem', mb: 2 }}
-                      />
-                      <Stack direction='row' spacing={1} sx={{ mb: 2 }}>
-                        {[1, 2, 3].map((n) => (
+      <Grid container spacing={2}>
+        {(isLoading ? Array.from(new Array(4)) : articles)?.map(
+          (article, index) => (
+            <Grid key={article?.id} size={{ xs: 12, sm: 6, lg: 4 }}>
+              {article ? (
+                articles?.map((article, index) => (
+                  <SwiperSlide key={`skeleton-${index}`}>
+                    <Box sx={{ backgroundColor: '#f5f5f5', borderRadius: 2 }}>
+                      <ArticleCard article={article} lang={lang} />
+                    </Box>
+                  </SwiperSlide>
+                ))
+              ) : (
+                <SwiperSlide key={`skeleton-${index}`}>
+                  <Box sx={{ backgroundColor: '#f5f5f5', borderRadius: 2 }}>
+                    <Card variant='outlined' className='card'>
+                      <CardContent>
+                        <div
+                          style={{
+                            display: 'flex',
+                            gap: 16,
+                            alignItems: 'center',
+                          }}
+                        >
                           <Skeleton
-                            key={n}
-                            variant='text'
-                            width={70}
-                            height={24}
-                            sx={{ borderRadius: 4 }}
+                            animation='wave'
+                            variant='rounded'
+                            width={40}
+                            height={40}
                           />
-                        ))}
-                      </Stack>
-                      <Skeleton variant='text' width='100%' height={20} />
-                      <Skeleton variant='text' width='90%' height={20} />
+                          <div style={{ flex: 1 }}>
+                            <Skeleton
+                              animation='wave'
+                              height={10}
+                              width='80%'
+                              style={{ marginBottom: 6 }}
+                            />
+                            <Skeleton
+                              animation='wave'
+                              height={10}
+                              width='40%'
+                            />
+                          </div>
+                        </div>
+                      </CardContent>
                       <Skeleton
-                        variant='text'
-                        width='85%'
-                        height={20}
-                        sx={{ mb: 2 }}
+                        sx={{ height: 190 }}
+                        animation='wave'
+                        variant='rectangular'
                       />
-                    </CardContent>
-                    <CardActions sx={{ px: 2, pb: 2 }}>
-                      <Skeleton variant='rounded' width={120} height={36} />
-                    </CardActions>
-                  </Card>
-                </Box>
-              </SwiperSlide>
-            ))
-        : data?.map((item, index) => (
-            <SwiperSlide key={index}>
-              <Box sx={{ backgroundColor: '#f5f5f5', borderRadius: 2 }}>
-                <ArticleCard article={item} lang={lang} />
-              </Box>
-            </SwiperSlide>
-          ))}
+                      <CardContent>
+                        <Skeleton
+                          animation='wave'
+                          height={10}
+                          style={{ marginBottom: 6 }}
+                        />
+                        <Skeleton animation='wave' height={10} width='80%' />
+                      </CardContent>
+                    </Card>
+                  </Box>
+                </SwiperSlide>
+              )}
+            </Grid>
+          ),
+        )}
+      </Grid>
     </Swiper>
   );
 };

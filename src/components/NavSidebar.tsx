@@ -29,7 +29,7 @@ import { DefaultImage } from '@/components/DefaultImage';
 import MenuButton from '@/components/MenuButton';
 import { Scrollbar, useScrollContext } from '@/components/Scrollbar';
 import { getArticles } from '@/helpers/articleApi';
-import { devConsoleInfo } from '@/helpers/devConsoleLogs';
+import { TocItem } from '@/helpers/parseToc';
 import { GetArticle, GetCompilation, Language } from '@/types';
 
 const DrawerHeader = styled(Box)(({ theme }) => ({
@@ -43,42 +43,30 @@ const DrawerHeader = styled(Box)(({ theme }) => ({
 
 type NavSidebarProps = {
   readonly lang: Language;
-  readonly article?: GetArticle;
+  readonly article: GetArticle | undefined;
+  readonly toc: TocItem[];
   readonly compilation?: GetCompilation;
 };
 
-type TocItem = {
-  id: string;
-  text: string;
-  level: number;
-};
-
-const parseToc = (html: string): TocItem[] => {
-  if (typeof window === 'undefined') return [];
-
-  const parser = new DOMParser();
-  const doc = parser.parseFromString(html, 'text/html');
-  return Array.from(doc.querySelectorAll('h1, h2, h3, h4, h5, h6')).map(
-    (element) => ({
-      id: element.id,
-      text: element.textContent ?? '',
-      level: parseInt(element.tagName.substring(1), 10),
-    }),
-  );
-};
-
-export const NavSidebar = ({ lang, article, compilation }: NavSidebarProps) => {
+export const NavSidebar = ({
+  lang,
+  article,
+  toc,
+  compilation,
+}: NavSidebarProps) => {
   const { instance } = useScrollContext();
   const pathname = usePathname();
-  const { compilationId } = useParams();
+  const { articleId, compilationId } = useParams<{
+    articleId: string;
+    compilationId: string;
+  }>();
   const [openArticles, setOpenArticles] = useState<boolean>(false);
   const [openContents, setOpenContents] = useState<boolean>(false);
   const [openSettings, setOpenSettings] = useState<boolean>(false);
-  const [toc, setToc] = useState<TocItem[]>([]);
   const router = useRouter();
-  const { t } = useTranslation(lang);
+  const { t } = useTranslation(lang, 'articles');
 
-  const handleClickArticle = useCallback(
+  const handleArticleClick = useCallback(
     (url: string) => {
       router.push(url);
       instance?.elements().viewport?.scrollTo(0, 0);
@@ -87,19 +75,60 @@ export const NavSidebar = ({ lang, article, compilation }: NavSidebarProps) => {
     [router, instance],
   );
 
-  const handleClickHeader = useCallback(
-    (url: string) => {
-      router.push(url);
+  const removeFlashHighlight = useCallback(async () => {
+    if (!instance) return;
+    const viewport = instance.elements().viewport;
+    if (!viewport) return;
+    const contentRoot = viewport.querySelector('.article-content');
+    if (contentRoot) {
+      const anchors = contentRoot.querySelectorAll('.flash-highlight');
+      anchors.forEach((el) => {
+        el.classList.remove('flash-highlight');
+        if (el.classList.length === 0) {
+          el.removeAttribute('class');
+        }
+      });
+    }
+  }, []);
+
+  const handleTopAnchorClick = useCallback(async () => {
+    setOpenContents(false);
+    if (!instance) return;
+    const viewport = instance.elements().viewport;
+    if (!viewport) return;
+    router.push(pathname, { scroll: false });
+    await removeFlashHighlight();
+    const anchor = viewport.querySelector('#back-to-top-anchor');
+    if (anchor) {
+      anchor.scrollIntoView({
+        behavior: 'smooth',
+        block: 'start',
+      });
+    }
+  }, [instance, pathname, removeFlashHighlight, router]);
+
+  const handleAnchorClick = useCallback(
+    async (id: string) => {
       setOpenContents(false);
+      router.push(`${pathname}#${id}`, { scroll: false });
+      await removeFlashHighlight();
+      if (!instance) return;
+      const viewport = instance.elements().viewport;
+      if (!viewport) return;
+      const el = viewport.querySelector(`#${id}`);
+      if (el) {
+        el.classList.add('flash-highlight');
+        el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
     },
-    [router],
+    [instance, pathname, removeFlashHighlight, router],
   );
 
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
     useInfiniteQuery({
-      queryKey: ['articles', compilation?.id],
+      queryKey: ['articles', compilationId],
       queryFn: ({ pageParam = 0 }) =>
-        getArticles(undefined, compilation?.id, pageParam, 5),
+        getArticles(undefined, Number(compilationId), pageParam, 5),
       initialPageParam: 0,
       getNextPageParam: (lastPage) =>
         lastPage.number + 1 < lastPage.totalPages
@@ -107,13 +136,6 @@ export const NavSidebar = ({ lang, article, compilation }: NavSidebarProps) => {
           : undefined,
       enabled: !!compilation,
     });
-
-  useEffect(() => {
-    devConsoleInfo(article);
-    if (article?.content) {
-      setToc(parseToc(article.content));
-    }
-  }, [article]);
 
   useEffect(() => {
     if (hasNextPage && !isFetchingNextPage) {
@@ -126,25 +148,12 @@ export const NavSidebar = ({ lang, article, compilation }: NavSidebarProps) => {
     [data],
   );
 
-  const currentCompilationPathArticle = useMemo(
-    () => `/${lang}/compilations/${compilation?.id}/`,
-    [lang, compilation?.id],
-  );
-
-  const isSelectedArticle = useCallback(
-    (id: number) => pathname === `${currentCompilationPathArticle}${id}`,
-    [currentCompilationPathArticle, pathname],
-  );
-
-  const currentCompilationPathHeader = useMemo(
-    () => `/${lang}/compilations/${compilation?.id}/${article?.id}`,
-    [lang, compilation?.id, article?.id],
-  );
-
-  const isSelectedHeader = useCallback(
-    (id: string) => pathname === `${currentCompilationPathHeader}#${id}`,
-    [currentCompilationPathHeader, pathname],
-  );
+  const isSelectedHeader = useCallback((id: string) => {
+    if (window.location.hash) {
+      const headerId = window.location.hash.substring(1);
+      return headerId === id;
+    }
+  }, []);
 
   const ArticlesDrawer = (
     <Drawer
@@ -177,7 +186,7 @@ export const NavSidebar = ({ lang, article, compilation }: NavSidebarProps) => {
       </DrawerHeader>
       <Divider />
       <Scrollbar style={{ height: '100%' }}>
-        <List dense>
+        <List dense component='nav'>
           {articles.map((item) => (
             <ListItem
               key={item.id}
@@ -186,11 +195,11 @@ export const NavSidebar = ({ lang, article, compilation }: NavSidebarProps) => {
             >
               <ListItemButton
                 onClick={() =>
-                  handleClickArticle(
-                    `/${lang}/compilations/${compilation?.id}/${item.id}`,
+                  handleArticleClick(
+                    `/${lang}/compilations/${compilationId}/${item.id}`,
                   )
                 }
-                selected={isSelectedArticle(item.id)}
+                selected={articleId === item.id.toString()}
               >
                 <ListItemAvatar
                   sx={{
@@ -268,16 +277,31 @@ export const NavSidebar = ({ lang, article, compilation }: NavSidebarProps) => {
       </DrawerHeader>
       <Divider />
       <Scrollbar style={{ height: '100%' }}>
-        <List dense>
-          {/*TODO реализовать Оглавление/Содержание с вложенными списками для статьи с якорными ссылками на основе заголовков h1-h6 с id в которых прописаны slug-и заголовков*/}
+        <List
+          dense
+          component='nav'
+          aria-labelledby='toc-list-subheader'
+          subheader={
+            <ListItemButton
+              id='toc-list-subheader'
+              onClick={handleTopAnchorClick}
+            >
+              <ListItemText
+                primary={article?.title}
+                slotProps={{
+                  primary: {
+                    variant: 'subtitle1',
+                    sx: { fontWeight: 600 },
+                  },
+                }}
+              />
+            </ListItemButton>
+          }
+        >
           {toc.map((item) => (
             <ListItem key={item.id} disablePadding>
               <ListItemButton
-                onClick={() =>
-                  handleClickHeader(
-                    `/${lang}/compilations/${compilation?.id}/${article?.id}#${item.id}`,
-                  )
-                }
+                onClick={() => handleAnchorClick(item.id)}
                 selected={isSelectedHeader(item.id)}
                 sx={{
                   pl: 2 * item.level,
@@ -288,7 +312,7 @@ export const NavSidebar = ({ lang, article, compilation }: NavSidebarProps) => {
                   primary={item.text}
                   slotProps={{
                     primary: {
-                      variant: item.level === 1 ? 'subtitle2' : 'body2',
+                      variant: 'subtitle2',
                       sx: { fontWeight: item.level < 3 ? 600 : 400 },
                     },
                   }}
@@ -300,7 +324,6 @@ export const NavSidebar = ({ lang, article, compilation }: NavSidebarProps) => {
       </Scrollbar>
     </Drawer>
   );
-
   const SettingsDrawer = (
     <Drawer
       anchor='right'
@@ -351,31 +374,9 @@ export const NavSidebar = ({ lang, article, compilation }: NavSidebarProps) => {
           overflow: 'hidden',
         }}
       >
-        {!!compilationId && (
-          <Box paddingTop={1}>
-            <Tooltip
-              title='Список статей'
-              arrow
-              placement='left'
-              sx={{ display: 'block' }}
-            >
-              <IconButton
-                sx={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                }}
-                onClick={() => setOpenArticles(true)}
-              >
-                <BallotOutlinedIcon />
-              </IconButton>
-            </Tooltip>
-            {ArticlesDrawer}
-          </Box>
-        )}
-        <Box>
+        <Box paddingTop={1}>
           <Tooltip
-            title='Оглавление'
+            title='Скрыть навигацию'
             arrow
             placement='left'
             sx={{ display: 'block' }}
@@ -386,12 +387,10 @@ export const NavSidebar = ({ lang, article, compilation }: NavSidebarProps) => {
                 alignItems: 'center',
                 justifyContent: 'center',
               }}
-              onClick={() => setOpenContents(true)}
             >
-              <ListAltOutlinedIcon />
+              <FullscreenOutlinedIcon />
             </IconButton>
           </Tooltip>
-          {TOCDrawer}
         </Box>
         <Box>
           <Tooltip
@@ -413,24 +412,50 @@ export const NavSidebar = ({ lang, article, compilation }: NavSidebarProps) => {
           </Tooltip>
           {SettingsDrawer}
         </Box>
-        <Box>
-          <Tooltip
-            title='Скрыть навигацию'
-            arrow
-            placement='left'
-            sx={{ display: 'block' }}
-          >
-            <IconButton
-              sx={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}
+        {!!compilationId && (
+          <Box>
+            <Tooltip
+              title='Список статей'
+              arrow
+              placement='left'
+              sx={{ display: 'block' }}
             >
-              <FullscreenOutlinedIcon />
-            </IconButton>
-          </Tooltip>
-        </Box>
+              <IconButton
+                sx={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
+                onClick={() => setOpenArticles(true)}
+              >
+                <BallotOutlinedIcon />
+              </IconButton>
+            </Tooltip>
+            {ArticlesDrawer}
+          </Box>
+        )}
+        {toc.length !== 0 && (
+          <Box>
+            <Tooltip
+              title='Оглавление'
+              arrow
+              placement='left'
+              sx={{ display: 'block' }}
+            >
+              <IconButton
+                sx={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
+                onClick={() => setOpenContents(true)}
+              >
+                <ListAltOutlinedIcon />
+              </IconButton>
+            </Tooltip>
+            {TOCDrawer}
+          </Box>
+        )}
       </Paper>
     </Box>
   );
