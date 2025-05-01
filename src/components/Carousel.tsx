@@ -38,16 +38,8 @@ export const Carousel = ({ lang, articles, isLoading }: CarouselProps) => {
         {(isLoading ? Array.from(new Array(4)) : articles)?.map(
           (article, index) => (
             <Grid key={article?.id} size={{ xs: 12, sm: 6, lg: 4 }}>
-              {article ? (
-                articles?.map((article, index) => (
-                  <SwiperSlide key={`skeleton-${index}`}>
-                    <Box sx={{ backgroundColor: '#f5f5f5', borderRadius: 2 }}>
-                      <ArticleCard article={article} lang={lang} />
-                    </Box>
-                  </SwiperSlide>
-                ))
-              ) : (
-                <SwiperSlide key={`skeleton-${index}`}>
+              <SwiperSlide key={`skeleton-${index}`}>
+                {isLoading ? (
                   <Box sx={{ backgroundColor: '#f5f5f5', borderRadius: 2 }}>
                     <Card variant='outlined' className='card'>
                       <CardContent>
@@ -94,8 +86,12 @@ export const Carousel = ({ lang, articles, isLoading }: CarouselProps) => {
                       </CardContent>
                     </Card>
                   </Box>
-                </SwiperSlide>
-              )}
+                ) : (
+                  <Box sx={{ backgroundColor: '#f5f5f5', borderRadius: 2 }}>
+                    <ArticleCard article={article} lang={lang} />
+                  </Box>
+                )}
+              </SwiperSlide>
             </Grid>
           ),
         )}
