@@ -4,14 +4,13 @@ import Card from '@mui/material/Card';
 import Typography from '@mui/material/Typography';
 import { useQuery } from '@tanstack/react-query';
 import Link from 'next/link';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 
 import { useAuth } from '@/components/AuthProvider';
 import { AvatarImage } from '@/components/AvatarImage';
 import { Bookmark } from '@/components/Bookmark';
 import { CompilationProvider } from '@/components/CompilationProvider';
 import MenuButton from '@/components/MenuButton';
-import { useNavigationActions } from '@/components/NavigationProvider';
 import { getCompilationById } from '@/helpers/compilationApi';
 import { GetCompilation, Language } from '@/types';
 
@@ -30,7 +29,6 @@ export default function Layout({
   children,
 }: PageProps) {
   const { state } = useAuth();
-  const { setCompilation } = useNavigationActions();
   const [isRefetch, setIsRefetch] = useState<boolean>(false);
 
   const refetch = () => {
@@ -45,11 +43,6 @@ export default function Layout({
     queryKey: ['compilation', compilationId],
     queryFn: () => getCompilationById(compilationId),
   });
-
-  useEffect(() => {
-    setCompilation(compilation);
-    return () => setCompilation(undefined);
-  }, [compilation, setCompilation]);
 
   return (
     <section className='grid gap-2'>

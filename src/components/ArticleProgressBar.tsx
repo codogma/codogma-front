@@ -5,13 +5,11 @@ import { useArticleProgress } from '@/helpers/useArticleProgress';
 import { GetArticle } from '@/types';
 
 type ArticleProgressBarProps = {
-  readonly articleData: GetArticle;
+  readonly article: GetArticle;
 };
 
-export const ArticleProgressBar = ({
-  articleData,
-}: ArticleProgressBarProps) => {
-  const { progress } = useArticleProgress(articleData.id);
+export const ArticleProgressBar = ({ article }: ArticleProgressBarProps) => {
+  const { progress } = useArticleProgress(article.id);
 
   return (
     <Box

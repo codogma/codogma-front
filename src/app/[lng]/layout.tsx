@@ -10,7 +10,6 @@ import { AuthProvider } from '@/components/AuthProvider';
 import { ButtonBackToTop } from '@/components/ButtonBackToTop';
 import { ContentImageProvider } from '@/components/ContentImageProvider';
 import { CustomizedSnackbars } from '@/components/CustomizedSnackbars';
-import Footer from '@/components/Footer';
 import { Navigation } from '@/components/Navigation';
 import { NavigationProvider } from '@/components/NavigationProvider';
 import { ReactQueryProvider } from '@/components/ReactQueryProvider';
@@ -83,7 +82,6 @@ export default async function Layout({
                           </ContentImageProvider>
                         </Container>
                       </ButtonBackToTop>
-                      <Footer lang={lng} />
                       <CustomizedSnackbars />
                     </Navigation>
                   </NavigationProvider>

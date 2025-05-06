@@ -48,6 +48,7 @@ export const CommentList: React.FC<CommentListProps> = ({
         const nextPage = pages.length;
         return nextPage < lastPage.totalPages ? nextPage : undefined;
       },
+      enabled: !!articleId,
     },
   );
 
@@ -250,7 +251,7 @@ export const CommentList: React.FC<CommentListProps> = ({
     ));
   };
 
-  return (
+  return articleId ? (
     <>
       <Typography id='comments' component='div'>
         {t('comments')}:
@@ -274,5 +275,5 @@ export const CommentList: React.FC<CommentListProps> = ({
         )}
       </Box>
     </>
-  );
+  ) : null;
 };

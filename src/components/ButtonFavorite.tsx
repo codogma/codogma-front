@@ -62,7 +62,7 @@ export const ButtonFavorite: React.FC<CustomFavoriteProps> = ({
         onChange={handleChange}
         icon={<FavoriteBorderIcon style={style} />}
         checkedIcon={<FavoriteIcon color='error' />}
-        inputProps={{ 'aria-label': 'Favorites' }}
+        slotProps={{ input: { 'aria-label': 'Favorites' } }}
         sx={sx}
       />
       {!state.isAuthenticated && (

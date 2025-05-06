@@ -11,30 +11,30 @@ import React, {
 } from 'react';
 
 import { TocItem } from '@/helpers/parseToc';
-import { GetArticle, GetCompilation } from '@/types';
+import { GetArticle } from '@/types';
 
 type NavigationState = {
   article?: GetArticle;
   toc: TocItem[];
-  compilation?: GetCompilation;
+  isFullscreen: boolean;
 };
 
 type NavigationActions = {
   setArticle: Dispatch<SetStateAction<GetArticle | undefined>>;
   setToc: Dispatch<SetStateAction<TocItem[] | []>>;
-  setCompilation: Dispatch<SetStateAction<GetCompilation | undefined>>;
+  setIsFullscreen: Dispatch<SetStateAction<boolean>>;
 };
 
 const StateContext = createContext<NavigationState>({
   article: {} as GetArticle,
   toc: [] as TocItem[],
-  compilation: {} as GetCompilation,
+  isFullscreen: false,
 });
 
 const ActionsContext = createContext<NavigationActions>({
   setArticle: () => null,
   setToc: () => null,
-  setCompilation: () => null,
+  setIsFullscreen: () => null,
 });
 
 export const useNavigationState = () => useContext(StateContext);
@@ -47,7 +47,7 @@ export const NavigationProvider = ({
 }) => {
   const [article, setArticle] = useState<GetArticle>();
   const [toc, setToc] = useState<TocItem[]>([]);
-  const [compilation, setCompilation] = useState<GetCompilation>();
+  const [isFullscreen, setIsFullscreen] = useState<boolean>(false);
 
   const stableSetArticle = useCallback<NavigationActions['setArticle']>(
     (value) => setArticle(value),
@@ -59,23 +59,22 @@ export const NavigationProvider = ({
     [],
   );
 
-  const stableSetCompilation = useCallback<NavigationActions['setCompilation']>(
-    (value) => setCompilation(value),
-    [],
-  );
+  const stableSetIsFullscreen = useCallback<
+    NavigationActions['setIsFullscreen']
+  >((value) => setIsFullscreen(value), []);
 
   const stateValue = useMemo(
-    () => ({ article, toc, compilation }),
-    [article, toc, compilation],
+    () => ({ article, toc, isFullscreen }),
+    [article, toc, isFullscreen],
   );
 
   const actionsValue = useMemo(
     () => ({
       setArticle: stableSetArticle,
       setToc: stableSetToc,
-      setCompilation: stableSetCompilation,
+      setIsFullscreen: stableSetIsFullscreen,
     }),
-    [stableSetArticle, stableSetCompilation, stableSetToc],
+    [stableSetArticle, stableSetIsFullscreen, stableSetToc],
   );
 
   return (

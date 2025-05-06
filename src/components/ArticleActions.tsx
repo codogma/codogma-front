@@ -8,22 +8,30 @@ import React from 'react';
 
 import { ArticleProgressBar } from '@/components/ArticleProgressBar';
 import { useAuth } from '@/components/AuthProvider';
+import { DrawerHeader } from '@/components/DrawerHeader';
+import { FullscreenButton } from '@/components/FullscreenButton';
 import MenuButton from '@/components/MenuButton';
+import { SettingsDrawer } from '@/components/SettingsDrawer';
 import { getArticleById, like, unlike } from '@/helpers/articleApi';
 import { GetArticle, Language } from '@/types';
 
 type SearchProps = {
   readonly lang: Language;
-  readonly articleData: GetArticle;
+  readonly article: GetArticle;
+  readonly isFullscreen: boolean;
 };
 
-export const ArticleActions = ({ lang, articleData }: SearchProps) => {
+export const ArticleActions = ({
+  lang,
+  article,
+  isFullscreen,
+}: SearchProps) => {
   const { state } = useAuth();
 
-  const { data: article, refetch } = useQuery({
-    queryKey: ['article', articleData.id],
-    queryFn: () => getArticleById(articleData.id),
-    initialData: articleData,
+  const { data: articleData, refetch } = useQuery({
+    queryKey: ['article', article.id],
+    queryFn: () => getArticleById(article.id),
+    initialData: article,
   });
 
   const handleClick = () => {
@@ -42,9 +50,9 @@ export const ArticleActions = ({ lang, articleData }: SearchProps) => {
   ) => {
     if (state.isAuthenticated) {
       if (checked) {
-        await like(articleData.id).then(() => refetch());
+        await like(article.id).then(() => refetch());
       } else {
-        await unlike(articleData.id).then(() => refetch());
+        await unlike(article.id).then(() => refetch());
       }
     }
   };
@@ -55,6 +63,9 @@ export const ArticleActions = ({ lang, articleData }: SearchProps) => {
         position: 'sticky',
         bottom: { sm: 60, md: 20 },
         minWidth: 100,
+        display: 'flex',
+        flexDirection: 'row',
+        justifyContent: 'space-between',
         width: 'fit-content',
         height: 52,
         zIndex: 10,
@@ -70,33 +81,49 @@ export const ArticleActions = ({ lang, articleData }: SearchProps) => {
       variant='outlined'
       aria-label='Article Actions'
     >
-      <Checkbox
-        checked={article.isLiked}
-        onChange={handleChange}
-        icon={
-          <>
-            <ThumbUpOutlinedIcon />
-            <div className='ml-1 text-base leading-5'>{article.likeCount}</div>
-          </>
-        }
-        checkedIcon={
-          <>
-            <ThumbUpOutlinedIcon color='inherit' />
-            <div className='ml-1 text-base leading-5'>{article.likeCount}</div>
-          </>
-        }
-        inputProps={{ 'aria-label': 'Like' }}
-      />
-      <IconButton
-        onClick={handleClick}
-        aria-label='Comments'
-        sx={{ borderRadius: 8 }}
-      >
-        <CommentOutlinedIcon />
-        <div className='ml-1 text-base leading-5'>{article.commentsCount}</div>
-      </IconButton>
-      <MenuButton article={article} lang={lang} />
-      <ArticleProgressBar articleData={articleData} />
+      {isFullscreen ? (
+        <>
+          <FullscreenButton />
+          <SettingsDrawer />
+          <DrawerHeader />
+        </>
+      ) : (
+        <>
+          <Checkbox
+            checked={articleData.isLiked}
+            onChange={handleChange}
+            icon={
+              <>
+                <ThumbUpOutlinedIcon />
+                <div className='ml-1 text-base leading-5'>
+                  {articleData.likeCount}
+                </div>
+              </>
+            }
+            checkedIcon={
+              <>
+                <ThumbUpOutlinedIcon color='inherit' />
+                <div className='ml-1 text-base leading-5'>
+                  {articleData.likeCount}
+                </div>
+              </>
+            }
+            slotProps={{ input: { 'aria-label': 'Like' } }}
+          />
+          <IconButton
+            onClick={handleClick}
+            aria-label='Comments'
+            sx={{ borderRadius: 8 }}
+          >
+            <CommentOutlinedIcon />
+            <div className='ml-1 text-base leading-5'>
+              {articleData.commentsCount}
+            </div>
+          </IconButton>
+        </>
+      )}
+      <MenuButton article={articleData} lang={lang} />
+      <ArticleProgressBar article={article} />
     </Paper>
   );
 };
