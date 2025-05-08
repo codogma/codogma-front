@@ -11,6 +11,7 @@ type PageParams = {
 type PageProps = {
   readonly params: PageParams;
 };
+
 export default function Page({ params: { lng } }: PageProps) {
   return <Article lng={lng} />;
 }

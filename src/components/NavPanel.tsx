@@ -68,18 +68,14 @@ export const NavPanel = ({ lang }: NavPanelProps) => {
     <Box component='nav'>
       <Drawer
         variant='permanent'
+        keepMounted
+        open
         sx={{
           display: { xs: 'none', md: 'block' },
           '& .MuiDrawer-paper': {
             boxSizing: 'border-box',
             position: 'relative',
             height: { xs: 0, md: '100vh' },
-          },
-        }}
-        open
-        slotProps={{
-          root: {
-            keepMounted: true,
           },
         }}
       >

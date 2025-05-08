@@ -1,4 +1,5 @@
 'use client';
+import { useParams } from 'next/navigation';
 import React, {
   createContext,
   Dispatch,
@@ -6,10 +7,12 @@ import React, {
   SetStateAction,
   useCallback,
   useContext,
+  useEffect,
   useMemo,
   useState,
 } from 'react';
 
+import { getBoolean } from '@/helpers/localStorage';
 import { TocItem } from '@/helpers/parseToc';
 import { GetArticle } from '@/types';
 
@@ -47,6 +50,15 @@ export const NavigationProvider = ({
 }) => {
   const [article, setArticle] = useState<GetArticle>();
   const [toc, setToc] = useState<TocItem[]>([]);
+  const { articleId } = useParams();
+
+  useEffect(() => {
+    if (!articleId) {
+      localStorage.removeItem('fullscreen');
+    }
+    setIsFullscreen(() => getBoolean('fullscreen', false));
+  }, [articleId]);
+
   const [isFullscreen, setIsFullscreen] = useState<boolean>(false);
 
   const stableSetArticle = useCallback<NavigationActions['setArticle']>(
@@ -61,7 +73,10 @@ export const NavigationProvider = ({
 
   const stableSetIsFullscreen = useCallback<
     NavigationActions['setIsFullscreen']
-  >((value) => setIsFullscreen(value), []);
+  >((value) => {
+    localStorage.setItem('fullscreen', String(value));
+    setIsFullscreen(value);
+  }, []);
 
   const stateValue = useMemo(
     () => ({ article, toc, isFullscreen }),

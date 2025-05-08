@@ -1,7 +1,7 @@
 import { Container, StyledEngineProvider } from '@mui/material';
 import { AppRouterCacheProvider } from '@mui/material-nextjs/v14-appRouter';
 import { Metadata } from 'next';
-import './globals.css';
+import '@/app/globals.css';
 import { Inter } from 'next/font/google';
 import React, { ReactNode } from 'react';
 

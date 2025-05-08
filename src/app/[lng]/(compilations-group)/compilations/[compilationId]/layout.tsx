@@ -11,6 +11,7 @@ import { AvatarImage } from '@/components/AvatarImage';
 import { Bookmark } from '@/components/Bookmark';
 import { CompilationProvider } from '@/components/CompilationProvider';
 import MenuButton from '@/components/MenuButton';
+import { useNavigationState } from '@/components/NavigationProvider';
 import { getCompilationById } from '@/helpers/compilationApi';
 import { GetCompilation, Language } from '@/types';
 
@@ -30,6 +31,7 @@ export default function Layout({
 }: PageProps) {
   const { state } = useAuth();
   const [isRefetch, setIsRefetch] = useState<boolean>(false);
+  const { isFullscreen } = useNavigationState();
 
   const refetch = () => {
     setIsRefetch(true);
@@ -45,8 +47,12 @@ export default function Layout({
   });
 
   return (
-    <section className='grid gap-2'>
-      <Card variant='outlined' className='card'>
+    <div className='grid gap-2'>
+      <Card
+        variant='outlined'
+        className='card'
+        sx={{ display: isFullscreen ? 'none' : 'block' }}
+      >
         {isFetching ? (
           <div className='card-header'>
             <Skeleton className='category-img' variant='rounded' />
@@ -109,6 +115,6 @@ export default function Layout({
           {children}
         </CompilationProvider>
       </div>
-    </section>
+    </div>
   );
 }

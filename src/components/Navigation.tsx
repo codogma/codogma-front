@@ -1,21 +1,15 @@
 'use client';
-import { Container, Grid2 as Grid, Typography } from '@mui/material';
-import { useQuery } from '@tanstack/react-query';
+import { Container, Grid2 as Grid } from '@mui/material';
 import { useParams, usePathname } from 'next/navigation';
 import React, { ReactNode } from 'react';
 
-import { useTranslation } from '@/app/i18n/client';
-import { ArticleActions } from '@/components/ArticleActions';
-import Articles from '@/components/Articles';
 import BottomNavigation from '@/components/BottomNavigation';
-import { CommentList } from '@/components/CommentList';
 import Footer from '@/components/Footer';
 import NavBar from '@/components/NavBar';
 import { useNavigationState } from '@/components/NavigationProvider';
 import { NavPanel } from '@/components/NavPanel';
 import { NavSidebar } from '@/components/NavSidebar';
-import { getRecommendationsArticleById } from '@/helpers/articleApi';
-import { GetArticle, Language } from '@/types';
+import { Language } from '@/types';
 
 type NavigationProps = {
   readonly lang: Language;
@@ -27,16 +21,6 @@ export const Navigation = ({ lang, children }: NavigationProps) => {
   const pathname = usePathname();
   const { articleId } = useParams();
   const hasAdmin = pathname.startsWith(`/${lang}/admin`);
-  const { t } = useTranslation(lang, 'articles');
-
-  const { data, isFetching } = useQuery<GetArticle>({
-    queryKey: ['articles', article?.id],
-    queryFn: () => getRecommendationsArticleById(article?.id),
-    enabled: !!article?.id,
-  });
-
-  const articles: GetArticle[] = (data ?? []) as GetArticle[];
-  const hasArticles = articles && articles.length > 0;
 
   if (hasAdmin) {
     return children;
@@ -64,26 +48,6 @@ export const Navigation = ({ lang, children }: NavigationProps) => {
             className='flex flex-col flex-wrap justify-between'
           >
             {children}
-            {article && (
-              <ArticleActions
-                lang={lang}
-                article={article}
-                isFullscreen={isFullscreen}
-              />
-            )}
-            {!isFullscreen && (
-              <CommentList articleId={Number(articleId)} lang={lang} />
-            )}
-            {!isFullscreen && hasArticles && (
-              <>
-                <Typography component='div'>{t('recommendation')}</Typography>
-                <Articles
-                  lang={lang}
-                  articles={articles}
-                  loading={isFetching}
-                />
-              </>
-            )}
             {!isFullscreen && <Footer lang={lang} />}
           </Grid>
           {!!articleId && (
@@ -101,7 +65,7 @@ export const Navigation = ({ lang, children }: NavigationProps) => {
           )}
         </Grid>
       </Container>
-      <BottomNavigation lang={lang} />
+      {!isFullscreen && <BottomNavigation lang={lang} />}
     </>
   );
 };

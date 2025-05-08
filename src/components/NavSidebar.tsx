@@ -1,5 +1,5 @@
 'use client';
-import { Box, Paper } from '@mui/material';
+import { Box, Drawer } from '@mui/material';
 import { useParams } from 'next/navigation';
 import React from 'react';
 
@@ -24,19 +24,19 @@ export const NavSidebar = ({ lang, article, toc }: NavSidebarProps) => {
 
   return (
     <Box component='nav'>
-      <Paper
+      <Drawer
+        anchor='right'
+        variant='permanent'
+        keepMounted
+        open
         sx={{
-          display: 'flex',
-          flexDirection: 'column',
-          paddingY: 1,
-          gap: 1,
-          boxSizing: 'border-box',
-          position: 'relative',
-          height: '100vh',
-          borderLeft: '1px solid rgba(0, 0, 0, 0.12)',
-          borderRadius: 0,
-          width: 40,
-          overflow: 'hidden',
+          '& .MuiDrawer-paper': {
+            paddingY: 1,
+            gap: 1,
+            boxSizing: 'border-box',
+            position: 'relative',
+            height: '100vh',
+          },
         }}
       >
         <FullscreenButton />
@@ -47,7 +47,7 @@ export const NavSidebar = ({ lang, article, toc }: NavSidebarProps) => {
           compilationId={compilationId}
         />
         <TOCDrawer article={article} toc={toc} />
-      </Paper>
+      </Drawer>
     </Box>
   );
 };

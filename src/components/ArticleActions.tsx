@@ -60,9 +60,11 @@ export const ArticleActions = ({
   return (
     <Paper
       sx={{
-        position: 'sticky',
-        bottom: { sm: 60, md: 20 },
+        position: isFullscreen ? 'fixed' : 'sticky',
+        bottom: { xs: isFullscreen ? 20 : 60, md: 20 },
         minWidth: 100,
+        left: isFullscreen ? '50%' : 0,
+        transform: isFullscreen ? 'translateX(-50%)' : 'none',
         display: 'flex',
         flexDirection: 'row',
         justifyContent: 'space-between',
@@ -74,7 +76,7 @@ export const ArticleActions = ({
         boxShadow: '0px 4px 6px rgba(0, 0, 0, 0.1)',
         borderRadius: 8,
         p: '6px',
-        m: '0px auto 8px auto',
+        m: isFullscreen ? 0 : '8px auto 8px auto',
         alignItems: 'center',
         overflow: 'hidden',
       }}
