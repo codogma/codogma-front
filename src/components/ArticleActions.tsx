@@ -8,10 +8,11 @@ import React from 'react';
 
 import { ArticleProgressBar } from '@/components/ArticleProgressBar';
 import { useAuth } from '@/components/AuthProvider';
-import { DrawerHeader } from '@/components/DrawerHeader';
 import { FullscreenButton } from '@/components/FullscreenButton';
 import MenuButton from '@/components/MenuButton';
+import { useNavigationState } from '@/components/NavigationProvider';
 import { SettingsDrawer } from '@/components/SettingsDrawer';
+import { TOCDrawer } from '@/components/TOCDrawer';
 import { getArticleById, like, unlike } from '@/helpers/articleApi';
 import { GetArticle, Language } from '@/types';
 
@@ -26,6 +27,7 @@ export const ArticleActions = ({
   article,
   isFullscreen,
 }: SearchProps) => {
+  const { toc } = useNavigationState();
   const { state } = useAuth();
 
   const { data: articleData, refetch } = useQuery({
@@ -87,7 +89,7 @@ export const ArticleActions = ({
         <>
           <FullscreenButton />
           <SettingsDrawer />
-          <DrawerHeader />
+          <TOCDrawer article={article} toc={toc} />
         </>
       ) : (
         <>

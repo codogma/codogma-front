@@ -16,6 +16,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import React, { useCallback, useState } from 'react';
 
 import { DrawerHeader } from '@/components/DrawerHeader';
+import { useNavigationState } from '@/components/NavigationProvider';
 import { Scrollbar, useScrollContext } from '@/components/Scrollbar';
 import { TocItem } from '@/helpers/parseToc';
 import { GetArticle } from '@/types';
@@ -28,6 +29,7 @@ type TOCDrawerProps = {
 export const TOCDrawer = ({ article, toc }: TOCDrawerProps) => {
   const [openContents, setOpenContents] = useState<boolean>(false);
   const { instance } = useScrollContext();
+  const { isFullscreen } = useNavigationState();
   const pathname = usePathname();
   const router = useRouter();
 
@@ -167,7 +169,7 @@ export const TOCDrawer = ({ article, toc }: TOCDrawerProps) => {
       <Tooltip
         title='Оглавление'
         arrow
-        placement='left'
+        placement={isFullscreen ? 'top' : 'left'}
         sx={{ display: 'block' }}
       >
         <IconButton

@@ -13,11 +13,13 @@ import Typography from '@mui/material/Typography';
 import React, { useEffect, useState } from 'react';
 
 import { DrawerHeader } from '@/components/DrawerHeader';
+import { useNavigationState } from '@/components/NavigationProvider';
 import { Scrollbar } from '@/components/Scrollbar';
 import { getNumber } from '@/helpers/localStorage';
 
 export const SettingsDrawer = () => {
   const [open, setOpen] = useState<boolean>(false);
+  const { isFullscreen } = useNavigationState();
   const [fontSize, setFontSize] = useState<number>(() =>
     getNumber('fontSize', 1),
   );
@@ -144,7 +146,7 @@ export const SettingsDrawer = () => {
       <Tooltip
         title='Настройки'
         arrow
-        placement='left'
+        placement={isFullscreen ? 'top' : 'left'}
         sx={{ display: 'block' }}
       >
         <IconButton
