@@ -1,7 +1,12 @@
 import acceptLanguage from 'accept-language';
 import { NextRequest, NextResponse } from 'next/server';
 
-import { fallbackLng, intlCookie, languages } from '@/constants/i18n';
+import {
+  fallbackLng,
+  headerName,
+  intlCookie,
+  languages,
+} from '@/constants/i18n';
 import { currentUser } from '@/helpers/authApi';
 import { devConsoleError } from '@/helpers/devConsoleLogs';
 import { UserRole } from '@/types';
@@ -14,13 +19,17 @@ export const config = {
 };
 
 export async function middleware(req: NextRequest) {
-  const { pathname } = req.nextUrl;
+  const { pathname, search } = req.nextUrl;
   const lng = getLanguage(req);
 
   // === 1. Логика локализации ===
+  const lngInPath = languages.find((loc) => pathname.startsWith(`/${loc}`));
+  const headers = new Headers(req.headers);
+  headers.set(headerName, lngInPath ?? lng);
+
   // Если текущий URL не содержит код языка, делаем редирект на URL с языковым префиксом
-  if (!languages.some((loc) => pathname.startsWith(`/${loc}`))) {
-    const response = redirectTo(req, `/${lng}${pathname}`);
+  if (!lngInPath && !pathname.startsWith('/_next')) {
+    const response = redirectTo(`/${lng}${pathname}${search}`, req);
     response.cookies.set(intlCookie, lng, { path: '/' });
     return response;
   }
@@ -30,14 +39,15 @@ export async function middleware(req: NextRequest) {
     return handleAdminCheck(req);
   }
 
-  return NextResponse.next();
+  return NextResponse.next({ headers });
 }
 
 // Вспомогательные функции
 const getLanguage = (req: NextRequest) => {
-  let lng = req.cookies.get(intlCookie)?.value;
-  if (!lng)
-    lng = acceptLanguage.get(req.headers.get('Accept-Language')) ?? fallbackLng;
+  let lng;
+  if (req.cookies.has(intlCookie))
+    lng = acceptLanguage.get(req.cookies.get(intlCookie)?.value);
+  lng ??= acceptLanguage.get(req.headers.get('Accept-Language')) ?? fallbackLng;
   return languages.includes(lng) ? lng : fallbackLng;
 };
 
@@ -46,12 +56,12 @@ const handleAdminCheck = async (req: NextRequest) => {
     // Проверяем пользователя через API
     const user = await currentUser();
     if (!user || user.role !== UserRole.ROLE_ADMIN) {
-      return redirectTo(req, '/not-found');
+      return redirectTo('/not-found', req);
     }
   } catch (error) {
     // При ошибках аутентификации очищаем куки
     devConsoleError(error);
-    const response = redirectTo(req, '/not-found');
+    const response = redirectTo('/not-found', req);
     response.cookies.delete('user');
     return response;
   }
@@ -59,6 +69,6 @@ const handleAdminCheck = async (req: NextRequest) => {
   return NextResponse.next();
 };
 
-const redirectTo = (req: NextRequest, path: string) => {
+const redirectTo = (path: string, req: NextRequest) => {
   return NextResponse.redirect(new URL(path, req.url));
 };

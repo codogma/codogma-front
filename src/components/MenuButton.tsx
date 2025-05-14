@@ -9,7 +9,7 @@ import { useQuery } from '@tanstack/react-query';
 import * as React from 'react';
 import { useState } from 'react';
 
-import { useTranslation } from '@/app/i18n/client';
+import { useT } from '@/app/i18n/client';
 import { AddToCompilations } from '@/components/AddToCompilations';
 import { ArticlesDnD } from '@/components/ArticlesDnD';
 import { useAuth } from '@/components/AuthProvider';
@@ -92,7 +92,7 @@ export default function MenuButton({
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const { state } = useAuth();
   const open = Boolean(anchorEl);
-  const { t } = useTranslation(lang, 'common');
+  const { t } = useT(lang, 'common');
 
   const { data } = useQuery<GetUserDTO>({
     queryKey: [

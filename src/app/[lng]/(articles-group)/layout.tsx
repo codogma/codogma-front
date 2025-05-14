@@ -4,7 +4,7 @@ import CategoryIcon from '@mui/icons-material/Category';
 import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
 import React, { ReactNode } from 'react';
 
-import { initTranslation } from '@/app/i18n';
+import { getT } from '@/app/i18n';
 import { NavTabs, TabProps } from '@/components/NavTabs';
 import { Language } from '@/types';
 
@@ -17,7 +17,7 @@ export default async function Layout({
   params: { lng },
   children,
 }: LayoutProps) {
-  const { t } = await initTranslation(lng);
+  const { t } = await getT();
   const tabs: TabProps[] = [
     {
       icon: <ArticleIcon />,

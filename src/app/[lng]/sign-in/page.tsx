@@ -17,13 +17,12 @@ import React, { useEffect, useState } from 'react';
 import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
 import { z } from 'zod';
 
-import { useTranslation } from '@/app/i18n/client';
+import { useT } from '@/app/i18n/client';
 import { useAuth } from '@/components/AuthProvider';
 import { GithubIcon, GitlabIcon } from '@/components/CustomIcons';
 import ForgotPassword from '@/components/ForgotPassword';
 import FormInput from '@/components/FormInput';
 import { signIn } from '@/helpers/authApi';
-import { Language } from '@/types';
 
 const SignInScheme = z.object({
   usernameOrEmail: z.string().min(1, { message: 'Name is required' }),
@@ -32,21 +31,13 @@ const SignInScheme = z.object({
     .min(6, { message: 'Password must be at least 6 characters long' }),
 });
 
-type PageParams = {
-  lng: Language;
-};
-
-type PageProps = {
-  readonly params: PageParams;
-};
-
 export type OAuthProvider = 'github' | 'gitlab';
 
-export default function Page({ params: { lng } }: PageProps) {
+export default function Page() {
   const router = useRouter();
   const { dispatch } = useAuth();
   const [serverError, setServerError] = useState('');
-  const { t } = useTranslation(lng, 'signIn');
+  const { t } = useT('signIn');
   const [open, setOpen] = useState(false);
 
   const handleClickOpen = () => {

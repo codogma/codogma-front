@@ -9,7 +9,7 @@ import { useQuery } from '@tanstack/react-query';
 import Link from 'next/link';
 import React, { useState } from 'react';
 
-import { useTranslation } from '@/app/i18n/client';
+import { useT } from '@/app/i18n/client';
 import { useAuth } from '@/components/AuthProvider';
 import { getUserByUsername } from '@/helpers/userApi';
 import { GetUserDTO, Language } from '@/types';
@@ -26,7 +26,7 @@ type PageProps = {
 export default function Page({ params: { lng, username } }: PageProps) {
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
   const [currentCategory, setCurrentCategory] = useState<number | null>(null);
-  const { t } = useTranslation(lng);
+  const { t } = useT(lng);
   const { state } = useAuth();
 
   const { data } = useQuery<GetUserDTO>({

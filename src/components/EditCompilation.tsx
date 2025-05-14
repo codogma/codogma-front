@@ -21,7 +21,7 @@ import React, { useEffect, useState } from 'react';
 import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
 import { z } from 'zod';
 
-import { useTranslation } from '@/app/i18n/client';
+import { useT } from '@/app/i18n/client';
 import { AvatarImage } from '@/components/AvatarImage';
 import FormInput from '@/components/FormInput';
 import { updateCompilation } from '@/helpers/compilationApi';
@@ -78,7 +78,7 @@ export const EditCompilation = ({
   const [compilation, setCompilation] = useState<GetCompilation | undefined>(
     compilationData,
   );
-  const { t } = useTranslation(lang, 'compilations');
+  const { t } = useT(lang, 'compilations');
 
   const zodForm = useForm<z.infer<typeof EditCompilationScheme>>({
     resolver: zodResolver(EditCompilationScheme),

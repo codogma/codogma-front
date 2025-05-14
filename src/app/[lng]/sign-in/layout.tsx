@@ -2,7 +2,7 @@
 import { Metadata } from 'next';
 import { ReactNode } from 'react';
 
-import { initTranslation } from '@/app/i18n';
+import { getT } from '@/app/i18n';
 import { Language } from '@/types';
 
 type LayoutProps = {
@@ -13,7 +13,7 @@ type LayoutProps = {
 export async function generateMetadata({
   params: { lng },
 }: LayoutProps): Promise<Metadata> {
-  const { t } = await initTranslation(lng, 'signIn');
+  const { t } = await getT(lng, 'signIn');
   return {
     alternates: {
       canonical: `/sign-in/`,

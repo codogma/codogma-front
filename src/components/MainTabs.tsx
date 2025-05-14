@@ -9,7 +9,7 @@ import { useQuery } from '@tanstack/react-query';
 import Link from 'next/link';
 import React, { useCallback, useLayoutEffect, useRef, useState } from 'react';
 
-import { useTranslation } from '@/app/i18n/client';
+import { useT } from '@/app/i18n/client';
 import { Carousel } from '@/components/Carousel';
 import Compilations from '@/components/Compilations';
 import { MyCompilationsBadge } from '@/components/MyCompilationsBadge';
@@ -30,7 +30,7 @@ type MainTab = {
 
 export const MainTabs: React.FC<MainTabsProps> = ({ lang, username }) => {
   const [value, setValue] = useState<number>(0);
-  const { t } = useTranslation(lang);
+  const { t } = useT(lang);
   const ref = useRef<HTMLDivElement>(null);
   const [overflow, setOverflow] = useState<boolean>(false);
 

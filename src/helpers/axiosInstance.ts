@@ -2,7 +2,7 @@ import axios, { isAxiosError } from 'axios';
 import { redirect } from 'next/navigation';
 
 import { devConsoleError } from '@/helpers/devConsoleLogs';
-import { getAuthToken, getIntl } from '@/helpers/getCookies';
+import { getLocale } from '@/helpers/getLocale';
 
 export const axiosInstance = axios.create({
   baseURL: `${process.env.NEXT_PUBLIC_BASE_URL}/api`,
@@ -16,13 +16,9 @@ export const axiosInstance = axios.create({
 axiosInstance.interceptors.request.use(
   async (config) => {
     if (typeof window === 'undefined') {
-      const authToken = await getAuthToken();
-      if (authToken) {
-        config.headers['Authorization'] = `Bearer ${authToken}`;
-      }
-      const intl = await getIntl();
-      if (intl) {
-        config.headers['Accept-Language'] = intl;
+      const language = await getLocale();
+      if (language) {
+        config.headers['Accept-Language'] = language;
       }
     }
     return config;

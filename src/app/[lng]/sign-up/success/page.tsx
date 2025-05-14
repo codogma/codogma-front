@@ -3,7 +3,7 @@ import { Button, Container, Typography } from '@mui/material';
 import { useRouter } from 'next/navigation';
 import React from 'react';
 
-import { useTranslation } from '@/app/i18n/client';
+import { useT } from '@/app/i18n/client';
 import { Language } from '@/types';
 
 type PageProps = {
@@ -19,7 +19,7 @@ export default function Page({ params: { lng } }: PageProps) {
     router.push(`/${lng}/sign-in`);
   };
 
-  const { t } = useTranslation(lng, 'success');
+  const { t } = useT(lng, 'success');
 
   return (
     <Container maxWidth='sm' sx={{ textAlign: 'center', mt: 8 }}>

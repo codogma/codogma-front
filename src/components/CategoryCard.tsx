@@ -15,7 +15,7 @@ import Typography from '@mui/material/Typography';
 import Link from 'next/link';
 import React, { useState } from 'react';
 
-import { useTranslation } from '@/app/i18n/client';
+import { useT } from '@/app/i18n/client';
 import { useAuth } from '@/components/AuthProvider';
 import { ButtonFavorite } from '@/components/ButtonFavorite';
 import { DefaultImage } from '@/components/DefaultImage';
@@ -34,7 +34,7 @@ export default function CategoryCard({
   refetch,
 }: CategoryCardProps) {
   const { state } = useAuth();
-  const { t } = useTranslation(lang, 'categories');
+  const { t } = useT(lang, 'categories');
   const [expanded, setExpanded] = useState(false);
 
   return (

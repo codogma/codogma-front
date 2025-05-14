@@ -2,7 +2,7 @@
 import { Button } from '@mui/material';
 import { ReactNode } from 'react';
 
-import { useTranslation } from '@/app/i18n/client';
+import { useT } from '@/app/i18n/client';
 import { useAuth } from '@/components/AuthProvider';
 import { Language } from '@/types';
 
@@ -12,7 +12,7 @@ type SignInProps = {
 };
 
 export const SignIn = ({ children, lang }: SignInProps) => {
-  const { t } = useTranslation(lang);
+  const { t } = useT(lang);
   const {
     state: { isAuthenticated },
   } = useAuth();

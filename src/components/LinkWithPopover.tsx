@@ -12,7 +12,7 @@ import IconButton from '@mui/material/IconButton';
 import Popover from '@mui/material/Popover';
 import React, { useEffect, useState } from 'react';
 
-import { useTranslation } from '@/app/i18n/client';
+import { useT } from '@/app/i18n/client';
 import { GetArticle, Language } from '@/types';
 
 type LinkWithPopoverProps = {
@@ -32,7 +32,7 @@ export const LinkWithPopover = ({
     null,
   );
 
-  const { t } = useTranslation(lang, 'articleEditor');
+  const { t } = useT(lang, 'articleEditor');
   const [inDrafts, setInDrafts] = useState<string>();
 
   useEffect(() => {

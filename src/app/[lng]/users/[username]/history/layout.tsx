@@ -2,7 +2,7 @@
 import { Metadata } from 'next';
 import { ReactNode } from 'react';
 
-import { initTranslation } from '@/app/i18n';
+import { getT } from '@/app/i18n';
 import { getUserByUsername } from '@/helpers/userApi';
 import { Language } from '@/types';
 
@@ -15,7 +15,7 @@ export async function generateMetadata({
   params: { username, lng },
 }: LayoutProps): Promise<Metadata> {
   const user = await getUserByUsername(username);
-  const { t } = await initTranslation(lng, 'authors');
+  const { t } = await getT(lng, 'authors');
   return {
     alternates: {
       canonical: `/users/${username}/history`,

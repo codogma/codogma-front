@@ -27,7 +27,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import * as React from 'react';
 import { Fragment, useState } from 'react';
 
-import { useTranslation } from '@/app/i18n/client';
+import { useT } from '@/app/i18n/client';
 import { useAuth } from '@/components/AuthProvider';
 import { CustomPagination } from '@/components/CustomPagination';
 import { EditNotification } from '@/components/EditNotification';
@@ -73,7 +73,7 @@ export const NotificationDialog = ({ lang }: NotificationsDialogProps) => {
   const [currentPage, setCurrentPage] = useState<number>(0);
   const [resultsPerPage, setResultsPerPage] = useState<number>(10);
   const { state } = useAuth();
-  const { t } = useTranslation(lang, 'notifications');
+  const { t } = useT(lang, 'notifications');
   const router = useRouter();
   const pathname = usePathname();
 

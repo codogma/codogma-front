@@ -31,7 +31,7 @@ import {
 } from 'react-hook-form';
 import { z } from 'zod';
 
-import { useTranslation } from '@/app/i18n/client';
+import { useT } from '@/app/i18n/client';
 import { useAuth } from '@/components/AuthProvider';
 import { AvatarImage } from '@/components/AvatarImage';
 import FormInput from '@/components/FormInput';
@@ -166,7 +166,7 @@ const Page = ({ params: { lng } }: PageParams) => {
     GetCompilation[]
   >([]);
   const [prevData, setPrevData] = useState<UpdateDraftArticleDTO | null>(null);
-  const { t } = useTranslation(lng, 'articleEditor');
+  const { t } = useT('articleEditor');
 
   const id = useMemo(() => {
     const param = searchParams.get(PARAM_ID);

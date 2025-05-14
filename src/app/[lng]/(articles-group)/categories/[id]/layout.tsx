@@ -7,7 +7,7 @@ import Typography from '@mui/material/Typography';
 import { useQuery } from '@tanstack/react-query';
 import React from 'react';
 
-import { useTranslation } from '@/app/i18n/client';
+import { useT } from '@/app/i18n/client';
 import { useAuth } from '@/components/AuthProvider';
 import { AvatarImage } from '@/components/AvatarImage';
 import { ButtonFavorite } from '@/components/ButtonFavorite';
@@ -32,7 +32,7 @@ export default function Layout({
   children,
 }: PageProps) {
   const { state } = useAuth();
-  const { t } = useTranslation(lng);
+  const { t } = useT();
   const tabs: TabProps[] = [
     {
       icon: <ArticleIcon />,

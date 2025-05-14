@@ -27,7 +27,7 @@ import {
 } from 'react-hook-form';
 import { z } from 'zod';
 
-import { useTranslation } from '@/app/i18n/client';
+import { useT } from '@/app/i18n/client';
 import { addToCompilations } from '@/helpers/articleApi';
 import {
   getCompilations,
@@ -73,7 +73,7 @@ export const AddToCompilations: React.FC<AddToCompilationsProps> = ({
   const [inputCompilationValue, setInputCompilationValue] =
     useState<string>('');
   const [isCompilated, setIsCompilated] = useState(compilations.length > 0);
-  const { t } = useTranslation(lang, 'compilations');
+  const { t } = useT(lang, 'compilations');
 
   const zodForm = useForm<z.infer<typeof BookmarkScheme>>({
     resolver: zodResolver(BookmarkScheme),

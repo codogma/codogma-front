@@ -5,7 +5,7 @@ import '@/app/globals.css';
 import { Inter } from 'next/font/google';
 import React, { ReactNode } from 'react';
 
-import { initTranslation } from '@/app/i18n';
+import { getT } from '@/app/i18n';
 import { AuthProvider } from '@/components/AuthProvider';
 import { ButtonBackToTop } from '@/components/ButtonBackToTop';
 import { ContentImageProvider } from '@/components/ContentImageProvider';
@@ -26,7 +26,7 @@ type RootLayoutProps = {
 export async function generateMetadata({
   params: { lng },
 }: RootLayoutProps): Promise<Metadata> {
-  const { t } = await initTranslation(lng, 'main');
+  const { t } = await getT(lng, 'main');
   return {
     metadataBase: new URL('https://codogma.com'),
     alternates: {

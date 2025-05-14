@@ -13,12 +13,11 @@ import React, {
   useState,
 } from 'react';
 
-import { useTranslation } from '@/app/i18n/client';
+import { useT } from '@/app/i18n/client';
 import { useEventListener } from '@/helpers/useEventListener';
-import { Language, SearchType } from '@/types';
+import { SearchType } from '@/types';
 
 type SearchProps = {
-  readonly lang: Language;
   readonly onSearchType: (type: SearchType) => void;
   readonly onSearchValue: (value: string) => void;
 };
@@ -28,12 +27,12 @@ const SEARCH_PARAMS = {
   VALUE: 'value',
 } as const;
 
-export const Search = ({ lang, onSearchType, onSearchValue }: SearchProps) => {
+export const Search = ({ onSearchType, onSearchValue }: SearchProps) => {
   const searchInputRef = useRef<HTMLInputElement>(null);
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
   const [searchType, setSearchType] = useState<SearchType>(SearchType.CONTENT);
   const [searchValue, setSearchValue] = useState('');
-  const { t } = useTranslation(lang);
+  const { t } = useT();
 
   const getSearchParams = useCallback(() => {
     const params = new URLSearchParams(window.location.search);

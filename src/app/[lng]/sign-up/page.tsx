@@ -17,7 +17,7 @@ import React, { useEffect, useState } from 'react';
 import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
 import { z } from 'zod';
 
-import { useTranslation } from '@/app/i18n/client';
+import { useT } from '@/app/i18n/client';
 import { GithubIcon, GitlabIcon } from '@/components/CustomIcons';
 import FormInput from '@/components/FormInput';
 import { signUp } from '@/helpers/authApi';
@@ -43,7 +43,7 @@ type PageProps = {
 export default function Page({ params: { lng } }: PageProps) {
   const router = useRouter();
   const [serverError, setServerError] = useState('');
-  const { t } = useTranslation(lng, 'signUp');
+  const { t } = useT(lng, 'signUp');
 
   const zodForm = useForm<z.infer<typeof SignUpScheme>>({
     resolver: zodResolver(SignUpScheme),

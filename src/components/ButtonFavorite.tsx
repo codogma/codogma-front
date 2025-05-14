@@ -5,7 +5,7 @@ import { SxProps, Theme } from '@mui/material';
 import Checkbox from '@mui/material/Checkbox';
 import React, { useState } from 'react';
 
-import { useTranslation } from '@/app/i18n/client';
+import { useT } from '@/app/i18n/client';
 import { useAuth } from '@/components/AuthProvider';
 import { PopoverElement } from '@/components/PopoverElement';
 import { favorite, unfavorite } from '@/helpers/categoryApi';
@@ -31,7 +31,7 @@ export const ButtonFavorite: React.FC<CustomFavoriteProps> = ({
   const [anchorEl, setAnchorEl] = React.useState<HTMLElement | null>(null);
   const [isFavorite, setIsFavorite] = useState(isFavoriteValue);
   const { state } = useAuth();
-  const { t } = useTranslation(lang, 'categories');
+  const { t } = useT(lang, 'categories');
   const popoverId = 'simple-popover';
 
   const handleChange = async (

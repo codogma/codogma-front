@@ -19,7 +19,7 @@ import React, { useEffect, useState } from 'react';
 import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
 import { z } from 'zod';
 
-import { useTranslation } from '@/app/i18n/client';
+import { useT } from '@/app/i18n/client';
 import { AvatarImage } from '@/components/AvatarImage';
 import FormInput from '@/components/FormInput';
 import { createCompilation } from '@/helpers/compilationApi';
@@ -69,7 +69,7 @@ export const CompilationDialog = ({
 }: CompilationDialogProps) => {
   const [imageFile, setImageFile] = useState<File>();
   const [imageUrl, setImageUrl] = useState<string>();
-  const { t } = useTranslation(lang, 'compilations');
+  const { t } = useT(lang, 'compilations');
 
   const zodForm = useForm<z.infer<typeof CompilationDialogScheme>>({
     resolver: zodResolver(CompilationDialogScheme),

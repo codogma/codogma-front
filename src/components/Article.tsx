@@ -11,7 +11,7 @@ import DOMPurify from 'dompurify';
 import Link from 'next/link';
 import React from 'react';
 
-import { useTranslation } from '@/app/i18n/client';
+import { useT } from '@/app/i18n/client';
 import { ArticleActions } from '@/components/ArticleActions';
 import { useArticle } from '@/components/ArticleProvider';
 import Articles from '@/components/Articles';
@@ -31,7 +31,7 @@ export default function Article({ lng }: ArticleProps) {
   const { article } = useArticle();
   const { isFullscreen } = useNavigationState();
   const { processContent } = useContentImageContext();
-  const { t } = useTranslation(lng, 'articles');
+  const { t } = useT(lng, 'articles');
   const content = processContent(DOMPurify.sanitize(article.content));
 
   const { data, isFetching } = useQuery<GetArticle>({

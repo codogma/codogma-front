@@ -26,7 +26,7 @@ import {
 } from 'react-hook-form';
 import { z } from 'zod';
 
-import { useTranslation } from '@/app/i18n/client';
+import { useT } from '@/app/i18n/client';
 import { AvatarImage } from '@/components/AvatarImage';
 import FormInput from '@/components/FormInput';
 import { languageMenuItems } from '@/constants/i18n';
@@ -68,7 +68,7 @@ export const CategoryDialog = ({
 }: CategoryDialogProps) => {
   const [selectedLang, setSelectedLang] = useState<Language>(lang);
   const [imageUrl, setImageUrl] = useState<string>();
-  const { t } = useTranslation(lang, 'categories');
+  const { t } = useT(lang, 'categories');
 
   const CategoryDialogScheme = z.object({
     name: z.record(

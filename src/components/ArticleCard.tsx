@@ -12,7 +12,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import React, { useState } from 'react';
 
-import { useTranslation } from '@/app/i18n/client';
+import { useT } from '@/app/i18n/client';
 import { useAuth } from '@/components/AuthProvider';
 import { AvatarImage } from '@/components/AvatarImage';
 import { useContentImageContext } from '@/components/ContentImageProvider';
@@ -37,7 +37,7 @@ export const ArticleCard = ({ article, lang }: ArticleCardProps) => {
     urlPrefix = `/${lang}/articles`;
   }
   const { processContent } = useContentImageContext();
-  const { t } = useTranslation(lang, 'articles');
+  const { t } = useT('articles');
   const previewContent = processContent(
     DOMPurify.sanitize(article.previewContent),
   );

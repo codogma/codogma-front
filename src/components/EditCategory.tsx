@@ -28,7 +28,7 @@ import {
 } from 'react-hook-form';
 import { z } from 'zod';
 
-import { useTranslation } from '@/app/i18n/client';
+import { useT } from '@/app/i18n/client';
 import { AvatarImage } from '@/components/AvatarImage';
 import FormInput from '@/components/FormInput';
 import { languageMenuItems } from '@/constants/i18n';
@@ -77,7 +77,7 @@ export const EditCategory = ({
   const [open, setOpen] = useState(false);
   const [imageUrl, setImageUrl] = useState<string | undefined>();
   const [selectedLang, setSelectedLang] = useState<Language>(lang);
-  const { t } = useTranslation(lang, 'categories');
+  const { t } = useT(lang, 'categories');
 
   const EditCategoryScheme = z.object({
     name: z.record(

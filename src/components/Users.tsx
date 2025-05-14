@@ -6,7 +6,7 @@ import Typography from '@mui/material/Typography';
 import Link from 'next/link';
 import React from 'react';
 
-import { useTranslation } from '@/app/i18n/client';
+import { useT } from '@/app/i18n/client';
 import { useAuth } from '@/components/AuthProvider';
 import { AvatarImage } from '@/components/AvatarImage';
 import MenuButton from '@/components/MenuButton';
@@ -20,7 +20,7 @@ type AuthorsProps = {
 
 export default function Users({ users, loading, lang }: AuthorsProps) {
   const { state } = useAuth();
-  const { t } = useTranslation(lang, 'authors');
+  const { t } = useT(lang, 'authors');
 
   return (
     <>

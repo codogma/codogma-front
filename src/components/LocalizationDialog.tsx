@@ -32,7 +32,7 @@ import {
 } from 'react-hook-form';
 import { z } from 'zod';
 
-import { useTranslation } from '@/app/i18n/client';
+import { useT } from '@/app/i18n/client';
 import { contlCookie, intlCookie, languageMenuItems } from '@/constants/i18n';
 import { Language } from '@/types';
 
@@ -59,7 +59,7 @@ const LocalizationDialogScheme = z.object({
 
 export const LocalizationDialog = ({ lang }: LocalizationDialogProps) => {
   const [open, setOpen] = useState(false);
-  const { t } = useTranslation(lang);
+  const { t } = useT(lang);
   const pathname = usePathname();
   const router = useRouter();
   const contlCookieVal = Cookies.get(contlCookie);

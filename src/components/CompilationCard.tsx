@@ -9,7 +9,7 @@ import Typography from '@mui/material/Typography';
 import Link from 'next/link';
 import React, { useState } from 'react';
 
-import { useTranslation } from '@/app/i18n/client';
+import { useT } from '@/app/i18n/client';
 import { useAuth } from '@/components/AuthProvider';
 import { AvatarImage } from '@/components/AvatarImage';
 import { Bookmark } from '@/components/Bookmark';
@@ -31,7 +31,7 @@ export const CompilationCard = ({
   refetch,
 }: CompilationCardProps) => {
   const { state } = useAuth();
-  const { t } = useTranslation(lang, 'articles');
+  const { t } = useT(lang, 'articles');
   const [expanded, setExpanded] = useState(false);
   const items = [1, 2, 3, 4, 5];
 

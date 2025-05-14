@@ -1,40 +1,29 @@
-import { createInstance, i18n } from 'i18next';
-import resourcesToBackend from 'i18next-resources-to-backend';
-import { initReactI18next } from 'react-i18next/initReactI18next';
+import { i18n } from 'i18next';
 
-import { Language } from '@/types';
+import { getLocale } from '@/helpers/getLocale';
 
-import { getOptions } from './settings';
+import i18next from './i18next';
 
-const initI18next = async (lng: Language, ns: string): Promise<i18n> => {
-  const i18nInstance = createInstance();
-  await i18nInstance
-    .use(initReactI18next)
-    .use(
-      resourcesToBackend(
-        (language: string, namespace: string) =>
-          import(`./locales/${language}/${namespace}.json`),
-      ),
-    )
-    .init(getOptions(lng, ns));
-  return i18nInstance;
-};
-
-export async function initTranslation(
-  lng: Language,
+export async function getT(
   ns?: string | string[],
   options: { keyPrefix?: string } = {},
 ): Promise<{
   t: (key: string, options?: never) => string;
   i18n: i18n;
 }> {
-  const i18nextInstance = await initI18next(lng, ns as string);
+  const lng = await getLocale();
+  if (lng && i18next.resolvedLanguage !== lng) {
+    await i18next.changeLanguage(lng);
+  }
+  if (ns && !i18next.hasLoadedNamespace(ns)) {
+    await i18next.loadNamespaces(ns);
+  }
   return {
-    t: i18nextInstance.getFixedT(
-      lng,
+    t: i18next.getFixedT(
+      lng ?? i18next.resolvedLanguage,
       Array.isArray(ns) ? ns[0] : ns,
       options.keyPrefix,
     ),
-    i18n: i18nextInstance,
+    i18n: i18next,
   };
 }

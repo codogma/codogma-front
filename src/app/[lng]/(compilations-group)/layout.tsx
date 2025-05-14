@@ -3,7 +3,7 @@ import ClassIcon from '@mui/icons-material/Class';
 import ViewListIcon from '@mui/icons-material/ViewList';
 import React, { ReactNode } from 'react';
 
-import { useTranslation } from '@/app/i18n/client';
+import { useT } from '@/app/i18n/client';
 import { MyCompilationsBadge } from '@/components/MyCompilationsBadge';
 import { NavTabs, TabProps } from '@/components/NavTabs';
 import { Language } from '@/types';
@@ -14,7 +14,7 @@ type LayoutProps = {
 };
 
 function Layout({ params: { lng }, children }: LayoutProps) {
-  const { t } = useTranslation(lng);
+  const { t } = useT();
   const tabs: TabProps[] = [
     {
       icon: <ViewListIcon />,

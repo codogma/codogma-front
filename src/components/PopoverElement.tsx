@@ -3,7 +3,7 @@ import { Link, Popover, Typography } from '@mui/material';
 import { useRouter } from 'next/navigation';
 import React from 'react';
 
-import { useTranslation } from '@/app/i18n/client';
+import { useT } from '@/app/i18n/client';
 import { Language } from '@/types';
 
 interface PopoverElementProps {
@@ -24,7 +24,7 @@ export const PopoverElement: React.FC<PopoverElementProps> = ({
   const router = useRouter();
   const open = Boolean(btnEl);
 
-  const { t } = useTranslation(lang, 'articles');
+  const { t } = useT(lang, 'articles');
   const id = open ? popoverId : undefined;
 
   const handleClickLink = (url: string) => {

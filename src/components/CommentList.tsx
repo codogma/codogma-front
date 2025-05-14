@@ -5,7 +5,7 @@ import { useInfiniteQuery } from '@tanstack/react-query';
 import Link from 'next/link';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 
-import { useTranslation } from '@/app/i18n/client';
+import { useT } from '@/app/i18n/client';
 import { useAuth } from '@/components/AuthProvider';
 import { AvatarImage } from '@/components/AvatarImage';
 import { TimeAgo } from '@/components/TimeAgo';
@@ -29,7 +29,7 @@ export const CommentList: React.FC<CommentListProps> = ({
   const [pageSize, setPageSize] = useState<number>(5);
   const scrollTarget = useRef<string | null>(null);
   const { state } = useAuth();
-  const { t } = useTranslation(lang);
+  const { t } = useT(lang);
 
   const { data, fetchNextPage, isFetchingNextPage, refetch } = useInfiniteQuery(
     {

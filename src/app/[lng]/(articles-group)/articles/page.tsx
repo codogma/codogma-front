@@ -70,11 +70,7 @@ export default function Page({ params: { lng } }: PageProps) {
 
   return (
     <>
-      <Search
-        lang={lng}
-        onSearchType={onSearchType}
-        onSearchValue={onSearchValue}
-      />
+      <Search onSearchType={onSearchType} onSearchValue={onSearchValue} />
       <Articles lang={lng} articles={articles} loading={isFetching} />
       <CustomPagination
         lang={lng}

@@ -22,7 +22,7 @@ import {
 } from 'react-hook-form';
 import { z } from 'zod';
 
-import { useTranslation } from '@/app/i18n/client';
+import { useT } from '@/app/i18n/client';
 import FormInput from '@/components/FormInput';
 import { languageMenuItems } from '@/constants/i18n';
 import {
@@ -54,7 +54,7 @@ export const EditNotification = ({
 }: EditNotificationProps) => {
   const [open, setOpen] = useState(false);
   const [selectedLang, setSelectedLang] = useState<Language>(lang);
-  const { t } = useTranslation(lang, 'notifications');
+  const { t } = useT(lang, 'notifications');
 
   const EditNotificationScheme = z.object({
     title: z.record(
