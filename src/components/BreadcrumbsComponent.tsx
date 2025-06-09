@@ -3,7 +3,7 @@ import { Breadcrumbs, Typography } from '@mui/material';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
-import { useTranslation } from '@/app/i18n/client';
+import { useT } from '@/app/i18n/client';
 import { Language } from '@/types';
 
 interface BreadcrumbsComponentProps {
@@ -18,7 +18,7 @@ export const BreadcrumbsComponent = ({
   depth,
 }: BreadcrumbsComponentProps) => {
   const pathname = usePathname();
-  const { t } = useTranslation(lang);
+  const { t } = useT();
   const pathSegments = pathname
     .split('/')
     .slice(2, depth)

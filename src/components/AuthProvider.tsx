@@ -22,20 +22,22 @@ import {
   disconnectPrivateWebSocket,
 } from '@/helpers/notificationAPI';
 import { useEventListener } from '@/helpers/useEventListener';
-import { User } from '@/types';
+import { GetUserDTO } from '@/types';
 
 interface AuthState {
   isAuthenticated: boolean;
   isAccessDenied: boolean;
-  user?: User | null;
+  user: GetUserDTO | undefined;
 }
 
-type AuthAction = { type: 'LOGIN'; user?: User | null } | { type: 'LOGOUT' };
+type AuthAction =
+  | { type: 'LOGIN'; user: GetUserDTO | undefined }
+  | { type: 'LOGOUT' };
 
 const initialState: AuthState = {
   isAuthenticated: false,
   isAccessDenied: false,
-  user: null,
+  user: undefined,
 };
 
 const authReducer = (state: AuthState, action: AuthAction): AuthState => {
@@ -47,7 +49,7 @@ const authReducer = (state: AuthState, action: AuthAction): AuthState => {
         user: action.user,
       };
     case 'LOGOUT':
-      return { isAuthenticated: false, isAccessDenied: false, user: null };
+      return { isAuthenticated: false, isAccessDenied: false, user: undefined };
     default:
       return state;
   }
@@ -109,7 +111,7 @@ export const AuthProvider: FC<AuthProviderProps> = ({ children }) => {
     isError: hasCurrentUserError,
     refetch,
     isPending,
-  } = useQuery<User | null>({
+  } = useQuery<GetUserDTO>({
     queryKey: ['currentUser'],
     queryFn: () => currentUser(),
     refetchOnWindowFocus: false,

@@ -2,18 +2,14 @@
 import { Metadata } from 'next';
 import { ReactNode } from 'react';
 
-import { initTranslation } from '@/app/i18n';
-import { Language } from '@/types';
+import { getT } from '@/app/i18n';
 
 type LayoutProps = {
   readonly children: ReactNode;
-  readonly params: { lng: Language };
 };
 
-export async function generateMetadata({
-  params: { lng },
-}: LayoutProps): Promise<Metadata> {
-  const { t } = await initTranslation(lng);
+export async function generateMetadata(): Promise<Metadata> {
+  const { t } = await getT();
   return {
     alternates: {
       canonical: `/users/`,

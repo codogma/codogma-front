@@ -4,8 +4,8 @@ import InterestsIcon from '@mui/icons-material/Interests';
 import PlaylistAddCheckCircleIcon from '@mui/icons-material/PlaylistAddCheckCircle';
 import React, { ReactNode } from 'react';
 
-import { useTranslation } from '@/app/i18n/client';
-import NavTabs, { TabProps } from '@/components/NavTabs';
+import { useT } from '@/app/i18n/client';
+import { NavTabs, TabProps } from '@/components/NavTabs';
 import { WithAuth } from '@/components/WithAuth';
 import { Language } from '@/types';
 
@@ -15,7 +15,7 @@ type LayoutProps = {
 };
 
 function Layout({ params: { lng }, children }: LayoutProps) {
-  const { t } = useTranslation(lng);
+  const { t } = useT();
   const tabs: TabProps[] = [
     {
       icon: <PlaylistAddCheckCircleIcon />,

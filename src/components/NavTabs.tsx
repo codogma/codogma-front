@@ -4,7 +4,14 @@ import { TabOwnProps } from '@mui/material/Tab/Tab';
 import Tabs from '@mui/material/Tabs';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import React from 'react';
+import React, {
+  memo,
+  useCallback,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 
 import { replaceUrlAndDispatchEvent } from '@/helpers/replaceUrlAndDispatchEvent';
 
@@ -18,39 +25,63 @@ type NavTabsProps = {
   readonly tabs: TabProps[];
 };
 
-const NavTabs: React.FC<NavTabsProps> = ({ tabs }) => {
+export const NavTabs: React.FC<NavTabsProps> = memo(function NavTabs({ tabs }) {
   const router = useRouter();
   const pathname = usePathname();
+  const ref = useRef<HTMLDivElement>(null);
+  const [overflow, setOverflow] = useState<boolean>(false);
 
-  const shouldShowNavTabs = tabs.some((tab) => {
-    const basePath = tab.href;
-    return pathname?.startsWith(basePath) && pathname === basePath;
-  });
+  useLayoutEffect(() => {
+    const observer = new ResizeObserver((entries) => {
+      for (const entry of entries) {
+        const listNode = entry.target.querySelector(
+          '[role="tablist"]',
+        ) as HTMLElement;
+        setOverflow(listNode.scrollWidth > listNode.clientWidth);
+      }
+    });
+    if (ref.current) {
+      observer.observe(ref.current);
+    }
+    return () => observer.disconnect();
+  }, []);
 
-  if (!shouldShowNavTabs) return null;
+  const visible = useMemo(
+    () =>
+      tabs.some(
+        (tab) => pathname?.startsWith(tab.href) && pathname === tab.href,
+      ),
+    [tabs, pathname],
+  );
 
-  const handleClick = (href: string) => {
-    replaceUrlAndDispatchEvent(router, href);
-  };
+  const handleClick = useCallback(
+    (href: string) => {
+      replaceUrlAndDispatchEvent(router, href);
+    },
+    [router],
+  );
+
+  if (!visible) return null;
 
   return (
-    <div className='nav-tabs'>
+    <div ref={ref} className='nav-tabs'>
       <Tabs
         value={pathname}
-        variant='scrollable'
-        scrollButtons
-        allowScrollButtonsMobile
+        variant={overflow ? 'scrollable' : 'standard'}
+        scrollButtons={overflow ? 'auto' : false}
+        allowScrollButtonsMobile={overflow}
         aria-label='scrollable force tabs example'
       >
-        {tabs.map((tab, index) => (
+        {tabs.map((tab) => (
           <Tab
-            key={index}
+            key={tab.href}
             icon={tab.icon}
             iconPosition='start'
             component={Link}
             href={tab.href}
             label={tab.label}
             value={tab.href}
+            onMouseEnter={() => router.prefetch(tab.href)}
             onClick={() => handleClick(tab.href)}
             scroll={false}
             sx={{ minHeight: '48px', textTransform: 'none' }}
@@ -59,6 +90,4 @@ const NavTabs: React.FC<NavTabsProps> = ({ tabs }) => {
       </Tabs>
     </div>
   );
-};
-
-export default NavTabs;
+});

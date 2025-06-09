@@ -20,5 +20,8 @@
   "blocked": "blocked",
   "sortArticles": "Sort articles",
   "description": "Description",
-  "listOfArticles": "List of articles"
+  "listOfArticles": "List of articles",
+  "tableOfContents": "Table of contents",
+  "settings": "Settings",
+  "hideNavigation": "Hide navigation"
 }

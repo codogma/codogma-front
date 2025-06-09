@@ -7,6 +7,7 @@ import {
   Box,
   Button,
   Chip,
+  Divider,
   FormHelperText,
   IconButton,
   Step,
@@ -19,9 +20,13 @@ import {
 } from '@mui/material';
 import FormControl from '@mui/material/FormControl';
 import MenuItem from '@mui/material/MenuItem';
+import Paper from '@mui/material/Paper';
+import Stack from '@mui/material/Stack';
 import { styled, useTheme } from '@mui/material/styles';
 import { keepPreviousData, useMutation, useQuery } from '@tanstack/react-query';
+import { Swatch } from '@vibrant/color';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { Vibrant } from 'node-vibrant/browser';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   Controller,
@@ -31,7 +36,7 @@ import {
 } from 'react-hook-form';
 import { z } from 'zod';
 
-import { useTranslation } from '@/app/i18n/client';
+import { useT } from '@/app/i18n/client';
 import { useAuth } from '@/components/AuthProvider';
 import { AvatarImage } from '@/components/AvatarImage';
 import FormInput from '@/components/FormInput';
@@ -61,7 +66,10 @@ import {
   GetCompilationsDTO,
 } from '@/helpers/compilationApi';
 import { devConsoleError } from '@/helpers/devConsoleLogs';
-import { uploadImage } from '@/helpers/imageUploadApi';
+import {
+  CreateArticleImage,
+  uploadArticleImage,
+} from '@/helpers/imageUploadApi';
 import { getTagsByName } from '@/helpers/tagApi';
 import {
   GetArticle,
@@ -69,6 +77,8 @@ import {
   GetCompilation,
   GetTag,
   Language,
+  PaletteDTO,
+  SwatchDTO,
 } from '@/types';
 
 const VisuallyHiddenInput = styled('input')({
@@ -88,6 +98,7 @@ type PageParams = {
 };
 
 type StepType = {
+  key: number;
   label: string;
   stepContent: React.ReactNode;
   error?: boolean;
@@ -96,17 +107,17 @@ type StepType = {
 const StepOneScheme = z.object({
   title: z
     .string()
-    .min(1, 'Название статьи не может быть пустой.')
-    .max(300, 'Название статьи не может содержать более 300 символов.'),
-  content: z.string().min(1, 'Основная статья не может быть пустой.'),
+    .min(1, 'Название статьи не может быть пустым')
+    .max(300, 'Название статьи не может содержать более 300 символов'),
+  content: z.string().min(1, 'Основной контент не может быть пустым'),
 });
 
 const StepTwoScheme = z.object({
   language: z.nativeEnum(Language),
   originalArticleId: z.number().optional().nullable(),
-  imageUrl: z.string().min(1, 'Изображение обязательно для загрузки.'),
-  previewContent: z.string().min(1, 'Краткое описание не может быть пустым.'),
-  categoryIds: z.array(z.number()).min(1, 'Выберите хотя бы одну категорию.'),
+  imageUrl: z.string().min(1, 'Изображение обязательно для загрузки'),
+  previewContent: z.string().min(1, 'Краткое описание не может быть пустым'),
+  categoryIds: z.array(z.number()).min(1, 'Выберите хотя бы одну категорию'),
   compilationIds: z.array(z.number()).optional().default([]),
   tags: z.array(z.string()).optional().default([]),
 });
@@ -128,8 +139,37 @@ const CustomStepIcon = (props: StepIconProps) => {
   );
 };
 
-type StepOneType = Pick<UpdateDraftArticleDTO, 'title' | 'content'> | null;
-type StepTwoType = Omit<UpdateDraftArticleDTO, 'title' | 'content'> | null;
+export type StepOneType = Pick<
+  UpdateDraftArticleDTO,
+  'title' | 'content'
+> | null;
+
+export type StepTwoType = Omit<
+  UpdateDraftArticleDTO,
+  'title' | 'content'
+> | null;
+
+function getUniqueCategories(mergedCategories: GetCategory[]) {
+  return Array.from(
+    mergedCategories
+      .reduce((acc, category) => {
+        acc.set(category.id, category);
+        return acc;
+      }, new Map<number, GetCategory>())
+      .values(),
+  );
+}
+
+function getUniqueCompilations(mergedCompilations: GetCompilation[]) {
+  return Array.from(
+    mergedCompilations
+      .reduce((acc, compilation) => {
+        acc.set(compilation.id, compilation);
+        return acc;
+      }, new Map<number, GetCompilation>())
+      .values(),
+  );
+}
 
 const Page = ({ params: { lng } }: PageParams) => {
   const STEP_ONE_DATA = 'step-one-data';
@@ -138,6 +178,7 @@ const Page = ({ params: { lng } }: PageParams) => {
   const SELECTED_COMPILATIONS = 'selected-compilations';
   const ARTICLE_ID = 'article-id';
   const PARAM_ID = 'id';
+  const PALETTE = 'palette';
   const {
     state: { user },
   } = useAuth();
@@ -145,7 +186,7 @@ const Page = ({ params: { lng } }: PageParams) => {
   const route = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  const paramId = searchParams.get(PARAM_ID);
+  const id = Number(searchParams.get(PARAM_ID)) || 0;
   const [stepOneData, setStepOneData] = useState<StepOneType>(null);
   const [reset, setReset] = useState<boolean>(false);
   const [stepTwoData, setStepTwoData] = useState<StepTwoType>(null);
@@ -165,13 +206,9 @@ const Page = ({ params: { lng } }: PageParams) => {
   const [availableCompilations, setAvailableCompilations] = useState<
     GetCompilation[]
   >([]);
+  const [palette, setPalette] = useState<PaletteDTO | null>(null);
   const [prevData, setPrevData] = useState<UpdateDraftArticleDTO | null>(null);
-  const { t } = useTranslation(lng, 'articleEditor');
-
-  const id = useMemo(() => {
-    const param = searchParams.get(PARAM_ID);
-    return Number(param) || 0;
-  }, [searchParams]);
+  const { t } = useT('articleEditor');
 
   const zodStepOneForm = useForm<z.infer<typeof StepOneScheme>>({
     resolver: zodResolver(StepOneScheme),
@@ -250,7 +287,10 @@ const Page = ({ params: { lng } }: PageParams) => {
 
   const { data: article, isFetched } = useQuery<GetArticle>({
     queryKey: ['article', id],
-    queryFn: () => getDraftedArticleById(id),
+    queryFn: () => {
+      lsClean();
+      return getDraftedArticleById(id);
+    },
     enabled: isValidId(id),
   });
 
@@ -278,11 +318,7 @@ const Page = ({ params: { lng } }: PageParams) => {
       setActiveStep(0);
       setStepOneData(null);
       setStepTwoData(null);
-      localStorage.removeItem(STEP_ONE_DATA);
-      localStorage.removeItem(STEP_TWO_DATA);
-      localStorage.removeItem(SELECTED_CATEGORIES);
-      localStorage.removeItem(SELECTED_COMPILATIONS);
-      localStorage.removeItem(ARTICLE_ID);
+      lsClean();
     });
   }, [refetchDraftArticlesData, resetStepOne, resetStepTwo, lng]);
 
@@ -313,7 +349,7 @@ const Page = ({ params: { lng } }: PageParams) => {
       resetStepTwo({
         language: articleData.language || lng,
         originalArticleId: articleData.originalArticleId,
-        imageUrl: articleData.imageUrl,
+        imageUrl: articleData.image?.imageUrl,
         previewContent: articleData.previewContent,
         categoryIds: articleData.categories.map((category) => category.id),
         compilationIds: articleData.compilations.map(
@@ -321,12 +357,14 @@ const Page = ({ params: { lng } }: PageParams) => {
         ),
         tags: articleData.tags.map((tag) => tag.name),
       });
+      setPalette(articleData.image?.palette);
     },
     [resetStepOne, resetStepTwo, lng],
   );
 
   const handleSelectArticle = useCallback(
     (articleData: GetArticle) => {
+      lsClean();
       setArticleData(articleData);
     },
     [setArticleData],
@@ -336,65 +374,128 @@ const Page = ({ params: { lng } }: PageParams) => {
     deleteArticleData();
   }, [deleteArticleData]);
 
+  const convertSwatchToDTO = useCallback(
+    (swatch: Swatch | null): SwatchDTO | undefined => {
+      if (!swatch) return undefined;
+      return {
+        r: swatch.r,
+        g: swatch.g,
+        b: swatch.b,
+        population: swatch.population,
+        h: swatch.hsl[0],
+        s: swatch.hsl[1],
+        l: swatch.hsl[2],
+        hex: swatch.hex,
+        titleTextColor: swatch.titleTextColor,
+        bodyTextColor: swatch.bodyTextColor,
+      };
+    },
+    [],
+  );
+
   const handleFileChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
       const file = event.target.files?.[0];
       if (file) {
-        const formData = new FormData();
-        formData.append('image', file);
-        uploadImage(formData)
-          .then((imageUrl) => {
-            // resolve(`${process.env.NEXT_PUBLIC_BASE_URL}${imageUrl}`);
-            setValue('imageUrl', imageUrl);
-            trigger('imageUrl');
+        const fileURL = URL.createObjectURL(file);
+        Vibrant.from(fileURL)
+          .getPalette()
+          .then((paletteResult) => {
+            const paletteData = {
+              vibrant: convertSwatchToDTO(paletteResult.Vibrant),
+              muted: convertSwatchToDTO(paletteResult.Muted),
+              darkVibrant: convertSwatchToDTO(paletteResult.DarkVibrant),
+              darkMuted: convertSwatchToDTO(paletteResult.DarkMuted),
+              lightVibrant: convertSwatchToDTO(paletteResult.LightVibrant),
+              lightMuted: convertSwatchToDTO(paletteResult.LightMuted),
+            };
+
+            setPalette(paletteData);
+
+            const formData = new FormData();
+            formData.append('image', file);
+            if (paletteData) {
+              formData.append(
+                'palette',
+                new Blob([JSON.stringify(paletteData)], {
+                  type: 'application/json',
+                }),
+                'palette.json',
+              );
+            }
+            formData.append('isPreview', 'true');
+
+            const formDataObject = Object.fromEntries(
+              formData.entries(),
+            ) as unknown as CreateArticleImage;
+
+            uploadArticleImage(articleId, formDataObject)
+              .then((imageUrl) => {
+                setValue('imageUrl', imageUrl);
+                trigger('imageUrl');
+              })
+              .catch((error) => {
+                devConsoleError('Upload failed:', error);
+              });
           })
           .catch((error) => {
-            devConsoleError('Failed to upload image:', error);
+            devConsoleError('Palette extraction failed:', error);
+          })
+          .finally(() => {
+            URL.revokeObjectURL(fileURL);
           });
       }
     },
-    [setValue, trigger],
+    [articleId, convertSwatchToDTO, setValue, trigger],
   );
 
   useEffect(() => {
     if (article) {
       setArticleData(article);
-      setAvailableCategories([
+      const uniqueCategories = getUniqueCategories([
         ...(categoriesPages?.content || []),
         ...article.categories,
       ]);
+      setAvailableCategories(uniqueCategories);
       setSelectedCategories(article.categories);
-      setAvailableCompilations([
+      const uniqueCompilations = getUniqueCompilations([
         ...(compilationsPages?.content || []),
         ...article.compilations,
       ]);
+      setAvailableCompilations(uniqueCompilations);
       setSelectedCompilations(article.compilations);
+      setPalette(article.image?.palette);
     } else {
       const lsArticleId = Number(localStorage.getItem(ARTICLE_ID));
       if (isValidId(lsArticleId)) {
         setArticleId(lsArticleId);
+        const lsStepOneData = localStorage.getItem(STEP_ONE_DATA);
+        if (lsStepOneData) {
+          const parsedStepOneData = JSON.parse(lsStepOneData);
+          resetStepOne(parsedStepOneData);
+        }
+        const lsStepTwoData = localStorage.getItem(STEP_TWO_DATA);
+        if (lsStepTwoData) {
+          const parsedStepTwoData = JSON.parse(lsStepTwoData);
+          resetStepTwo(parsedStepTwoData);
+        }
+        const lsPalette = localStorage.getItem(PALETTE);
+        if (lsPalette) {
+          const parsedPalette = JSON.parse(lsPalette);
+          setPalette(parsedPalette);
+        }
       } else {
         setArticleId(0);
+        lsClean();
       }
     }
-    const lsStepOneData = localStorage.getItem(STEP_ONE_DATA);
-    if (lsStepOneData) {
-      const parsedStepOneData = JSON.parse(lsStepOneData);
-      resetStepOne(parsedStepOneData);
-    }
-    const lsStepTwoData = localStorage.getItem(STEP_TWO_DATA);
-    if (lsStepTwoData) {
-      const parsedStepTwoData = JSON.parse(lsStepTwoData);
-      resetStepTwo(parsedStepTwoData);
-    }
-    if ((isFetched && paramId) || !isValidId(id)) route.replace(pathname);
+    if (isFetched || !isValidId(id)) route.replace(pathname);
   }, [
     article,
     categoriesPages,
     compilationsPages,
     id,
     isFetched,
-    paramId,
     pathname,
     resetStepOne,
     resetStepTwo,
@@ -424,18 +525,11 @@ const Page = ({ params: { lng } }: PageParams) => {
     if (lsSelectedCategoriesData !== null)
       lsSelectedCategories = JSON.parse(lsSelectedCategoriesData);
     const mergedCategories = [
+      ...(categoriesPages?.content || []),
       ...(categoriesObjects || []),
       ...(lsSelectedCategories || []),
-      ...(categoriesPages?.content || []),
     ];
-    const uniqueCategories = Array.from(
-      mergedCategories
-        .reduce((acc, category) => {
-          acc.set(category.id, category);
-          return acc;
-        }, new Map<number, GetCategory>())
-        .values(),
-    );
+    const uniqueCategories = getUniqueCategories(mergedCategories);
     setAvailableCategories(uniqueCategories);
   }, [categoriesObjects, categoriesPages]);
 
@@ -467,14 +561,7 @@ const Page = ({ params: { lng } }: PageParams) => {
       ...(lsSelectedCompilations || []),
       ...(compilationsPages?.content || []),
     ];
-    const uniqueCompilations = Array.from(
-      mergedCompilations
-        .reduce((acc, compilation) => {
-          acc.set(compilation.id, compilation);
-          return acc;
-        }, new Map<number, GetCompilation>())
-        .values(),
-    );
+    const uniqueCompilations = getUniqueCompilations(mergedCompilations);
     setAvailableCompilations(uniqueCompilations);
   }, [compilationsObjects, compilationsPages]);
 
@@ -489,6 +576,12 @@ const Page = ({ params: { lng } }: PageParams) => {
     () => tagObjects?.map((tag) => tag.name) ?? [],
     [tagObjects],
   );
+
+  useEffect(() => {
+    if (palette) {
+      localStorage.setItem(PALETTE, JSON.stringify(palette));
+    }
+  }, [palette]);
 
   useEffect(() => {
     devConsoleError(Object.keys(errorsStepOne).length > 0);
@@ -614,6 +707,15 @@ const Page = ({ params: { lng } }: PageParams) => {
       handleNext();
     }, []);
 
+  function lsClean() {
+    localStorage.removeItem(STEP_ONE_DATA);
+    localStorage.removeItem(STEP_TWO_DATA);
+    localStorage.removeItem(SELECTED_CATEGORIES);
+    localStorage.removeItem(SELECTED_COMPILATIONS);
+    localStorage.removeItem(ARTICLE_ID);
+    localStorage.removeItem(PALETTE);
+  }
+
   const onStepTwoSubmit: SubmitHandler<z.infer<typeof StepTwoScheme>> =
     useCallback(
       (formData) => {
@@ -628,11 +730,7 @@ const Page = ({ params: { lng } }: PageParams) => {
         setStepOneData(null);
         setStepTwoData(null);
         setPrevData({});
-        localStorage.removeItem(STEP_ONE_DATA);
-        localStorage.removeItem(STEP_TWO_DATA);
-        localStorage.removeItem(SELECTED_CATEGORIES);
-        localStorage.removeItem(SELECTED_COMPILATIONS);
-        localStorage.removeItem(ARTICLE_ID);
+        lsClean();
       },
       [stepOneData, updateArticleMutate],
     );
@@ -644,6 +742,7 @@ const Page = ({ params: { lng } }: PageParams) => {
   const steps: StepType[] = useMemo(
     () => [
       {
+        key: 1,
         label: t('mainContent'),
         stepContent: (
           <FormProvider {...zodStepOneForm}>
@@ -679,7 +778,12 @@ const Page = ({ params: { lng } }: PageParams) => {
                 name='content'
                 control={controlStepOne}
                 render={({ field }) => (
-                  <TinyMCEEditor id='content' {...field} reset={reset} />
+                  <TinyMCEEditor
+                    id='content'
+                    articleId={articleId}
+                    {...field}
+                    reset={reset}
+                  />
                 )}
               />
               <Box
@@ -701,6 +805,7 @@ const Page = ({ params: { lng } }: PageParams) => {
         error: Object.keys(errorsStepOne).length > 0,
       },
       {
+        key: 2,
         label: t('settingsAndPreview'),
         stepContent: (
           <FormProvider {...zodStepTwoForm}>
@@ -973,6 +1078,58 @@ const Page = ({ params: { lng } }: PageParams) => {
                   )}
                 />
               </FormControl>
+              {palette && (
+                <Stack
+                  key={JSON.stringify(palette)}
+                  direction='row'
+                  divider={<Divider orientation='vertical' flexItem />}
+                  spacing={2}
+                  sx={{ flexWrap: 'wrap' }}
+                >
+                  {palette.vibrant && (
+                    <Paper sx={{ backgroundColor: palette.vibrant.hex }}>
+                      <Typography color={palette.vibrant?.titleTextColor}>
+                        Vibrant
+                      </Typography>
+                    </Paper>
+                  )}
+                  {palette.darkVibrant && (
+                    <Paper sx={{ backgroundColor: palette.darkVibrant.hex }}>
+                      <Typography color={palette.darkVibrant?.titleTextColor}>
+                        Dark Vibrant
+                      </Typography>
+                    </Paper>
+                  )}
+                  {palette.lightVibrant && (
+                    <Paper sx={{ backgroundColor: palette.lightVibrant.hex }}>
+                      <Typography color={palette.lightVibrant?.titleTextColor}>
+                        Light Vibrant
+                      </Typography>
+                    </Paper>
+                  )}
+                  {palette.muted && (
+                    <Paper sx={{ backgroundColor: palette.muted.hex }}>
+                      <Typography color={palette.muted?.titleTextColor}>
+                        Muted
+                      </Typography>
+                    </Paper>
+                  )}
+                  {palette.darkMuted && (
+                    <Paper sx={{ backgroundColor: palette.darkMuted.hex }}>
+                      <Typography color={palette.darkMuted?.titleTextColor}>
+                        Dark Muted
+                      </Typography>
+                    </Paper>
+                  )}
+                  {palette.lightMuted && (
+                    <Paper sx={{ backgroundColor: palette.lightMuted.hex }}>
+                      <Typography color={palette.lightMuted?.titleTextColor}>
+                        Light Muted
+                      </Typography>
+                    </Paper>
+                  )}
+                </Stack>
+              )}
               {errorsStepTwo.imageUrl && (
                 <FormHelperText
                   id='image-text'
@@ -991,7 +1148,12 @@ const Page = ({ params: { lng } }: PageParams) => {
                 name='previewContent'
                 control={controlStepTwo}
                 render={({ field }) => (
-                  <TinyMCEEditor id='previewContent' {...field} reset={reset} />
+                  <TinyMCEEditor
+                    id='previewContent'
+                    articleId={articleId}
+                    {...field}
+                    reset={reset}
+                  />
                 )}
               />
               <Box
@@ -1013,6 +1175,7 @@ const Page = ({ params: { lng } }: PageParams) => {
         error: Object.keys(errorsStepTwo).length > 0,
       },
       {
+        key: 3,
         label: t('success'),
         stepContent: (
           <>
@@ -1037,6 +1200,7 @@ const Page = ({ params: { lng } }: PageParams) => {
       },
     ],
     [
+      articleId,
       availableCategories,
       availableCompilations,
       availableTags,
@@ -1053,10 +1217,10 @@ const Page = ({ params: { lng } }: PageParams) => {
       handleSubmitStepTwo,
       inputCategoryValue,
       inputCompilationValue,
-      lng,
       onStepOneSubmit,
       onStepTwoSubmit,
       onSubmit,
+      palette,
       reset,
       t,
       zodStepOneForm,
@@ -1067,8 +1231,8 @@ const Page = ({ params: { lng } }: PageParams) => {
   return (
     <section className='my-10'>
       <Stepper activeStep={activeStep} alternativeLabel>
-        {steps.map((step, index) => (
-          <Step key={index}>
+        {steps.map((step) => (
+          <Step key={step.key}>
             <StepLabel error={step.error} slots={{ stepIcon: CustomStepIcon }}>
               {step.label}
             </StepLabel>
@@ -1079,4 +1243,5 @@ const Page = ({ params: { lng } }: PageParams) => {
     </section>
   );
 };
+
 export default WithAuth(Page);

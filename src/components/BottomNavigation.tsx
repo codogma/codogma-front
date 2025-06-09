@@ -12,7 +12,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import * as React from 'react';
 import { useEffect, useState } from 'react';
 
-import { useTranslation } from '@/app/i18n/client';
+import { useT } from '@/app/i18n/client';
 import { replaceUrlAndDispatchEvent } from '@/helpers/replaceUrlAndDispatchEvent';
 import { Language } from '@/types';
 
@@ -27,7 +27,7 @@ export default function FixedBottomNavigation({
   const [value, setValue] = useState<
     'articles' | 'feed' | 'compilations' | undefined
   >();
-  const { t } = useTranslation(lang);
+  const { t } = useT();
 
   const handleChange = (
     _event: React.SyntheticEvent,

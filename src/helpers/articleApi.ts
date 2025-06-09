@@ -35,6 +35,7 @@ export type UpdateArticleDTO = {
 export type GetArticlesDTO = {
   totalElements: number;
   totalPages: number;
+  number: number;
   content: GetArticle[];
 };
 
@@ -161,16 +162,14 @@ export const deleteArticle = async (id: number): Promise<void> => {
 export const addToCompilations = async (
   id: number,
   compilationIds: number[],
-): Promise<GetArticle> => {
-  const response = await axiosInstance.post(
-    `/articles/${id}/add-to-compilations`,
-    { compilationIds },
-  );
+): Promise<void> => {
+  await axiosInstance.post(`/articles/${id}/add-to-compilations`, {
+    compilationIds,
+  });
   dispatchCustomEvent('api', {
     message: 'You have successfully added the article to the compilation',
     severity: 'success',
   });
-  return response.data;
 };
 
 export const like = async (id: number): Promise<GetArticle> => {

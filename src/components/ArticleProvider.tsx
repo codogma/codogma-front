@@ -1,7 +1,9 @@
 'use client';
-import { useRouter } from 'next/navigation';
-import React, { createContext, useContext } from 'react';
+import { redirect } from 'next/navigation';
+import React, { createContext, useContext, useEffect } from 'react';
 
+import { useNavigationActions } from '@/components/NavigationProvider';
+import { TocItem } from '@/helpers/parseToc';
 import { GetArticle } from '@/types';
 
 interface ArticleContextType {
@@ -17,15 +19,27 @@ export const useArticle = () => useContext(ArticleContext);
 export const ArticleProvider = ({
   children,
   article,
+  toc,
 }: {
   readonly children: React.ReactNode;
   readonly article: GetArticle;
+  readonly toc: TocItem[];
 }) => {
-  const router = useRouter();
   if (!article) {
-    router.push('/not-found');
-    return null;
+    redirect('/not-found');
   }
+
+  const { setArticle, setToc } = useNavigationActions();
+
+  useEffect(() => {
+    setArticle(article);
+    setToc(toc);
+    return () => {
+      setArticle(undefined);
+      setToc([]);
+    };
+  }, [article, setArticle, setToc, toc]);
+
   return (
     <ArticleContext.Provider value={{ article }}>
       {children}

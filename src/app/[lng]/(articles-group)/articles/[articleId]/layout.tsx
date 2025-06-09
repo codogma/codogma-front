@@ -5,11 +5,12 @@ import { ReactNode } from 'react';
 import { ArticleProvider } from '@/components/ArticleProvider';
 import { getArticleById } from '@/helpers/articleApi';
 import { convertHtmlToText } from '@/helpers/convertHtmlToText';
+import { parseToc } from '@/helpers/parseToc';
 import { GetArticle, Language } from '@/types';
 
 type LayoutProps = {
   readonly children: ReactNode;
-  readonly params: { id: number; lng: Language; articleId: number };
+  readonly params: { articleId: number; lng: Language };
 };
 
 async function fetchArticleById(id: number): Promise<GetArticle> {
@@ -17,17 +18,17 @@ async function fetchArticleById(id: number): Promise<GetArticle> {
 }
 
 export async function generateMetadata(
-  { params: { id, articleId } }: LayoutProps,
+  { params: { articleId } }: LayoutProps,
   parent: ResolvingMetadata,
 ): Promise<Metadata> {
   const article = await fetchArticleById(articleId);
   const metadataBase = (await parent).metadataBase;
   return {
     alternates: {
-      canonical: `/compilations/${id}/${articleId}`,
+      canonical: `/articles/${articleId}`,
       languages: {
-        en: `/en/compilations/${id}/${articleId}`,
-        ru: `/ru/compilations/${id}/${articleId}`,
+        en: `/en/articles/${articleId}`,
+        ru: `/ru/articles/${articleId}`,
       },
     },
     title: article.title,
@@ -47,5 +48,10 @@ export default async function Layout({
   params: { articleId },
 }: LayoutProps) {
   const article = await fetchArticleById(articleId);
-  return <ArticleProvider article={article}>{children}</ArticleProvider>;
+  const toc = await parseToc(article.content);
+  return (
+    <ArticleProvider article={article} toc={toc}>
+      {children}
+    </ArticleProvider>
+  );
 }

@@ -4,27 +4,43 @@ import Checkbox from '@mui/material/Checkbox';
 import IconButton from '@mui/material/IconButton';
 import Paper from '@mui/material/Paper';
 import { useQuery } from '@tanstack/react-query';
+import { useParams } from 'next/navigation';
 import React from 'react';
 
 import { ArticleProgressBar } from '@/components/ArticleProgressBar';
+import { ArticlesDrawer } from '@/components/ArticlesDrawer';
 import { useAuth } from '@/components/AuthProvider';
+import { FullscreenButton } from '@/components/FullscreenButton';
 import MenuButton from '@/components/MenuButton';
+import { useNavigationState } from '@/components/NavigationProvider';
+import { SettingsDrawer } from '@/components/SettingsDrawer';
+import { TOCDrawer } from '@/components/TOCDrawer';
 import { getArticleById, like, unlike } from '@/helpers/articleApi';
 import { GetArticle, Language } from '@/types';
 
 type SearchProps = {
-  readonly id: number;
   readonly lang: Language;
-  readonly articleData: GetArticle;
+  readonly article: GetArticle;
+  readonly isFullscreen: boolean;
 };
 
-export const ArticleActions = ({ id, lang, articleData }: SearchProps) => {
+export const ArticleActions = ({
+  lang,
+  article,
+  isFullscreen,
+}: SearchProps) => {
+  const { toc } = useNavigationState();
   const { state } = useAuth();
 
-  const { data: article, refetch } = useQuery({
-    queryKey: ['article', id],
-    queryFn: () => getArticleById(id),
-    initialData: articleData,
+  const { articleId, compilationId } = useParams<{
+    articleId: string;
+    compilationId: string;
+  }>();
+
+  const { data: articleData, refetch } = useQuery({
+    queryKey: ['article', article.id],
+    queryFn: () => getArticleById(article.id),
+    initialData: article,
   });
 
   const handleClick = () => {
@@ -38,14 +54,14 @@ export const ArticleActions = ({ id, lang, articleData }: SearchProps) => {
   };
 
   const handleChange = async (
-    event: React.ChangeEvent<HTMLInputElement>,
+    _event: React.ChangeEvent<HTMLInputElement>,
     checked: boolean,
   ) => {
     if (state.isAuthenticated) {
       if (checked) {
-        await like(id).then(() => refetch());
+        await like(article.id).then(() => refetch());
       } else {
-        await unlike(id).then(() => refetch());
+        await unlike(article.id).then(() => refetch());
       }
     }
   };
@@ -53,9 +69,14 @@ export const ArticleActions = ({ id, lang, articleData }: SearchProps) => {
   return (
     <Paper
       sx={{
-        position: 'sticky',
-        bottom: { sm: 60, md: 20 },
+        position: isFullscreen ? 'fixed' : 'sticky',
+        bottom: { xs: isFullscreen ? 20 : 60, md: 20 },
         minWidth: 100,
+        left: isFullscreen ? '50%' : 0,
+        transform: isFullscreen ? 'translateX(-50%)' : 'none',
+        display: 'flex',
+        flexDirection: 'row',
+        justifyContent: 'space-between',
         width: 'fit-content',
         height: 52,
         zIndex: 10,
@@ -64,40 +85,69 @@ export const ArticleActions = ({ id, lang, articleData }: SearchProps) => {
         boxShadow: '0px 4px 6px rgba(0, 0, 0, 0.1)',
         borderRadius: 8,
         p: '6px',
-        m: '0px auto 8px auto',
+        m: isFullscreen ? 0 : '8px auto 8px auto',
         alignItems: 'center',
         overflow: 'hidden',
       }}
       variant='outlined'
       aria-label='Article Actions'
     >
-      <Checkbox
-        checked={article.isLiked}
-        onChange={handleChange}
-        icon={
-          <>
-            <ThumbUpOutlinedIcon />
-            <div className='ml-1 text-base leading-5'>{article.likeCount}</div>
-          </>
-        }
-        checkedIcon={
-          <>
-            <ThumbUpOutlinedIcon color='inherit' />
-            <div className='ml-1 text-base leading-5'>{article.likeCount}</div>
-          </>
-        }
-        inputProps={{ 'aria-label': 'Like' }}
-      />
-      <IconButton
-        onClick={handleClick}
-        aria-label='Comments'
-        sx={{ borderRadius: 8 }}
-      >
-        <CommentOutlinedIcon />
-        <div className='ml-1 text-base leading-5'>{article.commentsCount}</div>
-      </IconButton>
-      <MenuButton article={article} lang={lang} />
-      <ArticleProgressBar articleData={articleData} />
+      {isFullscreen ? (
+        <>
+          <FullscreenButton />
+          <SettingsDrawer />
+          <ArticlesDrawer
+            lang={lang}
+            articleId={articleId}
+            compilationId={compilationId}
+          />
+          <TOCDrawer article={article} toc={toc} />
+        </>
+      ) : (
+        <>
+          <FullscreenButton />
+          <Checkbox
+            checked={articleData.isLiked}
+            onChange={handleChange}
+            icon={
+              <>
+                <ThumbUpOutlinedIcon />
+                <div className='ml-1 text-base leading-5'>
+                  {articleData.likeCount}
+                </div>
+              </>
+            }
+            checkedIcon={
+              <>
+                <ThumbUpOutlinedIcon color='inherit' />
+                <div className='ml-1 text-base leading-5'>
+                  {articleData.likeCount}
+                </div>
+              </>
+            }
+            slotProps={{ input: { 'aria-label': 'Like' } }}
+          />
+          <IconButton
+            onClick={handleClick}
+            aria-label='Comments'
+            sx={{ borderRadius: 8 }}
+          >
+            <CommentOutlinedIcon />
+            <div className='ml-1 text-base leading-5'>
+              {articleData.commentsCount}
+            </div>
+          </IconButton>
+          <SettingsDrawer />
+          <TOCDrawer article={article} toc={toc} />
+          <ArticlesDrawer
+            lang={lang}
+            articleId={articleId}
+            compilationId={compilationId}
+          />
+        </>
+      )}
+      <MenuButton article={articleData} lang={lang} />
+      <ArticleProgressBar article={article} />
     </Paper>
   );
 };

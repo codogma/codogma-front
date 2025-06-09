@@ -64,14 +64,9 @@ export default function Page({ params: { lng } }: PageProps) {
 
   return (
     <>
-      <Search
-        lang={lng}
-        onSearchType={onSearchType}
-        onSearchValue={onSearchValue}
-      />
+      <Search onSearchType={onSearchType} onSearchValue={onSearchValue} />
       <Categories lang={lng} categories={categories} loading={isFetching} />
       <CustomPagination
-        lang={lng}
         totalPages={totalPages}
         totalElements={totalElements}
         onCurrentPageChange={onPageChange}

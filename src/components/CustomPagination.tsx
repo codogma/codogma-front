@@ -7,11 +7,9 @@ import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
 import React, { useEffect, useState } from 'react';
 
-import { useTranslation } from '@/app/i18n/client';
-import { Language } from '@/types';
+import { useT } from '@/app/i18n/client';
 
 type PaginationProps = {
-  readonly lang: Language;
   readonly totalPages: number;
   readonly totalElements: number;
   readonly resultsPerPageStart?: number;
@@ -20,7 +18,6 @@ type PaginationProps = {
 };
 
 export const CustomPagination = ({
-  lang,
   totalPages = 0,
   totalElements = 0,
   resultsPerPageStart = 10,
@@ -33,7 +30,7 @@ export const CustomPagination = ({
   const [currentPage, setCurrentPage] = useState<number>(0);
   const [resultsPerPage, setResultsPerPage] =
     useState<number>(resultsPerPageStart);
-  const { t } = useTranslation(lang);
+  const { t } = useT();
 
   useEffect(() => {
     onCurrentPageChange(currentPage);

@@ -9,7 +9,7 @@ import Typography from '@mui/material/Typography';
 import Link from 'next/link';
 import React, { useState } from 'react';
 
-import { useTranslation } from '@/app/i18n/client';
+import { useT } from '@/app/i18n/client';
 import { useAuth } from '@/components/AuthProvider';
 import { AvatarImage } from '@/components/AvatarImage';
 import { Bookmark } from '@/components/Bookmark';
@@ -31,7 +31,7 @@ export const CompilationCard = ({
   refetch,
 }: CompilationCardProps) => {
   const { state } = useAuth();
-  const { t } = useTranslation(lang, 'articles');
+  const { t } = useT('articles');
   const [expanded, setExpanded] = useState(false);
   const items = [1, 2, 3, 4, 5];
 
@@ -51,7 +51,6 @@ export const CompilationCard = ({
           state.user?.username !== compilation?.ownerName ? (
             <Bookmark
               username={compilation.ownerName}
-              lang={lang}
               id={compilation.id}
               isBookmarkedValue={compilation.isBookmarked}
               refetch={refetch}
@@ -61,6 +60,7 @@ export const CompilationCard = ({
               compilation={compilation}
               lang={lang}
               refetch={refetch}
+              user={state.user}
             />
           )
         }
@@ -133,8 +133,8 @@ export const CompilationCard = ({
                     {compilation.articles[index] ? (
                       <DefaultImage
                         src={
-                          compilation.articles[index].imageUrl &&
-                          `${process.env.NEXT_PUBLIC_BASE_URL}${compilation.articles[index].imageUrl}`
+                          compilation.articles[index].image &&
+                          `${process.env.NEXT_PUBLIC_BASE_URL}${compilation.articles[index].image.imageUrl}`
                         }
                         top={0}
                         left={0}
@@ -224,7 +224,7 @@ export const CompilationCard = ({
                     {compilation.articles.map((article) => (
                       <li key={article.id}>
                         <Link
-                          href={`/compilations/${compilation.id}/${article.id}`}
+                          href={`/${lang}/compilations/${compilation.id}/${article.id}`}
                         >
                           <span className='link'>{article.title}</span>
                         </Link>

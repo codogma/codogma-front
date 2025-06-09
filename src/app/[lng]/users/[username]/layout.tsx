@@ -11,10 +11,10 @@ import IconButton from '@mui/material/IconButton';
 import { useQuery } from '@tanstack/react-query';
 import React from 'react';
 
-import { useTranslation } from '@/app/i18n/client';
+import { useT } from '@/app/i18n/client';
 import { AvatarImage } from '@/components/AvatarImage';
 import MenuButton from '@/components/MenuButton';
-import NavTabs, { TabProps } from '@/components/NavTabs';
+import { NavTabs, TabProps } from '@/components/NavTabs';
 import { getUserByUsername } from '@/helpers/userApi';
 import { GetUserDTO, Language } from '@/types';
 
@@ -32,7 +32,7 @@ export default function Layout({
   params: { lng, username },
   children,
 }: PageProps) {
-  const { t } = useTranslation(lng);
+  const { t } = useT();
   const tabs: TabProps[] = [
     {
       icon: <PersonIcon />,

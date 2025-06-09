@@ -23,7 +23,7 @@ import { useRouter } from 'next/navigation';
 import * as React from 'react';
 import { memo, useState } from 'react';
 
-import { useTranslation } from '@/app/i18n/client';
+import { useT } from '@/app/i18n/client';
 import { useAuth } from '@/components/AuthProvider';
 import { AvatarImage } from '@/components/AvatarImage';
 import { CategoryDialog } from '@/components/CategoryDialog';
@@ -46,7 +46,7 @@ const NavBar = ({ lang }: NavBarProps) => {
   const [notificationDialogOpen, setNotificationDialogOpen] = useState(false);
   const router = useRouter();
   const { state } = useAuth();
-  const { t } = useTranslation(lang);
+  const { t } = useT();
 
   const handleLogout = () => {
     logout().finally(() => router.push(`/${lang}`));
@@ -150,7 +150,6 @@ const NavBar = ({ lang }: NavBarProps) => {
                 sx={{ p: 0 }}
               >
                 <AvatarImage
-                  key={new Date().getTime()}
                   alt={state.user?.username}
                   src={state.user?.avatarUrl}
                   variant='rounded'
@@ -217,7 +216,6 @@ const NavBar = ({ lang }: NavBarProps) => {
                         <CompilationDialog
                           open={compilationDialogOpen}
                           onClose={handleCloseCompilationDialog}
-                          lang={lang}
                         />
                       </>
                     )}

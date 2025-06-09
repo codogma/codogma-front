@@ -5,27 +5,35 @@ import { CssBaseline } from '@mui/material';
 import IconButton from '@mui/material/IconButton';
 import { createTheme, ThemeProvider, useTheme } from '@mui/material/styles';
 import Tooltip from '@mui/material/Tooltip';
-import * as React from 'react';
+import {
+  createContext,
+  FC,
+  ReactNode,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
 
 import { Scrollbar } from '@/components/Scrollbar';
 
-const ColorModeContext = React.createContext({
+const ColorModeContext = createContext({
   toggleColorMode: () => {},
 });
 
 export const ColorModeProvider = ({
   children,
 }: {
-  readonly children: React.ReactNode;
+  readonly children: ReactNode;
 }) => {
-  const [mode, setMode] = React.useState<'light' | 'dark'>(() => {
+  const [mode, setMode] = useState<'light' | 'dark'>(() => {
     if (typeof window !== 'undefined') {
       return localStorage.getItem('theme-mode') === 'dark' ? 'dark' : 'light';
     }
     return 'light';
   });
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (mode === 'dark') {
       document.documentElement.classList.add('dark');
     } else {
@@ -34,7 +42,7 @@ export const ColorModeProvider = ({
     localStorage.setItem('theme-mode', mode);
   }, [mode]);
 
-  const colorMode = React.useMemo(
+  const colorMode = useMemo(
     () => ({
       toggleColorMode: () => {
         setMode((prevMode) => (prevMode === 'light' ? 'dark' : 'light'));
@@ -43,7 +51,7 @@ export const ColorModeProvider = ({
     [],
   );
 
-  const theme = React.useMemo(
+  const theme = useMemo(
     () =>
       createTheme({
         palette: {
@@ -64,14 +72,14 @@ export const ColorModeProvider = ({
   );
 };
 
-export const useColorMode = () => React.useContext(ColorModeContext);
+export const useColorMode = () => useContext(ColorModeContext);
 
 interface ThemeToggleButtonProps {
   readonly sx?: object;
   readonly title?: string;
 }
 
-export const ThemeToggleButton: React.FC<ThemeToggleButtonProps> = ({
+export const ThemeToggleButton: FC<ThemeToggleButtonProps> = ({
   sx,
   title,
 }) => {

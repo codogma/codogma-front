@@ -5,6 +5,7 @@ export const languages: string[] = Object.values(Language);
 export const defaultNS: string = 'common';
 export const intlCookie: string = 'intl';
 export const contlCookie: string = 'contl';
+export const headerName = 'x-i18next-current-language';
 export const languageMenuItems: { value: Language; label: string }[] = [
   {
     value: Language.EN,

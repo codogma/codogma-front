@@ -1,20 +1,16 @@
+import { Box, BoxProps } from '@mui/material';
 import { format, formatDistanceToNow } from 'date-fns';
 import { enUS, Locale, ru } from 'date-fns/locale';
 import React, { useEffect, useState } from 'react';
 
 import { Language } from '@/types';
 
-interface TimeAgoProps {
+interface TimeAgoProps extends BoxProps {
   readonly datetime: Date;
-  readonly className?: string | undefined;
   readonly lang: Language;
 }
 
-export const TimeAgo: React.FC<TimeAgoProps> = ({
-  datetime,
-  className,
-  lang,
-}) => {
+export const TimeAgo = ({ datetime, lang, ...props }: TimeAgoProps) => {
   const [timeAgo, setTimeAgo] = useState<string>('');
   const [locale, setLocale] = useState<Locale>(enUS);
 
@@ -41,12 +37,13 @@ export const TimeAgo: React.FC<TimeAgoProps> = ({
   });
 
   return (
-    <time
+    <Box
+      component='time'
       dateTime={datetime.toString()}
       title={formattedDate}
-      className={className}
+      {...props}
     >
       {timeAgo}
-    </time>
+    </Box>
   );
 };

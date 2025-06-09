@@ -3,11 +3,6 @@
 import { cookies } from 'next/headers';
 
 export const getAuthToken = async (): Promise<string> => {
-  const cookieStore = await cookies();
+  const cookieStore = cookies();
   return String(cookieStore.get('auth-token')?.value);
-};
-
-export const getIntl = async (): Promise<string> => {
-  const cookieStore = await cookies();
-  return String(cookieStore.get('intl')?.value);
 };

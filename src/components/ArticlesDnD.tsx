@@ -14,6 +14,7 @@ import {
   IconButton,
   List,
   ListItem,
+  ListItemAvatar,
   ListItemIcon,
   ListItemText,
   Paper,
@@ -26,12 +27,13 @@ import Typography from '@mui/material/Typography';
 import { useMutation } from '@tanstack/react-query';
 import React, { useState } from 'react';
 
-import { useTranslation } from '@/app/i18n/client';
+import { useT } from '@/app/i18n/client';
+import { DefaultImage } from '@/components/DefaultImage';
 import {
   updateCompilation,
   UpdateCompilationDTO,
 } from '@/helpers/compilationApi';
-import { GetArticle, GetCompilation, Language } from '@/types';
+import { GetArticle, GetCompilation } from '@/types';
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   '& .MuiDialogContent-root': {
@@ -43,19 +45,17 @@ const BootstrapDialog = styled(Dialog)(({ theme }) => ({
 }));
 
 type ArticlesDnDProps = {
-  readonly lang: Language;
   readonly compilationData: GetCompilation;
   readonly onClose: () => void;
   readonly refetch?: () => void;
 };
 
 export const ArticlesDnD = ({
-  lang,
   compilationData,
   onClose,
   refetch,
 }: ArticlesDnDProps) => {
-  const { t } = useTranslation(lang, 'articles');
+  const { t } = useT('articles');
   const [open, setOpen] = useState<boolean>(false);
   const [articles, setArticles] = useState<GetArticle[]>([]);
 
@@ -126,7 +126,7 @@ export const ArticlesDnD = ({
             <List
               sx={{
                 width: '100%',
-                maxWidth: 360,
+                maxWidth: 500,
               }}
               className='inline-flex flex-col gap-2'
             >
@@ -187,6 +187,25 @@ const SortableItem = ({ article, index, onDelete }: SortableItemProp) => {
             <DragIndicatorIcon />
           </IconButton>
         </ListItemIcon>
+        <ListItemAvatar
+          sx={{
+            height: 50,
+            aspectRatio: '16/9',
+            mr: 2,
+            display: { xs: 'none', sm: 'block' },
+          }}
+        >
+          <DefaultImage
+            src={
+              article.imageUrl &&
+              `${process.env.NEXT_PUBLIC_BASE_URL}${article.imageUrl}`
+            }
+            top={0}
+            left={0}
+            zIndex={0}
+            className='scale-x-100 transition-transform will-change-transform'
+          />
+        </ListItemAvatar>
         <ListItemText primary={article.title} />
       </ListItem>
     </Paper>

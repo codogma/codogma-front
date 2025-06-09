@@ -5,15 +5,13 @@ import { SxProps, Theme } from '@mui/material';
 import Checkbox from '@mui/material/Checkbox';
 import React, { useState } from 'react';
 
-import { useTranslation } from '@/app/i18n/client';
+import { useT } from '@/app/i18n/client';
 import { useAuth } from '@/components/AuthProvider';
 import { PopoverElement } from '@/components/PopoverElement';
 import { favorite, unfavorite } from '@/helpers/categoryApi';
-import { Language } from '@/types';
 
 interface CustomFavoriteProps {
   readonly id: number;
-  readonly lang: Language;
   readonly isFavoriteValue?: boolean;
   readonly refetch?: () => void;
   readonly sx?: SxProps<Theme>;
@@ -22,7 +20,6 @@ interface CustomFavoriteProps {
 
 export const ButtonFavorite: React.FC<CustomFavoriteProps> = ({
   id,
-  lang,
   isFavoriteValue,
   refetch,
   sx,
@@ -31,7 +28,7 @@ export const ButtonFavorite: React.FC<CustomFavoriteProps> = ({
   const [anchorEl, setAnchorEl] = React.useState<HTMLElement | null>(null);
   const [isFavorite, setIsFavorite] = useState(isFavoriteValue);
   const { state } = useAuth();
-  const { t } = useTranslation(lang, 'categories');
+  const { t } = useT('categories');
   const popoverId = 'simple-popover';
 
   const handleChange = async (
@@ -62,7 +59,7 @@ export const ButtonFavorite: React.FC<CustomFavoriteProps> = ({
         onChange={handleChange}
         icon={<FavoriteBorderIcon style={style} />}
         checkedIcon={<FavoriteIcon color='error' />}
-        inputProps={{ 'aria-label': 'Favorites' }}
+        slotProps={{ input: { 'aria-label': 'Favorites' } }}
         sx={sx}
       />
       {!state.isAuthenticated && (
@@ -71,7 +68,6 @@ export const ButtonFavorite: React.FC<CustomFavoriteProps> = ({
           btnEl={anchorEl}
           onClose={handlePopoverClose}
           destination={t('popoverFavorite')}
-          lang={lang}
         />
       )}
     </>

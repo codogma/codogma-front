@@ -11,7 +11,7 @@ import Typography from '@mui/material/Typography';
 import { useRouter } from 'next/navigation';
 import React, { useState } from 'react';
 
-import { useTranslation } from '@/app/i18n/client';
+import { useT } from '@/app/i18n/client';
 import { GetArticle, Language } from '@/types';
 
 type ButtonAlertDialogProps = {
@@ -26,7 +26,7 @@ export default function ButtonAlertDialog({
 }: ButtonAlertDialogProps) {
   const [open, setOpen] = useState(false);
   const router = useRouter();
-  const { t } = useTranslation(lang, 'articles');
+  const { t } = useT('articles');
 
   const handleClose = () => {
     setOpen(false);

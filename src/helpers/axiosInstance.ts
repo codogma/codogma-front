@@ -2,7 +2,8 @@ import axios, { isAxiosError } from 'axios';
 import { redirect } from 'next/navigation';
 
 import { devConsoleError } from '@/helpers/devConsoleLogs';
-import { getAuthToken, getIntl } from '@/helpers/getCookies';
+import { getAuthToken } from '@/helpers/getCookies';
+import { getLocale } from '@/helpers/getLocale';
 
 export const axiosInstance = axios.create({
   baseURL: `${process.env.NEXT_PUBLIC_BASE_URL}/api`,
@@ -20,7 +21,7 @@ axiosInstance.interceptors.request.use(
       if (authToken) {
         config.headers['Authorization'] = `Bearer ${authToken}`;
       }
-      const intl = await getIntl();
+      const intl = await getLocale();
       if (intl) {
         config.headers['Accept-Language'] = intl;
       }

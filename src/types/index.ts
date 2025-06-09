@@ -69,14 +69,16 @@ export type GetCategory = {
   isFavorite: boolean;
   name: string;
   description: string;
-  imageUrl: string;
+  icon: GetImage;
+  image: GetImageWithPalette;
   tags: GetTag[];
 };
 
 export type GetCategoryToUpdate = {
   name: Record<Language, string>;
   description: Record<Language, string>;
-  imageUrl: string;
+  image: GetImageWithPalette;
+  icon: GetImage;
 };
 
 export type GetNotificationToUpdate = {
@@ -107,6 +109,39 @@ export type GetNotification = {
   read: boolean;
 };
 
+export type SwatchDTO = {
+  r: number;
+  g: number;
+  b: number;
+  population: number;
+  h: number;
+  s: number;
+  l: number;
+  hex: string;
+  titleTextColor: string;
+  bodyTextColor: string;
+};
+
+export type PaletteDTO = {
+  vibrant: SwatchDTO | undefined;
+  darkVibrant: SwatchDTO | undefined;
+  lightVibrant: SwatchDTO | undefined;
+  muted: SwatchDTO | undefined;
+  darkMuted: SwatchDTO | undefined;
+  lightMuted: SwatchDTO | undefined;
+};
+
+export type GetImage = {
+  imageUrl: string;
+  filename: string;
+};
+
+export type GetImageWithPalette = {
+  imageUrl: string;
+  filename: string;
+  palette: PaletteDTO;
+};
+
 export type GetArticle = {
   id: number;
   status: string;
@@ -114,7 +149,7 @@ export type GetArticle = {
   isBookmarked: boolean;
   language: Language;
   originalArticleId: number;
-  imageUrl: string;
+  image: GetImageWithPalette;
   previewContent: string;
   previewContentNode?: ReactNode;
   content: string;

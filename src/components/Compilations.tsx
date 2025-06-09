@@ -20,40 +20,58 @@ export default function Compilations({
   refetch,
 }: CompilationsProps) {
   return (
-    <>
-      {loading ? (
-        <Card variant='outlined' className='card'>
-          <CardContent className='card-content'>
-            <div className='card-header'>
-              <Skeleton variant='rounded' width={48} height={48} />
-              <ul>
-                <li>
-                  <Skeleton variant='text' width={100} />
-                </li>
-                <li>
-                  <Skeleton variant='text' width={150} />
-                </li>
-                <li>
-                  <Skeleton variant='text' width={150} />
-                </li>
-              </ul>
-            </div>
-          </CardContent>
-        </Card>
-      ) : (
-        <Grid container direction={{ xs: 'column', sm: 'row' }} spacing={1}>
-          {compilations?.map((compilation) => (
-            <Grid key={compilation.id} size={{ xs: 12, sm: 6, lg: 4 }}>
+    <Grid container spacing={2}>
+      {(loading ? Array.from(new Array(12)) : compilations)?.map(
+        (compilation) => (
+          <Grid key={compilation?.id} size={{ xs: 12, sm: 6, lg: 4 }}>
+            {compilation ? (
               <CompilationCard
                 key={compilation.id}
                 compilation={compilation}
                 lang={lang}
                 refetch={refetch}
               />
-            </Grid>
-          ))}
-        </Grid>
+            ) : (
+              <Card variant='outlined' className='card'>
+                <CardContent>
+                  <div
+                    style={{ display: 'flex', gap: 16, alignItems: 'center' }}
+                  >
+                    <Skeleton
+                      animation='wave'
+                      variant='rounded'
+                      width={40}
+                      height={40}
+                    />
+                    <div style={{ flex: 1 }}>
+                      <Skeleton
+                        animation='wave'
+                        height={10}
+                        width='80%'
+                        style={{ marginBottom: 6 }}
+                      />
+                      <Skeleton animation='wave' height={10} width='40%' />
+                    </div>
+                  </div>
+                </CardContent>
+                <Skeleton
+                  sx={{ height: 190 }}
+                  animation='wave'
+                  variant='rectangular'
+                />
+                <CardContent>
+                  <Skeleton
+                    animation='wave'
+                    height={10}
+                    style={{ marginBottom: 6 }}
+                  />
+                  <Skeleton animation='wave' height={10} width='80%' />
+                </CardContent>
+              </Card>
+            )}
+          </Grid>
+        ),
       )}
-    </>
+    </Grid>
   );
 }

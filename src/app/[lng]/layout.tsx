@@ -1,17 +1,17 @@
 import { Container, StyledEngineProvider } from '@mui/material';
 import { AppRouterCacheProvider } from '@mui/material-nextjs/v14-appRouter';
 import { Metadata } from 'next';
-import './globals.css';
+import '@/app/globals.css';
 import { Inter } from 'next/font/google';
 import React, { ReactNode } from 'react';
 
-import { initTranslation } from '@/app/i18n';
+import { getT } from '@/app/i18n';
 import { AuthProvider } from '@/components/AuthProvider';
-import ButtonBackToTop from '@/components/ButtonBackToTop';
-import { ContainerWithNavigations } from '@/components/ContainerWithNavigations';
+import { ButtonBackToTop } from '@/components/ButtonBackToTop';
 import { ContentImageProvider } from '@/components/ContentImageProvider';
 import { CustomizedSnackbars } from '@/components/CustomizedSnackbars';
-import Footer from '@/components/Footer';
+import { Navigation } from '@/components/Navigation';
+import { NavigationProvider } from '@/components/NavigationProvider';
 import { ReactQueryProvider } from '@/components/ReactQueryProvider';
 import { ColorModeProvider } from '@/components/ThemeContext';
 import { Language } from '@/types';
@@ -23,10 +23,8 @@ type RootLayoutProps = {
   readonly params: { lng: Language };
 };
 
-export async function generateMetadata({
-  params: { lng },
-}: RootLayoutProps): Promise<Metadata> {
-  const { t } = await initTranslation(lng, 'main');
+export async function generateMetadata(): Promise<Metadata> {
+  const { t } = await getT('main');
   return {
     metadataBase: new URL('https://codogma.com'),
     alternates: {
@@ -73,15 +71,18 @@ export default async function Layout({
             <ColorModeProvider>
               <ReactQueryProvider>
                 <AuthProvider>
-                  <ContainerWithNavigations lang={lng}>
-                    <ButtonBackToTop>
-                      <Container className='content'>
-                        <ContentImageProvider>{children}</ContentImageProvider>
-                      </Container>
-                    </ButtonBackToTop>
-                    <Footer lang={lng} />
-                    <CustomizedSnackbars />
-                  </ContainerWithNavigations>
+                  <NavigationProvider>
+                    <Navigation lang={lng}>
+                      <ButtonBackToTop>
+                        <Container className='content'>
+                          <ContentImageProvider>
+                            {children}
+                          </ContentImageProvider>
+                        </Container>
+                      </ButtonBackToTop>
+                      <CustomizedSnackbars />
+                    </Navigation>
+                  </NavigationProvider>
                 </AuthProvider>
               </ReactQueryProvider>
             </ColorModeProvider>

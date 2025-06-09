@@ -70,11 +70,7 @@ export default function Page({ params: { lng } }: PageProps) {
 
   return (
     <>
-      <Search
-        lang={lng}
-        onSearchType={onSearchType}
-        onSearchValue={onSearchValue}
-      />
+      <Search onSearchType={onSearchType} onSearchValue={onSearchValue} />
       <Compilations
         lang={lng}
         loading={isFetching}
@@ -82,7 +78,6 @@ export default function Page({ params: { lng } }: PageProps) {
         refetch={refetch}
       />
       <CustomPagination
-        lang={lng}
         totalPages={totalPages}
         totalElements={totalElements}
         onCurrentPageChange={onPageChange}

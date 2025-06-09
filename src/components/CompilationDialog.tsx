@@ -19,12 +19,11 @@ import React, { useEffect, useState } from 'react';
 import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
 import { z } from 'zod';
 
-import { useTranslation } from '@/app/i18n/client';
+import { useT } from '@/app/i18n/client';
 import { AvatarImage } from '@/components/AvatarImage';
 import FormInput from '@/components/FormInput';
-import { createCompilation } from '@/helpers/compilationApi';
+import { CompilationCreate, createCompilation } from '@/helpers/compilationApi';
 import { devConsoleError } from '@/helpers/devConsoleLogs';
-import { Language } from '@/types';
 
 const VisuallyHiddenInput = styled('input')({
   clip: 'rect(0 0 0 0)',
@@ -48,7 +47,6 @@ const BootstrapDialog = styled(Dialog)(({ theme }) => ({
 }));
 
 type CompilationDialogProps = {
-  readonly lang: Language;
   readonly open: boolean;
   readonly onClose: () => void;
 };
@@ -63,13 +61,11 @@ const CompilationDialogScheme = z.object({
 });
 
 export const CompilationDialog = ({
-  lang,
   open,
   onClose,
 }: CompilationDialogProps) => {
-  const [imageFile, setImageFile] = useState<File>();
   const [imageUrl, setImageUrl] = useState<string>();
-  const { t } = useTranslation(lang, 'compilations');
+  const { t } = useT('compilations');
 
   const zodForm = useForm<z.infer<typeof CompilationDialogScheme>>({
     resolver: zodResolver(CompilationDialogScheme),
@@ -97,7 +93,6 @@ export const CompilationDialog = ({
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
-      setImageFile(file);
       setImageUrl(URL.createObjectURL(file));
       setValue('image', file);
       trigger('image');
@@ -107,9 +102,25 @@ export const CompilationDialog = ({
   const onSubmit: SubmitHandler<z.infer<typeof CompilationDialogScheme>> = (
     formData,
   ) => {
-    const requestData = { ...formData, image: imageFile };
-    devConsoleError(requestData);
-    createCompilation(requestData).then(() => onClose());
+    const requestData = {
+      title: formData.title,
+      image: formData.image,
+      description: formData.description,
+    };
+    const formDataToSend = new FormData();
+    formDataToSend.append('title', JSON.stringify(requestData.title));
+    if (requestData.image) formDataToSend.append('image', requestData.image);
+    if (requestData.description) {
+      formDataToSend.append(
+        'description',
+        JSON.stringify(requestData.description),
+      );
+    }
+    const formDataObject = Object.fromEntries(
+      formDataToSend.entries(),
+    ) as unknown as CompilationCreate;
+    devConsoleError(formDataObject);
+    createCompilation(formDataObject).then(() => onClose());
   };
 
   return (

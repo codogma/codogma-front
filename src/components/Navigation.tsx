@@ -1,30 +1,34 @@
 'use client';
 import { Container, Grid2 as Grid } from '@mui/material';
-import { usePathname } from 'next/navigation';
+import { useParams, usePathname } from 'next/navigation';
 import React, { ReactNode } from 'react';
 
 import BottomNavigation from '@/components/BottomNavigation';
+import Footer from '@/components/Footer';
 import NavBar from '@/components/NavBar';
+import { useNavigationState } from '@/components/NavigationProvider';
 import { NavPanel } from '@/components/NavPanel';
+import { NavSidebar } from '@/components/NavSidebar';
 import { Language } from '@/types';
 
-type ContainerWithNavPanelProps = {
+type NavigationProps = {
   readonly lang: Language;
   readonly children: ReactNode;
 };
 
-export const ContainerWithNavigations = ({
-  lang,
-  children,
-}: ContainerWithNavPanelProps) => {
+export const Navigation = ({ lang, children }: NavigationProps) => {
+  const { article, toc, isFullscreen } = useNavigationState();
   const pathname = usePathname();
+  const { articleId } = useParams();
   const hasAdmin = pathname.startsWith(`/${lang}/admin`);
+
   if (hasAdmin) {
     return children;
   }
+
   return (
     <>
-      <NavBar lang={lang} />
+      {!isFullscreen && <NavBar lang={lang} />}
       <Container maxWidth='xl'>
         <Grid container spacing={1} direction='row' columns={12}>
           <Grid
@@ -33,7 +37,7 @@ export const ContainerWithNavigations = ({
               top: 64,
               height: { xs: 'auto', md: 'calc(100vh - 64px)' },
               overflow: 'hidden',
-              display: { xs: 'none', md: 'block' },
+              display: { xs: 'none', md: isFullscreen ? 'none' : 'block' },
             }}
           >
             <NavPanel lang={lang} />
@@ -44,10 +48,24 @@ export const ContainerWithNavigations = ({
             className='flex flex-col flex-wrap justify-between'
           >
             {children}
+            {!isFullscreen && <Footer lang={lang} />}
           </Grid>
+          {!!articleId && (
+            <Grid
+              sx={{
+                position: 'sticky',
+                top: 64,
+                height: { xs: 'auto', md: 'calc(100vh - 64px)' },
+                overflow: 'hidden',
+                display: { xs: 'none', md: isFullscreen ? 'none' : 'block' },
+              }}
+            >
+              <NavSidebar lang={lang} article={article} toc={toc} />
+            </Grid>
+          )}
         </Grid>
       </Container>
-      <BottomNavigation lang={lang} />
+      {!isFullscreen && <BottomNavigation lang={lang} />}
     </>
   );
 };

@@ -18,7 +18,7 @@ import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
-import { useTranslation } from '@/app/i18n/client';
+import { useT } from '@/app/i18n/client';
 import { replaceUrlAndDispatchEvent } from '@/helpers/replaceUrlAndDispatchEvent';
 import { Language } from '@/types';
 
@@ -30,18 +30,18 @@ export const NavPanel = ({ lang }: NavPanelProps) => {
   const pathname = usePathname();
   const theme = useTheme();
   const isMin = useMediaQuery(theme.breakpoints.down('lg'));
-  const { t } = useTranslation(lang);
+  const { t } = useT();
   const router = useRouter();
   const [activeIndex, setActiveIndex] = useState<number | undefined>(undefined);
 
   useEffect(() => {
-    if (pathname === `/${lang}/articles`) {
+    if (pathname.startsWith(`/${lang}/articles`)) {
       setActiveIndex(0);
-    } else if (pathname === `/${lang}/feed`) {
+    } else if (pathname.startsWith(`/${lang}/feed`)) {
       setActiveIndex(1);
-    } else if (pathname === `/${lang}/compilations`) {
+    } else if (pathname.startsWith(`/${lang}/compilations`)) {
       setActiveIndex(2);
-    } else if (pathname === `/${lang}`) {
+    } else if (pathname.startsWith(`/${lang}`)) {
       setActiveIndex(undefined);
     }
   }, [lang, pathname]);
@@ -68,6 +68,7 @@ export const NavPanel = ({ lang }: NavPanelProps) => {
     <Box component='nav'>
       <Drawer
         variant='permanent'
+        open
         sx={{
           display: { xs: 'none', md: 'block' },
           '& .MuiDrawer-paper': {
@@ -76,14 +77,8 @@ export const NavPanel = ({ lang }: NavPanelProps) => {
             height: { xs: 0, md: '100vh' },
           },
         }}
-        open
-        slotProps={{
-          root: {
-            keepMounted: true,
-          },
-        }}
       >
-        <List sx={{ overflowY: 'auto', overflowX: 'hidden' }}>
+        <List sx={{ overflow: 'hidden' }}>
           {items.map(({ text, href, icon }, index) => (
             <ListItem key={text} disablePadding sx={{ display: 'block' }}>
               <Tooltip

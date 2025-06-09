@@ -21,12 +21,12 @@ import React, { useEffect, useState } from 'react';
 import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
 import { z } from 'zod';
 
-import { useTranslation } from '@/app/i18n/client';
+import { useT } from '@/app/i18n/client';
 import { AvatarImage } from '@/components/AvatarImage';
 import FormInput from '@/components/FormInput';
 import { updateCompilation } from '@/helpers/compilationApi';
 import { devConsoleError } from '@/helpers/devConsoleLogs';
-import { GetCompilation, Language } from '@/types';
+import { GetCompilation } from '@/types';
 
 const EditCompilationScheme = z.object({
   image: z.optional(z.instanceof(File)),
@@ -61,14 +61,12 @@ const BootstrapDialog = styled(Dialog)(({ theme }) => ({
 }));
 
 type EditCompilationProps = {
-  readonly lang: Language;
   readonly compilationData: GetCompilation;
   readonly refetch?: () => void;
   readonly onClose?: () => void;
 };
 
 export const EditCompilation = ({
-  lang,
   compilationData,
   refetch,
   onClose,
@@ -78,7 +76,7 @@ export const EditCompilation = ({
   const [compilation, setCompilation] = useState<GetCompilation | undefined>(
     compilationData,
   );
-  const { t } = useTranslation(lang, 'compilations');
+  const { t } = useT('compilations');
 
   const zodForm = useForm<z.infer<typeof EditCompilationScheme>>({
     resolver: zodResolver(EditCompilationScheme),

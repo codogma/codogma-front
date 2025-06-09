@@ -1,58 +1,36 @@
 'use client';
-import { use } from 'i18next';
-import LanguageDetector from 'i18next-browser-languagedetector';
-import resourcesToBackend from 'i18next-resources-to-backend';
 import Cookies from 'js-cookie';
+import { useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import {
-  initReactI18next,
-  useTranslation as useTranslationOrg,
-} from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 
 import { intlCookie } from '@/constants/i18n';
 import { Language } from '@/types';
 
-import { getOptions } from './settings';
+import i18next from './i18next';
 
-use(initReactI18next)
-  .use(LanguageDetector)
-  .use(
-    resourcesToBackend(
-      (language: string, namespace: string) =>
-        import(`./locales/${language}/${namespace}.json`),
-    ),
-  )
-  .init({
-    ...getOptions(),
-    lng: undefined,
-    detection: {
-      order: ['path', 'htmlTag', 'cookie', 'navigator'],
-    },
-    preload: [],
-  });
-
-export function useTranslation(
-  lng: Language,
+export function useT(
   ns?: string | string[],
   options: { keyPrefix?: string } = {},
 ) {
-  const { t, i18n } = useTranslationOrg(ns, options);
+  const { lng } = useParams<{ lng: Language }>();
+  const { t } = useTranslation(ns, options);
 
   const [activeLng, setActiveLng] = useState<string | undefined>(
-    i18n.resolvedLanguage,
+    i18next.resolvedLanguage,
   );
 
   useEffect(() => {
-    if (i18n.resolvedLanguage !== lng) {
-      i18n.changeLanguage(lng);
+    if (i18next.resolvedLanguage !== lng) {
+      i18next.changeLanguage(lng);
     }
-  }, [lng, i18n]);
+  }, [lng]);
 
   useEffect(() => {
-    if (activeLng !== i18n.resolvedLanguage) {
-      setActiveLng(i18n.resolvedLanguage);
+    if (activeLng !== i18next.resolvedLanguage) {
+      setActiveLng(i18next.resolvedLanguage);
     }
-  }, [activeLng, i18n.resolvedLanguage]);
+  }, [activeLng]);
 
   useEffect(() => {
     const cookieLng = Cookies.get(intlCookie);
@@ -61,5 +39,5 @@ export function useTranslation(
     }
   }, [lng]);
 
-  return { t, i18n };
+  return { t, i18next };
 }

@@ -2,20 +2,19 @@
 import { Metadata } from 'next';
 import { ReactNode } from 'react';
 
-import { initTranslation } from '@/app/i18n';
+import { getT } from '@/app/i18n';
 import { getCategoryById } from '@/helpers/categoryApi';
-import { Language } from '@/types';
 
 type LayoutProps = {
   readonly children: ReactNode;
-  readonly params: { id: number; lng: Language };
+  readonly params: { id: number };
 };
 
 export async function generateMetadata({
-  params: { id, lng },
+  params: { id },
 }: LayoutProps): Promise<Metadata> {
   const category = await getCategoryById(id);
-  const { t } = await initTranslation(lng, 'categories');
+  const { t } = await getT('categories');
   return {
     alternates: {
       canonical: `/categories/${id}/articles`,

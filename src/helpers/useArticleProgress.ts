@@ -1,36 +1,45 @@
 import { useEffect, useState } from 'react';
 
+import { useScrollContext } from '@/components/Scrollbar';
+
 export function useArticleProgress(articleId: number) {
   const [progress, setProgress] = useState(0);
   const [timeSpent, setTimeSpent] = useState(0);
+  const { instance } = useScrollContext();
 
   useEffect(() => {
     const startTime = Date.now();
     setProgress(0);
     setTimeSpent(0);
 
+    if (!instance) return;
+    const viewport = instance.elements().viewport;
+    if (!viewport) return;
+
     function handleScroll() {
-      const articleElement = document.getElementById(`article-${articleId}`);
+      const articleElement = viewport.querySelector<HTMLElement>(
+        `#article-${articleId}`,
+      );
       if (!articleElement) return;
 
       const articleTop = articleElement.offsetTop;
       const articleHeight = articleElement.offsetHeight;
-      const scrollY = window.scrollY || window.pageYOffset;
-      const windowHeight = window.innerHeight;
+      const scrollTop = viewport.scrollTop;
+      const viewHeight = viewport.clientHeight;
 
-      const maxScrollable = articleHeight - windowHeight;
+      const maxScrollable = articleHeight - viewHeight;
       if (maxScrollable <= 0) {
         setProgress(0);
         return;
       }
 
-      const scrolled = scrollY - articleTop;
+      const scrolled = scrollTop - articleTop;
       const clampedScrolled = Math.max(0, Math.min(scrolled, maxScrollable));
       const newProgress = (clampedScrolled / maxScrollable) * 100;
       setProgress(newProgress);
     }
 
-    window.addEventListener('scroll', handleScroll);
+    viewport.addEventListener('scroll', handleScroll);
     if (articleId) handleScroll();
 
     const interval = setInterval(() => {
@@ -38,10 +47,10 @@ export function useArticleProgress(articleId: number) {
     }, 1000);
 
     return () => {
-      window.removeEventListener('scroll', handleScroll);
+      viewport.removeEventListener('scroll', handleScroll);
       clearInterval(interval);
     };
-  }, [articleId]);
+  }, [articleId, instance]);
 
   return { progress, timeSpent };
 }

@@ -5,29 +5,30 @@ import { ReactNode } from 'react';
 import { ArticleProvider } from '@/components/ArticleProvider';
 import { getArticleById } from '@/helpers/articleApi';
 import { convertHtmlToText } from '@/helpers/convertHtmlToText';
+import { parseToc } from '@/helpers/parseToc';
 import { GetArticle, Language } from '@/types';
 
 type LayoutProps = {
   readonly children: ReactNode;
-  readonly params: { id: number; lng: Language };
+  readonly params: { compilationId: number; articleId: number; lng: Language };
 };
 
-async function fetchArticleById(id: number): Promise<GetArticle> {
-  return await getArticleById(id);
+async function fetchArticleById(articleId: number): Promise<GetArticle> {
+  return await getArticleById(articleId);
 }
 
 export async function generateMetadata(
-  { params: { id } }: LayoutProps,
+  { params: { compilationId, articleId } }: LayoutProps,
   parent: ResolvingMetadata,
 ): Promise<Metadata> {
-  const article = await fetchArticleById(id);
+  const article = await fetchArticleById(articleId);
   const metadataBase = (await parent).metadataBase;
   return {
     alternates: {
-      canonical: `/articles/${id}`,
+      canonical: `/compilations/${compilationId}/${articleId}`,
       languages: {
-        en: `/en/articles/${id}`,
-        ru: `/ru/articles/${id}`,
+        en: `/en/compilations/${compilationId}/${articleId}`,
+        ru: `/ru/compilations/${compilationId}/${articleId}`,
       },
     },
     title: article.title,
@@ -44,8 +45,13 @@ export async function generateMetadata(
 
 export default async function Layout({
   children,
-  params: { id },
+  params: { articleId },
 }: LayoutProps) {
-  const article = await fetchArticleById(id);
-  return <ArticleProvider article={article}>{children}</ArticleProvider>;
+  const article = await fetchArticleById(articleId);
+  const toc = await parseToc(article.content);
+  return (
+    <ArticleProvider article={article} toc={toc}>
+      {children}
+    </ArticleProvider>
+  );
 }

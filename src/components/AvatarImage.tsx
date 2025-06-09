@@ -15,19 +15,20 @@ interface AvatarImageProps extends AvatarProps {
   readonly fontSize?: SvgIconOwnProps['fontSize'];
 }
 
-export const AvatarImage: React.FC<AvatarImageProps> = ({
+export const AvatarImage = React.memo(function AvatarImage({
   src,
   alt = '',
-  size = 40,
+  size,
   children,
   type,
   fontSize,
   ...props
-}) => {
+}: AvatarImageProps) {
   const [imageSrc, setImageSrc] = useState<string>('');
+
   useEffect(() => {
     const fetchAvatar = async () => {
-      if (src?.startsWith('blob' || 'http')) {
+      if (src?.startsWith('blob') || src?.startsWith('http')) {
         setImageSrc(src);
       } else if (alt) {
         const imageUrl = src
@@ -84,4 +85,4 @@ export const AvatarImage: React.FC<AvatarImageProps> = ({
       {children}
     </Avatar>
   );
-};
+});

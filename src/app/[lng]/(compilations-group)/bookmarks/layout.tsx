@@ -2,7 +2,7 @@
 import { Metadata } from 'next';
 import { ReactNode } from 'react';
 
-import { initTranslation } from '@/app/i18n';
+import { getT } from '@/app/i18n';
 import { SignIn } from '@/components/SignIn';
 import { Language } from '@/types';
 
@@ -11,10 +11,8 @@ type LayoutProps = {
   readonly params: { lng: Language };
 };
 
-export async function generateMetadata({
-  params: { lng },
-}: LayoutProps): Promise<Metadata> {
-  const { t } = await initTranslation(lng, 'compilations');
+export async function generateMetadata(): Promise<Metadata> {
+  const { t } = await getT('compilations');
   return {
     alternates: {
       canonical: `/bookmarks`,

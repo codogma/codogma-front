@@ -1,5 +1,12 @@
 import InfoIcon from '@mui/icons-material/Info';
-import { Box, Button, CardHeader, CardMedia, Collapse } from '@mui/material';
+import {
+  Box,
+  Button,
+  CardHeader,
+  CardMedia,
+  Collapse,
+  Skeleton,
+} from '@mui/material';
 import Card from '@mui/material/Card';
 import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
@@ -10,9 +17,9 @@ import Typography from '@mui/material/Typography';
 import DOMPurify from 'dompurify';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 
-import { useTranslation } from '@/app/i18n/client';
+import { useT } from '@/app/i18n/client';
 import { useAuth } from '@/components/AuthProvider';
 import { AvatarImage } from '@/components/AvatarImage';
 import { useContentImageContext } from '@/components/ContentImageProvider';
@@ -20,7 +27,7 @@ import { DefaultImage } from '@/components/DefaultImage';
 import MenuButton from '@/components/MenuButton';
 import { Scrollbar } from '@/components/Scrollbar';
 import { TimeAgo } from '@/components/TimeAgo';
-import { GetArticle, Language, UserRole } from '@/types';
+import { GetArticle, Language, SwatchDTO, UserRole } from '@/types';
 
 type ArticleCardProps = {
   readonly article: GetArticle;
@@ -37,13 +44,54 @@ export const ArticleCard = ({ article, lang }: ArticleCardProps) => {
     urlPrefix = `/${lang}/articles`;
   }
   const { processContent } = useContentImageContext();
-  const { t } = useTranslation(lang, 'articles');
+  const { t } = useT('articles');
   const previewContent = processContent(
-    DOMPurify.sanitize(article.previewContent),
+    DOMPurify.sanitize(article?.previewContent),
   );
   const [expanded, setExpanded] = useState(false);
+  const imgRef = useRef<HTMLImageElement>(null);
+  const palette = article?.image?.palette;
 
-  return (
+  const vibrant = (palette?.vibrant || {}) as SwatchDTO;
+  const {
+    r: vibrantR = 0,
+    g: vibrantG = 0,
+    b: vibrantB = 0,
+    hex: vibrantHex = '#fff',
+    titleTextColor: vibrantTextColor = '#fff',
+  } = vibrant;
+
+  const lightVibrant = (palette?.lightVibrant || {}) as SwatchDTO;
+  const {
+    r: lightVibrantR = 0,
+    g: lightVibrantG = 0,
+    b: lightVibrantB = 0,
+    hex: lightVibrantHex = '#fff',
+  } = lightVibrant;
+
+  const darkVibrant = (palette?.darkVibrant || {}) as SwatchDTO;
+  const { hex: darkVibrantHex = '#fff' } = darkVibrant;
+
+  const muted = (palette?.muted || {}) as SwatchDTO;
+  const {
+    r: mutedR = 0,
+    g: mutedG = 0,
+    b: mutedB = 0,
+    hex: mutedHex = '#fff',
+  } = muted;
+
+  const lightMuted = (palette?.lightMuted || {}) as SwatchDTO;
+  const {
+    r: lightMutedR = 0,
+    g: lightMutedG = 0,
+    b: lightMutedB = 0,
+    hex: lightMutedHex = '#fff',
+  } = lightMuted;
+
+  const darkMuted = (palette?.darkMuted || {}) as SwatchDTO;
+  const { hex: darkMutedHex = '#fff' } = darkMuted;
+
+  return article ? (
     <Card variant='outlined' className='card'>
       <CardHeader
         avatar={
@@ -52,13 +100,18 @@ export const ArticleCard = ({ article, lang }: ArticleCardProps) => {
             className='article-user-avatar'
             src={article.authorAvatarUrl}
             variant='rounded'
-            size={32}
+            size={34}
           />
         }
         action={
           state.isAuthenticated &&
           state.user?.role !== UserRole.ROLE_ADMIN && (
-            <MenuButton article={article} lang={lang} />
+            <MenuButton
+              article={article}
+              lang={lang}
+              sx={{ color: darkMutedHex, '.dark &': { color: lightMutedHex } }}
+              // user={state.user}
+            />
           )
         }
         title={
@@ -66,30 +119,55 @@ export const ArticleCard = ({ article, lang }: ArticleCardProps) => {
             href={`/users/${article.username}`}
             className='article-user-name'
           >
-            {article.username}
+            <Typography
+              component='span'
+              sx={{
+                fontSize: 'inherit',
+                color: vibrantTextColor,
+                '&:hover': {
+                  color: darkVibrantHex,
+                },
+                '.dark &': {
+                  color: vibrantTextColor,
+                  '&:hover': {
+                    color: lightVibrantHex,
+                  },
+                },
+              }}
+            >
+              {article.username}
+            </Typography>
           </Link>
         }
         subheader={
           <TimeAgo
             datetime={article.createdAt}
             className='article-datetime'
+            sx={{
+              color: darkVibrantHex,
+              '.dark &': { color: lightVibrantHex },
+            }}
             lang={lang}
           />
         }
         className='card-header'
+        sx={{
+          background:
+            `rgba(${vibrantR}, ${vibrantG}, ${vibrantB}, 0.5)` ??
+            'rgba(0,0,0,0.8)',
+          color: vibrantTextColor,
+        }}
       />
       <Box className='card-media' onMouseLeave={() => setExpanded(false)}>
         <Collapse in={!expanded} timeout={{ enter: 300, exit: 300 }}>
           <CardMedia className='card-media'>
             <DefaultImage
+              ref={imgRef}
               src={
-                article.imageUrl &&
-                `${process.env.NEXT_PUBLIC_BASE_URL}${article.imageUrl}`
+                article.image &&
+                `${process.env.NEXT_PUBLIC_BASE_URL}${article.image.imageUrl}`
               }
-              top={0}
-              left={0}
-              zIndex={0}
-              className='scale-x-100 transition-transform will-change-transform'
+              className='card-media-image'
             />
             <Box
               sx={{
@@ -97,39 +175,44 @@ export const ArticleCard = ({ article, lang }: ArticleCardProps) => {
                 bottom: 0,
                 left: 0,
                 right: 0,
-                background: 'rgba(0,0,0,0.6)',
+                background: `linear-gradient(to top, ${`rgba(${vibrantR}, ${vibrantG}, ${vibrantB}, 0.8)` ?? 'rgba(0,0,0,0.8)'} 50%, transparent)`,
                 color: 'white',
-                p: 1,
+                p: '0.375rem', // или p-1.5 в tailwind
               }}
             >
               <Stack
                 direction='row'
-                justifyContent='center'
+                justifyContent='space-between'
                 alignItems='center'
                 spacing={1}
+                marginTop={5}
               >
-                <Typography
-                  variant='subtitle1'
-                  sx={{
-                    flexGrow: 1,
-                    lineHeight: 1.2,
-                    whiteSpace: 'normal',
-                    wordBreak: 'break-word',
-                    maxHeight: '4.8em',
-                    overflow: 'hidden',
-                    textOverflow: 'ellipsis',
-                    display: '-webkit-box',
-                    WebkitLineClamp: 4,
-                    WebkitBoxOrient: 'vertical',
-                  }}
-                >
-                  <Link href={`${urlPrefix}/${article.id}`}>
+                <Link href={`${urlPrefix}/${article.id}`}>
+                  <Typography
+                    variant='subtitle1'
+                    sx={{
+                      flexGrow: 1,
+                      lineHeight: 1.2,
+                      whiteSpace: 'normal',
+                      wordBreak: 'break-word',
+                      maxHeight: '4.8em',
+                      overflow: 'hidden',
+                      textOverflow: 'ellipsis',
+                      display: '-webkit-box',
+                      WebkitLineClamp: 4,
+                      WebkitBoxOrient: 'vertical',
+                      color: vibrantTextColor,
+                      '&:hover': {
+                        color: lightMutedHex,
+                      },
+                    }}
+                  >
                     {article.title}
-                  </Link>
-                </Typography>
+                  </Typography>
+                </Link>
                 <IconButton
                   sx={{
-                    color: 'white',
+                    color: vibrantTextColor,
                     flexShrink: 0,
                   }}
                   aria-label={`info about ${article.title}`}
@@ -143,7 +226,13 @@ export const ArticleCard = ({ article, lang }: ArticleCardProps) => {
           </CardMedia>
         </Collapse>
         <Collapse in={expanded} timeout={{ enter: 300, exit: 300 }}>
-          <CardContent component='div' className='card-content aspect-[16/8]'>
+          <CardContent
+            component='div'
+            className='card-content aspect-[16/8]'
+            sx={{
+              background: `rgba(${vibrantR}, ${vibrantG}, ${vibrantB}, 0.1)`,
+            }}
+          >
             {(state.user?.username === article.username ||
               state.user?.role === UserRole.ROLE_ADMIN) && (
               <Stack direction='row' spacing={1}>
@@ -161,21 +250,79 @@ export const ArticleCard = ({ article, lang }: ArticleCardProps) => {
                 />
               </Stack>
             )}
-            <Scrollbar style={{ height: '100%' }}>
+            <Scrollbar
+              style={{ height: '100%' }}
+              handleColor={mutedHex}
+              handleDarkColor={lightMutedHex}
+              handleHoverColor={vibrantHex}
+              handleDarkHoverColor={lightVibrantHex}
+              trackColor={`rgba(${mutedR}, ${mutedG}, ${mutedB}, 0.3)`}
+              trackDarkColor={`rgba(${lightMutedR}, ${lightMutedG}, ${lightMutedB}, 0.3)`}
+              trackHoverColor={`rgba(${vibrantR}, ${vibrantG}, ${vibrantB}, 0.5)`}
+              trackDarkHoverColor={`rgba(${lightVibrantR}, ${lightVibrantG}, ${lightVibrantB}, 0.5)`}
+            >
               <div className='article-preview-content'>{previewContent}</div>
             </Scrollbar>
           </CardContent>
         </Collapse>
       </Box>
-      <CardActions>
+      <CardActions
+        sx={{
+          background:
+            `rgba(${vibrantR}, ${vibrantG}, ${vibrantB}, 0.5)` ??
+            'rgba(0,0,0,0.8)',
+          p: '0.375rem',
+        }}
+      >
         <Stack direction='row' spacing={2}>
           <Link href={`${urlPrefix}/${article.id}`}>
-            <Button className='article-btn' variant='outlined'>
+            <Button
+              className='article-btn'
+              variant='outlined'
+              sx={{
+                borderColor: darkVibrantHex,
+                color: darkVibrantHex,
+                '&:hover': {
+                  backgroundColor: darkVibrantHex,
+                  color: lightMutedHex,
+                },
+                '.dark &': {
+                  borderColor: lightVibrantHex,
+                  color: lightVibrantHex,
+                  '&:hover': {
+                    backgroundColor: lightVibrantHex,
+                    color: darkMutedHex,
+                  },
+                },
+              }}
+            >
               {t('readMoreBtn')}
             </Button>
           </Link>
         </Stack>
       </CardActions>
+    </Card>
+  ) : (
+    <Card variant='outlined' className='card'>
+      <CardContent>
+        <div style={{ display: 'flex', gap: 16, alignItems: 'center' }}>
+          <Skeleton animation='wave' variant='rounded' width={40} height={40} />
+          <div style={{ flex: 1 }}>
+            <Skeleton
+              animation='wave'
+              height={10}
+              width='80%'
+              style={{ marginBottom: 6 }}
+            />
+            <Skeleton animation='wave' height={10} width='40%' />
+          </div>
+        </div>
+      </CardContent>
+      <Skeleton sx={{ height: 190 }} animation='wave' variant='rectangular' />
+      <CardContent>
+        <Skeleton animation='wave' height={10} style={{ marginBottom: 6 }} />
+        <Skeleton animation='wave' height={10} width='80%' />
+      </CardContent>
     </Card>
   );
 };
