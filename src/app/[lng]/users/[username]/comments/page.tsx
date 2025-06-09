@@ -78,11 +78,7 @@ export default function Page({ params: { username, lng } }: PageProps) {
 
   return (
     <>
-      <Search
-        lang={lng}
-        onSearchType={onSearchType}
-        onSearchValue={onSearchValue}
-      />
+      <Search onSearchType={onSearchType} onSearchValue={onSearchValue} />
       {isFetching ? (
         <Card variant='outlined' className='card'>
           <CardContent className='card-content'>
@@ -135,7 +131,6 @@ export default function Page({ params: { username, lng } }: PageProps) {
         ))
       )}
       <CustomPagination
-        lang={lng}
         totalPages={totalPages}
         totalElements={totalElements}
         onCurrentPageChange={onPageChange}

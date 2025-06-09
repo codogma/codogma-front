@@ -80,7 +80,6 @@ export default function Layout({
               state.user?.username !== compilation?.ownerName ? (
                 <Bookmark
                   username={compilation?.ownerName}
-                  lang={lng}
                   id={compilationId}
                   isBookmarkedValue={compilation?.isBookmarked}
                   refetch={refetch}

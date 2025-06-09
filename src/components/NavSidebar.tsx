@@ -27,7 +27,6 @@ export const NavSidebar = ({ lang, article, toc }: NavSidebarProps) => {
       <Drawer
         anchor='right'
         variant='permanent'
-        keepMounted
         open
         sx={{
           '& .MuiDrawer-paper': {

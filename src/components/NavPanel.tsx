@@ -30,7 +30,7 @@ export const NavPanel = ({ lang }: NavPanelProps) => {
   const pathname = usePathname();
   const theme = useTheme();
   const isMin = useMediaQuery(theme.breakpoints.down('lg'));
-  const { t } = useT(lang);
+  const { t } = useT();
   const router = useRouter();
   const [activeIndex, setActiveIndex] = useState<number | undefined>(undefined);
 
@@ -68,7 +68,6 @@ export const NavPanel = ({ lang }: NavPanelProps) => {
     <Box component='nav'>
       <Drawer
         variant='permanent'
-        keepMounted
         open
         sx={{
           display: { xs: 'none', md: 'block' },

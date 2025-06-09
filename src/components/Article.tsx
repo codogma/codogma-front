@@ -24,14 +24,14 @@ import { getRecommendationsArticleById } from '@/helpers/articleApi';
 import { GetArticle, Language } from '@/types';
 
 type ArticleProps = {
-  readonly lng: Language;
+  readonly lang: Language;
 };
 
-export default function Article({ lng }: ArticleProps) {
+export default function Article({ lang }: ArticleProps) {
   const { article } = useArticle();
   const { isFullscreen } = useNavigationState();
   const { processContent } = useContentImageContext();
-  const { t } = useT(lng, 'articles');
+  const { t } = useT('articles');
   const content = processContent(DOMPurify.sanitize(article.content));
 
   const { data, isFetching } = useQuery<GetArticle>({
@@ -69,7 +69,7 @@ export default function Article({ lng }: ArticleProps) {
               <TimeAgo
                 datetime={article.createdAt}
                 className='article-datetime'
-                lang={lng}
+                lang={lang}
               />
             }
             className='card-header'
@@ -92,7 +92,7 @@ export default function Article({ lng }: ArticleProps) {
                       <Link
                         className='category-link'
                         scroll={false}
-                        href={`/${lng}/categories/${category.id}`}
+                        href={`/${lang}/categories/${category.id}`}
                       >
                         {category.name}
                       </Link>
@@ -109,7 +109,7 @@ export default function Article({ lng }: ArticleProps) {
                         className='tag-link'
                         scroll={false}
                         href={{
-                          pathname: `/${lng}/articles`,
+                          pathname: `/${lang}/articles`,
                           query: { type: 'tag', value: tag.name },
                         }}
                       >
@@ -124,15 +124,15 @@ export default function Article({ lng }: ArticleProps) {
         </CardActions>
       </Card>
       <ArticleActions
-        lang={lng}
+        lang={lang}
         article={article}
         isFullscreen={isFullscreen}
       />
-      {!isFullscreen && <CommentList articleId={article.id} lang={lng} />}
+      {!isFullscreen && <CommentList articleId={article.id} lang={lang} />}
       {!isFullscreen && hasArticles && (
         <>
           <Typography component='div'>{t('recommendation')}</Typography>
-          <Articles lang={lng} articles={articles} loading={isFetching} />
+          <Articles lang={lang} articles={articles} loading={isFetching} />
         </>
       )}
     </>

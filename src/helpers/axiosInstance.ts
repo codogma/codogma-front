@@ -2,6 +2,7 @@ import axios, { isAxiosError } from 'axios';
 import { redirect } from 'next/navigation';
 
 import { devConsoleError } from '@/helpers/devConsoleLogs';
+import { getAuthToken } from '@/helpers/getCookies';
 import { getLocale } from '@/helpers/getLocale';
 
 export const axiosInstance = axios.create({
@@ -16,9 +17,13 @@ export const axiosInstance = axios.create({
 axiosInstance.interceptors.request.use(
   async (config) => {
     if (typeof window === 'undefined') {
-      const language = await getLocale();
-      if (language) {
-        config.headers['Accept-Language'] = language;
+      const authToken = await getAuthToken();
+      if (authToken) {
+        config.headers['Authorization'] = `Bearer ${authToken}`;
+      }
+      const intl = await getLocale();
+      if (intl) {
+        config.headers['Accept-Language'] = intl;
       }
     }
     return config;

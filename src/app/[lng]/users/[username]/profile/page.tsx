@@ -12,21 +12,20 @@ import React, { useState } from 'react';
 import { useT } from '@/app/i18n/client';
 import { useAuth } from '@/components/AuthProvider';
 import { getUserByUsername } from '@/helpers/userApi';
-import { GetUserDTO, Language } from '@/types';
+import { GetUserDTO } from '@/types';
 
 type PageParams = {
   username: string;
-  lng: Language;
 };
 
 type PageProps = {
   readonly params: PageParams;
 };
 
-export default function Page({ params: { lng, username } }: PageProps) {
+export default function Page({ params: { username } }: PageProps) {
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
   const [currentCategory, setCurrentCategory] = useState<number | null>(null);
-  const { t } = useT(lng);
+  const { t } = useT();
   const { state } = useAuth();
 
   const { data } = useQuery<GetUserDTO>({

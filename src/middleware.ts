@@ -39,14 +39,12 @@ export async function middleware(req: NextRequest) {
     return handleAdminCheck(req);
   }
 
-  return NextResponse.next({ headers });
+  return NextResponse.next({ request: { headers } });
 }
 
 // Вспомогательные функции
 const getLanguage = (req: NextRequest) => {
-  let lng;
-  if (req.cookies.has(intlCookie))
-    lng = acceptLanguage.get(req.cookies.get(intlCookie)?.value);
+  let lng = acceptLanguage.get(req.cookies.get(intlCookie)?.value);
   lng ??= acceptLanguage.get(req.headers.get('Accept-Language')) ?? fallbackLng;
   return languages.includes(lng) ? lng : fallbackLng;
 };

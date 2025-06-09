@@ -54,7 +54,7 @@ export const EditNotification = ({
 }: EditNotificationProps) => {
   const [open, setOpen] = useState(false);
   const [selectedLang, setSelectedLang] = useState<Language>(lang);
-  const { t } = useT(lang, 'notifications');
+  const { t } = useT('notifications');
 
   const EditNotificationScheme = z.object({
     title: z.record(

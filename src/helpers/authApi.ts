@@ -2,7 +2,7 @@ import Cookies from 'js-cookie';
 
 import { axiosInstance } from '@/helpers/axiosInstance';
 import { devConsoleInfo } from '@/helpers/devConsoleLogs';
-import { User } from '@/types';
+import { GetUserDTO } from '@/types';
 
 export type SignUp = {
   username: string;
@@ -35,7 +35,7 @@ export const confirmEmail = async (token: string | null): Promise<string> => {
   return response.data;
 };
 
-export const signIn = async (requestData: SignIn): Promise<User | null> => {
+export const signIn = async (requestData: SignIn): Promise<GetUserDTO> => {
   await axiosInstance.post('/auth/sign-in', requestData);
   const user = await currentUser();
   window.dispatchEvent(new Event('storage'));
@@ -49,9 +49,9 @@ export const logout = async (): Promise<void> => {
   devConsoleInfo('User logged out successfully');
 };
 
-export const currentUser = async (): Promise<User | null> => {
+export const currentUser = async (): Promise<GetUserDTO> => {
   const response = await axiosInstance.get('/auth/current-user');
-  const user: User = response.data;
+  const user: GetUserDTO = response.data;
   if (user) {
     Cookies.set('user', JSON.stringify(user), {
       secure: true,

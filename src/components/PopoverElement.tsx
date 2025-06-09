@@ -4,12 +4,10 @@ import { useRouter } from 'next/navigation';
 import React from 'react';
 
 import { useT } from '@/app/i18n/client';
-import { Language } from '@/types';
 
 interface PopoverElementProps {
   readonly destination: string;
   readonly popoverId: string;
-  readonly lang: Language;
   readonly btnEl: HTMLElement | null;
   readonly onClose?: () => void;
 }
@@ -17,14 +15,13 @@ interface PopoverElementProps {
 export const PopoverElement: React.FC<PopoverElementProps> = ({
   destination,
   popoverId,
-  lang,
   btnEl,
   onClose,
 }) => {
   const router = useRouter();
   const open = Boolean(btnEl);
 
-  const { t } = useT(lang, 'articles');
+  const { t } = useT('articles');
   const id = open ? popoverId : undefined;
 
   const handleClickLink = (url: string) => {

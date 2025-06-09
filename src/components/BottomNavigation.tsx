@@ -27,7 +27,7 @@ export default function FixedBottomNavigation({
   const [value, setValue] = useState<
     'articles' | 'feed' | 'compilations' | undefined
   >();
-  const { t } = useT(lang);
+  const { t } = useT();
 
   const handleChange = (
     _event: React.SyntheticEvent,

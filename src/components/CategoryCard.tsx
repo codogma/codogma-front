@@ -2,7 +2,6 @@
 import InfoIcon from '@mui/icons-material/Info';
 import {
   Box,
-  Button,
   Card,
   CardActions,
   CardContent,
@@ -13,14 +12,14 @@ import {
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import Link from 'next/link';
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 
 import { useT } from '@/app/i18n/client';
 import { useAuth } from '@/components/AuthProvider';
 import { ButtonFavorite } from '@/components/ButtonFavorite';
 import { DefaultImage } from '@/components/DefaultImage';
 import MenuButton from '@/components/MenuButton';
-import { GetCategory, Language, UserRole } from '@/types';
+import { GetCategory, Language, SwatchDTO, UserRole } from '@/types';
 
 type CategoryCardProps = {
   readonly lang: Language;
@@ -34,8 +33,30 @@ export default function CategoryCard({
   refetch,
 }: CategoryCardProps) {
   const { state } = useAuth();
-  const { t } = useT(lang, 'categories');
+  const { t } = useT('categories');
   const [expanded, setExpanded] = useState(false);
+  const imgRef = useRef<HTMLImageElement>(null);
+  const palette = category?.image?.palette;
+
+  const vibrant = (palette?.vibrant || {}) as SwatchDTO;
+  const {
+    r: vibrantR = 0,
+    g: vibrantG = 0,
+    b: vibrantB = 0,
+    hex: vibrantHex = '#fff',
+    titleTextColor: vibrantTextColor = '#fff',
+  } = vibrant;
+
+  const lightMuted = (palette?.lightMuted || {}) as SwatchDTO;
+  const {
+    r: lightMutedR = 0,
+    g: lightMutedG = 0,
+    b: lightMutedB = 0,
+    hex: lightMutedHex = '#fff',
+  } = lightMuted;
+
+  const darkMuted = (palette?.darkMuted || {}) as SwatchDTO;
+  const { hex: darkMutedHex = '#fff' } = darkMuted;
 
   return (
     <Card variant='outlined' className='card'>
@@ -55,7 +76,6 @@ export default function CategoryCard({
                 <Stack direction='row' spacing={1}>
                   {state.user?.role !== UserRole.ROLE_ADMIN ? (
                     <ButtonFavorite
-                      lang={lang}
                       isFavoriteValue={category?.isFavorite}
                       id={category.id}
                       sx={{
@@ -75,20 +95,23 @@ export default function CategoryCard({
                       category={category}
                       lang={lang}
                       refetch={refetch}
+                      sx={{
+                        color: darkMutedHex,
+                        '.dark &': { color: lightMutedHex },
+                      }}
+                      user={state.user}
                     />
                   )}
                 </Stack>
               </CardActions>
             </Box>
             <DefaultImage
+              ref={imgRef}
               src={
-                category.imageUrl &&
-                `${process.env.NEXT_PUBLIC_BASE_URL}${category.imageUrl}`
+                category.image &&
+                `${process.env.NEXT_PUBLIC_BASE_URL}${category.image.imageUrl}`
               }
-              top={0}
-              left={0}
-              zIndex={0}
-              className='scale-x-100 transition-transform will-change-transform'
+              className='card-media-image'
             />
             <Box
               sx={{
@@ -96,36 +119,41 @@ export default function CategoryCard({
                 bottom: 0,
                 left: 0,
                 right: 0,
-                background: 'rgba(0,0,0,0.6)',
+                background: `linear-gradient(to top, ${`rgba(${vibrantR}, ${vibrantG}, ${vibrantB}, 0.8)` ?? 'rgba(0,0,0,0.8)'} 50%, transparent)`,
                 color: 'white',
                 p: 1,
               }}
             >
               <Stack
                 direction='row'
-                justifyContent='center'
+                justifyContent='space-between'
                 alignItems='center'
                 spacing={1}
+                marginTop={5}
               >
-                <Typography
-                  variant='subtitle1'
-                  sx={{
-                    flexGrow: 1,
-                    lineHeight: 1.2,
-                    whiteSpace: 'normal',
-                    wordBreak: 'break-word',
-                    maxHeight: '4.8em',
-                    overflow: 'hidden',
-                    textOverflow: 'ellipsis',
-                    display: '-webkit-box',
-                    WebkitLineClamp: 4,
-                    WebkitBoxOrient: 'vertical',
-                  }}
-                >
-                  <Link href={`/categories/${category.id}`}>
+                <Link href={`/categories/${category.id}`}>
+                  <Typography
+                    variant='subtitle1'
+                    sx={{
+                      flexGrow: 1,
+                      lineHeight: 1.2,
+                      whiteSpace: 'normal',
+                      wordBreak: 'break-word',
+                      maxHeight: '4.8em',
+                      overflow: 'hidden',
+                      textOverflow: 'ellipsis',
+                      display: '-webkit-box',
+                      WebkitLineClamp: 4,
+                      WebkitBoxOrient: 'vertical',
+                      color: vibrantTextColor,
+                      '&:hover': {
+                        color: lightMutedHex,
+                      },
+                    }}
+                  >
                     {category.name}
-                  </Link>
-                </Typography>
+                  </Typography>
+                </Link>
                 <IconButton
                   sx={{
                     color: 'white',
@@ -178,15 +206,6 @@ export default function CategoryCard({
           </CardContent>
         </Collapse>
       </Box>
-      <CardActions>
-        <Stack direction='row' spacing={2}>
-          <Link href={`/categories/${category.id}`}>
-            <Button className='article-btn' variant='outlined'>
-              {t('readMoreBtn')}
-            </Button>
-          </Link>
-        </Stack>
-      </CardActions>
     </Card>
   );
 }

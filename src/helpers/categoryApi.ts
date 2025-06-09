@@ -1,17 +1,26 @@
 import { axiosInstance } from '@/helpers/axiosInstance';
 import { devConsoleInfo } from '@/helpers/devConsoleLogs';
 import { dispatchCustomEvent } from '@/helpers/dispatchCustomEvent';
-import { GetCategory, GetCategoryToUpdate, Language } from '@/types';
+import {
+  GetCategory,
+  GetCategoryToUpdate,
+  Language,
+  PaletteDTO,
+} from '@/types';
 
-export type CategoryCreate = {
+export type CreateCategory = {
   name: Map<Language, string>;
-  image?: File;
+  icon: File;
+  image: File;
+  palette: PaletteDTO;
   description?: Map<Language, string>;
 };
 
-export type CategoryUpdate = {
+export type UpdateCategory = {
   name?: Map<Language, string>;
+  icon?: File;
   image?: File;
+  palette?: PaletteDTO;
   description?: Map<Language, string>;
 };
 
@@ -22,7 +31,7 @@ export type GetCategoriesDTO = {
 };
 
 export const createCategory = async (
-  requestData: CategoryCreate,
+  requestData: CreateCategory,
 ): Promise<void> => {
   await axiosInstance.post('/categories', requestData, {
     headers: {
@@ -48,7 +57,7 @@ export const getCategoriesByName = async (
 
 export const updateCategory = async (
   id: number,
-  requestData: CategoryUpdate,
+  requestData: UpdateCategory,
 ): Promise<GetCategory> => {
   const response = await axiosInstance.put(`/categories/${id}`, requestData, {
     headers: {

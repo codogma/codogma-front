@@ -4,9 +4,11 @@ import Checkbox from '@mui/material/Checkbox';
 import IconButton from '@mui/material/IconButton';
 import Paper from '@mui/material/Paper';
 import { useQuery } from '@tanstack/react-query';
+import { useParams } from 'next/navigation';
 import React from 'react';
 
 import { ArticleProgressBar } from '@/components/ArticleProgressBar';
+import { ArticlesDrawer } from '@/components/ArticlesDrawer';
 import { useAuth } from '@/components/AuthProvider';
 import { FullscreenButton } from '@/components/FullscreenButton';
 import MenuButton from '@/components/MenuButton';
@@ -29,6 +31,11 @@ export const ArticleActions = ({
 }: SearchProps) => {
   const { toc } = useNavigationState();
   const { state } = useAuth();
+
+  const { articleId, compilationId } = useParams<{
+    articleId: string;
+    compilationId: string;
+  }>();
 
   const { data: articleData, refetch } = useQuery({
     queryKey: ['article', article.id],
@@ -89,10 +96,16 @@ export const ArticleActions = ({
         <>
           <FullscreenButton />
           <SettingsDrawer />
+          <ArticlesDrawer
+            lang={lang}
+            articleId={articleId}
+            compilationId={compilationId}
+          />
           <TOCDrawer article={article} toc={toc} />
         </>
       ) : (
         <>
+          <FullscreenButton />
           <Checkbox
             checked={articleData.isLiked}
             onChange={handleChange}
@@ -124,6 +137,13 @@ export const ArticleActions = ({
               {articleData.commentsCount}
             </div>
           </IconButton>
+          <SettingsDrawer />
+          <TOCDrawer article={article} toc={toc} />
+          <ArticlesDrawer
+            lang={lang}
+            articleId={articleId}
+            compilationId={compilationId}
+          />
         </>
       )}
       <MenuButton article={articleData} lang={lang} />

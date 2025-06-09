@@ -20,6 +20,7 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { DefaultImage } from '@/components/DefaultImage';
 import { DrawerHeader } from '@/components/DrawerHeader';
 import MenuButton from '@/components/MenuButton';
+import { useNavigationState } from '@/components/NavigationProvider';
 import { Scrollbar, useScrollContext } from '@/components/Scrollbar';
 import { getArticles } from '@/helpers/articleApi';
 import { Language } from '@/types';
@@ -36,6 +37,7 @@ export const ArticlesDrawer = ({
   compilationId,
 }: ArticlesDrawerProps) => {
   const [openArticles, setOpenArticles] = useState<boolean>(false);
+  const { isFullscreen } = useNavigationState();
   const { instance } = useScrollContext();
   const router = useRouter();
 
@@ -128,8 +130,8 @@ export const ArticlesDrawer = ({
                 >
                   <DefaultImage
                     src={
-                      item.imageUrl &&
-                      `${process.env.NEXT_PUBLIC_BASE_URL}${item.imageUrl}`
+                      item.image &&
+                      `${process.env.NEXT_PUBLIC_BASE_URL}${item.image.imageUrl}`
                     }
                     top={0}
                     left={0}
@@ -168,7 +170,7 @@ export const ArticlesDrawer = ({
       <Tooltip
         title='Список статей'
         arrow
-        placement='left'
+        placement={isFullscreen ? 'top' : 'left'}
         sx={{ display: 'block' }}
       >
         <IconButton

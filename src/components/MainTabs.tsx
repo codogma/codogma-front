@@ -30,7 +30,7 @@ type MainTab = {
 
 export const MainTabs: React.FC<MainTabsProps> = ({ lang, username }) => {
   const [value, setValue] = useState<number>(0);
-  const { t } = useT(lang);
+  const { t } = useT();
   const ref = useRef<HTMLDivElement>(null);
   const [overflow, setOverflow] = useState<boolean>(false);
 

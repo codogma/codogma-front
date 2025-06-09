@@ -22,7 +22,7 @@ import {
   updateUser,
   UserUpdate,
 } from '@/helpers/userApi';
-import { GetUserDTO, Language } from '@/types';
+import { GetUserDTO } from '@/types';
 
 const UserScheme = z.object({
   username: z.optional(
@@ -58,19 +58,11 @@ const VisuallyHiddenInput = styled('input')({
   width: 1,
 });
 
-type PageParams = {
-  lng: Language;
-};
-
-type PageProps = {
-  readonly params: PageParams;
-};
-
-function Page({ params: { lng } }: PageProps) {
+function Page() {
   const { state } = useAuth();
   const username: string | undefined = state.user?.username;
   const [avatarUrl, setAvatarUrl] = useState<string>();
-  const { t } = useT(lng);
+  const { t } = useT();
 
   const zodForm = useForm<z.infer<typeof UserScheme>>({
     resolver: zodResolver(UserScheme),

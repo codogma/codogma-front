@@ -52,7 +52,7 @@ export const SystemNotificationDialog = ({
   onClose,
 }: SystemNotificationDialogProps) => {
   const [selectedLang, setSelectedLang] = useState<Language>(lang);
-  const { t } = useT(lang, 'notifications');
+  const { t } = useT('notifications');
 
   const SystemNotificationDialogScheme = z.object({
     title: z.record(

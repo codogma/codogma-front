@@ -32,7 +32,7 @@ export const LinkWithPopover = ({
     null,
   );
 
-  const { t } = useT(lang, 'articleEditor');
+  const { t } = useT('articleEditor');
   const [inDrafts, setInDrafts] = useState<string>();
 
   useEffect(() => {

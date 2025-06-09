@@ -26,7 +26,7 @@ import { AvatarImage } from '@/components/AvatarImage';
 import FormInput from '@/components/FormInput';
 import { updateCompilation } from '@/helpers/compilationApi';
 import { devConsoleError } from '@/helpers/devConsoleLogs';
-import { GetCompilation, Language } from '@/types';
+import { GetCompilation } from '@/types';
 
 const EditCompilationScheme = z.object({
   image: z.optional(z.instanceof(File)),
@@ -61,14 +61,12 @@ const BootstrapDialog = styled(Dialog)(({ theme }) => ({
 }));
 
 type EditCompilationProps = {
-  readonly lang: Language;
   readonly compilationData: GetCompilation;
   readonly refetch?: () => void;
   readonly onClose?: () => void;
 };
 
 export const EditCompilation = ({
-  lang,
   compilationData,
   refetch,
   onClose,
@@ -78,7 +76,7 @@ export const EditCompilation = ({
   const [compilation, setCompilation] = useState<GetCompilation | undefined>(
     compilationData,
   );
-  const { t } = useT(lang, 'compilations');
+  const { t } = useT('compilations');
 
   const zodForm = useForm<z.infer<typeof EditCompilationScheme>>({
     resolver: zodResolver(EditCompilationScheme),

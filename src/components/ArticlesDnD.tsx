@@ -33,7 +33,7 @@ import {
   updateCompilation,
   UpdateCompilationDTO,
 } from '@/helpers/compilationApi';
-import { GetArticle, GetCompilation, Language } from '@/types';
+import { GetArticle, GetCompilation } from '@/types';
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   '& .MuiDialogContent-root': {
@@ -45,19 +45,17 @@ const BootstrapDialog = styled(Dialog)(({ theme }) => ({
 }));
 
 type ArticlesDnDProps = {
-  readonly lang: Language;
   readonly compilationData: GetCompilation;
   readonly onClose: () => void;
   readonly refetch?: () => void;
 };
 
 export const ArticlesDnD = ({
-  lang,
   compilationData,
   onClose,
   refetch,
 }: ArticlesDnDProps) => {
-  const { t } = useT(lang, 'articles');
+  const { t } = useT('articles');
   const [open, setOpen] = useState<boolean>(false);
   const [articles, setArticles] = useState<GetArticle[]>([]);
 

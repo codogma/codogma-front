@@ -12,7 +12,7 @@ type SignInProps = {
 };
 
 export const SignIn = ({ children, lang }: SignInProps) => {
-  const { t } = useT(lang);
+  const { t } = useT();
   const {
     state: { isAuthenticated },
   } = useAuth();

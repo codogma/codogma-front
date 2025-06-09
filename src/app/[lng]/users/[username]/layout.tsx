@@ -32,7 +32,7 @@ export default function Layout({
   params: { lng, username },
   children,
 }: PageProps) {
-  const { t } = useT(lng);
+  const { t } = useT();
   const tabs: TabProps[] = [
     {
       icon: <PersonIcon />,

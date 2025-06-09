@@ -4,18 +4,17 @@ import { ReactNode } from 'react';
 
 import { getT } from '@/app/i18n';
 import { getUserByUsername } from '@/helpers/userApi';
-import { Language } from '@/types';
 
 type LayoutProps = {
   readonly children: ReactNode;
-  readonly params: { username: string; lng: Language };
+  readonly params: { username: string };
 };
 
 export async function generateMetadata({
-  params: { username, lng },
+  params: { username },
 }: LayoutProps): Promise<Metadata> {
   const user = await getUserByUsername(username);
-  const { t } = await getT(lng, 'authors');
+  const { t } = await getT('authors');
   return {
     alternates: {
       canonical: `/users/${username}/profile`,

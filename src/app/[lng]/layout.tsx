@@ -23,10 +23,8 @@ type RootLayoutProps = {
   readonly params: { lng: Language };
 };
 
-export async function generateMetadata({
-  params: { lng },
-}: RootLayoutProps): Promise<Metadata> {
-  const { t } = await getT(lng, 'main');
+export async function generateMetadata(): Promise<Metadata> {
+  const { t } = await getT('main');
   return {
     metadataBase: new URL('https://codogma.com'),
     alternates: {

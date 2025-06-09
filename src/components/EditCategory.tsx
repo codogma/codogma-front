@@ -10,17 +10,23 @@ import {
   Dialog,
   DialogContent,
   DialogTitle,
-  FormHelperText,
+  Divider,
   IconButton,
   TextField,
 } from '@mui/material';
 import DialogActions from '@mui/material/DialogActions';
+import FormControl from '@mui/material/FormControl';
 import MenuItem from '@mui/material/MenuItem';
+import Paper from '@mui/material/Paper';
+import Stack from '@mui/material/Stack';
 import { styled } from '@mui/material/styles';
 import Typography from '@mui/material/Typography';
 import { useQuery } from '@tanstack/react-query';
-import React, { useEffect, useState } from 'react';
+import { Swatch } from '@vibrant/color';
+import { Vibrant } from 'node-vibrant/browser';
+import React, { useCallback, useEffect, useState } from 'react';
 import {
+  Controller,
   FormProvider,
   SubmitHandler,
   useForm,
@@ -33,12 +39,12 @@ import { AvatarImage } from '@/components/AvatarImage';
 import FormInput from '@/components/FormInput';
 import { languageMenuItems } from '@/constants/i18n';
 import {
-  CategoryUpdate,
   getCategoryByIdToUpdate,
+  UpdateCategory,
   updateCategory,
 } from '@/helpers/categoryApi';
-import { devConsoleInfo } from '@/helpers/devConsoleLogs';
-import { GetCategoryToUpdate, Language } from '@/types';
+import { devConsoleError, devConsoleInfo } from '@/helpers/devConsoleLogs';
+import { GetCategoryToUpdate, Language, PaletteDTO, SwatchDTO } from '@/types';
 
 const VisuallyHiddenInput = styled('input')({
   clip: 'rect(0 0 0 0)',
@@ -74,16 +80,21 @@ export const EditCategory = ({
   refetch,
   onClose,
 }: EditCategoryProps) => {
+  const [iconUrl, setIconUrl] = useState<string>();
+  const [imageUrl, setImageUrl] = useState<string>();
   const [open, setOpen] = useState(false);
-  const [imageUrl, setImageUrl] = useState<string | undefined>();
+  const [palette, setPalette] = useState<PaletteDTO>();
   const [selectedLang, setSelectedLang] = useState<Language>(lang);
-  const { t } = useT(lang, 'categories');
+  const { t } = useT('categories');
 
   const EditCategoryScheme = z.object({
-    name: z.record(
-      z.nativeEnum(Language),
-      z.string().min(2, t('minText')).max(50, t('maxText')),
+    name: z.optional(
+      z.record(
+        z.nativeEnum(Language),
+        z.string().min(2, t('minText')).max(50, t('maxText')),
+      ),
     ),
+    icon: z.optional(z.instanceof(File)),
     image: z.optional(z.instanceof(File)),
     description: z.optional(z.record(z.nativeEnum(Language), z.string())),
   });
@@ -99,6 +110,7 @@ export const EditCategory = ({
     resolver: zodResolver(EditCategoryScheme),
     defaultValues: {
       name: categoryData?.name,
+      icon: undefined,
       image: undefined,
       description: categoryData?.description,
     },
@@ -107,10 +119,13 @@ export const EditCategory = ({
   useEffect(() => {
     zodForm.reset({
       name: categoryData?.name,
+      icon: undefined,
       image: undefined,
       description: categoryData?.description,
     });
-    setImageUrl(categoryData?.imageUrl);
+    setIconUrl(categoryData?.icon?.imageUrl);
+    setImageUrl(categoryData?.image?.imageUrl);
+    setPalette(categoryData?.image?.palette);
   }, [categoryData, zodForm]);
 
   const {
@@ -125,12 +140,12 @@ export const EditCategory = ({
   const nameValues = useWatch({
     name: `name.${selectedLang}`,
     control,
-  }) as Record<string, string>;
+  }) as Record<Language, string>;
 
   const descriptionValues = useWatch({
     name: `description.${selectedLang}`,
     control,
-  }) as Record<string, string>;
+  }) as Record<Language, string>;
 
   useEffect(() => {
     if (isSubmitSuccessful) {
@@ -138,35 +153,86 @@ export const EditCategory = ({
     }
   }, [isSubmitSuccessful, reset, zodForm]);
 
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleIconChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
-      setImageUrl(URL.createObjectURL(file));
-      setValue('image', file);
-      trigger('image');
+      const fileURL = URL.createObjectURL(file);
+      setIconUrl(fileURL);
+      setValue('icon', file);
+      trigger('icon');
     }
   };
+
+  const convertSwatchToDTO = useCallback(
+    (swatch: Swatch | null): SwatchDTO | undefined => {
+      if (!swatch) return undefined;
+      return {
+        r: swatch.r,
+        g: swatch.g,
+        b: swatch.b,
+        population: swatch.population,
+        h: swatch.hsl[0],
+        s: swatch.hsl[1],
+        l: swatch.hsl[2],
+        hex: swatch.hex,
+        titleTextColor: swatch.titleTextColor,
+        bodyTextColor: swatch.bodyTextColor,
+      };
+    },
+    [],
+  );
+
+  const handleImageChange = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      const file = event.target.files?.[0];
+      if (file) {
+        const fileURL = URL.createObjectURL(file);
+        setImageUrl(fileURL);
+        Vibrant.from(fileURL)
+          .getPalette()
+          .then((paletteResult) => {
+            const paletteData = {
+              vibrant: convertSwatchToDTO(paletteResult.Vibrant),
+              muted: convertSwatchToDTO(paletteResult.Muted),
+              darkVibrant: convertSwatchToDTO(paletteResult.DarkVibrant),
+              darkMuted: convertSwatchToDTO(paletteResult.DarkMuted),
+              lightVibrant: convertSwatchToDTO(paletteResult.LightVibrant),
+              lightMuted: convertSwatchToDTO(paletteResult.LightMuted),
+            };
+            setPalette(paletteData);
+            setValue('image', file);
+            trigger('image');
+          })
+          .catch((error) => {
+            devConsoleError('Palette extraction failed:', error);
+          })
+          .finally(() => {
+            URL.revokeObjectURL(fileURL);
+          });
+      }
+    },
+    [convertSwatchToDTO, setValue, trigger],
+  );
 
   const onSubmit: SubmitHandler<z.infer<typeof EditCategoryScheme>> = (
     formData,
   ) => {
-    const requestData = {
-      name: formData.name,
-      image: formData.image,
-      description: formData.description,
-    };
     const formDataToSend = new FormData();
-    formDataToSend.append('name', JSON.stringify(requestData.name));
-    if (requestData.image) formDataToSend.append('image', requestData.image);
-    if (requestData.description) {
+    formDataToSend.append('name', JSON.stringify(formData.name));
+    if (formData.icon) formDataToSend.append('icon', formData.icon);
+    if (formData.image) formDataToSend.append('image', formData.image);
+    if (palette) {
+      formDataToSend.append('palette', JSON.stringify(palette));
+    }
+    if (formData.description) {
       formDataToSend.append(
         'description',
-        JSON.stringify(requestData.description),
+        JSON.stringify(formData.description),
       );
     }
     const formDataObject = Object.fromEntries(
       formDataToSend.entries(),
-    ) as unknown as CategoryUpdate;
+    ) as unknown as UpdateCategory;
     devConsoleInfo(formDataObject);
     updateCategory(id, formDataObject).then(() => {
       if (refetch) {
@@ -226,36 +292,128 @@ export const EditCategory = ({
                 gap: 2,
               }}
             >
-              <span>
-                <Badge
-                  overlap='circular'
-                  anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-                  badgeContent={
-                    <IconButton component='label' color='inherit' sx={{ p: 0 }}>
-                      <ModeEditOutlineOutlined color='primary' />
-                      <VisuallyHiddenInput
-                        id='image'
-                        name='image'
-                        type='file'
-                        onChange={handleFileChange}
+              <FormControl sx={{ mb: 1 }}>
+                <Controller
+                  name='image'
+                  control={control}
+                  render={() => (
+                    <Badge
+                      overlap='circular'
+                      anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+                      badgeContent={
+                        <IconButton
+                          component='label'
+                          color='inherit'
+                          sx={{ p: 0, m: 0 }}
+                        >
+                          <ModeEditOutlineOutlined color='primary' />
+                          <VisuallyHiddenInput
+                            id='image'
+                            name='image'
+                            type='file'
+                            onChange={handleImageChange}
+                          />
+                        </IconButton>
+                      }
+                    >
+                      <AvatarImage
+                        type='image'
+                        variant='rounded'
+                        src={imageUrl}
+                        size={112}
+                        fontSize='large'
                       />
-                    </IconButton>
-                  }
+                    </Badge>
+                  )}
+                />
+              </FormControl>
+              {palette && (
+                <Stack
+                  key={JSON.stringify(palette)}
+                  direction='row'
+                  divider={<Divider orientation='vertical' flexItem />}
+                  spacing={2}
+                  sx={{ flexWrap: 'wrap' }}
                 >
-                  <AvatarImage
-                    alt={categoryData?.name?.[selectedLang]}
-                    variant='rounded'
-                    src={imageUrl}
-                    size={112}
-                    fontSize='large'
-                  />
-                </Badge>
-              </span>
-              {errors.image && (
-                <FormHelperText id='image-text' error={!!errors.image}>
-                  {errors?.image.message}
-                </FormHelperText>
+                  {palette.vibrant && (
+                    <Paper sx={{ backgroundColor: palette.vibrant.hex }}>
+                      <Typography color={palette.vibrant?.titleTextColor}>
+                        Vibrant
+                      </Typography>
+                    </Paper>
+                  )}
+                  {palette.darkVibrant && (
+                    <Paper sx={{ backgroundColor: palette.darkVibrant.hex }}>
+                      <Typography color={palette.darkVibrant?.titleTextColor}>
+                        Dark Vibrant
+                      </Typography>
+                    </Paper>
+                  )}
+                  {palette.lightVibrant && (
+                    <Paper sx={{ backgroundColor: palette.lightVibrant.hex }}>
+                      <Typography color={palette.lightVibrant?.titleTextColor}>
+                        Light Vibrant
+                      </Typography>
+                    </Paper>
+                  )}
+                  {palette.muted && (
+                    <Paper sx={{ backgroundColor: palette.muted.hex }}>
+                      <Typography color={palette.muted?.titleTextColor}>
+                        Muted
+                      </Typography>
+                    </Paper>
+                  )}
+                  {palette.darkMuted && (
+                    <Paper sx={{ backgroundColor: palette.darkMuted.hex }}>
+                      <Typography color={palette.darkMuted?.titleTextColor}>
+                        Dark Muted
+                      </Typography>
+                    </Paper>
+                  )}
+                  {palette.lightMuted && (
+                    <Paper sx={{ backgroundColor: palette.lightMuted.hex }}>
+                      <Typography color={palette.lightMuted?.titleTextColor}>
+                        Light Muted
+                      </Typography>
+                    </Paper>
+                  )}
+                </Stack>
               )}
+              <FormControl sx={{ mb: 1 }}>
+                <Controller
+                  name='icon'
+                  control={control}
+                  render={() => (
+                    <Badge
+                      overlap='circular'
+                      anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+                      badgeContent={
+                        <IconButton
+                          component='label'
+                          color='inherit'
+                          sx={{ p: 0, m: 0 }}
+                        >
+                          <ModeEditOutlineOutlined color='primary' />
+                          <VisuallyHiddenInput
+                            id='icon'
+                            name='icon'
+                            type='file'
+                            onChange={handleIconChange}
+                          />
+                        </IconButton>
+                      }
+                    >
+                      <AvatarImage
+                        type='image'
+                        variant='rounded'
+                        src={iconUrl}
+                        size={112}
+                        fontSize='large'
+                      />
+                    </Badge>
+                  )}
+                />
+              </FormControl>
               <TextField
                 select
                 label={t('language')}

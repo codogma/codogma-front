@@ -5,13 +5,13 @@ import Article from '@/components/Article';
 import { Language } from '@/types';
 
 type PageParams = {
-  readonly lng: Language;
+  readonly lang: Language;
 };
 
 type PageProps = {
   readonly params: PageParams;
 };
 
-export default function Page({ params: { lng } }: PageProps) {
-  return <Article lng={lng} />;
+export default function Page({ params: { lang } }: PageProps) {
+  return <Article lang={lang} />;
 }

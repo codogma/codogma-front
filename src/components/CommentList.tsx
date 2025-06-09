@@ -29,7 +29,7 @@ export const CommentList: React.FC<CommentListProps> = ({
   const [pageSize, setPageSize] = useState<number>(5);
   const scrollTarget = useRef<string | null>(null);
   const { state } = useAuth();
-  const { t } = useT(lang);
+  const { t } = useT();
 
   const { data, fetchNextPage, isFetchingNextPage, refetch } = useInfiniteQuery(
     {

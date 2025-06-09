@@ -13,5 +13,5 @@ type PageProps = {
 };
 
 export default function Page({ params: { lng } }: PageProps) {
-  return <Article lng={lng} />;
+  return <Article lang={lng} />;
 }

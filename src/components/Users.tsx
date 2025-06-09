@@ -20,7 +20,7 @@ type AuthorsProps = {
 
 export default function Users({ users, loading, lang }: AuthorsProps) {
   const { state } = useAuth();
-  const { t } = useT(lang, 'authors');
+  const { t } = useT('authors');
 
   return (
     <>

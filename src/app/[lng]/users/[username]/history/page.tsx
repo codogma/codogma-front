@@ -62,14 +62,9 @@ export default function Layout({ params: { lng } }: PageProps) {
 
   return (
     <>
-      <Search
-        lang={lng}
-        onSearchType={onSearchType}
-        onSearchValue={onSearchValue}
-      />
+      <Search onSearchType={onSearchType} onSearchValue={onSearchValue} />
       <Articles lang={lng} articles={history} loading={isFetchingViewed} />
       <CustomPagination
-        lang={lng}
         totalPages={totalPages}
         totalElements={totalElements}
         resultsPerPageStart={resultsPerPage}

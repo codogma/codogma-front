@@ -67,44 +67,37 @@ export default function Layout({
             </div>
           </div>
         ) : (
-          <>
-            <CardHeader
-              avatar={
-                <AvatarImage
-                  alt={category?.name}
-                  className='category-img'
-                  variant='rounded'
-                  src={category?.imageUrl}
-                  size={48}
+          <CardHeader
+            avatar={
+              <AvatarImage
+                alt={category?.name}
+                className='category-img'
+                variant='rounded'
+                src={category?.icon.imageUrl}
+                size={48}
+              />
+            }
+            action={
+              state.user?.role !== UserRole.ROLE_ADMIN ? (
+                <ButtonFavorite
+                  isFavoriteValue={category?.isFavorite}
+                  id={id}
                 />
-              }
-              action={
-                state.user?.role !== UserRole.ROLE_ADMIN ? (
-                  <ButtonFavorite
-                    lang={lng}
-                    isFavoriteValue={category?.isFavorite}
-                    id={id}
-                  />
-                ) : (
-                  <MenuButton
-                    category={category}
-                    lang={lng}
-                    refetch={refetch}
-                  />
-                )
-              }
-              title={
-                <Typography className='category-card-name'>
-                  {category?.name}
-                </Typography>
-              }
-              subheader={
-                <Typography className='category-card-description'>
-                  {category?.description}
-                </Typography>
-              }
-            />
-          </>
+              ) : (
+                <MenuButton category={category} lang={lng} refetch={refetch} />
+              )
+            }
+            title={
+              <Typography className='category-card-name'>
+                {category?.name}
+              </Typography>
+            }
+            subheader={
+              <Typography className='category-card-description'>
+                {category?.description}
+              </Typography>
+            }
+          />
         )}
       </Card>
       <NavTabs tabs={tabs} />

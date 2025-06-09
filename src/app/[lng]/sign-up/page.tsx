@@ -43,7 +43,7 @@ type PageProps = {
 export default function Page({ params: { lng } }: PageProps) {
   const router = useRouter();
   const [serverError, setServerError] = useState('');
-  const { t } = useT(lng, 'signUp');
+  const { t } = useT('signUp');
 
   const zodForm = useForm<z.infer<typeof SignUpScheme>>({
     resolver: zodResolver(SignUpScheme),
@@ -78,7 +78,7 @@ export default function Page({ params: { lng } }: PageProps) {
     } catch (error) {
       if (error instanceof AxiosError) {
         const message =
-          error?.response?.data || 'An error occurred during registration.';
+          error?.response?.data ?? 'An error occurred during registration.';
         setServerError(message);
       }
     }

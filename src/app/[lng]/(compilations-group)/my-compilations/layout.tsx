@@ -11,10 +11,8 @@ type LayoutProps = {
   readonly params: { lng: Language };
 };
 
-export async function generateMetadata({
-  params: { lng },
-}: LayoutProps): Promise<Metadata> {
-  const { t } = await getT(lng);
+export async function generateMetadata(): Promise<Metadata> {
+  const { t } = await getT();
   return {
     alternates: {
       canonical: `/compilations/`,

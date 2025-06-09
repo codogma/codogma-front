@@ -4,10 +4,14 @@ import slugify from 'slugify';
 import { v4 as uuid } from 'uuid';
 
 import { devConsoleError } from '@/helpers/devConsoleLogs';
-import { uploadImage } from '@/helpers/imageUploadApi';
+import {
+  CreateArticleImage,
+  uploadArticleImage,
+} from '@/helpers/imageUploadApi';
 
 interface TinyMCEEditorProps {
   readonly id?: string;
+  readonly articleId: number;
   readonly defaultValue?: string;
   readonly value?: string;
   readonly onChange: (content: string) => void;
@@ -16,6 +20,7 @@ interface TinyMCEEditorProps {
 
 export const TinyMCEEditor = ({
   id,
+  articleId,
   defaultValue,
   value,
   onChange,
@@ -48,6 +53,7 @@ export const TinyMCEEditor = ({
       value={value}
       licenseKey='gpl'
       ref={editorRef}
+      disabled={!articleId}
       init={{
         language_load: true,
         height: 500,
@@ -90,7 +96,10 @@ export const TinyMCEEditor = ({
           return new Promise((resolve, reject) => {
             const formData = new FormData();
             formData.append('image', blobInfo.blob());
-            uploadImage(formData)
+            const formDataObject = Object.fromEntries(
+              formData.entries(),
+            ) as unknown as CreateArticleImage;
+            uploadArticleImage(articleId, formDataObject)
               .then((url) => {
                 resolve(`${process.env.NEXT_PUBLIC_BASE_URL}${url}`);
               })

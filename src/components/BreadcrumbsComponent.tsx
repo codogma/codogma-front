@@ -18,7 +18,7 @@ export const BreadcrumbsComponent = ({
   depth,
 }: BreadcrumbsComponentProps) => {
   const pathname = usePathname();
-  const { t } = useT(lang);
+  const { t } = useT();
   const pathSegments = pathname
     .split('/')
     .slice(2, depth)

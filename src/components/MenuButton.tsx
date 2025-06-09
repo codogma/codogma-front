@@ -1,5 +1,5 @@
 import MoreVertIcon from '@mui/icons-material/MoreVert';
-import { MenuList } from '@mui/material';
+import { IconButtonOwnProps, MenuList } from '@mui/material';
 import IconButton from '@mui/material/IconButton';
 import Menu, { MenuProps } from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
@@ -72,14 +72,14 @@ const StyledMenu = styled((props: MenuProps) => (
   },
 }));
 
-type MenuButtonProps = {
+interface MenuButtonProps extends IconButtonOwnProps {
   readonly article?: GetArticle;
   readonly lang: Language;
   readonly compilation?: GetCompilation;
   readonly user?: GetUserDTO;
   readonly category?: GetCategory;
   readonly refetch?: () => void;
-};
+}
 
 export default function MenuButton({
   article,
@@ -88,11 +88,12 @@ export default function MenuButton({
   user,
   category,
   refetch,
+  ...props
 }: MenuButtonProps) {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const { state } = useAuth();
   const open = Boolean(anchorEl);
-  const { t } = useT(lang, 'common');
+  const { t } = useT('common');
 
   const { data } = useQuery<GetUserDTO>({
     queryKey: [
@@ -130,10 +131,13 @@ export default function MenuButton({
       <IconButton
         aria-label='more'
         id='long-button'
+        color='inherit'
+        size='small'
         aria-controls={open ? 'long-menu' : undefined}
         aria-expanded={open ? 'true' : undefined}
         aria-haspopup='true'
         onClick={handleClick}
+        {...props}
       >
         <MoreVertIcon />
       </IconButton>
@@ -171,17 +175,12 @@ export default function MenuButton({
               <AddToCompilations
                 id={article.id}
                 username={state.user?.username}
-                lang={lang}
                 compilations={article.compilations}
                 onClose={handleClose}
               />
             )}
           {userDTO && (
-            <SubscribeMenuItem
-              user={userDTO}
-              lang={lang}
-              onClose={handleClose}
-            />
+            <SubscribeMenuItem user={userDTO} onClose={handleClose} />
           )}
           {category && state.user?.role === UserRole.ROLE_ADMIN && (
             <EditCategory
@@ -194,14 +193,12 @@ export default function MenuButton({
           {compilation && (
             <EditCompilation
               compilationData={compilation}
-              lang={lang}
               onClose={handleClose}
             />
           )}
           {state.user?.username === compilation?.ownerName && compilation && (
             <ArticlesDnD
               compilationData={compilation}
-              lang={lang}
               onClose={handleClose}
               refetch={refetch}
             />

@@ -59,7 +59,7 @@ const LocalizationDialogScheme = z.object({
 
 export const LocalizationDialog = ({ lang }: LocalizationDialogProps) => {
   const [open, setOpen] = useState(false);
-  const { t } = useT(lang);
+  const { t } = useT();
   const pathname = usePathname();
   const router = useRouter();
   const contlCookieVal = Cookies.get(contlCookie);

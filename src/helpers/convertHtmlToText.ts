@@ -3,6 +3,7 @@ import { Parser } from 'htmlparser2';
 
 export function convertHtmlToText(html: string): string {
   let text: string = '';
+  if (!html) return text;
   const decodedHtml = decodeHTML(html);
   const parser = new Parser({
     ontext(content) {

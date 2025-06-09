@@ -73,7 +73,7 @@ export const NotificationDialog = ({ lang }: NotificationsDialogProps) => {
   const [currentPage, setCurrentPage] = useState<number>(0);
   const [resultsPerPage, setResultsPerPage] = useState<number>(10);
   const { state } = useAuth();
-  const { t } = useT(lang, 'notifications');
+  const { t } = useT('notifications');
   const router = useRouter();
   const pathname = usePathname();
 
@@ -329,7 +329,6 @@ export const NotificationDialog = ({ lang }: NotificationsDialogProps) => {
             </List>
           </Scrollbar>
           <CustomPagination
-            lang={lang}
             totalPages={totalPages}
             totalElements={totalElements}
             onCurrentPageChange={onPageChange}

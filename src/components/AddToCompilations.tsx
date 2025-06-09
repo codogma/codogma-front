@@ -34,7 +34,7 @@ import {
   getCompilationsByTitle,
   GetCompilationsDTO,
 } from '@/helpers/compilationApi';
-import { GetCompilation, Language } from '@/types';
+import { GetCompilation } from '@/types';
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   '& .MuiDialogContent-root': {
@@ -48,7 +48,6 @@ const BootstrapDialog = styled(Dialog)(({ theme }) => ({
 interface AddToCompilationsProps {
   readonly id: number;
   readonly username?: string;
-  readonly lang: Language;
   readonly compilations: GetCompilation[];
   readonly onClose?: () => void;
 }
@@ -60,7 +59,6 @@ const BookmarkScheme = z.object({
 export const AddToCompilations: React.FC<AddToCompilationsProps> = ({
   id,
   username,
-  lang,
   compilations,
   onClose,
 }) => {
@@ -73,7 +71,7 @@ export const AddToCompilations: React.FC<AddToCompilationsProps> = ({
   const [inputCompilationValue, setInputCompilationValue] =
     useState<string>('');
   const [isCompilated, setIsCompilated] = useState(compilations.length > 0);
-  const { t } = useT(lang, 'compilations');
+  const { t } = useT('compilations');
 
   const zodForm = useForm<z.infer<typeof BookmarkScheme>>({
     resolver: zodResolver(BookmarkScheme),

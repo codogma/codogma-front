@@ -19,7 +19,7 @@ export default function Page({ params: { lng } }: PageProps) {
     router.push(`/${lng}/sign-in`);
   };
 
-  const { t } = useT(lng, 'success');
+  const { t } = useT('success');
 
   return (
     <Container maxWidth='sm' sx={{ textAlign: 'center', mt: 8 }}>

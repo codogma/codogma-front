@@ -78,7 +78,7 @@ export default function Page() {
     } catch (error) {
       if (error instanceof AxiosError) {
         const message =
-          error?.response?.data || 'An error occurred during sign in.';
+          error?.response?.data ?? 'An error occurred during sign in.';
         setServerError(message);
       }
     }
