@@ -110,7 +110,6 @@ export const ArticleCard = ({ article, lang }: ArticleCardProps) => {
               article={article}
               lang={lang}
               sx={{ color: darkMutedHex, '.dark &': { color: lightMutedHex } }}
-              // user={state.user}
             />
           )
         }

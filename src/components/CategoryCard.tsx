@@ -99,7 +99,6 @@ export default function CategoryCard({
                         color: darkMutedHex,
                         '.dark &': { color: lightMutedHex },
                       }}
-                      user={state.user}
                     />
                   )}
                 </Stack>

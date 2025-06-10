@@ -60,7 +60,6 @@ export const CompilationCard = ({
               compilation={compilation}
               lang={lang}
               refetch={refetch}
-              user={state.user}
             />
           )
         }

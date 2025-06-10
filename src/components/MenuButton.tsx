@@ -106,6 +106,7 @@ export default function MenuButton({
       getUserByUsername(
         article?.username ?? user?.username ?? compilation?.ownerName,
       ),
+    enabled: !!(article?.username ?? user?.username ?? compilation?.ownerName),
   });
 
   const userDTO: GetUserDTO = data as GetUserDTO;
