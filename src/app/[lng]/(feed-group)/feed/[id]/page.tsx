@@ -33,7 +33,6 @@ export default function Page({ params: { lng } }: PageProps) {
         <div className='card-header'>
           <AvatarImage
             alt={article.username}
-            className='article-user-avatar'
             src={article.authorAvatarUrl}
             variant='rounded'
             size={32}

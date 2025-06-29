@@ -157,7 +157,6 @@ export const CommentList: React.FC<CommentListProps> = ({
         <CardContent className='card-content'>
           <Box className='card-header'>
             <AvatarImage
-              className='article-user-avatar'
               src={comment.user.avatarUrl}
               alt={comment.user.username}
               variant='rounded'

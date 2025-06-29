@@ -8,17 +8,28 @@ import { GetArticle, Language } from '@/types';
 type ArticlesProps = {
   readonly lang: Language;
   readonly articles: GetArticle[];
+  readonly articlesPerPageStart: number;
   readonly loading: boolean;
 };
 
-export default function Articles({ lang, articles, loading }: ArticlesProps) {
+export const Articles = ({
+  lang,
+  articles,
+  articlesPerPageStart,
+  loading,
+}: ArticlesProps) => {
   return (
     <Grid container spacing={2}>
-      {(loading ? Array.from(new Array(12)) : articles)?.map((article, key) => (
-        <Grid key={key} size={{ xs: 12, sm: 6, lg: 4 }}>
-          <ArticleCard article={article} lang={lang} />
-        </Grid>
-      ))}
+      {(loading ? Array.from(new Array(articlesPerPageStart)) : articles)?.map(
+        (article, key) => (
+          <Grid
+            key={article ? article.id : `skeleton-${key}`}
+            size={{ xs: 12, sm: 6, lg: 4 }}
+          >
+            <ArticleCard article={article} lang={lang} />
+          </Grid>
+        ),
+      )}
     </Grid>
   );
-}
+};

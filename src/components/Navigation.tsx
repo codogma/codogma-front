@@ -3,7 +3,7 @@ import { Container, Grid2 as Grid } from '@mui/material';
 import { useParams, usePathname } from 'next/navigation';
 import React, { ReactNode } from 'react';
 
-import BottomNavigation from '@/components/BottomNavigation';
+import { CustomBottomNavigation } from '@/components/CustomBottomNavigation';
 import Footer from '@/components/Footer';
 import NavBar from '@/components/NavBar';
 import { useNavigationState } from '@/components/NavigationProvider';
@@ -65,7 +65,7 @@ export const Navigation = ({ lang, children }: NavigationProps) => {
           )}
         </Grid>
       </Container>
-      {!isFullscreen && <BottomNavigation lang={lang} />}
+      {!isFullscreen && <CustomBottomNavigation lang={lang} />}
     </>
   );
 };

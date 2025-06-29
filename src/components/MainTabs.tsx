@@ -13,6 +13,10 @@ import { useT } from '@/app/i18n/client';
 import { Carousel } from '@/components/Carousel';
 import Compilations from '@/components/Compilations';
 import { MyCompilationsBadge } from '@/components/MyCompilationsBadge';
+import {
+  MAIN_PAGE_BOOKMARKS,
+  MAIN_PAGE_MY_COMPILATIONS,
+} from '@/constants/limits';
 import { GetArticlesDTO, getViewed } from '@/helpers/articleApi';
 import { getCompilations, GetCompilationsDTO } from '@/helpers/compilationApi';
 import { Language } from '@/types';
@@ -73,7 +77,14 @@ export const MainTabs: React.FC<MainTabsProps> = ({ lang, username }) => {
     useQuery<GetCompilationsDTO>({
       queryKey: ['bookmarks'],
       queryFn: () => {
-        return getCompilations(undefined, undefined, undefined, true, 0, 5);
+        return getCompilations(
+          undefined,
+          undefined,
+          undefined,
+          true,
+          0,
+          MAIN_PAGE_BOOKMARKS,
+        );
       },
     });
 
@@ -83,7 +94,14 @@ export const MainTabs: React.FC<MainTabsProps> = ({ lang, username }) => {
     useQuery<GetCompilationsDTO>({
       queryKey: ['compilations', username],
       queryFn: () => {
-        return getCompilations(undefined, undefined, username, false, 0, 5);
+        return getCompilations(
+          undefined,
+          undefined,
+          username,
+          false,
+          0,
+          MAIN_PAGE_MY_COMPILATIONS,
+        );
       },
     });
 
@@ -136,6 +154,7 @@ export const MainTabs: React.FC<MainTabsProps> = ({ lang, username }) => {
             compilations={bookmarks}
             loading={isFetchingBookmarks}
             lang={lang}
+            compilationsPerPageStart={MAIN_PAGE_BOOKMARKS}
           />
           <Link href={`/${lang}/bookmarks`}>
             <Box className='link'>
@@ -149,6 +168,7 @@ export const MainTabs: React.FC<MainTabsProps> = ({ lang, username }) => {
             compilations={myCompilations}
             loading={isFetchingMyCompilations}
             lang={lang}
+            compilationsPerPageStart={MAIN_PAGE_MY_COMPILATIONS}
           />
           <Link href={`/${lang}/my-compilations`}>
             <Box className='link'>

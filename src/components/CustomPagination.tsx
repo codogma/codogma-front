@@ -12,7 +12,7 @@ import { useT } from '@/app/i18n/client';
 type PaginationProps = {
   readonly totalPages: number;
   readonly totalElements: number;
-  readonly resultsPerPageStart?: number;
+  readonly resultsPerPageStart: number;
   readonly onCurrentPageChange: (value: number) => void;
   readonly onResultsPerPageChange: (value: number) => void;
 };

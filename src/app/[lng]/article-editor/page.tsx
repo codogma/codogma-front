@@ -1217,6 +1217,7 @@ const Page = ({ params: { lng } }: PageParams) => {
       handleSubmitStepTwo,
       inputCategoryValue,
       inputCompilationValue,
+      lng,
       onStepOneSubmit,
       onStepTwoSubmit,
       onSubmit,

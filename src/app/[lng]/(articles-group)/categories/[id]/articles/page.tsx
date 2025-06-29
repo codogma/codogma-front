@@ -2,9 +2,10 @@
 import { useQuery } from '@tanstack/react-query';
 import React, { useState } from 'react';
 
-import Articles from '@/components/Articles';
+import { Articles } from '@/components/Articles';
 import { CustomPagination } from '@/components/CustomPagination';
 import { Search } from '@/components/Search';
+import { ARTICLES_PER_PAGE } from '@/constants/limits';
 import { getArticles, GetArticlesDTO } from '@/helpers/articleApi';
 import { Language } from '@/types';
 
@@ -20,7 +21,8 @@ type PageProps = {
 export default function Layout({ params: { id, lng } }: PageProps) {
   const categoryId = id;
   const [currentPage, setCurrentPage] = useState<number>(0);
-  const [resultsPerPage, setResultsPerPage] = useState<number>(12);
+  const [resultsPerPage, setResultsPerPage] =
+    useState<number>(ARTICLES_PER_PAGE);
   const [searchValue, setSearchValue] = useState<string>();
   const [searchType, setSearchType] = useState<string>('content');
 
@@ -71,11 +73,16 @@ export default function Layout({ params: { id, lng } }: PageProps) {
   return (
     <>
       <Search onSearchType={onSearchType} onSearchValue={onSearchValue} />
-      <Articles lang={lng} articles={articles} loading={isPending} />
+      <Articles
+        lang={lng}
+        articles={articles}
+        loading={isPending}
+        articlesPerPageStart={ARTICLES_PER_PAGE}
+      />
       <CustomPagination
         totalPages={totalPages}
         totalElements={totalElements}
-        resultsPerPageStart={resultsPerPage}
+        resultsPerPageStart={ARTICLES_PER_PAGE}
         onCurrentPageChange={onPageChange}
         onResultsPerPageChange={onResultsPerPageChange}
       />

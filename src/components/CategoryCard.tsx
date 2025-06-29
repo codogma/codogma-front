@@ -8,6 +8,7 @@ import {
   CardMedia,
   Collapse,
   IconButton,
+  Skeleton,
 } from '@mui/material';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
@@ -27,11 +28,11 @@ type CategoryCardProps = {
   readonly refetch?: () => void;
 };
 
-export default function CategoryCard({
+export const CategoryCard = ({
   category,
   lang,
   refetch,
-}: CategoryCardProps) {
+}: CategoryCardProps) => {
   const { state } = useAuth();
   const { t } = useT('categories');
   const [expanded, setExpanded] = useState(false);
@@ -43,22 +44,16 @@ export default function CategoryCard({
     r: vibrantR = 0,
     g: vibrantG = 0,
     b: vibrantB = 0,
-    hex: vibrantHex = '#fff',
     titleTextColor: vibrantTextColor = '#fff',
   } = vibrant;
 
   const lightMuted = (palette?.lightMuted || {}) as SwatchDTO;
-  const {
-    r: lightMutedR = 0,
-    g: lightMutedG = 0,
-    b: lightMutedB = 0,
-    hex: lightMutedHex = '#fff',
-  } = lightMuted;
+  const { hex: lightMutedHex = '#fff' } = lightMuted;
 
   const darkMuted = (palette?.darkMuted || {}) as SwatchDTO;
   const { hex: darkMutedHex = '#fff' } = darkMuted;
 
-  return (
+  return category ? (
     <Card variant='outlined' className='card'>
       <Box className='card-media' onMouseLeave={() => setExpanded(false)}>
         <Collapse in={!expanded} timeout={{ enter: 300, exit: 300 }}>
@@ -206,5 +201,24 @@ export default function CategoryCard({
         </Collapse>
       </Box>
     </Card>
+  ) : (
+    <Card variant='outlined' className='card'>
+      <CardContent className='card-content'>
+        <div className='card-header'>
+          <Skeleton variant='rounded' width={48} height={48} />
+          <ul>
+            <li>
+              <Skeleton variant='text' width={100} />
+            </li>
+            <li>
+              <Skeleton variant='text' width={150} />
+            </li>
+            <li>
+              <Skeleton variant='text' width={150} />
+            </li>
+          </ul>
+        </div>
+      </CardContent>
+    </Card>
   );
-}
+};

@@ -11,6 +11,7 @@ import { CustomPagination } from '@/components/CustomPagination';
 import { Search } from '@/components/Search';
 import { TimeAgo } from '@/components/TimeAgo';
 import { contlCookie } from '@/constants/i18n';
+import { COMMENTS_PER_PAGE } from '@/constants/limits';
 import { getComments } from '@/helpers/commentAPI';
 import { useEventListener } from '@/helpers/useEventListener';
 import { GetComment, GetCommentsDTO, Language, SearchType } from '@/types';
@@ -26,7 +27,8 @@ type PageProps = {
 
 export default function Page({ params: { username, lng } }: PageProps) {
   const [currentPage, setCurrentPage] = useState<number>(0);
-  const [resultsPerPage, setResultsPerPage] = useState<number>(10);
+  const [resultsPerPage, setResultsPerPage] =
+    useState<number>(COMMENTS_PER_PAGE);
   const [searchValue, setSearchValue] = useState<string>();
   const [searchType, setSearchType] = useState<SearchType>(SearchType.CONTENT);
 
@@ -107,7 +109,6 @@ export default function Page({ params: { username, lng } }: PageProps) {
               </Box>
               <Box className='card-header'>
                 <AvatarImage
-                  className='article-user-avatar'
                   src={comment.user.avatarUrl}
                   alt={comment.user.username}
                   variant='rounded'
@@ -135,6 +136,7 @@ export default function Page({ params: { username, lng } }: PageProps) {
         totalElements={totalElements}
         onCurrentPageChange={onPageChange}
         onResultsPerPageChange={onResultsPerPageChange}
+        resultsPerPageStart={COMMENTS_PER_PAGE}
       />
     </>
   );

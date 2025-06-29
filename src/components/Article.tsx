@@ -14,12 +14,13 @@ import React from 'react';
 import { useT } from '@/app/i18n/client';
 import { ArticleActions } from '@/components/ArticleActions';
 import { useArticle } from '@/components/ArticleProvider';
-import Articles from '@/components/Articles';
+import { Articles } from '@/components/Articles';
 import { AvatarImage } from '@/components/AvatarImage';
 import { CommentList } from '@/components/CommentList';
 import { useContentImageContext } from '@/components/ContentImageProvider';
 import { useNavigationState } from '@/components/NavigationProvider';
 import { TimeAgo } from '@/components/TimeAgo';
+import { ARTICLE_RECOMMENDATIONS } from '@/constants/limits';
 import { getRecommendationsArticleById } from '@/helpers/articleApi';
 import { GetArticle, Language } from '@/types';
 
@@ -51,7 +52,6 @@ export default function Article({ lang }: ArticleProps) {
             avatar={
               <AvatarImage
                 alt={article.username}
-                className='article-user-avatar'
                 src={article.authorAvatarUrl}
                 variant='rounded'
                 size={32}
@@ -132,7 +132,12 @@ export default function Article({ lang }: ArticleProps) {
       {!isFullscreen && hasArticles && (
         <>
           <Typography component='div'>{t('recommendation')}</Typography>
-          <Articles lang={lang} articles={articles} loading={isFetching} />
+          <Articles
+            lang={lang}
+            articles={articles}
+            loading={isFetching}
+            articlesPerPageStart={ARTICLE_RECOMMENDATIONS}
+          />
         </>
       )}
     </>

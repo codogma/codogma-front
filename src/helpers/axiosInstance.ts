@@ -41,7 +41,7 @@ axiosInstance.interceptors.response.use(
   (error) => {
     if (isAxiosError(error)) {
       const statusCode = error.response?.status;
-      const serverMessage = error.response?.data || 'An unknown error occurred';
+      const serverMessage = error.response?.data ?? 'An unknown error occurred';
       devConsoleError('Axios error: ' + serverMessage);
       if (statusCode) {
         devConsoleError(`Axios error (${statusCode}): ${serverMessage}`);

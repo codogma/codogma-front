@@ -120,7 +120,7 @@
   }
 
   .card {
-    @apply bg-white text-mine-shaft dark:bg-bunker !important;
+    @apply bg-white text-mine-shaft dark:bg-bunker;
   }
 
   .card-header {
@@ -153,10 +153,6 @@
 
   .card-content {
     @apply ml-auto mr-auto flex flex-col gap-1 p-1.5 !important;
-  }
-
-  .article-user-avatar {
-    @apply rounded-[3px] !important;
   }
 
   .article-user-name {
@@ -311,69 +307,9 @@
   .article-red-btn:hover {
     @apply border border-solid border-transparent bg-red text-white dark:bg-red !important;
   }
-}
-
-.category-img {
-  @apply relative top-0.5 mr-2 block h-12 w-12 flex-none overflow-hidden rounded-[3px] !important;
-}
-
-.category-card-name {
-  @apply m-0 text-[1.24375rem] font-bold leading-7 text-mine-shaft no-underline dark:text-alto !important;
-}
-
-.category-card-shortInfo {
-  @apply m-0 mt-1 text-sm leading-5 text-mine-shaft dark:text-alto !important;
-}
-
-.category-card-description {
-  @apply m-0 mt-1 text-sm leading-5 text-mine-shaft !important;
-}
-
-.category-name {
-  @apply mb-2 text-[0.9375rem] font-medium leading-4 text-mine-shaft no-underline dark:text-alto !important;
-}
-
-.category-name:visited {
-  @apply text-horizon;
-}
-
-.category-name:hover {
-  @apply text-horizon dark:text-deepsky-blue !important;
-}
-
-.category-description {
-  @apply mt-2 text-sm leading-4 text-mountain-mist;
-}
-
-.user-profile-description {
-  @apply mx-0 mb-[15px] mt-0 block text-sm font-bold leading-[1.15] text-mine-shaft dark:text-alto !important;
-}
-
-.user-profile-content {
-  @apply mx-0 -mt-1 mb-0 min-w-0 text-[0.9375rem] leading-6 text-mine-shaft dark:text-alto !important;
-}
-
-.user-categories-profile {
-  @apply mx-0 mb-[15px] mt-0 block text-sm font-bold leading-[1.15] text-mine-shaft dark:text-alto !important;
-}
-
-.user-tags {
-  @apply inline-flex min-h-[1.75rem] items-center rounded-[3px] bg-solitude px-[13px] py-0 align-middle text-[0.8125rem] leading-[1.125rem] text-horizon no-underline dark:bg-elephant dark:text-deepsky-blue !important;
-}
-
-.itb-user {
-  @apply mb-4 bg-white pb-4 pl-5 pr-5 pt-4 text-mine-shaft dark:bg-bunker;
-
-  .user-meta-container {
-    @apply mb-2 flex flex-nowrap items-center gap-1;
-  }
-
-  .user-avatar {
-    @apply h-6 w-6 rounded-[3px] !important;
-  }
 
   .user-title {
-    @apply mb-2 text-[0.9375rem] leading-4 text-mine-shaft dark:text-alto !important;
+    @apply text-base font-bold text-mine-shaft dark:text-alto !important;
   }
 
   .user-title:hover {
@@ -381,27 +317,67 @@
   }
 
   .user-nickname {
-    @apply text-sm leading-none text-horizon dark:text-deepsky-blue !important;
+    @apply text-sm text-horizon dark:text-deepsky-blue !important;
   }
 
   .user-description {
-    @apply mt-2 text-[0.8125rem] leading-4 text-mountain-mist dark:text-shady-lady !important;
+    @apply text-sm !important;
   }
 
-  .user-item_categories {
-    @apply text-[0.8125rem] font-normal leading-4 text-mountain-mist dark:text-shady-lady !important;
+  .user-email {
+    @apply flex flex-row items-center justify-start gap-1 text-sm !important;
+  }
+
+  .user-item-categories {
+    @apply text-[0.8125rem] font-normal leading-4 text-mine-shaft dark:text-alto !important;
   }
 
   .user-tags {
     @apply text-[0.8125rem] font-normal leading-4 text-horizon dark:text-deepsky-blue !important;
   }
 
-  .user-tag-item::after {
-    content: ', ';
+  .category-img {
+    @apply relative top-0.5 mr-2 block h-12 w-12 flex-none overflow-hidden rounded-[3px] !important;
   }
 
-  .user-tag-item:last-child::after {
-    content: '';
+  .category-card-name {
+    @apply m-0 text-[1.24375rem] font-bold leading-7 text-mine-shaft no-underline dark:text-alto !important;
+  }
+
+  .category-card-shortInfo {
+    @apply m-0 mt-1 text-sm leading-5 text-mine-shaft dark:text-alto !important;
+  }
+
+  .category-card-description {
+    @apply m-0 mt-1 text-sm leading-5 text-mine-shaft !important;
+  }
+
+  .category-name {
+    @apply mb-2 text-[0.9375rem] font-medium leading-4 text-mine-shaft no-underline dark:text-alto !important;
+  }
+
+  .category-name:visited {
+    @apply text-horizon;
+  }
+
+  .category-name:hover {
+    @apply text-horizon dark:text-deepsky-blue !important;
+  }
+
+  .category-description {
+    @apply mt-2 text-sm leading-4 text-mountain-mist;
+  }
+
+  .user-profile-item {
+    @apply mx-0 mb-4 mt-0 text-sm font-bold leading-4 text-mine-shaft dark:text-alto !important;
+  }
+
+  .user-profile-content {
+    @apply mx-0 mb-0 mt-1 min-w-0 text-base leading-6 text-mine-shaft dark:text-alto !important;
+  }
+
+  .user-card-content {
+    @apply p-4 !important;
   }
 }
 
@@ -421,4 +397,16 @@
 
 .swiper-slide {
   @apply max-w-80;
+}
+
+@keyframes wave {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
 }

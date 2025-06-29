@@ -6,6 +6,7 @@ import Categories from '@/components/Categories';
 import { CustomPagination } from '@/components/CustomPagination';
 import { Search } from '@/components/Search';
 import { contlCookie } from '@/constants/i18n';
+import { CATEGORIES_PER_PAGE } from '@/constants/limits';
 import { getCategories, GetCategoriesDTO } from '@/helpers/categoryApi';
 import { useEventListener } from '@/helpers/useEventListener';
 import { GetCategory, Language, SearchType } from '@/types';
@@ -18,7 +19,8 @@ type PageProps = {
 
 export default function Page({ params: { lng } }: PageProps) {
   const [currentPage, setCurrentPage] = useState<number>(0);
-  const [resultsPerPage, setResultsPerPage] = useState<number>(10);
+  const [resultsPerPage, setResultsPerPage] =
+    useState<number>(CATEGORIES_PER_PAGE);
   const [searchValue, setSearchValue] = useState<string>();
   const [searchType, setSearchType] = useState<SearchType>(SearchType.INFO);
 
@@ -67,11 +69,13 @@ export default function Page({ params: { lng } }: PageProps) {
         lang={lng}
         refetch={refetch}
         categories={categories}
+        categoriesPerPageStart={CATEGORIES_PER_PAGE}
         loading={isFetching}
       />
       <CustomPagination
         totalPages={totalPages}
         totalElements={totalElements}
+        resultsPerPageStart={CATEGORIES_PER_PAGE}
         onCurrentPageChange={onPageChange}
         onResultsPerPageChange={onResultsPerPageChange}
       />

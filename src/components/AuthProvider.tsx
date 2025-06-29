@@ -65,7 +65,22 @@ interface AuthProviderProps {
 }
 
 export const AuthProvider: FC<AuthProviderProps> = ({ children }) => {
-  const [state, dispatch] = useReducer(authReducer, initialState);
+  const saved = Cookies.get('user');
+  let parsed: GetUserDTO | undefined;
+
+  if (saved && saved !== 'undefined') {
+    try {
+      parsed = JSON.parse(saved);
+    } catch (e) {
+      devConsoleError('Ошибка парсинга user cookie:', e);
+      parsed = undefined;
+    }
+  }
+  const [state, dispatch] = useReducer(authReducer, {
+    isAuthenticated: Boolean(parsed),
+    isAccessDenied: false,
+    user: parsed,
+  });
   const publicClientRef = useRef<Client>();
 
   useEffect(() => {

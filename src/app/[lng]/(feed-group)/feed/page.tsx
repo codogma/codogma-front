@@ -3,11 +3,12 @@ import { useQuery } from '@tanstack/react-query';
 import DOMPurify from 'dompurify';
 import React, { useState } from 'react';
 
-import Articles from '@/components/Articles';
+import { Articles } from '@/components/Articles';
 import { useContentImageContext } from '@/components/ContentImageProvider';
 import { CustomPagination } from '@/components/CustomPagination';
 import { Search } from '@/components/Search';
 import { contlCookie } from '@/constants/i18n';
+import { ARTICLES_PER_PAGE } from '@/constants/limits';
 import { getArticles, GetArticlesDTO } from '@/helpers/articleApi';
 import { useEventListener } from '@/helpers/useEventListener';
 import { Language, SearchType } from '@/types';
@@ -20,7 +21,8 @@ type PageProps = {
 
 const Page = ({ params: { lng } }: PageProps) => {
   const [currentPage, setCurrentPage] = useState<number>(0);
-  const [resultsPerPage, setResultsPerPage] = useState<number>(12);
+  const [resultsPerPage, setResultsPerPage] =
+    useState<number>(ARTICLES_PER_PAGE);
   const [searchValue, setSearchValue] = useState<string>();
   const [searchType, setSearchType] = useState<SearchType>(SearchType.CONTENT);
   const { processContent } = useContentImageContext();
@@ -83,11 +85,16 @@ const Page = ({ params: { lng } }: PageProps) => {
   return (
     <>
       <Search onSearchType={onSearchType} onSearchValue={onSearchValue} />
-      <Articles lang={lng} articles={articles} loading={isFetching} />
+      <Articles
+        lang={lng}
+        articles={articles}
+        loading={isFetching}
+        articlesPerPageStart={ARTICLES_PER_PAGE}
+      />
       <CustomPagination
         totalPages={totalPages}
         totalElements={totalElements}
-        resultsPerPageStart={resultsPerPage}
+        resultsPerPageStart={ARTICLES_PER_PAGE}
         onCurrentPageChange={onPageChange}
         onResultsPerPageChange={onResultsPerPageChange}
       />

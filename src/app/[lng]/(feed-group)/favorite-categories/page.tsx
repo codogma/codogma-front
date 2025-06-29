@@ -6,6 +6,7 @@ import Categories from '@/components/Categories';
 import { CustomPagination } from '@/components/CustomPagination';
 import { Search } from '@/components/Search';
 import { contlCookie } from '@/constants/i18n';
+import { CATEGORIES_PER_PAGE } from '@/constants/limits';
 import { getCategories, GetCategoriesDTO } from '@/helpers/categoryApi';
 import { useEventListener } from '@/helpers/useEventListener';
 import { GetCategory, Language, SearchType } from '@/types';
@@ -65,10 +66,16 @@ export default function Page({ params: { lng } }: PageProps) {
   return (
     <>
       <Search onSearchType={onSearchType} onSearchValue={onSearchValue} />
-      <Categories lang={lng} categories={categories} loading={isFetching} />
+      <Categories
+        lang={lng}
+        categories={categories}
+        loading={isFetching}
+        categoriesPerPageStart={CATEGORIES_PER_PAGE}
+      />
       <CustomPagination
         totalPages={totalPages}
         totalElements={totalElements}
+        resultsPerPageStart={CATEGORIES_PER_PAGE}
         onCurrentPageChange={onPageChange}
         onResultsPerPageChange={onResultsPerPageChange}
       />

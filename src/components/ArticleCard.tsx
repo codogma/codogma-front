@@ -1,3 +1,4 @@
+'use client';
 import InfoIcon from '@mui/icons-material/Info';
 import {
   Box,
@@ -14,7 +15,7 @@ import Chip from '@mui/material/Chip';
 import IconButton from '@mui/material/IconButton';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
-import DOMPurify from 'dompurify';
+import DOMPurify from 'isomorphic-dompurify';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import React, { useRef, useState } from 'react';
@@ -97,7 +98,6 @@ export const ArticleCard = ({ article, lang }: ArticleCardProps) => {
         avatar={
           <AvatarImage
             alt={article.username}
-            className='article-user-avatar'
             src={article.authorAvatarUrl}
             variant='rounded'
             size={34}
@@ -118,9 +118,22 @@ export const ArticleCard = ({ article, lang }: ArticleCardProps) => {
             href={`/users/${article.username}`}
             className='article-user-name'
           >
-            <Typography
-              component='span'
-              sx={{
+            {article.username}
+          </Link>
+        }
+        subheader={
+          <TimeAgo
+            datetime={article.createdAt}
+            className='article-datetime'
+            lang={lang}
+          />
+        }
+        className='card-header'
+        slotProps={{
+          title: {
+            component: 'span',
+            sx: {
+              a: {
                 fontSize: 'inherit',
                 color: vibrantTextColor,
                 '&:hover': {
@@ -132,24 +145,18 @@ export const ArticleCard = ({ article, lang }: ArticleCardProps) => {
                     color: lightVibrantHex,
                   },
                 },
-              }}
-            >
-              {article.username}
-            </Typography>
-          </Link>
-        }
-        subheader={
-          <TimeAgo
-            datetime={article.createdAt}
-            className='article-datetime'
-            sx={{
-              color: darkVibrantHex,
-              '.dark &': { color: lightVibrantHex },
-            }}
-            lang={lang}
-          />
-        }
-        className='card-header'
+              },
+            },
+          },
+          subheader: {
+            sx: {
+              time: {
+                color: darkVibrantHex,
+                '.dark &': { color: lightVibrantHex },
+              },
+            },
+          },
+        }}
         sx={{
           background:
             `rgba(${vibrantR}, ${vibrantG}, ${vibrantB}, 0.5)` ??

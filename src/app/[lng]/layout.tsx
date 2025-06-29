@@ -64,7 +64,7 @@ export default async function Layout({
   params: { lng },
 }: RootLayoutProps) {
   return (
-    <html lang={lng} suppressHydrationWarning>
+    <html lang={lng}>
       <body className={inter.className}>
         <StyledEngineProvider injectFirst>
           <AppRouterCacheProvider>

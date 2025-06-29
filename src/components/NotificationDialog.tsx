@@ -32,6 +32,7 @@ import { useAuth } from '@/components/AuthProvider';
 import { CustomPagination } from '@/components/CustomPagination';
 import { EditNotification } from '@/components/EditNotification';
 import { Scrollbar } from '@/components/Scrollbar';
+import { NOTIFICATIONS_PER_PAGE } from '@/constants/limits';
 import { dispatchCustomEvent } from '@/helpers/dispatchCustomEvent';
 import {
   deleteAllSystemNotifications,
@@ -71,7 +72,9 @@ type NotificationsDialogProps = {
 export const NotificationDialog = ({ lang }: NotificationsDialogProps) => {
   const [open, setOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState<number>(0);
-  const [resultsPerPage, setResultsPerPage] = useState<number>(10);
+  const [resultsPerPage, setResultsPerPage] = useState<number>(
+    NOTIFICATIONS_PER_PAGE,
+  );
   const { state } = useAuth();
   const { t } = useT('notifications');
   const router = useRouter();
@@ -333,6 +336,7 @@ export const NotificationDialog = ({ lang }: NotificationsDialogProps) => {
             totalElements={totalElements}
             onCurrentPageChange={onPageChange}
             onResultsPerPageChange={onResultsPerPageChange}
+            resultsPerPageStart={NOTIFICATIONS_PER_PAGE}
           />
         </DialogContent>
         <DialogActions>

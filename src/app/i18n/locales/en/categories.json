@@ -14,5 +14,7 @@
   "minText": "The category name for {} cannot be less than 2 characters",
   "maxText": "The category name for {} cannot contain more than 50 characters",
   "popularTags": "Popular tags",
-  "edit": "Edit"
+  "edit": "Edit",
+  "dialogTitle": "Would you like to unsubscribe?",
+  "dialogDescription": "Posts will no longer be shown in «Favorite categories»"
 }

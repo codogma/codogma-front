@@ -16,12 +16,13 @@ import { useT } from '@/app/i18n/client';
 import { replaceUrlAndDispatchEvent } from '@/helpers/replaceUrlAndDispatchEvent';
 import { Language } from '@/types';
 
-type FixedBottomNavigationProps = {
+type CustomBottomNavigationProps = {
   readonly lang: Language;
 };
-export default function FixedBottomNavigation({
+
+export const CustomBottomNavigation = ({
   lang,
-}: FixedBottomNavigationProps) {
+}: CustomBottomNavigationProps) => {
   const router = useRouter();
   const pathname = usePathname();
   const [value, setValue] = useState<
@@ -79,9 +80,9 @@ export default function FixedBottomNavigation({
     >
       <Paper elevation={3}>
         <BottomNavigation showLabels value={value} onChange={handleChange}>
-          {items.map(({ value, href, icon }, index) => (
+          {items.map(({ value, href, icon }) => (
             <BottomNavigationAction
-              key={index}
+              key={value}
               label={t(value)}
               value={value}
               icon={icon}
@@ -92,4 +93,4 @@ export default function FixedBottomNavigation({
       </Paper>
     </Box>
   );
-}
+};

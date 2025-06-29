@@ -24,24 +24,26 @@ export const AvatarImage = React.memo(function AvatarImage({
   fontSize,
   ...props
 }: AvatarImageProps) {
-  const [imageSrc, setImageSrc] = useState<string>('');
+  const makeFullUrl = (urlPath: string) =>
+    urlPath.startsWith('blob')
+      ? urlPath
+      : `${process.env.NEXT_PUBLIC_BASE_URL}${urlPath}`;
+  const [imageSrc, setImageSrc] = useState<string | undefined>(
+    src ? makeFullUrl(src) : undefined,
+  );
 
   useEffect(() => {
-    const fetchAvatar = async () => {
-      if (src?.startsWith('blob') || src?.startsWith('http')) {
-        setImageSrc(src);
-      } else if (alt) {
-        const imageUrl = src
-          ? `${process.env.NEXT_PUBLIC_BASE_URL}${src}`
-          : await generateAvatarUrl(alt, size);
-        setImageSrc(imageUrl);
-      } else if (src) {
-        const imageUrl = `${process.env.NEXT_PUBLIC_BASE_URL}${src}`;
-        setImageSrc(imageUrl);
-      }
-    };
+    if (src) {
+      setImageSrc(makeFullUrl(src));
+    }
+  }, [src]);
 
-    fetchAvatar();
+  useEffect(() => {
+    if (!src && alt) {
+      generateAvatarUrl(alt, size).then((url) => {
+        setImageSrc(url);
+      });
+    }
   }, [src, alt, size]);
 
   return (
@@ -54,7 +56,7 @@ export const AvatarImage = React.memo(function AvatarImage({
         background: 'white',
       }}
     >
-      {imageSrc && !children && (
+      {!!src && imageSrc && !children && (
         <Image
           alt={alt}
           src={imageSrc}
@@ -68,18 +70,24 @@ export const AvatarImage = React.memo(function AvatarImage({
         <SensorOccupied
           fontSize={fontSize}
           className='size-6 text-limed-spruce-rgba dark:text-woodsmoke-rgba'
+          width={size}
+          height={size}
         />
       )}
       {!src && !children && !alt && type === 'image' && (
         <ImageIcon
           fontSize={fontSize}
           className='size-6 text-limed-spruce-rgba dark:text-woodsmoke-rgba'
+          width={size}
+          height={size}
         />
       )}
       {!src && !children && !alt && !type && (
         <BrokenImage
           fontSize={fontSize}
           className='size-6 text-limed-spruce-rgba dark:text-woodsmoke-rgba'
+          width={size}
+          height={size}
         />
       )}
       {children}

@@ -197,8 +197,8 @@ const SortableItem = ({ article, index, onDelete }: SortableItemProp) => {
         >
           <DefaultImage
             src={
-              article.imageUrl &&
-              `${process.env.NEXT_PUBLIC_BASE_URL}${article.imageUrl}`
+              article.image &&
+              `${process.env.NEXT_PUBLIC_BASE_URL}${article.image.imageUrl}`
             }
             top={0}
             left={0}
