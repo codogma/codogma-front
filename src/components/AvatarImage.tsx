@@ -69,7 +69,7 @@ export const AvatarImage = React.memo(function AvatarImage({
       {!src && !children && !alt && type === 'avatar' && (
         <SensorOccupied
           fontSize={fontSize}
-          className='size-6 text-limed-spruce-rgba dark:text-woodsmoke-rgba'
+          className='text-limed-spruce-rgba dark:text-woodsmoke-rgba'
           width={size}
           height={size}
         />
@@ -77,7 +77,7 @@ export const AvatarImage = React.memo(function AvatarImage({
       {!src && !children && !alt && type === 'image' && (
         <ImageIcon
           fontSize={fontSize}
-          className='size-6 text-limed-spruce-rgba dark:text-woodsmoke-rgba'
+          className='text-limed-spruce-rgba dark:text-woodsmoke-rgba'
           width={size}
           height={size}
         />
@@ -85,7 +85,7 @@ export const AvatarImage = React.memo(function AvatarImage({
       {!src && !children && !alt && !type && (
         <BrokenImage
           fontSize={fontSize}
-          className='size-6 text-limed-spruce-rgba dark:text-woodsmoke-rgba'
+          className='text-limed-spruce-rgba dark:text-woodsmoke-rgba'
           width={size}
           height={size}
         />

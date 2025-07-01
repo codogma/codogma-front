@@ -1,6 +1,6 @@
 'use client';
 import { useRouter } from 'next/navigation';
-import { FC, useEffect, useState } from 'react';
+import { FC, useEffect } from 'react';
 
 import { useAuth } from '@/components/AuthProvider';
 import { Spinner } from '@/components/Spinner';
@@ -8,18 +8,15 @@ import { Spinner } from '@/components/Spinner';
 export const WithAuth = <P extends object>(WrappedComponent: FC<P>) => {
   const Wrapper: FC<P> = (props) => {
     const router = useRouter();
-    const { state } = useAuth();
-    const [isLoading, setIsLoading] = useState(true);
+    const { state, isInitializing } = useAuth();
 
     useEffect(() => {
-      if (state.isAuthenticated) {
-        setIsLoading(false);
-      } else {
+      if (!isInitializing && !state.isAuthenticated) {
         router.push('/sign-in');
       }
-    }, [state, router]);
+    }, [isInitializing, state.isAuthenticated, router]);
 
-    if (isLoading) {
+    if (isInitializing || !state.isAuthenticated) {
       return <Spinner />;
     }
 

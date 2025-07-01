@@ -84,6 +84,7 @@ function Page() {
   const { data } = useQuery<GetUserDTO>({
     queryKey: ['user', username],
     queryFn: () => getUserByUsername(username),
+    enabled: !!username,
   });
 
   const user: GetUserDTO = data as GetUserDTO;

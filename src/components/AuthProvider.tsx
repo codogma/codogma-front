@@ -1,27 +1,31 @@
 'use client';
 import { Client } from '@stomp/stompjs';
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import Cookies from 'js-cookie';
 import {
   createContext,
   Dispatch,
   FC,
   ReactNode,
+  Reducer,
   useContext,
   useEffect,
   useReducer,
   useRef,
+  useState,
 } from 'react';
 
 import { Spinner } from '@/components/Spinner';
 import { currentUser, refreshToken } from '@/helpers/authApi';
 import { devConsoleError, devConsoleInfo } from '@/helpers/devConsoleLogs';
+import { generateAvatar } from '@/helpers/generateAvatar';
 import {
   connectPrivateWebSocket,
   connectPublicWebSocket,
   disconnectPrivateWebSocket,
 } from '@/helpers/notificationAPI';
 import { useEventListener } from '@/helpers/useEventListener';
+import { updateUser, UserUpdate } from '@/helpers/userApi';
 import { GetUserDTO } from '@/types';
 
 interface AuthState {
@@ -55,16 +59,26 @@ const authReducer = (state: AuthState, action: AuthAction): AuthState => {
   }
 };
 
-const AuthContext = createContext<{
+interface AuthContextValue {
   state: AuthState;
   dispatch: Dispatch<AuthAction>;
-}>({ state: initialState, dispatch: () => null });
+  isInitializing: boolean;
+}
+
+const AuthContext = createContext<AuthContextValue>({
+  state: initialState,
+  dispatch: () => null,
+  isInitializing: true,
+});
 
 interface AuthProviderProps {
   readonly children: ReactNode;
 }
 
 export const AuthProvider: FC<AuthProviderProps> = ({ children }) => {
+  const [isInitializing, setIsInitializing] = useState<boolean>(true);
+  const publicClientRef = useRef<Client>();
+
   const saved = Cookies.get('user');
   let parsed: GetUserDTO | undefined;
 
@@ -76,12 +90,15 @@ export const AuthProvider: FC<AuthProviderProps> = ({ children }) => {
       parsed = undefined;
     }
   }
-  const [state, dispatch] = useReducer(authReducer, {
-    isAuthenticated: Boolean(parsed),
-    isAccessDenied: false,
-    user: parsed,
-  });
-  const publicClientRef = useRef<Client>();
+
+  const [state, dispatch] = useReducer<Reducer<AuthState, AuthAction>>(
+    authReducer,
+    {
+      isAuthenticated: Boolean(parsed),
+      isAccessDenied: false,
+      user: parsed,
+    },
+  );
 
   useEffect(() => {
     // Всегда поддерживаем публичное подключение
@@ -126,11 +143,37 @@ export const AuthProvider: FC<AuthProviderProps> = ({ children }) => {
     isError: hasCurrentUserError,
     refetch,
     isPending,
+    isSuccess,
   } = useQuery<GetUserDTO>({
     queryKey: ['currentUser'],
     queryFn: () => currentUser(),
     refetchOnWindowFocus: false,
   });
+
+  const userAvatarUrl = user?.avatarUrl;
+  const username = user?.username;
+
+  const { mutate: updateUserMutate } = useMutation({
+    mutationFn: (requestData: UserUpdate) => updateUser(requestData),
+    onSuccess: () => {
+      setIsInitializing(false);
+    },
+  });
+
+  useEffect(() => {
+    if (isSuccess) {
+      if (!userAvatarUrl && username) {
+        generateAvatar(username, 200).then((file) => {
+          const updatedUserData = {
+            avatar: file,
+          } as UserUpdate;
+          updateUserMutate(updatedUserData);
+        });
+      } else {
+        setIsInitializing(false);
+      }
+    }
+  }, [isSuccess, updateUserMutate, userAvatarUrl, username]);
 
   const { isError: hasRefreshTokenError } = useQuery<void>({
     queryKey: ['refreshToken'],
@@ -183,7 +226,7 @@ export const AuthProvider: FC<AuthProviderProps> = ({ children }) => {
   }
 
   return (
-    <AuthContext.Provider value={{ state, dispatch }}>
+    <AuthContext.Provider value={{ state, dispatch, isInitializing }}>
       {children}
     </AuthContext.Provider>
   );

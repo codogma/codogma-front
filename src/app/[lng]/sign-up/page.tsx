@@ -86,7 +86,7 @@ export default function Page({ params: { lng } }: PageProps) {
 
   const handleOAuth2Redirect = (provider: OAuthProvider) => {
     const redirectSuccessUri = encodeURIComponent(
-      window.location.origin + '/${lng}/profile-update',
+      window.location.origin + `/${lng}/profile-update`,
     );
     window.location.href = `${process.env.NEXT_PUBLIC_BASE_URL}/api/oauth2/authorization/${provider}?redirect_success_uri=${redirectSuccessUri}`;
   };
