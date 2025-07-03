@@ -5,9 +5,7 @@ import {
 } from '@mui/icons-material';
 import { Avatar, AvatarProps, SvgIconOwnProps } from '@mui/material';
 import Image from 'next/image';
-import React, { useEffect, useState } from 'react';
-
-import { generateAvatarUrl } from '@/helpers/generateAvatar';
+import React from 'react';
 
 interface AvatarImageProps extends AvatarProps {
   readonly size: number;
@@ -28,23 +26,6 @@ export const AvatarImage = React.memo(function AvatarImage({
     urlPath.startsWith('blob')
       ? urlPath
       : `${process.env.NEXT_PUBLIC_BASE_URL}${urlPath}`;
-  const [imageSrc, setImageSrc] = useState<string | undefined>(
-    src ? makeFullUrl(src) : undefined,
-  );
-
-  useEffect(() => {
-    if (src) {
-      setImageSrc(makeFullUrl(src));
-    }
-  }, [src]);
-
-  useEffect(() => {
-    if (!src && alt) {
-      generateAvatarUrl(alt, size).then((url) => {
-        setImageSrc(url);
-      });
-    }
-  }, [src, alt, size]);
 
   return (
     <Avatar
@@ -56,10 +37,10 @@ export const AvatarImage = React.memo(function AvatarImage({
         background: 'white',
       }}
     >
-      {!!src && imageSrc && !children && (
+      {!!src && !children && (
         <Image
           alt={alt}
-          src={imageSrc}
+          src={makeFullUrl(src)}
           width={size}
           height={size}
           quality={70}

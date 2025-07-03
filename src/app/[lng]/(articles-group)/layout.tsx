@@ -1,10 +1,9 @@
-'use server';
 import ArticleIcon from '@mui/icons-material/Article';
 import CategoryIcon from '@mui/icons-material/Category';
 import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
+import { useTranslations } from 'next-intl';
 import React, { ReactNode } from 'react';
 
-import { getT } from '@/app/i18n';
 import { NavTabs, TabProps } from '@/components/NavTabs';
 import { Language } from '@/types';
 
@@ -13,11 +12,8 @@ type LayoutProps = {
   readonly params: { lng: Language };
 };
 
-export default async function Layout({
-  params: { lng },
-  children,
-}: LayoutProps) {
-  const { t } = await getT();
+export default function Layout({ params: { lng }, children }: LayoutProps) {
+  const t = useTranslations();
   const tabs: TabProps[] = [
     {
       icon: <ArticleIcon />,

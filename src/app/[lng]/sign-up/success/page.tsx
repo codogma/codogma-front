@@ -1,9 +1,9 @@
 'use client';
 import { Button, Container, Typography } from '@mui/material';
 import { useRouter } from 'next/navigation';
+import { useTranslations } from 'next-intl';
 import React from 'react';
 
-import { useT } from '@/app/i18n/client';
 import { Language } from '@/types';
 
 type PageProps = {
@@ -19,7 +19,7 @@ export default function Page({ params: { lng } }: PageProps) {
     router.push(`/${lng}/sign-in`);
   };
 
-  const { t } = useT('success');
+  const t = useTranslations('successPage');
 
   return (
     <Container maxWidth='sm' sx={{ textAlign: 'center', mt: 8 }}>

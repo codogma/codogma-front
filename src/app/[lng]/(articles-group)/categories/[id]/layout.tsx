@@ -5,9 +5,9 @@ import { CardHeader, Skeleton } from '@mui/material';
 import Card from '@mui/material/Card';
 import Typography from '@mui/material/Typography';
 import { useQuery } from '@tanstack/react-query';
+import { useTranslations } from 'next-intl';
 import React from 'react';
 
-import { useT } from '@/app/i18n/client';
 import { useAuth } from '@/components/AuthProvider';
 import { AvatarImage } from '@/components/AvatarImage';
 import { ButtonFavorite } from '@/components/ButtonFavorite';
@@ -32,7 +32,7 @@ export default function Layout({
   children,
 }: PageProps) {
   const { state } = useAuth();
-  const { t } = useT();
+  const t = useTranslations();
   const tabs: TabProps[] = [
     {
       icon: <ArticleIcon />,

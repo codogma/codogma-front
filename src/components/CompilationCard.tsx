@@ -14,9 +14,9 @@ import IconButton from '@mui/material/IconButton';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import Link from 'next/link';
+import { useTranslations } from 'next-intl';
 import React, { useState } from 'react';
 
-import { useT } from '@/app/i18n/client';
 import { useAuth } from '@/components/AuthProvider';
 import { AvatarImage } from '@/components/AvatarImage';
 import { Bookmark } from '@/components/Bookmark';
@@ -38,7 +38,7 @@ export const CompilationCard = ({
   refetch,
 }: CompilationCardProps) => {
   const { state } = useAuth();
-  const { t } = useT('articles');
+  const t = useTranslations('articlesPage');
   const [expanded, setExpanded] = useState(false);
   const items = [1, 2, 3, 4, 5];
 

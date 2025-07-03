@@ -23,6 +23,7 @@ import { styled } from '@mui/material/styles';
 import Typography from '@mui/material/Typography';
 import { useQuery } from '@tanstack/react-query';
 import { Swatch } from '@vibrant/color';
+import { useTranslations } from 'next-intl';
 import { Vibrant } from 'node-vibrant/browser';
 import React, { useCallback, useEffect, useState } from 'react';
 import {
@@ -34,7 +35,6 @@ import {
 } from 'react-hook-form';
 import { z } from 'zod';
 
-import { useT } from '@/app/i18n/client';
 import { AvatarImage } from '@/components/AvatarImage';
 import FormInput from '@/components/FormInput';
 import { languageMenuItems } from '@/constants/i18n';
@@ -85,7 +85,7 @@ export const EditCategory = ({
   const [open, setOpen] = useState(false);
   const [palette, setPalette] = useState<PaletteDTO>();
   const [selectedLang, setSelectedLang] = useState<Language>(lang);
-  const { t } = useT('categories');
+  const t = useTranslations('categoriesPage');
 
   const EditCategoryScheme = z.object({
     name: z.optional(

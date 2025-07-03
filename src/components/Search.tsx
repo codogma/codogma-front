@@ -5,6 +5,7 @@ import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import Paper from '@mui/material/Paper';
 import TextField from '@mui/material/TextField';
+import { useTranslations } from 'next-intl';
 import React, {
   FormEvent,
   useCallback,
@@ -13,7 +14,6 @@ import React, {
   useState,
 } from 'react';
 
-import { useT } from '@/app/i18n/client';
 import { useEventListener } from '@/helpers/useEventListener';
 import { SearchType } from '@/types';
 
@@ -32,7 +32,7 @@ export const Search = ({ onSearchType, onSearchValue }: SearchProps) => {
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
   const [searchType, setSearchType] = useState<SearchType>(SearchType.CONTENT);
   const [searchValue, setSearchValue] = useState('');
-  const { t } = useT();
+  const t = useTranslations();
 
   const getSearchParams = useCallback(() => {
     const params = new URLSearchParams(window.location.search);

@@ -1,8 +1,8 @@
 'use server';
 import { Metadata } from 'next';
+import { getTranslations } from 'next-intl/server';
 import { ReactNode } from 'react';
 
-import { getT } from '@/app/i18n';
 import { SignIn } from '@/components/SignIn';
 import { Language } from '@/types';
 
@@ -12,7 +12,7 @@ type LayoutProps = {
 };
 
 export async function generateMetadata(): Promise<Metadata> {
-  const { t } = await getT('compilations');
+  const t = await getTranslations('compilationsPage');
   return {
     alternates: {
       canonical: `/bookmarks`,

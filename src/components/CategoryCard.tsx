@@ -13,9 +13,9 @@ import {
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import Link from 'next/link';
+import { useTranslations } from 'next-intl';
 import React, { useRef, useState } from 'react';
 
-import { useT } from '@/app/i18n/client';
 import { useAuth } from '@/components/AuthProvider';
 import { ButtonFavorite } from '@/components/ButtonFavorite';
 import { DefaultImage } from '@/components/DefaultImage';
@@ -34,7 +34,7 @@ export const CategoryCard = ({
   refetch,
 }: CategoryCardProps) => {
   const { state } = useAuth();
-  const { t } = useT('categories');
+  const t = useTranslations('categoriesPage');
   const [expanded, setExpanded] = useState(false);
   const imgRef = useRef<HTMLImageElement>(null);
   const palette = category?.image?.palette;

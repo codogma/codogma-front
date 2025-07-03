@@ -9,9 +9,9 @@ import DialogTitle from '@mui/material/DialogTitle';
 import MenuItem from '@mui/material/MenuItem';
 import Typography from '@mui/material/Typography';
 import { useRouter } from 'next/navigation';
+import { useTranslations } from 'next-intl';
 import React, { useState } from 'react';
 
-import { useT } from '@/app/i18n/client';
 import { GetArticle, Language } from '@/types';
 
 type ButtonAlertDialogProps = {
@@ -26,7 +26,7 @@ export default function ButtonAlertDialog({
 }: ButtonAlertDialogProps) {
   const [open, setOpen] = useState(false);
   const router = useRouter();
-  const { t } = useT('articles');
+  const t = useTranslations('articlesPage');
 
   const handleClose = () => {
     setOpen(false);

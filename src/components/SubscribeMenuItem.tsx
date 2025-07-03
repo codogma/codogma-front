@@ -3,9 +3,9 @@ import PersonAddAltIcon from '@mui/icons-material/PersonAddAlt';
 import PersonAddDisabledIcon from '@mui/icons-material/PersonAddDisabled';
 import MenuItem from '@mui/material/MenuItem';
 import Typography from '@mui/material/Typography';
+import { useTranslations } from 'next-intl';
 import React, { useState } from 'react';
 
-import { useT } from '@/app/i18n/client';
 import { useAuth } from '@/components/AuthProvider';
 import { PopoverElement } from '@/components/PopoverElement';
 import { subscribe, unsubscribe } from '@/helpers/userApi';
@@ -23,7 +23,7 @@ export const SubscribeMenuItem: React.FC<CustomPopoverProps> = ({
   const [anchorEl, setAnchorEl] = React.useState<HTMLElement | null>(null);
   const [isSubscribed, setIsSubscribed] = useState<boolean>(user?.isSubscribed);
   const { state } = useAuth();
-  const { t } = useT('authors');
+  const t = useTranslations('authorsPage');
   const id = 'simple-popover';
 
   const handleChange = (event: React.MouseEvent<HTMLElement>) => {

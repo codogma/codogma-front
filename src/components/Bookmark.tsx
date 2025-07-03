@@ -1,9 +1,9 @@
 'use client';
 import BookmarkIcon from '@mui/icons-material/Bookmark';
 import Checkbox from '@mui/material/Checkbox';
+import { useTranslations } from 'next-intl';
 import React, { useState } from 'react';
 
-import { useT } from '@/app/i18n/client';
 import { useAuth } from '@/components/AuthProvider';
 import { PopoverElement } from '@/components/PopoverElement';
 import { bookmark, unbookmark } from '@/helpers/compilationApi';
@@ -24,7 +24,7 @@ export const Bookmark: React.FC<BookmarkProps> = ({
   const [anchorEl, setAnchorEl] = React.useState<HTMLElement | null>(null);
   const [isBookmarked, setIsBookmarked] = useState(isBookmarkedValue);
   const { state } = useAuth();
-  const { t } = useT('articles');
+  const t = useTranslations('articlesPage');
   const popoverId = 'simple-popover';
 
   const handleChange = async (

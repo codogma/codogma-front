@@ -9,10 +9,10 @@ import {
   Paper,
 } from '@mui/material';
 import { usePathname, useRouter } from 'next/navigation';
+import { useTranslations } from 'next-intl';
 import * as React from 'react';
 import { useEffect, useState } from 'react';
 
-import { useT } from '@/app/i18n/client';
 import { replaceUrlAndDispatchEvent } from '@/helpers/replaceUrlAndDispatchEvent';
 import { Language } from '@/types';
 
@@ -28,7 +28,7 @@ export const CustomBottomNavigation = ({
   const [value, setValue] = useState<
     'articles' | 'feed' | 'compilations' | undefined
   >();
-  const { t } = useT();
+  const t = useTranslations();
 
   const handleChange = (
     _event: React.SyntheticEvent,

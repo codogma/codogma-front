@@ -1,9 +1,9 @@
 'use client';
 import ClassIcon from '@mui/icons-material/Class';
 import ViewListIcon from '@mui/icons-material/ViewList';
+import { useTranslations } from 'next-intl';
 import React, { ReactNode } from 'react';
 
-import { useT } from '@/app/i18n/client';
 import { MyCompilationsBadge } from '@/components/MyCompilationsBadge';
 import { NavTabs, TabProps } from '@/components/NavTabs';
 import { Language } from '@/types';
@@ -13,8 +13,8 @@ type LayoutProps = {
   readonly params: { lng: Language };
 };
 
-function Layout({ params: { lng }, children }: LayoutProps) {
-  const { t } = useT();
+export default function Layout({ params: { lng }, children }: LayoutProps) {
+  const t = useTranslations();
   const tabs: TabProps[] = [
     {
       icon: <ViewListIcon />,
@@ -39,5 +39,3 @@ function Layout({ params: { lng }, children }: LayoutProps) {
     </>
   );
 }
-
-export default Layout;

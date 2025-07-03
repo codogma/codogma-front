@@ -1,9 +1,8 @@
 'use client';
 import { Link, Popover, Typography } from '@mui/material';
 import { useRouter } from 'next/navigation';
+import { useTranslations } from 'next-intl';
 import React from 'react';
-
-import { useT } from '@/app/i18n/client';
 
 interface PopoverElementProps {
   readonly destination: string;
@@ -21,7 +20,7 @@ export const PopoverElement: React.FC<PopoverElementProps> = ({
   const router = useRouter();
   const open = Boolean(btnEl);
 
-  const { t } = useT('articles');
+  const t = useTranslations('articlesPage');
   const id = open ? popoverId : undefined;
 
   const handleClickLink = (url: string) => {

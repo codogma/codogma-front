@@ -23,6 +23,7 @@ import Paper from '@mui/material/Paper';
 import Stack from '@mui/material/Stack';
 import { styled } from '@mui/material/styles';
 import { Swatch } from '@vibrant/color';
+import { useTranslations } from 'next-intl';
 import { Vibrant } from 'node-vibrant/browser';
 import React, { useCallback, useEffect, useState } from 'react';
 import {
@@ -34,7 +35,6 @@ import {
 } from 'react-hook-form';
 import { z } from 'zod';
 
-import { useT } from '@/app/i18n/client';
 import { AvatarImage } from '@/components/AvatarImage';
 import FormInput from '@/components/FormInput';
 import { languageMenuItems } from '@/constants/i18n';
@@ -78,7 +78,7 @@ export const CategoryDialog = ({
   const [imageUrl, setImageUrl] = useState<string>();
   const [palette, setPalette] = useState<PaletteDTO>();
   const [selectedLang, setSelectedLang] = useState<Language>(lang);
-  const { t } = useT('categories');
+  const t = useTranslations('categoriesPage');
 
   const CategoryDialogScheme = z.object({
     name: z.record(

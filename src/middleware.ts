@@ -1,5 +1,6 @@
 import acceptLanguage from 'accept-language';
 import { NextRequest, NextResponse } from 'next/server';
+import createMiddleware from 'next-intl/middleware';
 
 import {
   fallbackLng,
@@ -9,7 +10,11 @@ import {
 } from '@/constants/i18n';
 import { currentUser } from '@/helpers/authApi';
 import { devConsoleError } from '@/helpers/devConsoleLogs';
-import { UserRole } from '@/types';
+import { getLocale } from '@/helpers/getLocale';
+import { routing } from '@/i18n/routing';
+import { Language, UserRole } from '@/types';
+
+export default createMiddleware(routing);
 
 acceptLanguage.languages(languages);
 
@@ -20,7 +25,7 @@ export const config = {
 
 export async function middleware(req: NextRequest) {
   const { pathname, search } = req.nextUrl;
-  const lng = getLanguage(req);
+  const lng = await getLanguage(req);
 
   // === 1. Логика локализации ===
   const lngInPath = languages.find((loc) => pathname.startsWith(`/${loc}`));
@@ -43,9 +48,13 @@ export async function middleware(req: NextRequest) {
 }
 
 // Вспомогательные функции
-const getLanguage = (req: NextRequest) => {
-  let lng = acceptLanguage.get(req.cookies.get(intlCookie)?.value);
-  lng ??= acceptLanguage.get(req.headers.get('Accept-Language')) ?? fallbackLng;
+const getLanguage = async (req: NextRequest) => {
+  let lng =
+    (await getLocale()) ??
+    acceptLanguage.get(req.cookies.get(intlCookie)?.value);
+  lng ??=
+    (acceptLanguage.get(req.headers.get('Accept-Language')) as Language) ??
+    fallbackLng;
   return languages.includes(lng) ? lng : fallbackLng;
 };
 

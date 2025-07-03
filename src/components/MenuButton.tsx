@@ -6,10 +6,10 @@ import MenuItem from '@mui/material/MenuItem';
 import { alpha, styled } from '@mui/material/styles';
 import Typography from '@mui/material/Typography';
 import { useQuery } from '@tanstack/react-query';
+import { useTranslations } from 'next-intl';
 import * as React from 'react';
 import { useState } from 'react';
 
-import { useT } from '@/app/i18n/client';
 import { AddToCompilations } from '@/components/AddToCompilations';
 import { ArticlesDnD } from '@/components/ArticlesDnD';
 import { useAuth } from '@/components/AuthProvider';
@@ -93,7 +93,7 @@ export default function MenuButton({
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const { state } = useAuth();
   const open = Boolean(anchorEl);
-  const { t } = useT('common');
+  const t = useTranslations('notificationsPage');
 
   const { data } = useQuery<GetUserDTO>({
     queryKey: [

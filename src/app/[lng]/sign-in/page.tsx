@@ -13,11 +13,11 @@ import Typography from '@mui/material/Typography';
 import { AxiosError } from 'axios';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { useTranslations } from 'next-intl';
 import React, { useEffect, useState } from 'react';
 import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
 import { z } from 'zod';
 
-import { useT } from '@/app/i18n/client';
 import { useAuth } from '@/components/AuthProvider';
 import { GithubIcon, GitlabIcon } from '@/components/CustomIcons';
 import ForgotPassword from '@/components/ForgotPassword';
@@ -37,7 +37,7 @@ export default function Page() {
   const router = useRouter();
   const { dispatch } = useAuth();
   const [serverError, setServerError] = useState('');
-  const { t } = useT('signIn');
+  const t = useTranslations('signInPage');
   const [open, setOpen] = useState(false);
 
   const handleClickOpen = () => {

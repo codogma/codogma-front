@@ -15,7 +15,6 @@ import {
   useState,
 } from 'react';
 
-import { Spinner } from '@/components/Spinner';
 import { currentUser, refreshToken } from '@/helpers/authApi';
 import { devConsoleError, devConsoleInfo } from '@/helpers/devConsoleLogs';
 import { generateAvatar } from '@/helpers/generateAvatar';
@@ -221,9 +220,9 @@ export const AuthProvider: FC<AuthProviderProps> = ({ children }) => {
     }
   });
 
-  if (isPending) {
-    return <Spinner className='reload-spinner' />;
-  }
+  // if (isPending) {
+  //   return <Spinner className='reload-spinner' />;
+  // }
 
   return (
     <AuthContext.Provider value={{ state, dispatch, isInitializing }}>

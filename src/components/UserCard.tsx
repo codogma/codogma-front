@@ -9,9 +9,9 @@ import {
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import Link from 'next/link';
+import { useTranslations } from 'next-intl';
 import React from 'react';
 
-import { useT } from '@/app/i18n/client';
 import { AvatarImage } from '@/components/AvatarImage';
 import MenuButton from '@/components/MenuButton';
 import { GetUserDTO, Language, UserRole } from '@/types';
@@ -22,7 +22,7 @@ type UserCardProps = {
 };
 
 export const UserCard = ({ user, lang }: UserCardProps) => {
-  const { t } = useT('authors');
+  const t = useTranslations('authorsPage');
 
   return user ? (
     <Card variant='outlined' className='card'>

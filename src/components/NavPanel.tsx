@@ -16,9 +16,9 @@ import {
 import Tooltip from '@mui/material/Tooltip';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
+import { useTranslations } from 'next-intl';
 import { useEffect, useState } from 'react';
 
-import { useT } from '@/app/i18n/client';
 import { replaceUrlAndDispatchEvent } from '@/helpers/replaceUrlAndDispatchEvent';
 import { Language } from '@/types';
 
@@ -30,7 +30,7 @@ export const NavPanel = ({ lang }: NavPanelProps) => {
   const pathname = usePathname();
   const theme = useTheme();
   const isMin = useMediaQuery(theme.breakpoints.down('lg'));
-  const { t } = useT();
+  const t = useTranslations();
   const router = useRouter();
   const [activeIndex, setActiveIndex] = useState<number | undefined>(undefined);
 

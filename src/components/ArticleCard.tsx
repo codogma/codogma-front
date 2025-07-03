@@ -18,9 +18,9 @@ import Typography from '@mui/material/Typography';
 import DOMPurify from 'isomorphic-dompurify';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { useTranslations } from 'next-intl';
 import React, { useRef, useState } from 'react';
 
-import { useT } from '@/app/i18n/client';
 import { useAuth } from '@/components/AuthProvider';
 import { AvatarImage } from '@/components/AvatarImage';
 import { useContentImageContext } from '@/components/ContentImageProvider';
@@ -45,7 +45,7 @@ export const ArticleCard = ({ article, lang }: ArticleCardProps) => {
     urlPrefix = `/${lang}/articles`;
   }
   const { processContent } = useContentImageContext();
-  const { t } = useT('articles');
+  const t = useTranslations('articlesPage');
   const previewContent = processContent(
     DOMPurify.sanitize(article?.previewContent),
   );

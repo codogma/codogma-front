@@ -2,9 +2,9 @@
 import { Box } from '@mui/material';
 import Typography from '@mui/material/Typography';
 import { useQuery } from '@tanstack/react-query';
+import { useTranslations } from 'next-intl';
 import React from 'react';
 
-import { useT } from '@/app/i18n/client';
 import { useAuth } from '@/components/AuthProvider';
 import Banner from '@/components/Banner';
 import { Carousel } from '@/components/Carousel';
@@ -18,7 +18,7 @@ type PageProps = {
 
 export default function Page({ params: { lng } }: PageProps) {
   const { state } = useAuth();
-  const { t } = useT('main');
+  const t = useTranslations('mainPage');
 
   const { data: recentlyData, isFetching: isFetchingRecently } =
     useQuery<GetArticlesDTO>({

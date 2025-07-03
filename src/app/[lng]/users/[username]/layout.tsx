@@ -9,9 +9,9 @@ import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import IconButton from '@mui/material/IconButton';
 import { useQuery } from '@tanstack/react-query';
+import { useTranslations } from 'next-intl';
 import React from 'react';
 
-import { useT } from '@/app/i18n/client';
 import { AvatarImage } from '@/components/AvatarImage';
 import MenuButton from '@/components/MenuButton';
 import { NavTabs, TabProps } from '@/components/NavTabs';
@@ -32,7 +32,7 @@ export default function Layout({
   params: { lng, username },
   children,
 }: PageProps) {
-  const { t } = useT();
+  const t = useTranslations();
   const tabs: TabProps[] = [
     {
       icon: <PersonIcon />,

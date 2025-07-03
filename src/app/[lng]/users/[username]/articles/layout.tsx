@@ -1,8 +1,8 @@
 'use server';
 import { Metadata } from 'next';
+import { getTranslations } from 'next-intl/server';
 import { ReactNode } from 'react';
 
-import { getT } from '@/app/i18n';
 import { getUserByUsername } from '@/helpers/userApi';
 
 type LayoutProps = {
@@ -14,7 +14,7 @@ export async function generateMetadata({
   params: { username },
 }: LayoutProps): Promise<Metadata> {
   const user = await getUserByUsername(username);
-  const { t } = await getT('authors');
+  const t = await getTranslations('authorsPage');
   return {
     alternates: {
       canonical: `/users/${username}/articles`,

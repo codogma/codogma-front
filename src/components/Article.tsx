@@ -9,9 +9,9 @@ import Card from '@mui/material/Card';
 import { useQuery } from '@tanstack/react-query';
 import DOMPurify from 'dompurify';
 import Link from 'next/link';
+import { useTranslations } from 'next-intl';
 import React from 'react';
 
-import { useT } from '@/app/i18n/client';
 import { ArticleActions } from '@/components/ArticleActions';
 import { useArticle } from '@/components/ArticleProvider';
 import { Articles } from '@/components/Articles';
@@ -32,7 +32,7 @@ export default function Article({ lang }: ArticleProps) {
   const { article } = useArticle();
   const { isFullscreen } = useNavigationState();
   const { processContent } = useContentImageContext();
-  const { t } = useT('articles');
+  const t = useTranslations('articlesPage');
   const content = processContent(DOMPurify.sanitize(article.content));
 
   const { data, isFetching } = useQuery<GetArticle>({

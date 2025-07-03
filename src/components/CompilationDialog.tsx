@@ -15,11 +15,11 @@ import {
 } from '@mui/material';
 import DialogActions from '@mui/material/DialogActions';
 import { styled } from '@mui/material/styles';
+import { useTranslations } from 'next-intl';
 import React, { useEffect, useState } from 'react';
 import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
 import { z } from 'zod';
 
-import { useT } from '@/app/i18n/client';
 import { AvatarImage } from '@/components/AvatarImage';
 import FormInput from '@/components/FormInput';
 import { CompilationCreate, createCompilation } from '@/helpers/compilationApi';
@@ -65,7 +65,7 @@ export const CompilationDialog = ({
   onClose,
 }: CompilationDialogProps) => {
   const [imageUrl, setImageUrl] = useState<string>();
-  const { t } = useT('compilations');
+  const t = useTranslations('compilationsPage');
 
   const zodForm = useForm<z.infer<typeof CompilationDialogScheme>>({
     resolver: zodResolver(CompilationDialogScheme),

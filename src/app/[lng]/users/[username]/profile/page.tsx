@@ -6,9 +6,9 @@ import Chip from '@mui/material/Chip';
 import Popover from '@mui/material/Popover';
 import { useQuery } from '@tanstack/react-query';
 import Link from 'next/link';
+import { useTranslations } from 'next-intl';
 import React, { useState } from 'react';
 
-import { useT } from '@/app/i18n/client';
 import { useAuth } from '@/components/AuthProvider';
 import { AvatarImage } from '@/components/AvatarImage';
 import { getUserByUsername } from '@/helpers/userApi';
@@ -26,7 +26,7 @@ type PageProps = {
 export default function Page({ params: { lng, username } }: PageProps) {
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
   const [currentCategory, setCurrentCategory] = useState<number | null>(null);
-  const { t } = useT('authors');
+  const t = useTranslations('authorsPage');
   const { state } = useAuth();
 
   const { data } = useQuery<GetUserDTO>({
@@ -116,7 +116,7 @@ export default function Page({ params: { lng, username } }: PageProps) {
           </div>
           {state.user?.username === username && (
             <Link href={`/profile-update`}>
-              <Button type='submit'>{t('editBtn')}</Button>
+              <Button type='submit'>{t('updateProfileBtn')}</Button>
             </Link>
           )}
         </div>

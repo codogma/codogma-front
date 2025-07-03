@@ -26,6 +26,7 @@ import { styled, useTheme } from '@mui/material/styles';
 import { keepPreviousData, useMutation, useQuery } from '@tanstack/react-query';
 import { Swatch } from '@vibrant/color';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { useTranslations } from 'next-intl';
 import { Vibrant } from 'node-vibrant/browser';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import {
@@ -36,7 +37,6 @@ import {
 } from 'react-hook-form';
 import { z } from 'zod';
 
-import { useT } from '@/app/i18n/client';
 import { useAuth } from '@/components/AuthProvider';
 import { AvatarImage } from '@/components/AvatarImage';
 import FormInput from '@/components/FormInput';
@@ -208,7 +208,7 @@ const Page = ({ params: { lng } }: PageParams) => {
   >([]);
   const [palette, setPalette] = useState<PaletteDTO | null>(null);
   const [prevData, setPrevData] = useState<UpdateDraftArticleDTO | null>(null);
-  const { t } = useT('articleEditor');
+  const t = useTranslations('articleEditorPage');
 
   const zodStepOneForm = useForm<z.infer<typeof StepOneScheme>>({
     resolver: zodResolver(StepOneScheme),

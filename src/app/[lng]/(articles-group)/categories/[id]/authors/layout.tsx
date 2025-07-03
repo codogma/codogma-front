@@ -1,8 +1,8 @@
 'use server';
 import { Metadata } from 'next';
+import { getTranslations } from 'next-intl/server';
 import { ReactNode } from 'react';
 
-import { getT } from '@/app/i18n';
 import { getCategoryById } from '@/helpers/categoryApi';
 
 type LayoutProps = {
@@ -14,7 +14,7 @@ export async function generateMetadata({
   params: { id },
 }: LayoutProps): Promise<Metadata> {
   const category = await getCategoryById(id);
-  const { t } = await getT('categories');
+  const t = await getTranslations('categoriesPage');
   return {
     alternates: {
       canonical: `/categories/${id}/authors`,

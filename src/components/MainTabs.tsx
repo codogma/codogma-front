@@ -7,9 +7,9 @@ import { Box, TabOwnProps } from '@mui/material';
 import Tab from '@mui/material/Tab';
 import { useQuery } from '@tanstack/react-query';
 import Link from 'next/link';
+import { useTranslations } from 'next-intl';
 import React, { useCallback, useLayoutEffect, useRef, useState } from 'react';
 
-import { useT } from '@/app/i18n/client';
 import { Carousel } from '@/components/Carousel';
 import Compilations from '@/components/Compilations';
 import { MyCompilationsBadge } from '@/components/MyCompilationsBadge';
@@ -34,7 +34,7 @@ type MainTab = {
 
 export const MainTabs: React.FC<MainTabsProps> = ({ lang, username }) => {
   const [value, setValue] = useState<number>(0);
-  const { t } = useT();
+  const t = useTranslations();
   const ref = useRef<HTMLDivElement>(null);
   const [overflow, setOverflow] = useState<boolean>(false);
 

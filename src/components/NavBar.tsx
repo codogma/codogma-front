@@ -20,10 +20,10 @@ import Tooltip from '@mui/material/Tooltip';
 import Typography from '@mui/material/Typography';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { useTranslations } from 'next-intl';
 import * as React from 'react';
 import { memo, useState } from 'react';
 
-import { useT } from '@/app/i18n/client';
 import { useAuth } from '@/components/AuthProvider';
 import { AvatarImage } from '@/components/AvatarImage';
 import { CategoryDialog } from '@/components/CategoryDialog';
@@ -46,7 +46,7 @@ const NavBar = ({ lang }: NavBarProps) => {
   const [notificationDialogOpen, setNotificationDialogOpen] = useState(false);
   const router = useRouter();
   const { state } = useAuth();
-  const { t } = useT();
+  const t = useTranslations();
 
   const handleLogout = () => {
     logout().finally(() => router.push(`/${lang}`));

@@ -12,6 +12,7 @@ import {
 import DialogActions from '@mui/material/DialogActions';
 import MenuItem from '@mui/material/MenuItem';
 import { styled } from '@mui/material/styles';
+import { useTranslations } from 'next-intl';
 import React, { useEffect, useState } from 'react';
 import {
   FormProvider,
@@ -21,7 +22,6 @@ import {
 } from 'react-hook-form';
 import { z } from 'zod';
 
-import { useT } from '@/app/i18n/client';
 import FormInput from '@/components/FormInput';
 import { languageMenuItems } from '@/constants/i18n';
 import { devConsoleInfo } from '@/helpers/devConsoleLogs';
@@ -52,7 +52,7 @@ export const SystemNotificationDialog = ({
   onClose,
 }: SystemNotificationDialogProps) => {
   const [selectedLang, setSelectedLang] = useState<Language>(lang);
-  const { t } = useT('notifications');
+  const t = useTranslations('notificationsPage');
 
   const SystemNotificationDialogScheme = z.object({
     title: z.record(

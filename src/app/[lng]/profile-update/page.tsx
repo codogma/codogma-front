@@ -6,11 +6,11 @@ import IconButton from '@mui/material/IconButton';
 import { styled } from '@mui/material/styles';
 import { useQuery } from '@tanstack/react-query';
 import Link from 'next/link';
+import { useTranslations } from 'next-intl';
 import React, { MouseEvent, useEffect, useState } from 'react';
 import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
 import { z } from 'zod';
 
-import { useT } from '@/app/i18n/client';
 import { useAuth } from '@/components/AuthProvider';
 import { AvatarImage } from '@/components/AvatarImage';
 import FormInput from '@/components/FormInput';
@@ -62,7 +62,7 @@ function Page() {
   const { state } = useAuth();
   const username: string | undefined = state.user?.username;
   const [avatarUrl, setAvatarUrl] = useState<string>();
-  const { t } = useT();
+  const t = useTranslations();
 
   const zodForm = useForm<z.infer<typeof UserScheme>>({
     resolver: zodResolver(UserScheme),

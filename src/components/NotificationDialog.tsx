@@ -24,10 +24,10 @@ import Tooltip from '@mui/material/Tooltip';
 import Typography from '@mui/material/Typography';
 import { useQuery } from '@tanstack/react-query';
 import { usePathname, useRouter } from 'next/navigation';
+import { useTranslations } from 'next-intl';
 import * as React from 'react';
 import { Fragment, useState } from 'react';
 
-import { useT } from '@/app/i18n/client';
 import { useAuth } from '@/components/AuthProvider';
 import { CustomPagination } from '@/components/CustomPagination';
 import { EditNotification } from '@/components/EditNotification';
@@ -76,7 +76,7 @@ export const NotificationDialog = ({ lang }: NotificationsDialogProps) => {
     NOTIFICATIONS_PER_PAGE,
   );
   const { state } = useAuth();
-  const { t } = useT('notifications');
+  const t = useTranslations('notificationsPage');
   const router = useRouter();
   const pathname = usePathname();
 

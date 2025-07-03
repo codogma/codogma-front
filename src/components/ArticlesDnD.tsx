@@ -25,9 +25,9 @@ import { styled } from '@mui/material/styles';
 import Tooltip from '@mui/material/Tooltip';
 import Typography from '@mui/material/Typography';
 import { useMutation } from '@tanstack/react-query';
+import { useTranslations } from 'next-intl';
 import React, { useState } from 'react';
 
-import { useT } from '@/app/i18n/client';
 import { DefaultImage } from '@/components/DefaultImage';
 import {
   updateCompilation,
@@ -55,7 +55,7 @@ export const ArticlesDnD = ({
   onClose,
   refetch,
 }: ArticlesDnDProps) => {
-  const { t } = useT('articles');
+  const t = useTranslations('articlesPage');
   const [open, setOpen] = useState<boolean>(false);
   const [articles, setArticles] = useState<GetArticle[]>([]);
 

@@ -3,9 +3,9 @@ import FavoriteIcon from '@mui/icons-material/Favorite';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import { SxProps, Theme } from '@mui/material';
 import Checkbox from '@mui/material/Checkbox';
+import { useTranslations } from 'next-intl';
 import React, { useState } from 'react';
 
-import { useT } from '@/app/i18n/client';
 import { useAuth } from '@/components/AuthProvider';
 import { PopoverElement } from '@/components/PopoverElement';
 import { favorite, unfavorite } from '@/helpers/categoryApi';
@@ -28,7 +28,7 @@ export const ButtonFavorite: React.FC<CustomFavoriteProps> = ({
   const [anchorEl, setAnchorEl] = React.useState<HTMLElement | null>(null);
   const [isFavorite, setIsFavorite] = useState(isFavoriteValue);
   const { state } = useAuth();
-  const { t } = useT('categories');
+  const t = useTranslations('categoriesPage');
   const popoverId = 'simple-popover';
 
   const handleChange = async (
