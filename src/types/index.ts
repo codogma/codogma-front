@@ -1,3 +1,4 @@
+import { AdapterUser } from '@auth/core/adapters';
 import { ReactNode } from 'react';
 
 export enum UserRole {
@@ -28,36 +29,28 @@ export enum NotificationType {
   REMINDER = 'REMINDER',
 }
 
-export type GetUserDTO = {
-  id: number;
-  username: string;
-  isSubscribed: boolean;
-  email: string;
-  firstName: string;
-  lastName: string;
-  shortInfo: string;
-  bio: string;
+export interface AuthDTO extends AdapterUser {
   role: UserRole;
-  avatarUrl: string;
-  categories: GetCategory[];
-};
+  expires: string;
+}
 
-export type User = {
+export interface GetUserDTO {
+  id: string;
   username: string;
   isSubscribed: boolean;
   email: string;
-  firstName: string;
-  lastName: string;
-  bio: string;
+  firstName?: string;
+  lastName?: string;
+  shortInfo?: string;
+  bio?: string;
   role: UserRole;
-  subscribers: User[] | [];
-  subscriptions: User[] | [];
-  favorites: GetCategory[] | [];
-  avatarUrl: string;
-  articles: GetArticle[] | [];
+  avatarUrl?: string;
   categories: GetCategory[];
-  shortInfo: string;
-};
+  subscribers: GetUserDTO[] | [];
+  subscriptions: GetUserDTO[] | [];
+  favorites: GetCategory[] | [];
+  articles: GetArticle[] | [];
+}
 
 export type GetTag = {
   id: number;
@@ -171,7 +164,7 @@ export interface GetComment {
   content: string;
   article: GetArticle;
   parentCommentId?: number;
-  user: User;
+  user: GetUserDTO;
   replies?: GetComment[];
   createdAt: Date;
   updatedAt: Date;

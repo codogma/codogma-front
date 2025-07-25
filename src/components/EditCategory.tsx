@@ -43,7 +43,7 @@ import {
   UpdateCategory,
   updateCategory,
 } from '@/helpers/categoryApi';
-import { devConsoleError, devConsoleInfo } from '@/helpers/devConsoleLogs';
+import { devConsoleInfo, devConsoleWarn } from '@/helpers/devConsoleLogs';
 import { GetCategoryToUpdate, Language, PaletteDTO, SwatchDTO } from '@/types';
 
 const VisuallyHiddenInput = styled('input')({
@@ -204,7 +204,7 @@ export const EditCategory = ({
             trigger('image');
           })
           .catch((error) => {
-            devConsoleError('Palette extraction failed:', error);
+            devConsoleWarn('Palette extraction failed:', error);
           })
           .finally(() => {
             URL.revokeObjectURL(fileURL);

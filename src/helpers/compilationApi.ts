@@ -25,7 +25,7 @@ export type UpdateCompilationDTO = {
 export const getCompilations = async (
   tag?: string,
   content?: string,
-  username?: string,
+  username?: string | null,
   isBookmarked?: boolean,
   page: number = 0,
   size: number = 10,

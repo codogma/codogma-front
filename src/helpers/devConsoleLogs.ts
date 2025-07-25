@@ -7,11 +7,11 @@ export const devConsoleInfo = (
     console.info(message, optionalParams);
 };
 
-export const devConsoleError = (
+export const devConsoleWarn = (
   message?: unknown,
   ...optionalParams: unknown[]
 ) => {
   if (process.env.NEXT_PUBLIC_ENV === 'dev')
     // eslint-disable-next-line no-console
-    console.error(message, optionalParams);
+    console.warn(message, optionalParams);
 };

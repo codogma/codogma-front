@@ -13,10 +13,10 @@ import {
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import Link from 'next/link';
+import { useSession } from 'next-auth/react';
 import { useTranslations } from 'next-intl';
 import React, { useRef, useState } from 'react';
 
-import { useAuth } from '@/components/AuthProvider';
 import { ButtonFavorite } from '@/components/ButtonFavorite';
 import { DefaultImage } from '@/components/DefaultImage';
 import MenuButton from '@/components/MenuButton';
@@ -33,7 +33,7 @@ export const CategoryCard = ({
   lang,
   refetch,
 }: CategoryCardProps) => {
-  const { state } = useAuth();
+  const { data: state } = useSession();
   const t = useTranslations('categoriesPage');
   const [expanded, setExpanded] = useState(false);
   const imgRef = useRef<HTMLImageElement>(null);
@@ -69,7 +69,7 @@ export const CategoryCard = ({
             >
               <CardActions>
                 <Stack direction='row' spacing={1}>
-                  {state.user?.role !== UserRole.ROLE_ADMIN ? (
+                  {state?.user?.role !== UserRole.ROLE_ADMIN ? (
                     <ButtonFavorite
                       isFavoriteValue={category?.isFavorite}
                       id={category.id}

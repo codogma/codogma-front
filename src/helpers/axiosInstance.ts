@@ -1,8 +1,8 @@
-import axios, { isAxiosError } from 'axios';
+import axios, { AxiosResponse } from 'axios';
 import { redirect } from 'next/navigation';
+import { signOut } from 'next-auth/react';
 
-import { devConsoleError } from '@/helpers/devConsoleLogs';
-import { getAuthToken } from '@/helpers/getCookies';
+import { devConsoleWarn } from '@/helpers/devConsoleLogs';
 import { getLocale } from '@/helpers/getLocale';
 
 export const axiosInstance = axios.create({
@@ -17,10 +17,6 @@ export const axiosInstance = axios.create({
 axiosInstance.interceptors.request.use(
   async (config) => {
     if (typeof window === 'undefined') {
-      const authToken = await getAuthToken();
-      if (authToken) {
-        config.headers['Authorization'] = `Bearer ${authToken}`;
-      }
       const intl = await getLocale();
       if (intl) {
         config.headers['Accept-Language'] = intl;
@@ -29,35 +25,63 @@ axiosInstance.interceptors.request.use(
     return config;
   },
   (error) => {
-    devConsoleError('Request error:', error.message);
+    devConsoleWarn('Request error:', error.message);
     return Promise.reject(error);
   },
 );
 
+let isRefreshing = false;
+let refreshPromise: Promise<AxiosResponse> | null = null;
+
 axiosInstance.interceptors.response.use(
-  (response) => {
-    return response;
-  },
-  (error) => {
-    if (isAxiosError(error)) {
+  (response) => response,
+  async (error) => {
+    if (error) {
       const statusCode = error.response?.status;
+      const securityEvent = error.response?.headers['x-security-event'];
       const serverMessage = error.response?.data ?? 'An unknown error occurred';
-      devConsoleError('Axios error: ' + serverMessage);
+      devConsoleWarn('Axios error status: ' + statusCode);
+      devConsoleWarn('Axios error message: ' + serverMessage);
       if (statusCode) {
-        devConsoleError(`Axios error (${statusCode}): ${serverMessage}`);
-        if (statusCode === 401) {
-          window.dispatchEvent(new Event('storage'));
-          devConsoleError('Unauthorized access - redirecting to login...');
+        devConsoleWarn(`Axios error (${statusCode}): ${serverMessage}`);
+        if (error.response && statusCode === 401) {
+          if (!isRefreshing && !securityEvent && !error.config._isRetry) {
+            isRefreshing = true;
+            refreshPromise = axiosInstance.post('/auth/refresh-token');
+            devConsoleWarn('Access token expired - refresh tokens...');
+          } else if (
+            securityEvent === 'device_mismatch' ||
+            securityEvent === 'invalid_refresh_token' ||
+            securityEvent === 'token_expired'
+          ) {
+            await signOut({ redirect: true, redirectTo: '/sign-in' });
+          }
+          try {
+            await refreshPromise;
+            error.config._isRetry = true;
+            return axiosInstance(error.config);
+          } catch (refreshError) {
+            devConsoleWarn(refreshError);
+            redirect('/sign-in');
+          } finally {
+            isRefreshing = false;
+            refreshPromise = null;
+          }
+        } else if (statusCode === 403) {
+          devConsoleWarn(
+            'Access forbidden: You do not have permission to access this resource',
+          );
+          redirect('/forbidden');
         } else if (statusCode === 404) {
           redirect('/not-found');
         } else if (statusCode >= 500) {
-          devConsoleError('Server error. Please try again later.');
+          devConsoleWarn('Server error. Please try again later.');
         }
       }
     } else if (error instanceof Error) {
-      devConsoleError('An unexpected error occurred: ' + error.message);
+      devConsoleWarn('An unexpected error occurred: ' + error.message);
     } else {
-      devConsoleError('An unexpected error occurred');
+      devConsoleWarn('An unexpected error occurred');
     }
     return Promise.reject(error);
   },

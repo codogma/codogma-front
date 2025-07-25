@@ -1,11 +1,12 @@
 'use client';
 import { Container, Grid2 as Grid } from '@mui/material';
 import { useParams, usePathname } from 'next/navigation';
+import { Session } from 'next-auth';
 import React, { ReactNode } from 'react';
 
 import { CustomBottomNavigation } from '@/components/CustomBottomNavigation';
 import Footer from '@/components/Footer';
-import NavBar from '@/components/NavBar';
+import { NavBar } from '@/components/NavBar';
 import { useNavigationState } from '@/components/NavigationProvider';
 import { NavPanel } from '@/components/NavPanel';
 import { NavSidebar } from '@/components/NavSidebar';
@@ -14,9 +15,10 @@ import { Language } from '@/types';
 type NavigationProps = {
   readonly lang: Language;
   readonly children: ReactNode;
+  readonly session: Session | null;
 };
 
-export const Navigation = ({ lang, children }: NavigationProps) => {
+export const Navigation = ({ lang, session, children }: NavigationProps) => {
   const { article, toc, isFullscreen } = useNavigationState();
   const pathname = usePathname();
   const { articleId } = useParams();
@@ -28,7 +30,7 @@ export const Navigation = ({ lang, children }: NavigationProps) => {
 
   return (
     <>
-      {!isFullscreen && <NavBar lang={lang} />}
+      {!isFullscreen && <NavBar lang={lang} session={session} />}
       <Container maxWidth='xl'>
         <Grid container spacing={1} direction='row' columns={12}>
           <Grid

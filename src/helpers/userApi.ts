@@ -1,9 +1,7 @@
-import Cookies from 'js-cookie';
-
 import { axiosInstance } from '@/helpers/axiosInstance';
 import { devConsoleInfo } from '@/helpers/devConsoleLogs';
 import { dispatchCustomEvent } from '@/helpers/dispatchCustomEvent';
-import { GetUserDTO, User, UserRole } from '@/types';
+import { GetUserDTO, UserRole } from '@/types';
 
 export type GetUsersDTO = {
   totalElements: number;
@@ -23,17 +21,15 @@ export type UserUpdate = {
   shortInfo?: string;
 };
 
-export const updateUser = async (requestData: UserUpdate): Promise<User> => {
+export const updateUser = async (
+  requestData: UserUpdate,
+): Promise<GetUserDTO> => {
   const response = await axiosInstance.put(`/users`, requestData, {
     headers: {
       'Content-Type': 'multipart/form-data',
     },
   });
-  const user: User = response.data;
-  Cookies.set('user', JSON.stringify(user), {
-    secure: true,
-    sameSite: 'strict',
-  });
+  const user: GetUserDTO = response.data;
   window.dispatchEvent(new Event('storage'));
   dispatchCustomEvent('api', {
     message: 'User updated successfully',
@@ -82,12 +78,11 @@ export const getUserByUsername = async (
 
 export const deleteUser = async (username: string): Promise<void> => {
   await axiosInstance.delete(`/users/${username}`);
-  Cookies.remove('user');
   window.dispatchEvent(new Event('storage'));
   devConsoleInfo('User deleted successfully');
 };
 
-export const unsubscribe = async (username: string): Promise<User> => {
+export const unsubscribe = async (username: string): Promise<GetUserDTO> => {
   const response = await axiosInstance.delete(`/users/${username}/unsubscribe`);
   dispatchCustomEvent('api', {
     message: 'You have successfully unsubscribed from the author',
@@ -96,7 +91,7 @@ export const unsubscribe = async (username: string): Promise<User> => {
   return response.data;
 };
 
-export const subscribe = async (username: string): Promise<User> => {
+export const subscribe = async (username: string): Promise<GetUserDTO> => {
   const response = await axiosInstance.post(`/users/${username}/subscribe`);
   dispatchCustomEvent('api', {
     message: 'You have successfully subscribed to the author',

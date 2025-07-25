@@ -57,11 +57,17 @@ export const SystemNotificationDialog = ({
   const SystemNotificationDialogScheme = z.object({
     title: z.record(
       z.nativeEnum(Language),
-      z.string().min(2, t('minTextTitle')).max(50, t('maxTextTitle')),
+      z
+        .string()
+        .min(2, t('minTextTitle', { lang: t(selectedLang) }))
+        .max(50, t('maxTextTitle', { lang: t(selectedLang) })),
     ),
     message: z.record(
       z.nativeEnum(Language),
-      z.string().min(10, t('minTextMessage')).max(1000, t('maxTextMessage')),
+      z
+        .string()
+        .min(10, t('minTextMessage', { lang: t(selectedLang) }))
+        .max(1000, t('maxTextMessage', { lang: t(selectedLang) })),
     ),
   });
 
@@ -178,17 +184,7 @@ export const SystemNotificationDialog = ({
               variant='standard'
               value={titleValues}
               error={!!errors.title?.ru || !!errors.title?.en}
-              helperText={
-                (!!errors.title?.[selectedLang] &&
-                  errors.title?.[selectedLang].message?.replace(
-                    '{}',
-                    t(selectedLang.toLowerCase()),
-                  )) ||
-                (!!errors.title?.ru &&
-                  errors.title?.ru?.message?.replace('{}', t('ru'))) ||
-                (!!errors.title?.en &&
-                  errors.title?.en?.message?.replace('{}', t('en')))
-              }
+              helperText={errors.title?.[selectedLang]?.message}
             />
             <FormInput
               key={`message-${selectedLang}`}
@@ -198,17 +194,7 @@ export const SystemNotificationDialog = ({
               variant='standard'
               value={messageValues}
               error={!!errors.message?.ru || !!errors.message?.en}
-              helperText={
-                (!!errors.message?.[selectedLang] &&
-                  errors.message?.[selectedLang].message?.replace(
-                    '{}',
-                    t(selectedLang.toLowerCase()),
-                  )) ||
-                (!!errors.message?.ru &&
-                  errors.message?.ru?.message?.replace('{}', t('ru'))) ||
-                (!!errors.message?.en &&
-                  errors.message?.en?.message?.replace('{}', t('en')))
-              }
+              helperText={errors.message?.[selectedLang]?.message}
             />
             <DialogActions>
               <Button type='submit'>{t('create')}</Button>

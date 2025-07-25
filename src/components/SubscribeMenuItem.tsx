@@ -3,10 +3,10 @@ import PersonAddAltIcon from '@mui/icons-material/PersonAddAlt';
 import PersonAddDisabledIcon from '@mui/icons-material/PersonAddDisabled';
 import MenuItem from '@mui/material/MenuItem';
 import Typography from '@mui/material/Typography';
+import { useSession } from 'next-auth/react';
 import { useTranslations } from 'next-intl';
 import React, { useState } from 'react';
 
-import { useAuth } from '@/components/AuthProvider';
 import { PopoverElement } from '@/components/PopoverElement';
 import { subscribe, unsubscribe } from '@/helpers/userApi';
 import { GetUserDTO } from '@/types';
@@ -22,7 +22,7 @@ export const SubscribeMenuItem: React.FC<CustomPopoverProps> = ({
 }) => {
   const [anchorEl, setAnchorEl] = React.useState<HTMLElement | null>(null);
   const [isSubscribed, setIsSubscribed] = useState<boolean>(user?.isSubscribed);
-  const { state } = useAuth();
+  const { data: state, status } = useSession();
   const t = useTranslations('authorsPage');
   const id = 'simple-popover';
 
@@ -30,7 +30,7 @@ export const SubscribeMenuItem: React.FC<CustomPopoverProps> = ({
     if (onClose) {
       onClose();
     }
-    if (state.isAuthenticated) {
+    if (status === 'authenticated') {
       if (!isSubscribed) {
         subscribe(user.username).then((response) =>
           setIsSubscribed(response.isSubscribed),
@@ -49,7 +49,7 @@ export const SubscribeMenuItem: React.FC<CustomPopoverProps> = ({
     setAnchorEl(null);
   };
 
-  return state.user?.username !== user?.username ? (
+  return state?.user?.name !== user?.username ? (
     <>
       <MenuItem onClick={handleChange} disableRipple>
         <Typography textAlign='center'>
@@ -66,7 +66,7 @@ export const SubscribeMenuItem: React.FC<CustomPopoverProps> = ({
           )}
         </Typography>
       </MenuItem>
-      {!state.isAuthenticated && (
+      {status !== 'authenticated' && (
         <PopoverElement
           popoverId={id}
           btnEl={anchorEl}

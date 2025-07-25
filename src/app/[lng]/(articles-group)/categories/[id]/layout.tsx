@@ -5,10 +5,10 @@ import { CardHeader, Skeleton } from '@mui/material';
 import Card from '@mui/material/Card';
 import Typography from '@mui/material/Typography';
 import { useQuery } from '@tanstack/react-query';
+import { useSession } from 'next-auth/react';
 import { useTranslations } from 'next-intl';
 import React from 'react';
 
-import { useAuth } from '@/components/AuthProvider';
 import { AvatarImage } from '@/components/AvatarImage';
 import { ButtonFavorite } from '@/components/ButtonFavorite';
 import MenuButton from '@/components/MenuButton';
@@ -31,7 +31,7 @@ export default function Layout({
   params: { id, lng, refetch },
   children,
 }: PageProps) {
-  const { state } = useAuth();
+  const { data: state } = useSession();
   const t = useTranslations();
   const tabs: TabProps[] = [
     {
@@ -78,7 +78,7 @@ export default function Layout({
               />
             }
             action={
-              state.user?.role !== UserRole.ROLE_ADMIN ? (
+              state?.user?.role !== UserRole.ROLE_ADMIN ? (
                 <ButtonFavorite
                   isFavoriteValue={category?.isFavorite}
                   id={id}

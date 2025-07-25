@@ -18,10 +18,10 @@ import Typography from '@mui/material/Typography';
 import DOMPurify from 'isomorphic-dompurify';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { useSession } from 'next-auth/react';
 import { useTranslations } from 'next-intl';
 import React, { useRef, useState } from 'react';
 
-import { useAuth } from '@/components/AuthProvider';
 import { AvatarImage } from '@/components/AvatarImage';
 import { useContentImageContext } from '@/components/ContentImageProvider';
 import { DefaultImage } from '@/components/DefaultImage';
@@ -36,7 +36,7 @@ type ArticleCardProps = {
 };
 
 export const ArticleCard = ({ article, lang }: ArticleCardProps) => {
-  const { state } = useAuth();
+  const { data: state, status } = useSession();
   const pathname = usePathname();
   let urlPrefix = '';
   if (pathname.includes('compilations')) {
@@ -104,8 +104,8 @@ export const ArticleCard = ({ article, lang }: ArticleCardProps) => {
           />
         }
         action={
-          state.isAuthenticated &&
-          state.user?.role !== UserRole.ROLE_ADMIN && (
+          status === 'authenticated' &&
+          state?.user?.role !== UserRole.ROLE_ADMIN && (
             <MenuButton
               article={article}
               lang={lang}
@@ -239,8 +239,8 @@ export const ArticleCard = ({ article, lang }: ArticleCardProps) => {
               background: `rgba(${vibrantR}, ${vibrantG}, ${vibrantB}, 0.1)`,
             }}
           >
-            {(state.user?.username === article.username ||
-              state.user?.role === UserRole.ROLE_ADMIN) && (
+            {(state?.user?.name === article.username ||
+              state?.user?.role === UserRole.ROLE_ADMIN) && (
               <Stack direction='row' spacing={1}>
                 <Chip
                   size='small'

@@ -23,7 +23,7 @@ import { Language } from '@/types';
 
 type MainTabsProps = {
   readonly lang: Language;
-  readonly username?: string;
+  readonly username?: string | null;
 };
 
 type MainTab = {

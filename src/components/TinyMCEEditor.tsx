@@ -3,15 +3,17 @@ import React, { useEffect, useRef } from 'react';
 import slugify from 'slugify';
 import { v4 as uuid } from 'uuid';
 
-import { devConsoleError } from '@/helpers/devConsoleLogs';
+import { devConsoleWarn } from '@/helpers/devConsoleLogs';
 import {
   CreateArticleImage,
   uploadArticleImage,
 } from '@/helpers/imageUploadApi';
+import { Language } from '@/types';
 
 interface TinyMCEEditorProps {
   readonly id?: string;
   readonly articleId: number;
+  readonly language: Language;
   readonly defaultValue?: string;
   readonly value?: string;
   readonly onChange: (content: string) => void;
@@ -21,6 +23,7 @@ interface TinyMCEEditorProps {
 export const TinyMCEEditor = ({
   id,
   articleId,
+  language,
   defaultValue,
   value,
   onChange,
@@ -28,7 +31,6 @@ export const TinyMCEEditor = ({
 }: TinyMCEEditorProps) => {
   const editorRef = useRef<Editor>(null);
   const generateImageId = () => `content-image-${uuid()}`;
-  const language = String(localStorage.getItem('i18nextLng'));
 
   const handleResetEditor = () => {
     if (editorRef.current) {
@@ -104,7 +106,7 @@ export const TinyMCEEditor = ({
                 resolve(`${process.env.NEXT_PUBLIC_BASE_URL}${url}`);
               })
               .catch((error) => {
-                devConsoleError('Failed to upload image:', error);
+                devConsoleWarn('Failed to upload image:', error);
                 reject('Failed to upload image');
               });
           });

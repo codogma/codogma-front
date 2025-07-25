@@ -9,10 +9,12 @@ import {
   languages,
 } from '@/constants/i18n';
 import { currentUser } from '@/helpers/authApi';
-import { devConsoleError } from '@/helpers/devConsoleLogs';
+import { devConsoleWarn } from '@/helpers/devConsoleLogs';
 import { getLocale } from '@/helpers/getLocale';
 import { routing } from '@/i18n/routing';
 import { Language, UserRole } from '@/types';
+
+import { auth } from '@/lib/auth';
 
 export default createMiddleware(routing);
 
@@ -27,7 +29,19 @@ export async function middleware(req: NextRequest) {
   const { pathname, search } = req.nextUrl;
   const lng = await getLanguage(req);
 
-  // === 1. Логика локализации ===
+  // === 1. Проверка аутентификационных токенов ===
+  const status = await auth();
+  const accessToken = req.cookies.get('access_token')?.value;
+  const refreshToken = req.cookies.get('refresh_token')?.value;
+
+  // Если есть сессия NextAuth, но нет токенов бэкенда
+  if (!!status && (!accessToken || !refreshToken)) {
+    const response = NextResponse.redirect(new URL('/sign-in', req.url));
+    response.cookies.delete('authjs.session-token');
+    return response;
+  }
+
+  // === 2. Логика локализации ===
   const lngInPath = languages.find((loc) => pathname.startsWith(`/${loc}`));
   const headers = new Headers(req.headers);
   headers.set(headerName, lngInPath ?? lng);
@@ -39,7 +53,7 @@ export async function middleware(req: NextRequest) {
     return response;
   }
 
-  // === 2. Логика защиты маршрутов /admin ===
+  // === 3. Логика защиты маршрутов /admin ===
   if (pathname.startsWith(`/${lng}/admin`)) {
     return handleAdminCheck(req);
   }
@@ -67,7 +81,7 @@ const handleAdminCheck = async (req: NextRequest) => {
     }
   } catch (error) {
     // При ошибках аутентификации очищаем куки
-    devConsoleError(error);
+    devConsoleWarn(error);
     const response = redirectTo('/not-found', req);
     response.cookies.delete('user');
     return response;

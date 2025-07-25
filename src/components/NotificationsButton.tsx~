@@ -1,0 +1,24 @@
+import MailIcon from '@mui/icons-material/Mail';
+import Badge from '@mui/material/Badge';
+import IconButton from '@mui/material/IconButton';
+import Tooltip from '@mui/material/Tooltip';
+import * as React from 'react';
+
+type NotificationsButtonProps = {
+  readonly title?: string;
+};
+
+export const NotificationsButton = ({ title }: NotificationsButtonProps) => {
+  const handleOpen = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorElUser(event.currentTarget);
+  };
+  return (
+    <Tooltip title={title}>
+      <IconButton color='inherit' onClick={onClick}>
+        <Badge badgeContent={4} color='primary'>
+          <MailIcon />
+        </Badge>
+      </IconButton>
+    </Tooltip>
+  );
+};

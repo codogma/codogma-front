@@ -4,14 +4,14 @@ import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import Typography from '@mui/material/Typography';
 import { useRouter } from 'next/navigation';
+import { useSession } from 'next-auth/react';
 import React, { useEffect } from 'react';
 import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
 import { z } from 'zod';
 
-import { useAuth } from '@/components/AuthProvider';
 import FormInput from '@/components/FormInput';
 import { createComment, updateComment } from '@/helpers/commentAPI';
-import { devConsoleError } from '@/helpers/devConsoleLogs';
+import { devConsoleWarn } from '@/helpers/devConsoleLogs';
 import { CreateComment, GetComment, UpdateComment } from '@/types';
 
 interface CommentFormProps {
@@ -36,7 +36,7 @@ export const CommentForm: React.FC<CommentFormProps> = ({
   onCommentAdded,
   onCancelEdit,
 }) => {
-  const { state } = useAuth();
+  const { status } = useSession();
   const router = useRouter();
 
   const zodForm = useForm<z.infer<typeof CommentFormScheme>>({
@@ -54,7 +54,7 @@ export const CommentForm: React.FC<CommentFormProps> = ({
   } = zodForm;
 
   useEffect(() => {
-    devConsoleError(errors);
+    devConsoleWarn(errors);
     if (isSubmitSuccessful) {
       reset({ content: '' });
     }
@@ -89,7 +89,7 @@ export const CommentForm: React.FC<CommentFormProps> = ({
 
   return (
     <>
-      {state.isAuthenticated ? (
+      {status === 'authenticated' ? (
         <FormProvider {...zodForm}>
           <Box
             component='form'

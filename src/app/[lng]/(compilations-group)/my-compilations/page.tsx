@@ -1,8 +1,8 @@
 'use client';
 import { useQuery } from '@tanstack/react-query';
+import { useSession } from 'next-auth/react';
 import React, { useState } from 'react';
 
-import { useAuth } from '@/components/AuthProvider';
 import Compilations from '@/components/Compilations';
 import { CustomPagination } from '@/components/CustomPagination';
 import { Search } from '@/components/Search';
@@ -25,8 +25,8 @@ export default function Page({ params: { lng } }: PageProps) {
   );
   const [searchValue, setSearchValue] = useState<string>();
   const [searchType, setSearchType] = useState<SearchType>(SearchType.CONTENT);
-  const { state } = useAuth();
-  const username: string | undefined = state.user?.username;
+  const { data: state } = useSession();
+  const username: string | undefined = state?.user?.name ?? '';
 
   const onSearchType = (type: SearchType) => {
     setSearchType(type);

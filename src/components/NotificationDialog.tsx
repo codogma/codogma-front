@@ -24,11 +24,11 @@ import Tooltip from '@mui/material/Tooltip';
 import Typography from '@mui/material/Typography';
 import { useQuery } from '@tanstack/react-query';
 import { usePathname, useRouter } from 'next/navigation';
+import { useSession } from 'next-auth/react';
 import { useTranslations } from 'next-intl';
 import * as React from 'react';
 import { Fragment, useState } from 'react';
 
-import { useAuth } from '@/components/AuthProvider';
 import { CustomPagination } from '@/components/CustomPagination';
 import { EditNotification } from '@/components/EditNotification';
 import { Scrollbar } from '@/components/Scrollbar';
@@ -75,7 +75,7 @@ export const NotificationDialog = ({ lang }: NotificationsDialogProps) => {
   const [resultsPerPage, setResultsPerPage] = useState<number>(
     NOTIFICATIONS_PER_PAGE,
   );
-  const { state } = useAuth();
+  const { data: state } = useSession();
   const t = useTranslations('notificationsPage');
   const router = useRouter();
   const pathname = usePathname();
@@ -251,7 +251,7 @@ export const NotificationDialog = ({ lang }: NotificationsDialogProps) => {
                         </CardContent>
                         <CardActions>
                           <ButtonGroup size='small'>
-                            {state.user?.role === UserRole.ROLE_ADMIN &&
+                            {state?.user?.role === UserRole.ROLE_ADMIN &&
                               notification.type === NotificationType.SYSTEM && (
                                 <Button
                                   onClick={() =>
@@ -263,7 +263,7 @@ export const NotificationDialog = ({ lang }: NotificationsDialogProps) => {
                                   Удалить
                                 </Button>
                               )}
-                            {state.user?.role === UserRole.ROLE_ADMIN &&
+                            {state?.user?.role === UserRole.ROLE_ADMIN &&
                               notification.type === NotificationType.SYSTEM && (
                                 <EditNotification
                                   id={notification.id}
@@ -347,7 +347,7 @@ export const NotificationDialog = ({ lang }: NotificationsDialogProps) => {
             <Button onClick={() => handleDeleteReadNotifications()}>
               Удалить прочитанные
             </Button>
-            {state.user?.role === UserRole.ROLE_ADMIN && (
+            {state?.user?.role === UserRole.ROLE_ADMIN && (
               <Button onClick={() => handleDeleteAllSystemNotifications()}>
                 Удалить системные уведомления
               </Button>

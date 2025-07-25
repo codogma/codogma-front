@@ -3,11 +3,11 @@ import { AppRouterCacheProvider } from '@mui/material-nextjs/v14-appRouter';
 import { Metadata } from 'next';
 import '@/app/globals.css';
 import { Inter } from 'next/font/google';
+import { SessionProvider } from 'next-auth/react';
 import { NextIntlClientProvider } from 'next-intl';
 import { getTranslations } from 'next-intl/server';
 import React, { ReactNode } from 'react';
 
-import { AuthProvider } from '@/components/AuthProvider';
 import { ButtonBackToTop } from '@/components/ButtonBackToTop';
 import { ContentImageProvider } from '@/components/ContentImageProvider';
 import { CustomizedSnackbars } from '@/components/CustomizedSnackbars';
@@ -15,6 +15,7 @@ import { Navigation } from '@/components/Navigation';
 import { NavigationProvider } from '@/components/NavigationProvider';
 import { ReactQueryProvider } from '@/components/ReactQueryProvider';
 import { ColorModeProvider } from '@/components/ThemeContext';
+import { auth } from '@/lib/auth';
 import { Language } from '@/types';
 
 const inter = Inter({ subsets: ['latin'] });
@@ -64,6 +65,7 @@ export default async function Layout({
   children,
   params: { lng },
 }: LayoutProps) {
+  const session = await auth();
   return (
     <html lang={lng}>
       <body className={inter.className}>
@@ -71,10 +73,11 @@ export default async function Layout({
           <AppRouterCacheProvider>
             <ColorModeProvider>
               <ReactQueryProvider>
-                <AuthProvider>
+                <SessionProvider session={session}>
+                  {/*<WebSocketProvider>*/}
                   <NextIntlClientProvider locale={lng}>
                     <NavigationProvider>
-                      <Navigation lang={lng}>
+                      <Navigation lang={lng} session={session}>
                         <ButtonBackToTop>
                           <Container className='content'>
                             <ContentImageProvider>
@@ -86,7 +89,8 @@ export default async function Layout({
                       </Navigation>
                     </NavigationProvider>
                   </NextIntlClientProvider>
-                </AuthProvider>
+                  {/*</WebSocketProvider>*/}
+                </SessionProvider>
               </ReactQueryProvider>
             </ColorModeProvider>
           </AppRouterCacheProvider>

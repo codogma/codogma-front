@@ -23,7 +23,7 @@ import { z } from 'zod';
 import { AvatarImage } from '@/components/AvatarImage';
 import FormInput from '@/components/FormInput';
 import { CompilationCreate, createCompilation } from '@/helpers/compilationApi';
-import { devConsoleError } from '@/helpers/devConsoleLogs';
+import { devConsoleWarn } from '@/helpers/devConsoleLogs';
 
 const VisuallyHiddenInput = styled('input')({
   clip: 'rect(0 0 0 0)',
@@ -119,7 +119,7 @@ export const CompilationDialog = ({
     const formDataObject = Object.fromEntries(
       formDataToSend.entries(),
     ) as unknown as CompilationCreate;
-    devConsoleError(formDataObject);
+    devConsoleWarn(formDataObject);
     createCompilation(formDataObject).then(() => onClose());
   };
 

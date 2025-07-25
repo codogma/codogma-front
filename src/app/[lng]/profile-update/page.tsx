@@ -6,16 +6,16 @@ import IconButton from '@mui/material/IconButton';
 import { styled } from '@mui/material/styles';
 import { useQuery } from '@tanstack/react-query';
 import Link from 'next/link';
+import { useSession } from 'next-auth/react';
 import { useTranslations } from 'next-intl';
 import React, { MouseEvent, useEffect, useState } from 'react';
 import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
 import { z } from 'zod';
 
-import { useAuth } from '@/components/AuthProvider';
 import { AvatarImage } from '@/components/AvatarImage';
 import FormInput from '@/components/FormInput';
 import { WithAuth } from '@/components/WithAuth';
-import { devConsoleError } from '@/helpers/devConsoleLogs';
+import { devConsoleWarn } from '@/helpers/devConsoleLogs';
 import {
   deleteUser,
   getUserByUsername,
@@ -59,8 +59,8 @@ const VisuallyHiddenInput = styled('input')({
 });
 
 function Page() {
-  const { state } = useAuth();
-  const username: string | undefined = state.user?.username;
+  const { data: state } = useSession();
+  const username: string | undefined = state?.user?.name ?? '';
   const [avatarUrl, setAvatarUrl] = useState<string>();
   const t = useTranslations();
 
@@ -116,7 +116,7 @@ function Page() {
     const updatedUserData: UserUpdate = {
       ...formData,
     };
-    devConsoleError(updatedUserData);
+    devConsoleWarn(updatedUserData);
     updateUser(updatedUserData);
   };
 

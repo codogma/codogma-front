@@ -2,9 +2,8 @@ import { Client, StompSubscription } from '@stomp/stompjs';
 import SockJS from 'sockjs-client';
 
 import { axiosInstance } from '@/helpers/axiosInstance';
-import { devConsoleError, devConsoleInfo } from '@/helpers/devConsoleLogs';
+import { devConsoleInfo, devConsoleWarn } from '@/helpers/devConsoleLogs';
 import { dispatchCustomEvent } from '@/helpers/dispatchCustomEvent';
-import { getAuthToken } from '@/helpers/getCookies';
 import { GetNotification, GetNotificationToUpdate, Language } from '@/types';
 
 export type NotificationCreate = {
@@ -52,11 +51,11 @@ export const connectPublicWebSocket = (): Client => {
   };
 
   stompClient.onStompError = (frame) => {
-    devConsoleError('STOMP error:', frame);
+    devConsoleWarn('STOMP error:', frame);
   };
 
   stompClient.onWebSocketError = (event) => {
-    devConsoleError('WebSocket error:', event);
+    devConsoleWarn('WebSocket error:', event);
   };
 
   stompClient.onDisconnect = (frame) => {
@@ -69,17 +68,11 @@ export const connectPublicWebSocket = (): Client => {
 };
 
 export const connectPrivateWebSocket = async (): Promise<Client> => {
-  const token = await getAuthToken();
-  if (!token) {
-    devConsoleError('Cannot connect private WebSocket: missing token');
-    throw new Error('Missing token');
-  }
   if (privateClient?.active) return privateClient;
 
   const stompClient = new Client({
     webSocketFactory: () =>
       new SockJS(`${process.env.NEXT_PUBLIC_BASE_URL}/api/ws`),
-    connectHeaders: { Authorization: `Bearer ${token}` },
     debug: (str) => devConsoleInfo('[PRIVATE WS]', str),
     reconnectDelay: 5000,
     heartbeatIncoming: 4000,
@@ -102,11 +95,11 @@ export const connectPrivateWebSocket = async (): Promise<Client> => {
   };
 
   stompClient.onStompError = (frame) => {
-    devConsoleError('STOMP error:', frame);
+    devConsoleWarn('STOMP error:', frame);
   };
 
   stompClient.onWebSocketError = (event) => {
-    devConsoleError('WebSocket error:', event);
+    devConsoleWarn('WebSocket error:', event);
   };
 
   stompClient.onDisconnect = (frame) => {

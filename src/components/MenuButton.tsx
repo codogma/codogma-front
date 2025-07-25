@@ -6,13 +6,13 @@ import MenuItem from '@mui/material/MenuItem';
 import { alpha, styled } from '@mui/material/styles';
 import Typography from '@mui/material/Typography';
 import { useQuery } from '@tanstack/react-query';
+import { useSession } from 'next-auth/react';
 import { useTranslations } from 'next-intl';
 import * as React from 'react';
 import { useState } from 'react';
 
 import { AddToCompilations } from '@/components/AddToCompilations';
 import { ArticlesDnD } from '@/components/ArticlesDnD';
-import { useAuth } from '@/components/AuthProvider';
 import ButtonAlertDialog from '@/components/ButtonAlertDialog';
 import { EditCategory } from '@/components/EditCategory';
 import { EditCompilation } from '@/components/EditCompilation';
@@ -91,7 +91,7 @@ export default function MenuButton({
   ...props
 }: MenuButtonProps) {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  const { state } = useAuth();
+  const { data: state, status } = useSession();
   const open = Boolean(anchorEl);
   const t = useTranslations('notificationsPage');
 
@@ -162,8 +162,8 @@ export default function MenuButton({
       >
         <MenuList className='menu-list'>
           {article &&
-            state.user?.username === article?.username &&
-            state.user?.role === UserRole.ROLE_AUTHOR && (
+            state?.user?.name === article?.username &&
+            state?.user?.role === UserRole.ROLE_AUTHOR && (
               <ButtonAlertDialog
                 article={article}
                 lang={lang}
@@ -171,11 +171,11 @@ export default function MenuButton({
               />
             )}
           {article &&
-            state.isAuthenticated &&
-            state.user?.role !== UserRole.ROLE_ADMIN && (
+            status === 'authenticated' &&
+            state?.user?.role !== UserRole.ROLE_ADMIN && (
               <AddToCompilations
                 id={article.id}
-                username={state.user?.username}
+                username={state.user?.name ?? ''}
                 compilations={article.compilations}
                 onClose={handleClose}
               />
@@ -183,7 +183,7 @@ export default function MenuButton({
           {userDTO && (
             <SubscribeMenuItem user={userDTO} onClose={handleClose} />
           )}
-          {category && state.user?.role === UserRole.ROLE_ADMIN && (
+          {category && state?.user?.role === UserRole.ROLE_ADMIN && (
             <EditCategory
               id={category.id}
               lang={lang}
@@ -197,14 +197,14 @@ export default function MenuButton({
               onClose={handleClose}
             />
           )}
-          {state.user?.username === compilation?.ownerName && compilation && (
+          {state?.user?.name === compilation?.ownerName && compilation && (
             <ArticlesDnD
               compilationData={compilation}
               onClose={handleClose}
               refetch={refetch}
             />
           )}
-          {state.user?.username === compilation?.ownerName && compilation && (
+          {state?.user?.name === compilation?.ownerName && compilation && (
             <MenuItem
               onClick={() => handleDelete(compilation.id)}
               disableRipple
@@ -214,7 +214,7 @@ export default function MenuButton({
               </Typography>
             </MenuItem>
           )}
-          {state.user?.role === UserRole.ROLE_ADMIN && category && (
+          {state?.user?.role === UserRole.ROLE_ADMIN && category && (
             <MenuItem
               onClick={() => handleDeleteCategory(category.id)}
               disableRipple

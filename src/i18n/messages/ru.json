@@ -47,15 +47,13 @@
   "articlesSearchBy": "Поиск по ",
   "compilation": "Подборка",
   "notifications": "Уведомления",
-  "en": "Английского языка",
   "en_short": "анг",
-  "ru": "Русского языка",
   "ru_short": "рус",
   "createNotificationBtn": "Создать уведомление",
   "adminPanelBtn": "Панель администратора",
   "addToCompilation": "Добавить в подборки",
   "subscribe": "Подписаться",
-  "unsubscribe": "Отписатся",
+  "unsubscribe": "Отписаться",
   "deleteCompilation": "Удалить подборку",
   "deleteCategory": "Удалить категорию",
   "mainPage": {
@@ -71,10 +69,15 @@
     "title": "Заголовок",
     "proceedToSettings": "Перейти к настройкам",
     "settingsAndPreview": "Настройки и предварительный просмотр",
-    "categories": "Категории",
+    "selectedCategories": "Выбранные категории",
     "selectCategories": "Выберите категории",
+    "noOptionsCategories": "Нет доступных категорий",
+    "selectedCompilations": "Выбранные подборки",
+    "selectCompilations": "Выберите подборки",
+    "noOptionsCompilations": "Нет доступных подборок",
     "language": "Язык",
-    "selectTags": "Выберите или создайте теги",
+    "selectedTags": "Выбранные теги",
+    "selectTags": "Выберите или пропишите теги",
     "shortDescription": "Краткое описание:",
     "backToPublication": "Назад к публикации",
     "sendToModerate": "Отправить на модерацию",
@@ -111,7 +114,8 @@
     "settings": "Настройки",
     "hideNavigation": "Скрыть навигацию",
     "readMoreBtn": "Читать далее",
-    "editBtn": "Редактировать"
+    "editBtn": "Редактировать",
+    "save": "Сохранить"
   },
   "authorsPage": {
     "articlesByUser": "Статьи автора",
@@ -124,7 +128,9 @@
     "writesInCategories": "Пишет в категориях",
     "popoverSubscribe": "чтобы подписаться на пользователя",
     "browsingHistory": "История просмотров",
-    "updateProfileBtn": "Обновить профиль"
+    "updateProfileBtn": "Обновить профиль",
+    "subscribe": "Подписаться",
+    "unsubscribe": "Отписаться"
   },
   "categoriesPage": {
     "categoriesDescription": "Список категорий",
@@ -134,17 +140,23 @@
     "addToFavorite": "Добавить в избранное",
     "removeFromFavorite": "Удалить из избранных",
     "name": "Название",
+    "en": "Английского языка",
+    "ru": "Русского языка",
     "description": "Описание",
     "create": "Создать",
     "createCategory": "Создать категорию",
     "updateCategory": "Обновить категорию",
     "popoverFavorite": "чтобы добавить в избранное",
-    "minText": "Название категории для {} не может содержать менее 2 символов",
-    "maxText": "Название категории для {} не может содержать более 50 символов",
+    "minText": "Название категории для {lang} не может содержать менее 2 символов",
+    "maxText": "Название категории для {lang} не может содержать более 50 символов",
+    "iconMessage": "Иконка обязательна для загрузки",
+    "imageMessage": "Изображение обязательно для загрузки",
     "popularTags": "Популярные теги",
     "edit": "Редактировать",
     "dialogTitle": "Хотите отписаться от категории?",
-    "dialogDescription": "Публикации больше не будут показываться в разделе «Избранные категории»"
+    "dialogDescription": "Публикации больше не будут показываться в разделе «Избранные категории»",
+    "save": "Сохранить",
+    "language": "Язык"
   },
   "compilationsPage": {
     "bookmarksByUser": "Закладки пользователя",
@@ -161,19 +173,23 @@
     "searchCompilations": "Поиск подборки",
     "add": "Добавить",
     "updateCompilation": "Обновить подборку",
-    "edit": "Редактировать"
+    "edit": "Редактировать",
+    "save": "Сохранить"
   },
   "notificationsPage": {
     "notifications": "Уведомления",
     "createNotification": "Создать уведомление",
     "updateNotification": "Обновить уведомление",
+    "language": "Язык",
     "title": "Заголовок",
     "message": "Сообщение",
     "create": "Создать",
-    "minTextTitle": "Заголовок уведомления для {} не может содержать менее 2 символов",
-    "maxTextTitle": "Заголовок уведомления для {} не может содержать более 50 символов",
-    "minTextMessage": "Сообщение уведомления для {} не может содержать менее 10 символов",
-    "maxTextMessage": "Сообщение уведомления для {} не может содержать более 1000 символов"
+    "minTextTitle": "Заголовок уведомления для {lang} не может содержать менее 2 символов",
+    "maxTextTitle": "Заголовок уведомления для {lang} не может содержать более 50 символов",
+    "minTextMessage": "Сообщение уведомления для {lang} не может содержать менее 10 символов",
+    "maxTextMessage": "Сообщение уведомления для {lang} не может содержать более 1000 символов",
+    "en": "Английского языка",
+    "ru": "Русского языка"
   },
   "signInPage": {
     "signIn": "Войти",

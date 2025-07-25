@@ -47,9 +47,7 @@
   "articlesSearchBy": "Search by ",
   "compilation": "Compilation",
   "notifications": "Notifications",
-  "en": "English language",
   "en_short": "en",
-  "ru": "Russian language",
   "ru_short": "ru",
   "createNotificationBtn": "Create notification",
   "adminPanelBtn": "Admin panel",
@@ -71,10 +69,15 @@
     "title": "Title",
     "proceedToSettings": "Proceed to settings",
     "settingsAndPreview": "Settings and preview content",
-    "categories": "Categories",
+    "selectedCategories": "Selected categories",
     "selectCategories": "Select categories",
+    "noOptionsCategories": "No available categories",
+    "selectedCompilations": "Selected compilations",
+    "selectCompilations": "Select compilations",
+    "noOptionsCompilations": "No available compilations",
     "language": "Language",
-    "selectTags": "Select or create tags",
+    "selectedTags": "Selected tags",
+    "selectTags": "Select or write tags",
     "shortDescription": "Short description:",
     "backToPublication": "Back to publication",
     "sendToModerate": "Send to moderate",
@@ -111,7 +114,8 @@
     "settings": "Settings",
     "hideNavigation": "Hide navigation",
     "readMoreBtn": "Read more",
-    "editBtn": "Edit"
+    "editBtn": "Edit",
+    "save": "Save"
   },
   "authorsPage": {
     "articlesByUser": "Articles by author",
@@ -124,7 +128,9 @@
     "writesInCategories": "Writes in categories",
     "popoverSubscribe": "to subscribe to a user",
     "browsingHistory": "Browsing history",
-    "updateProfileBtn": "Update profile"
+    "updateProfileBtn": "Update profile",
+    "subscribe": "Subscribe",
+    "unsubscribe": "Unsubscribe"
   },
   "categoriesPage": {
     "categoriesDescription": "List of categories",
@@ -134,17 +140,23 @@
     "addToFavorite": "Add to favorites",
     "removeFromFavorite": "Unfavorite",
     "name": "Name",
+    "en": "English language",
+    "ru": "Russian language",
     "description": "Description",
     "create": "Create",
     "createCategory": "Create category",
     "updateCategory": "Update category",
     "popoverFavorite": "to add to favorites",
-    "minText": "The category name for {} cannot be less than 2 characters",
-    "maxText": "The category name for {} cannot contain more than 50 characters",
+    "minText": "The category name for {lang} cannot be less than 2 characters",
+    "maxText": "The category name for {lang} cannot contain more than 50 characters",
+    "iconMessage": "The icon is required for downloading",
+    "imageMessage": "The image is required for downloading",
     "popularTags": "Popular tags",
     "edit": "Edit",
     "dialogTitle": "Would you like to unsubscribe?",
-    "dialogDescription": "Posts will no longer be shown in «Favorite categories»"
+    "dialogDescription": "Posts will no longer be shown in «Favorite categories»",
+    "save": "Save",
+    "language": "Language"
   },
   "compilationsPage": {
     "bookmarksByUser": "Bookmarks by user",
@@ -161,19 +173,25 @@
     "searchCompilations": "Search compilations",
     "add": "Add",
     "updateCompilation": "Update compilation",
-    "edit": "Edit"
+    "edit": "Edit",
+    "save": "Save"
   },
   "notificationsPage": {
     "notifications": "Notifications",
     "createNotification": "Create notification",
     "updateNotification": "Update notification",
+    "language": "Language",
     "title": "Title",
     "message": "Message",
     "create": "Create",
-    "minTextTitle": "The notification title for {} cannot be less than 2 characters",
-    "maxTextTitle": "The notification title for {} cannot contain more than 50 characters",
-    "minTextMessage": "The notification message for {} cannot be less than 10 characters",
-    "maxTextMessage": "The notification message for {} cannot contain more than 1000 characters"
+    "minTextTitle": "The notification title for {lang} cannot be less than 2 characters",
+    "maxTextTitle": "The notification title for {lang} cannot contain more than 50 characters",
+    "minTextMessage": "The notification message for {lang} cannot be less than 10 characters",
+    "maxTextMessage": "The notification message for {lang} cannot contain more than 1000 characters",
+    "en": "English language",
+    "ru": "Russian language",
+    "deleteCategory": "Delete category",
+    "deleteCompilation": "Delete compilation"
   },
   "signInPage": {
     "signIn": "Sign in",

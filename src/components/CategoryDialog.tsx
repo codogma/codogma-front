@@ -28,6 +28,7 @@ import { Vibrant } from 'node-vibrant/browser';
 import React, { useCallback, useEffect, useState } from 'react';
 import {
   Controller,
+  ControllerFieldState,
   FormProvider,
   SubmitHandler,
   useForm,
@@ -39,7 +40,7 @@ import { AvatarImage } from '@/components/AvatarImage';
 import FormInput from '@/components/FormInput';
 import { languageMenuItems } from '@/constants/i18n';
 import { CreateCategory, createCategory } from '@/helpers/categoryApi';
-import { devConsoleError, devConsoleInfo } from '@/helpers/devConsoleLogs';
+import { devConsoleInfo, devConsoleWarn } from '@/helpers/devConsoleLogs';
 import { Language, PaletteDTO, SwatchDTO } from '@/types';
 
 const VisuallyHiddenInput = styled('input')({
@@ -83,13 +84,16 @@ export const CategoryDialog = ({
   const CategoryDialogScheme = z.object({
     name: z.record(
       z.nativeEnum(Language),
-      z.string().min(2, t('minText')).max(50, t('maxText')),
+      z
+        .string()
+        .min(2, t('minText', { lang: t(selectedLang) }))
+        .max(50, t('maxText', { lang: t(selectedLang) })),
     ),
     icon: z.instanceof(File, {
-      message: 'Иконка обязательна для загрузки',
+      message: t('iconMessage'),
     }),
     image: z.instanceof(File, {
-      message: 'Изображение обязательно для загрузки',
+      message: t('imageMessage'),
     }),
     description: z.optional(z.record(z.nativeEnum(Language), z.string())),
   });
@@ -130,7 +134,7 @@ export const CategoryDialog = ({
   }) as Record<string, string>;
 
   useEffect(() => {
-    if (isSubmitSuccessful) {
+    if (isSubmitSuccessful || !open) {
       reset({
         name: {
           en: '',
@@ -147,7 +151,7 @@ export const CategoryDialog = ({
       setImageUrl(undefined);
       setSelectedLang(lang);
     }
-  }, [isSubmitSuccessful, lang, reset]);
+  }, [isSubmitSuccessful, lang, open, reset]);
 
   const handleIconChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -200,7 +204,7 @@ export const CategoryDialog = ({
             trigger('image');
           })
           .catch((error) => {
-            devConsoleError('Palette extraction failed:', error);
+            devConsoleWarn('Palette extraction failed:', error);
           })
           .finally(() => {
             URL.revokeObjectURL(fileURL);
@@ -276,38 +280,43 @@ export const CategoryDialog = ({
               <Controller
                 name='image'
                 control={control}
-                render={() => (
-                  <Badge
-                    overlap='circular'
-                    anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-                    badgeContent={
-                      <IconButton
-                        component='label'
-                        color='inherit'
-                        sx={{ p: 0, m: 0 }}
-                      >
-                        <ModeEditOutlineOutlined color='primary' />
-                        <VisuallyHiddenInput
-                          id='image'
-                          name='image'
-                          type='file'
-                          onChange={handleImageChange}
-                        />
-                      </IconButton>
-                    }
-                  >
-                    <AvatarImage
-                      type='image'
-                      variant='rounded'
-                      src={imageUrl}
-                      size={112}
-                      fontSize='large'
-                    />
-                  </Badge>
+                render={({ fieldState }) => (
+                  <>
+                    <Badge
+                      overlap='circular'
+                      anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+                      badgeContent={
+                        <IconButton
+                          component='label'
+                          color='inherit'
+                          sx={{ p: 0, m: 0 }}
+                        >
+                          <ModeEditOutlineOutlined color='primary' />
+                          <VisuallyHiddenInput
+                            id='image'
+                            name='image'
+                            type='file'
+                            onChange={handleImageChange}
+                          />
+                        </IconButton>
+                      }
+                    >
+                      <AvatarImage
+                        type='image'
+                        variant='rounded'
+                        src={imageUrl}
+                        size={112}
+                        fontSize='large'
+                      />
+                    </Badge>
+                    <FormHelperText id='image-text' error={!!fieldState.error}>
+                      {fieldState.error?.message}
+                    </FormHelperText>
+                  </>
                 )}
               />
             </FormControl>
-            {palette && (
+            {!!palette && (
               <Stack
                 key={JSON.stringify(palette)}
                 direction='row'
@@ -359,51 +368,50 @@ export const CategoryDialog = ({
                 )}
               </Stack>
             )}
-            {errors.image && (
-              <FormHelperText id='image-text' error={!!errors.image}>
-                {errors?.image.message}
-              </FormHelperText>
-            )}
             <FormControl sx={{ mb: 1 }}>
               <Controller
                 name='icon'
                 control={control}
-                render={() => (
-                  <Badge
-                    overlap='circular'
-                    anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-                    badgeContent={
-                      <IconButton
-                        component='label'
-                        color='inherit'
-                        sx={{ p: 0, m: 0 }}
-                      >
-                        <ModeEditOutlineOutlined color='primary' />
-                        <VisuallyHiddenInput
-                          id='icon'
-                          name='icon'
-                          type='file'
-                          onChange={handleIconChange}
-                        />
-                      </IconButton>
-                    }
-                  >
-                    <AvatarImage
-                      type='image'
-                      variant='rounded'
-                      src={iconUrl}
-                      size={112}
-                      fontSize='large'
-                    />
-                  </Badge>
+                render={({
+                  fieldState,
+                }: {
+                  readonly fieldState: ControllerFieldState;
+                }) => (
+                  <>
+                    <Badge
+                      overlap='circular'
+                      anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+                      badgeContent={
+                        <IconButton
+                          component='label'
+                          color='inherit'
+                          sx={{ p: 0, m: 0 }}
+                        >
+                          <ModeEditOutlineOutlined color='primary' />
+                          <VisuallyHiddenInput
+                            id='icon'
+                            name='icon'
+                            type='file'
+                            onChange={handleIconChange}
+                          />
+                        </IconButton>
+                      }
+                    >
+                      <AvatarImage
+                        type='image'
+                        variant='rounded'
+                        src={iconUrl}
+                        size={112}
+                        fontSize='large'
+                      />
+                    </Badge>
+                    <FormHelperText id='icon-text' error={!!fieldState.error}>
+                      {fieldState.error?.message}
+                    </FormHelperText>
+                  </>
                 )}
               />
             </FormControl>
-            {errors.icon && (
-              <FormHelperText id='icon-text' error={!!errors.icon}>
-                {errors?.icon.message}
-              </FormHelperText>
-            )}
             <TextField
               select
               label={t('language')}
@@ -425,17 +433,7 @@ export const CategoryDialog = ({
               variant='standard'
               value={nameValues}
               error={!!errors.name?.ru || !!errors.name?.en}
-              helperText={
-                (!!errors.name?.[selectedLang] &&
-                  errors.name?.[selectedLang].message?.replace(
-                    '{}',
-                    t(selectedLang.toLowerCase()),
-                  )) ||
-                (!!errors.name?.ru &&
-                  errors.name?.ru?.message?.replace('{}', t('ru'))) ||
-                (!!errors.name?.en &&
-                  errors.name?.en?.message?.replace('{}', t('en')))
-              }
+              helperText={errors.name?.[selectedLang]?.message}
             />
             <FormInput
               key={`description-${selectedLang}`}

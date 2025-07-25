@@ -1,10 +1,10 @@
 'use client';
 import BookmarkIcon from '@mui/icons-material/Bookmark';
 import Checkbox from '@mui/material/Checkbox';
+import { useSession } from 'next-auth/react';
 import { useTranslations } from 'next-intl';
 import React, { useState } from 'react';
 
-import { useAuth } from '@/components/AuthProvider';
 import { PopoverElement } from '@/components/PopoverElement';
 import { bookmark, unbookmark } from '@/helpers/compilationApi';
 
@@ -23,7 +23,7 @@ export const Bookmark: React.FC<BookmarkProps> = ({
 }) => {
   const [anchorEl, setAnchorEl] = React.useState<HTMLElement | null>(null);
   const [isBookmarked, setIsBookmarked] = useState(isBookmarkedValue);
-  const { state } = useAuth();
+  const { data: state, status } = useSession();
   const t = useTranslations('articlesPage');
   const popoverId = 'simple-popover';
 
@@ -31,7 +31,7 @@ export const Bookmark: React.FC<BookmarkProps> = ({
     event: React.ChangeEvent<HTMLInputElement>,
     checked: boolean,
   ) => {
-    if (state.isAuthenticated) {
+    if (status) {
       setIsBookmarked(checked);
 
       if (checked) {
@@ -48,7 +48,7 @@ export const Bookmark: React.FC<BookmarkProps> = ({
     setAnchorEl(null);
   };
 
-  return state.user?.username !== username ? (
+  return state?.user?.name !== username ? (
     <>
       <Checkbox
         checked={isBookmarked}
@@ -57,7 +57,7 @@ export const Bookmark: React.FC<BookmarkProps> = ({
         checkedIcon={<BookmarkIcon color='error' />}
         inputProps={{ 'aria-label': 'Bookmark compilation' }}
       />
-      {!state.isAuthenticated && (
+      {!status && (
         <PopoverElement
           popoverId={popoverId}
           btnEl={anchorEl}

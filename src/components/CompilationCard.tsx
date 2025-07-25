@@ -14,10 +14,10 @@ import IconButton from '@mui/material/IconButton';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import Link from 'next/link';
+import { useSession } from 'next-auth/react';
 import { useTranslations } from 'next-intl';
 import React, { useState } from 'react';
 
-import { useAuth } from '@/components/AuthProvider';
 import { AvatarImage } from '@/components/AvatarImage';
 import { Bookmark } from '@/components/Bookmark';
 import { DefaultImage } from '@/components/DefaultImage';
@@ -37,7 +37,7 @@ export const CompilationCard = ({
   lang,
   refetch,
 }: CompilationCardProps) => {
-  const { state } = useAuth();
+  const { data: state } = useSession();
   const t = useTranslations('articlesPage');
   const [expanded, setExpanded] = useState(false);
   const items = [1, 2, 3, 4, 5];
@@ -54,7 +54,7 @@ export const CompilationCard = ({
           />
         }
         action={
-          state.user?.username !== compilation?.ownerName ? (
+          state?.user?.name !== compilation?.ownerName ? (
             <Bookmark
               username={compilation.ownerName}
               id={compilation.id}

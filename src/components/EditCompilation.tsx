@@ -25,7 +25,7 @@ import { z } from 'zod';
 import { AvatarImage } from '@/components/AvatarImage';
 import FormInput from '@/components/FormInput';
 import { updateCompilation } from '@/helpers/compilationApi';
-import { devConsoleError } from '@/helpers/devConsoleLogs';
+import { devConsoleWarn } from '@/helpers/devConsoleLogs';
 import { GetCompilation } from '@/types';
 
 const EditCompilationScheme = z.object({
@@ -121,7 +121,7 @@ export const EditCompilation = ({
     formData,
   ) => {
     const requestData = { ...formData, image: imageFile };
-    devConsoleError(requestData);
+    devConsoleWarn(requestData);
     updateCompilation(compilationData.id, requestData).then(() => {
       if (refetch) {
         refetch();

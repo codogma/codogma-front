@@ -3,10 +3,10 @@ import { LoadingButton } from '@mui/lab';
 import { Box, Button, Card, CardContent, Typography } from '@mui/material';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import Link from 'next/link';
+import { useSession } from 'next-auth/react';
 import { useTranslations } from 'next-intl';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 
-import { useAuth } from '@/components/AuthProvider';
 import { AvatarImage } from '@/components/AvatarImage';
 import { TimeAgo } from '@/components/TimeAgo';
 import { deleteComment, getComments } from '@/helpers/commentAPI';
@@ -28,7 +28,7 @@ export const CommentList: React.FC<CommentListProps> = ({
   const [replyToCommentId, setReplyToCommentId] = useState<number | null>(null);
   const [pageSize, setPageSize] = useState<number>(5);
   const scrollTarget = useRef<string | null>(null);
-  const { state } = useAuth();
+  const { data: state, status } = useSession();
   const t = useTranslations();
 
   const { data, fetchNextPage, isFetchingNextPage, refetch } = useInfiniteQuery(
@@ -188,11 +188,11 @@ export const CommentList: React.FC<CommentListProps> = ({
           ) : (
             <>
               <Typography variant='body1'>{comment.content}</Typography>
-              {state.isAuthenticated &&
-                state.user?.role !== UserRole.ROLE_ADMIN && (
+              {status === 'authenticated' &&
+                state?.user?.role !== UserRole.ROLE_ADMIN && (
                   <Box sx={{ display: 'flex', gap: 1, marginTop: 1 }}>
-                    {state.user &&
-                      state.user.username !== comment.user.username && (
+                    {state?.user &&
+                      state.user.name !== comment.user.username && (
                         <Button
                           variant='outlined'
                           size='small'
@@ -201,8 +201,8 @@ export const CommentList: React.FC<CommentListProps> = ({
                           {t('replyBtn')}
                         </Button>
                       )}
-                    {state.user &&
-                      state.user.username === comment.user.username && (
+                    {state?.user &&
+                      state.user.name === comment.user.username && (
                         <Button
                           color='secondary'
                           variant='outlined'
@@ -212,8 +212,8 @@ export const CommentList: React.FC<CommentListProps> = ({
                           {t('editBtn')}
                         </Button>
                       )}
-                    {state.user &&
-                      state.user.username === comment.user.username && (
+                    {state?.user &&
+                      state.user.name === comment.user.username && (
                         <Button
                           color='error'
                           variant='outlined'
