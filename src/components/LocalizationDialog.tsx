@@ -23,6 +23,7 @@ import {
 import { styled } from '@mui/material/styles';
 import Cookies from 'js-cookie';
 import { usePathname, useRouter } from 'next/navigation';
+import { useTranslations } from 'next-intl';
 import React, { useEffect, useState } from 'react';
 import {
   Controller,
@@ -32,7 +33,6 @@ import {
 } from 'react-hook-form';
 import { z } from 'zod';
 
-import { useT } from '@/app/i18n/client';
 import { contlCookie, intlCookie, languageMenuItems } from '@/constants/i18n';
 import { Language } from '@/types';
 
@@ -59,7 +59,7 @@ const LocalizationDialogScheme = z.object({
 
 export const LocalizationDialog = ({ lang }: LocalizationDialogProps) => {
   const [open, setOpen] = useState(false);
-  const { t } = useT();
+  const t = useTranslations();
   const pathname = usePathname();
   const router = useRouter();
   const contlCookieVal = Cookies.get(contlCookie);

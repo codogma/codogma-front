@@ -4,9 +4,9 @@ import Card from '@mui/material/Card';
 import Typography from '@mui/material/Typography';
 import { useQuery } from '@tanstack/react-query';
 import Link from 'next/link';
+import { useSession } from 'next-auth/react';
 import React, { useState } from 'react';
 
-import { useAuth } from '@/components/AuthProvider';
 import { AvatarImage } from '@/components/AvatarImage';
 import { Bookmark } from '@/components/Bookmark';
 import { CompilationProvider } from '@/components/CompilationProvider';
@@ -29,7 +29,7 @@ export default function Layout({
   params: { compilationId, lng },
   children,
 }: PageProps) {
-  const { state } = useAuth();
+  const { data: state } = useSession();
   const [isRefetch, setIsRefetch] = useState<boolean>(false);
   const { isFullscreen } = useNavigationState();
 
@@ -77,7 +77,7 @@ export default function Layout({
               />
             }
             action={
-              state.user?.username !== compilation?.ownerName ? (
+              state?.user?.name !== compilation?.ownerName ? (
                 <Bookmark
                   username={compilation?.ownerName}
                   id={compilationId}

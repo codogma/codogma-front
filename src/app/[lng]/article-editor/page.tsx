@@ -26,6 +26,8 @@ import { styled, useTheme } from '@mui/material/styles';
 import { keepPreviousData, useMutation, useQuery } from '@tanstack/react-query';
 import { Swatch } from '@vibrant/color';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { useSession } from 'next-auth/react';
+import { useTranslations } from 'next-intl';
 import { Vibrant } from 'node-vibrant/browser';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import {
@@ -36,8 +38,6 @@ import {
 } from 'react-hook-form';
 import { z } from 'zod';
 
-import { useT } from '@/app/i18n/client';
-import { useAuth } from '@/components/AuthProvider';
 import { AvatarImage } from '@/components/AvatarImage';
 import FormInput from '@/components/FormInput';
 import { LinkWithPopover } from '@/components/LinkWithPopover';
@@ -65,7 +65,7 @@ import {
   getCompilationsByTitle,
   GetCompilationsDTO,
 } from '@/helpers/compilationApi';
-import { devConsoleError } from '@/helpers/devConsoleLogs';
+import { devConsoleWarn } from '@/helpers/devConsoleLogs';
 import {
   CreateArticleImage,
   uploadArticleImage,
@@ -179,10 +179,8 @@ const Page = ({ params: { lng } }: PageParams) => {
   const ARTICLE_ID = 'article-id';
   const PARAM_ID = 'id';
   const PALETTE = 'palette';
-  const {
-    state: { user },
-  } = useAuth();
-  const username = user?.username;
+  const { data: state } = useSession();
+  const username = state?.user?.name ?? '';
   const route = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -208,7 +206,7 @@ const Page = ({ params: { lng } }: PageParams) => {
   >([]);
   const [palette, setPalette] = useState<PaletteDTO | null>(null);
   const [prevData, setPrevData] = useState<UpdateDraftArticleDTO | null>(null);
-  const { t } = useT('articleEditor');
+  const t = useTranslations('articleEditorPage');
 
   const zodStepOneForm = useForm<z.infer<typeof StepOneScheme>>({
     resolver: zodResolver(StepOneScheme),
@@ -435,11 +433,11 @@ const Page = ({ params: { lng } }: PageParams) => {
                 trigger('imageUrl');
               })
               .catch((error) => {
-                devConsoleError('Upload failed:', error);
+                devConsoleWarn('Upload failed:', error);
               });
           })
           .catch((error) => {
-            devConsoleError('Palette extraction failed:', error);
+            devConsoleWarn('Palette extraction failed:', error);
           })
           .finally(() => {
             URL.revokeObjectURL(fileURL);
@@ -584,14 +582,18 @@ const Page = ({ params: { lng } }: PageParams) => {
   }, [palette]);
 
   useEffect(() => {
-    devConsoleError(Object.keys(errorsStepOne).length > 0);
+    if (Object.keys(errorsStepOne).length > 0) {
+      devConsoleWarn('Form step one errors detected', errorsStepOne);
+    }
     if (isSubmitSuccessfulStepOne) {
       resetStepOne(zodStepOneForm.getValues());
     }
   }, [errorsStepOne, isSubmitSuccessfulStepOne, resetStepOne, zodStepOneForm]);
 
   useEffect(() => {
-    devConsoleError(errorsStepTwo);
+    if (Object.keys(errorsStepTwo).length > 0) {
+      devConsoleWarn('Form step two errors detected', errorsStepTwo);
+    }
     if (isSubmitSuccessfulStepTwo) {
       resetStepTwo(zodStepTwoForm.getValues());
     }
@@ -781,7 +783,10 @@ const Page = ({ params: { lng } }: PageParams) => {
                   <TinyMCEEditor
                     id='content'
                     articleId={articleId}
-                    {...field}
+                    language={lng}
+                    value={field.value}
+                    onChange={field.onChange}
+                    defaultValue={field.value}
                     reset={reset}
                   />
                 )}
@@ -846,6 +851,7 @@ const Page = ({ params: { lng } }: PageParams) => {
                       multiple
                       id='categoryIds'
                       options={availableCategories}
+                      noOptionsText={t('noOptionsCategories')}
                       getOptionLabel={(category) => category?.name}
                       disableCloseOnSelect
                       defaultValue={availableCategories.filter((category) =>
@@ -896,7 +902,7 @@ const Page = ({ params: { lng } }: PageParams) => {
                       renderInput={(params) => (
                         <TextField
                           {...params}
-                          label={t('categories')}
+                          label={t('selectedCategories')}
                           variant='standard'
                           placeholder={t('selectCategories')}
                           error={Boolean(errorsStepTwo.categoryIds?.message)}
@@ -916,6 +922,7 @@ const Page = ({ params: { lng } }: PageParams) => {
                       multiple
                       id='compilationIds'
                       options={availableCompilations}
+                      noOptionsText={t('noOptionsCompilations')}
                       getOptionLabel={(compilation) => compilation?.title}
                       disableCloseOnSelect
                       defaultValue={availableCompilations.filter(
@@ -967,7 +974,7 @@ const Page = ({ params: { lng } }: PageParams) => {
                       renderInput={(params) => (
                         <TextField
                           {...params}
-                          label={t('compilations')}
+                          label={t('selectedCompilations')}
                           variant='standard'
                           placeholder={t('selectCompilations')}
                           error={Boolean(errorsStepTwo.compilationIds?.message)}
@@ -1031,8 +1038,8 @@ const Page = ({ params: { lng } }: PageParams) => {
                       renderInput={(params) => (
                         <TextField
                           {...params}
+                          label={t('selectedTags')}
                           variant='standard'
-                          label={t('tags')}
                           placeholder={t('selectTags')}
                         />
                       )}
@@ -1151,7 +1158,10 @@ const Page = ({ params: { lng } }: PageParams) => {
                   <TinyMCEEditor
                     id='previewContent'
                     articleId={articleId}
-                    {...field}
+                    language={lng}
+                    value={field.value}
+                    onChange={field.onChange}
+                    defaultValue={field.value}
                     reset={reset}
                   />
                 )}
@@ -1217,6 +1227,7 @@ const Page = ({ params: { lng } }: PageParams) => {
       handleSubmitStepTwo,
       inputCategoryValue,
       inputCompilationValue,
+      lng,
       onStepOneSubmit,
       onStepTwoSubmit,
       onSubmit,

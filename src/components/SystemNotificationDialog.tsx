@@ -12,6 +12,7 @@ import {
 import DialogActions from '@mui/material/DialogActions';
 import MenuItem from '@mui/material/MenuItem';
 import { styled } from '@mui/material/styles';
+import { useTranslations } from 'next-intl';
 import React, { useEffect, useState } from 'react';
 import {
   FormProvider,
@@ -21,7 +22,6 @@ import {
 } from 'react-hook-form';
 import { z } from 'zod';
 
-import { useT } from '@/app/i18n/client';
 import FormInput from '@/components/FormInput';
 import { languageMenuItems } from '@/constants/i18n';
 import { devConsoleInfo } from '@/helpers/devConsoleLogs';
@@ -52,16 +52,25 @@ export const SystemNotificationDialog = ({
   onClose,
 }: SystemNotificationDialogProps) => {
   const [selectedLang, setSelectedLang] = useState<Language>(lang);
-  const { t } = useT('notifications');
+  const t = useTranslations('notificationsPage');
 
   const SystemNotificationDialogScheme = z.object({
     title: z.record(
       z.nativeEnum(Language),
-      z.string().min(2, t('minTextTitle')).max(50, t('maxTextTitle')),
+      z
+        .string()
+        .min(2, t('minTextTitle', { lang: t(selectedLang), length: 2 }))
+        .max(50, t('maxTextTitle', { lang: t(selectedLang), length: 50 })),
     ),
     message: z.record(
       z.nativeEnum(Language),
-      z.string().min(10, t('minTextMessage')).max(1000, t('maxTextMessage')),
+      z
+        .string()
+        .min(10, t('minTextMessage', { lang: t(selectedLang), length: 10 }))
+        .max(
+          1000,
+          t('maxTextMessage', { lang: t(selectedLang), length: 1000 }),
+        ),
     ),
   });
 
@@ -178,17 +187,7 @@ export const SystemNotificationDialog = ({
               variant='standard'
               value={titleValues}
               error={!!errors.title?.ru || !!errors.title?.en}
-              helperText={
-                (!!errors.title?.[selectedLang] &&
-                  errors.title?.[selectedLang].message?.replace(
-                    '{}',
-                    t(selectedLang.toLowerCase()),
-                  )) ||
-                (!!errors.title?.ru &&
-                  errors.title?.ru?.message?.replace('{}', t('ru'))) ||
-                (!!errors.title?.en &&
-                  errors.title?.en?.message?.replace('{}', t('en')))
-              }
+              helperText={errors.title?.[selectedLang]?.message}
             />
             <FormInput
               key={`message-${selectedLang}`}
@@ -198,17 +197,7 @@ export const SystemNotificationDialog = ({
               variant='standard'
               value={messageValues}
               error={!!errors.message?.ru || !!errors.message?.en}
-              helperText={
-                (!!errors.message?.[selectedLang] &&
-                  errors.message?.[selectedLang].message?.replace(
-                    '{}',
-                    t(selectedLang.toLowerCase()),
-                  )) ||
-                (!!errors.message?.ru &&
-                  errors.message?.ru?.message?.replace('{}', t('ru'))) ||
-                (!!errors.message?.en &&
-                  errors.message?.en?.message?.replace('{}', t('en')))
-              }
+              helperText={errors.message?.[selectedLang]?.message}
             />
             <DialogActions>
               <Button type='submit'>{t('create')}</Button>

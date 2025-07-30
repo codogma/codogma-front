@@ -1,4 +1,4 @@
-'use client';
+'use server';
 import React from 'react';
 
 import Article from '@/components/Article';
@@ -12,6 +12,6 @@ type PageProps = {
   readonly params: PageParams;
 };
 
-export default function Page({ params: { lng } }: PageProps) {
+export default async function Page({ params: { lng } }: PageProps) {
   return <Article lang={lng} />;
 }

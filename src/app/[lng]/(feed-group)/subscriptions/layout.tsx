@@ -1,15 +1,14 @@
 'use server';
 import { Metadata } from 'next';
+import { getTranslations } from 'next-intl/server';
 import { ReactNode } from 'react';
-
-import { getT } from '@/app/i18n';
 
 type LayoutProps = {
   readonly children: ReactNode;
 };
 
 export async function generateMetadata(): Promise<Metadata> {
-  const { t } = await getT('authors');
+  const t = await getTranslations('authorsPage');
   return {
     alternates: {
       canonical: `/subscriptions`,

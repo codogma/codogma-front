@@ -1,0 +1,9 @@
+export const ARTICLES_PER_PAGE = 12; // initial number of articles per page
+export const ARTICLE_RECOMMENDATIONS = 12; // initial number of articles recommendations limit
+export const CATEGORIES_PER_PAGE = 12; // initial number of categories per page
+export const COMPILATIONS_PER_PAGE = 12; // initial number of compilations per page
+export const MAIN_PAGE_MY_COMPILATIONS = 5; // initial number of my compilations limit on main page
+export const MAIN_PAGE_BOOKMARKS = 5; // initial number of bookmarks limit on main page
+export const COMMENTS_PER_PAGE = 12; // initial number of comments per page
+export const NOTIFICATIONS_PER_PAGE = 12; // initial number of notifications per page
+export const USERS_PER_PAGE = 12; // initial number of users per page

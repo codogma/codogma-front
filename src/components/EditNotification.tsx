@@ -13,6 +13,7 @@ import DialogActions from '@mui/material/DialogActions';
 import MenuItem from '@mui/material/MenuItem';
 import { styled } from '@mui/material/styles';
 import { useQuery } from '@tanstack/react-query';
+import { useTranslations } from 'next-intl';
 import React, { useEffect, useState } from 'react';
 import {
   FormProvider,
@@ -22,7 +23,6 @@ import {
 } from 'react-hook-form';
 import { z } from 'zod';
 
-import { useT } from '@/app/i18n/client';
 import FormInput from '@/components/FormInput';
 import { languageMenuItems } from '@/constants/i18n';
 import {
@@ -54,16 +54,25 @@ export const EditNotification = ({
 }: EditNotificationProps) => {
   const [open, setOpen] = useState(false);
   const [selectedLang, setSelectedLang] = useState<Language>(lang);
-  const { t } = useT('notifications');
+  const t = useTranslations('notificationsPage');
 
   const EditNotificationScheme = z.object({
     title: z.record(
       z.nativeEnum(Language),
-      z.string().min(2, t('minTextTitle')).max(50, t('maxTextTitle')),
+      z
+        .string()
+        .min(2, t('minTextTitle', { lang: t(selectedLang), length: 2 }))
+        .max(50, t('maxTextTitle', { lang: t(selectedLang), length: 50 })),
     ),
     message: z.record(
       z.nativeEnum(Language),
-      z.string().min(10, t('minTextMessage')).max(1000, t('maxTextMessage')),
+      z
+        .string()
+        .min(10, t('minTextMessage', { lang: t(selectedLang), length: 10 }))
+        .max(
+          1000,
+          t('maxTextMessage', { lang: t(selectedLang), length: 1000 }),
+        ),
     ),
   });
 

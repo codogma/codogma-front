@@ -1,5 +1,12 @@
 import InfoIcon from '@mui/icons-material/Info';
-import { Box, Button, CardHeader, CardMedia, Collapse } from '@mui/material';
+import {
+  Box,
+  Button,
+  CardHeader,
+  CardMedia,
+  Collapse,
+  Skeleton,
+} from '@mui/material';
 import Card from '@mui/material/Card';
 import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
@@ -7,10 +14,10 @@ import IconButton from '@mui/material/IconButton';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import Link from 'next/link';
+import { useSession } from 'next-auth/react';
+import { useTranslations } from 'next-intl';
 import React, { useState } from 'react';
 
-import { useT } from '@/app/i18n/client';
-import { useAuth } from '@/components/AuthProvider';
 import { AvatarImage } from '@/components/AvatarImage';
 import { Bookmark } from '@/components/Bookmark';
 import { DefaultImage } from '@/components/DefaultImage';
@@ -30,25 +37,24 @@ export const CompilationCard = ({
   lang,
   refetch,
 }: CompilationCardProps) => {
-  const { state } = useAuth();
-  const { t } = useT('articles');
+  const { data: state } = useSession();
+  const t = useTranslations('articlesPage');
   const [expanded, setExpanded] = useState(false);
   const items = [1, 2, 3, 4, 5];
 
-  return (
+  return compilation ? (
     <Card variant='outlined' className='card'>
       <CardHeader
         avatar={
           <AvatarImage
             alt={compilation.ownerName}
-            className='article-user-avatar'
             src={compilation.ownerAvatarUrl}
             variant='rounded'
             size={32}
           />
         }
         action={
-          state.user?.username !== compilation?.ownerName ? (
+          state?.user?.name !== compilation?.ownerName ? (
             <Bookmark
               username={compilation.ownerName}
               id={compilation.id}
@@ -60,7 +66,6 @@ export const CompilationCard = ({
               compilation={compilation}
               lang={lang}
               refetch={refetch}
-              user={state.user}
             />
           )
         }
@@ -140,6 +145,7 @@ export const CompilationCard = ({
                         left={0}
                         zIndex={0}
                         className='scale-x-100 transition-transform will-change-transform'
+                        priority={index === 0}
                       />
                     ) : (
                       index == 0 && (
@@ -152,6 +158,7 @@ export const CompilationCard = ({
                           left={0}
                           zIndex={0}
                           className='scale-x-100 transition-transform will-change-transform'
+                          priority={true}
                         />
                       )
                     )}
@@ -191,7 +198,10 @@ export const CompilationCard = ({
                     WebkitBoxOrient: 'vertical',
                   }}
                 >
-                  <Link href={`/compilations/${compilation.id}`}>
+                  <Link
+                    href={`/${lang}/compilations/${compilation.id}`}
+                    scroll={false}
+                  >
                     {compilation.title}
                   </Link>
                 </Typography>
@@ -246,6 +256,28 @@ export const CompilationCard = ({
           </Link>
         </Stack>
       </CardActions>
+    </Card>
+  ) : (
+    <Card variant='outlined' className='card'>
+      <CardContent>
+        <div style={{ display: 'flex', gap: 16, alignItems: 'center' }}>
+          <Skeleton animation='wave' variant='rounded' width={40} height={40} />
+          <div style={{ flex: 1 }}>
+            <Skeleton
+              animation='wave'
+              height={10}
+              width='80%'
+              style={{ marginBottom: 6 }}
+            />
+            <Skeleton animation='wave' height={10} width='40%' />
+          </div>
+        </div>
+      </CardContent>
+      <Skeleton sx={{ height: 190 }} animation='wave' variant='rectangular' />
+      <CardContent>
+        <Skeleton animation='wave' height={10} style={{ marginBottom: 6 }} />
+        <Skeleton animation='wave' height={10} width='80%' />
+      </CardContent>
     </Card>
   );
 };

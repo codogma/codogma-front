@@ -1,3 +1,4 @@
+'use client';
 import InfoIcon from '@mui/icons-material/Info';
 import {
   Box,
@@ -14,13 +15,13 @@ import Chip from '@mui/material/Chip';
 import IconButton from '@mui/material/IconButton';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
-import DOMPurify from 'dompurify';
+import DOMPurify from 'isomorphic-dompurify';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { useSession } from 'next-auth/react';
+import { useTranslations } from 'next-intl';
 import React, { useRef, useState } from 'react';
 
-import { useT } from '@/app/i18n/client';
-import { useAuth } from '@/components/AuthProvider';
 import { AvatarImage } from '@/components/AvatarImage';
 import { useContentImageContext } from '@/components/ContentImageProvider';
 import { DefaultImage } from '@/components/DefaultImage';
@@ -35,7 +36,7 @@ type ArticleCardProps = {
 };
 
 export const ArticleCard = ({ article, lang }: ArticleCardProps) => {
-  const { state } = useAuth();
+  const { data: state, status } = useSession();
   const pathname = usePathname();
   let urlPrefix = '';
   if (pathname.includes('compilations')) {
@@ -44,7 +45,7 @@ export const ArticleCard = ({ article, lang }: ArticleCardProps) => {
     urlPrefix = `/${lang}/articles`;
   }
   const { processContent } = useContentImageContext();
-  const { t } = useT('articles');
+  const t = useTranslations('articlesPage');
   const previewContent = processContent(
     DOMPurify.sanitize(article?.previewContent),
   );
@@ -97,20 +98,18 @@ export const ArticleCard = ({ article, lang }: ArticleCardProps) => {
         avatar={
           <AvatarImage
             alt={article.username}
-            className='article-user-avatar'
             src={article.authorAvatarUrl}
             variant='rounded'
             size={34}
           />
         }
         action={
-          state.isAuthenticated &&
-          state.user?.role !== UserRole.ROLE_ADMIN && (
+          status === 'authenticated' &&
+          state?.user?.role !== UserRole.ROLE_ADMIN && (
             <MenuButton
               article={article}
               lang={lang}
               sx={{ color: darkMutedHex, '.dark &': { color: lightMutedHex } }}
-              // user={state.user}
             />
           )
         }
@@ -119,9 +118,22 @@ export const ArticleCard = ({ article, lang }: ArticleCardProps) => {
             href={`/users/${article.username}`}
             className='article-user-name'
           >
-            <Typography
-              component='span'
-              sx={{
+            {article.username}
+          </Link>
+        }
+        subheader={
+          <TimeAgo
+            datetime={article.createdAt}
+            className='article-datetime'
+            lang={lang}
+          />
+        }
+        className='card-header'
+        slotProps={{
+          title: {
+            component: 'span',
+            sx: {
+              a: {
                 fontSize: 'inherit',
                 color: vibrantTextColor,
                 '&:hover': {
@@ -133,24 +145,18 @@ export const ArticleCard = ({ article, lang }: ArticleCardProps) => {
                     color: lightVibrantHex,
                   },
                 },
-              }}
-            >
-              {article.username}
-            </Typography>
-          </Link>
-        }
-        subheader={
-          <TimeAgo
-            datetime={article.createdAt}
-            className='article-datetime'
-            sx={{
-              color: darkVibrantHex,
-              '.dark &': { color: lightVibrantHex },
-            }}
-            lang={lang}
-          />
-        }
-        className='card-header'
+              },
+            },
+          },
+          subheader: {
+            sx: {
+              time: {
+                color: darkVibrantHex,
+                '.dark &': { color: lightVibrantHex },
+              },
+            },
+          },
+        }}
         sx={{
           background:
             `rgba(${vibrantR}, ${vibrantG}, ${vibrantB}, 0.5)` ??
@@ -233,8 +239,8 @@ export const ArticleCard = ({ article, lang }: ArticleCardProps) => {
               background: `rgba(${vibrantR}, ${vibrantG}, ${vibrantB}, 0.1)`,
             }}
           >
-            {(state.user?.username === article.username ||
-              state.user?.role === UserRole.ROLE_ADMIN) && (
+            {(state?.user?.name === article.username ||
+              state?.user?.role === UserRole.ROLE_ADMIN) && (
               <Stack direction='row' spacing={1}>
                 <Chip
                   size='small'

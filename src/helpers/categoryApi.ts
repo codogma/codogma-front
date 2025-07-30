@@ -32,8 +32,8 @@ export type GetCategoriesDTO = {
 
 export const createCategory = async (
   requestData: CreateCategory,
-): Promise<void> => {
-  await axiosInstance.post('/categories', requestData, {
+): Promise<GetCategory> => {
+  const response = await axiosInstance.post('/categories', requestData, {
     headers: {
       'Content-Type': 'multipart/form-data',
     },
@@ -42,6 +42,7 @@ export const createCategory = async (
     message: 'Category created successfully',
     severity: 'success',
   });
+  return response.data;
 };
 
 export const getCategoriesByName = async (

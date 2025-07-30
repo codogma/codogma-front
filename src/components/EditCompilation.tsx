@@ -17,27 +17,16 @@ import DialogActions from '@mui/material/DialogActions';
 import MenuItem from '@mui/material/MenuItem';
 import { styled } from '@mui/material/styles';
 import Typography from '@mui/material/Typography';
+import { useTranslations } from 'next-intl';
 import React, { useEffect, useState } from 'react';
 import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
 import { z } from 'zod';
 
-import { useT } from '@/app/i18n/client';
 import { AvatarImage } from '@/components/AvatarImage';
 import FormInput from '@/components/FormInput';
 import { updateCompilation } from '@/helpers/compilationApi';
-import { devConsoleError } from '@/helpers/devConsoleLogs';
+import { devConsoleWarn } from '@/helpers/devConsoleLogs';
 import { GetCompilation } from '@/types';
-
-const EditCompilationScheme = z.object({
-  image: z.optional(z.instanceof(File)),
-  title: z.optional(
-    z
-      .string()
-      .min(2, 'Название подборки не может содержать менее 2 символов.')
-      .max(50, 'Название подборки не может содержать более 50 символов.'),
-  ),
-  description: z.optional(z.string()),
-});
 
 const VisuallyHiddenInput = styled('input')({
   clip: 'rect(0 0 0 0)',
@@ -76,7 +65,18 @@ export const EditCompilation = ({
   const [compilation, setCompilation] = useState<GetCompilation | undefined>(
     compilationData,
   );
-  const { t } = useT('compilations');
+  const t = useTranslations('compilationsPage');
+
+  const EditCompilationScheme = z.object({
+    image: z.optional(z.instanceof(File)),
+    title: z.optional(
+      z
+        .string()
+        .min(2, t('minText', { length: 2 }))
+        .max(50, t('maxText', { length: 50 })),
+    ),
+    description: z.optional(z.string()),
+  });
 
   const zodForm = useForm<z.infer<typeof EditCompilationScheme>>({
     resolver: zodResolver(EditCompilationScheme),
@@ -121,7 +121,7 @@ export const EditCompilation = ({
     formData,
   ) => {
     const requestData = { ...formData, image: imageFile };
-    devConsoleError(requestData);
+    devConsoleWarn(requestData);
     updateCompilation(compilationData.id, requestData).then(() => {
       if (refetch) {
         refetch();

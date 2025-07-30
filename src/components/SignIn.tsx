@@ -1,9 +1,9 @@
 'use client';
 import { Button } from '@mui/material';
+import { useSession } from 'next-auth/react';
+import { useTranslations } from 'next-intl';
 import { ReactNode } from 'react';
 
-import { useT } from '@/app/i18n/client';
-import { useAuth } from '@/components/AuthProvider';
 import { Language } from '@/types';
 
 type SignInProps = {
@@ -12,11 +12,9 @@ type SignInProps = {
 };
 
 export const SignIn = ({ children, lang }: SignInProps) => {
-  const { t } = useT();
-  const {
-    state: { isAuthenticated },
-  } = useAuth();
-  return isAuthenticated ? (
+  const t = useTranslations('signInPage');
+  const { status } = useSession();
+  return status === 'authenticated' ? (
     children
   ) : (
     <>

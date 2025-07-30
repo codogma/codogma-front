@@ -10,9 +10,9 @@ import {
 } from '@mui/material';
 import IconButton from '@mui/material/IconButton';
 import Popover from '@mui/material/Popover';
+import { useTranslations } from 'next-intl';
 import React, { useEffect, useState } from 'react';
 
-import { useT } from '@/app/i18n/client';
 import { GetArticle, Language } from '@/types';
 
 type LinkWithPopoverProps = {
@@ -32,7 +32,7 @@ export const LinkWithPopover = ({
     null,
   );
 
-  const { t } = useT('articleEditor');
+  const t = useTranslations('articleEditorPage');
   const [inDrafts, setInDrafts] = useState<string>();
 
   useEffect(() => {

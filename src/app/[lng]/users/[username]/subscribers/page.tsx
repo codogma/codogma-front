@@ -6,6 +6,7 @@ import { CustomPagination } from '@/components/CustomPagination';
 import { Search } from '@/components/Search';
 import Users from '@/components/Users';
 import { contlCookie } from '@/constants/i18n';
+import { USERS_PER_PAGE } from '@/constants/limits';
 import { useEventListener } from '@/helpers/useEventListener';
 import { getUsers, GetUsersDTO } from '@/helpers/userApi';
 import { GetUserDTO, Language, SearchType } from '@/types';
@@ -21,7 +22,7 @@ type PageProps = {
 
 const Page = ({ params: { username, lng } }: PageProps) => {
   const [currentPage, setCurrentPage] = useState<number>(0);
-  const [resultsPerPage, setResultsPerPage] = useState<number>(12);
+  const [resultsPerPage, setResultsPerPage] = useState<number>(USERS_PER_PAGE);
   const [searchValue, setSearchValue] = useState<string>();
   const [searchType, setSearchType] = useState<SearchType>(SearchType.INFO);
 
@@ -77,11 +78,16 @@ const Page = ({ params: { username, lng } }: PageProps) => {
   return (
     <>
       <Search onSearchType={onSearchType} onSearchValue={onSearchValue} />
-      <Users lang={lng} users={subscribers} loading={isFetching} />
+      <Users
+        lang={lng}
+        users={subscribers}
+        loading={isFetching}
+        usersPerPageStart={USERS_PER_PAGE}
+      />
       <CustomPagination
         totalPages={totalPages}
         totalElements={totalElements}
-        resultsPerPageStart={resultsPerPage}
+        resultsPerPageStart={USERS_PER_PAGE}
         onCurrentPageChange={onPageChange}
         onResultsPerPageChange={onResultsPerPageChange}
       />

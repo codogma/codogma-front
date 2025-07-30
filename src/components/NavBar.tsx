@@ -20,11 +20,12 @@ import Tooltip from '@mui/material/Tooltip';
 import Typography from '@mui/material/Typography';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { Session } from 'next-auth';
+import { signOut, useSession } from 'next-auth/react';
+import { useTranslations } from 'next-intl';
 import * as React from 'react';
-import { memo, useState } from 'react';
+import { useState } from 'react';
 
-import { useT } from '@/app/i18n/client';
-import { useAuth } from '@/components/AuthProvider';
 import { AvatarImage } from '@/components/AvatarImage';
 import { CategoryDialog } from '@/components/CategoryDialog';
 import { CompilationDialog } from '@/components/CompilationDialog';
@@ -37,19 +38,23 @@ import { Language, UserRole } from '@/types';
 
 type NavBarProps = {
   readonly lang: Language;
+  readonly session: Session | null;
 };
 
-const NavBar = ({ lang }: NavBarProps) => {
+export const NavBar = ({ lang, session }: NavBarProps) => {
   const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
   const [compilationDialogOpen, setCompilationDialogOpen] = useState(false);
   const [categoryDialogOpen, setCategoryDialogOpen] = useState(false);
   const [notificationDialogOpen, setNotificationDialogOpen] = useState(false);
   const router = useRouter();
-  const { state } = useAuth();
-  const { t } = useT();
+  const { data: clientSession, status } = useSession();
+  const currentSession = clientSession || session;
+  const isAuthenticated =
+    status === 'authenticated' || (status === 'loading' && !!session);
+  const t = useTranslations();
 
   const handleLogout = () => {
-    logout().finally(() => router.push(`/${lang}`));
+    logout().finally(() => signOut({ redirect: true, redirectTo: `/${lang}` }));
     handleCloseUserMenu();
   };
 
@@ -150,8 +155,9 @@ const NavBar = ({ lang }: NavBarProps) => {
                 sx={{ p: 0 }}
               >
                 <AvatarImage
-                  alt={state.user?.username}
-                  src={state.user?.avatarUrl}
+                  alt={currentSession?.user.name ?? ''}
+                  src={currentSession?.user.image ?? ''}
+                  priority
                   variant='rounded'
                   size={40}
                   type='avatar'
@@ -174,7 +180,7 @@ const NavBar = ({ lang }: NavBarProps) => {
               open={Boolean(anchorElUser)}
               onClose={handleCloseUserMenu}
             >
-              {!state.isAuthenticated ? (
+              {!isAuthenticated ? (
                 <MenuList className='menu-list'>
                   <MenuItem onClick={() => handleClickMenuItem('sign-up')}>
                     <Typography textAlign='center'>
@@ -196,7 +202,7 @@ const NavBar = ({ lang }: NavBarProps) => {
                 <MenuList className='menu-list'>
                   <MenuItem
                     onClick={() =>
-                      handleClickMenuItem(`users/${state.user?.username}`)
+                      handleClickMenuItem(`users/${currentSession?.user?.name}`)
                     }
                   >
                     <Typography textAlign='center'>
@@ -204,8 +210,8 @@ const NavBar = ({ lang }: NavBarProps) => {
                       {t('profile')}
                     </Typography>
                   </MenuItem>
-                  {state.isAuthenticated &&
-                    state.user?.role !== UserRole.ROLE_ADMIN && (
+                  {isAuthenticated &&
+                    currentSession?.user.role !== UserRole.ROLE_ADMIN && (
                       <>
                         <MenuItem onClick={() => handleOpenCompilationDialog()}>
                           <Typography textAlign='center'>
@@ -216,10 +222,11 @@ const NavBar = ({ lang }: NavBarProps) => {
                         <CompilationDialog
                           open={compilationDialogOpen}
                           onClose={handleCloseCompilationDialog}
+                          lang={lang}
                         />
                       </>
                     )}
-                  {state.user?.role === UserRole.ROLE_AUTHOR && (
+                  {currentSession?.user.role === UserRole.ROLE_AUTHOR && (
                     <MenuItem
                       onClick={() => handleClickMenuItem('article-editor')}
                     >
@@ -229,7 +236,7 @@ const NavBar = ({ lang }: NavBarProps) => {
                       </Typography>
                     </MenuItem>
                   )}
-                  {state.user?.role === UserRole.ROLE_ADMIN && (
+                  {currentSession?.user.role === UserRole.ROLE_ADMIN && (
                     <>
                       <MenuItem onClick={() => handleOpenCategoryDialog()}>
                         <Typography textAlign='center'>
@@ -284,5 +291,3 @@ const NavBar = ({ lang }: NavBarProps) => {
     </AppBar>
   );
 };
-
-export default memo(NavBar);

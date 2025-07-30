@@ -13,11 +13,11 @@ import {
 import { AxiosError } from 'axios';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { useTranslations } from 'next-intl';
 import React, { useEffect, useState } from 'react';
 import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
 import { z } from 'zod';
 
-import { useT } from '@/app/i18n/client';
 import { GithubIcon, GitlabIcon } from '@/components/CustomIcons';
 import FormInput from '@/components/FormInput';
 import { signUp } from '@/helpers/authApi';
@@ -43,7 +43,7 @@ type PageProps = {
 export default function Page({ params: { lng } }: PageProps) {
   const router = useRouter();
   const [serverError, setServerError] = useState('');
-  const { t } = useT('signUp');
+  const t = useTranslations('signUpPage');
 
   const zodForm = useForm<z.infer<typeof SignUpScheme>>({
     resolver: zodResolver(SignUpScheme),
@@ -86,7 +86,7 @@ export default function Page({ params: { lng } }: PageProps) {
 
   const handleOAuth2Redirect = (provider: OAuthProvider) => {
     const redirectSuccessUri = encodeURIComponent(
-      window.location.origin + '/${lng}/profile-update',
+      window.location.origin + `/${lng}/profile-update`,
     );
     window.location.href = `${process.env.NEXT_PUBLIC_BASE_URL}/api/oauth2/authorization/${provider}?redirect_success_uri=${redirectSuccessUri}`;
   };

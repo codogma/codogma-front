@@ -24,14 +24,15 @@ import Tooltip from '@mui/material/Tooltip';
 import Typography from '@mui/material/Typography';
 import { useQuery } from '@tanstack/react-query';
 import { usePathname, useRouter } from 'next/navigation';
+import { useSession } from 'next-auth/react';
+import { useTranslations } from 'next-intl';
 import * as React from 'react';
 import { Fragment, useState } from 'react';
 
-import { useT } from '@/app/i18n/client';
-import { useAuth } from '@/components/AuthProvider';
 import { CustomPagination } from '@/components/CustomPagination';
 import { EditNotification } from '@/components/EditNotification';
 import { Scrollbar } from '@/components/Scrollbar';
+import { NOTIFICATIONS_PER_PAGE } from '@/constants/limits';
 import { dispatchCustomEvent } from '@/helpers/dispatchCustomEvent';
 import {
   deleteAllSystemNotifications,
@@ -71,9 +72,11 @@ type NotificationsDialogProps = {
 export const NotificationDialog = ({ lang }: NotificationsDialogProps) => {
   const [open, setOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState<number>(0);
-  const [resultsPerPage, setResultsPerPage] = useState<number>(10);
-  const { state } = useAuth();
-  const { t } = useT('notifications');
+  const [resultsPerPage, setResultsPerPage] = useState<number>(
+    NOTIFICATIONS_PER_PAGE,
+  );
+  const { data: state } = useSession();
+  const t = useTranslations('notificationsPage');
   const router = useRouter();
   const pathname = usePathname();
 
@@ -248,7 +251,7 @@ export const NotificationDialog = ({ lang }: NotificationsDialogProps) => {
                         </CardContent>
                         <CardActions>
                           <ButtonGroup size='small'>
-                            {state.user?.role === UserRole.ROLE_ADMIN &&
+                            {state?.user?.role === UserRole.ROLE_ADMIN &&
                               notification.type === NotificationType.SYSTEM && (
                                 <Button
                                   onClick={() =>
@@ -260,7 +263,7 @@ export const NotificationDialog = ({ lang }: NotificationsDialogProps) => {
                                   Удалить
                                 </Button>
                               )}
-                            {state.user?.role === UserRole.ROLE_ADMIN &&
+                            {state?.user?.role === UserRole.ROLE_ADMIN &&
                               notification.type === NotificationType.SYSTEM && (
                                 <EditNotification
                                   id={notification.id}
@@ -333,6 +336,7 @@ export const NotificationDialog = ({ lang }: NotificationsDialogProps) => {
             totalElements={totalElements}
             onCurrentPageChange={onPageChange}
             onResultsPerPageChange={onResultsPerPageChange}
+            resultsPerPageStart={NOTIFICATIONS_PER_PAGE}
           />
         </DialogContent>
         <DialogActions>
@@ -343,7 +347,7 @@ export const NotificationDialog = ({ lang }: NotificationsDialogProps) => {
             <Button onClick={() => handleDeleteReadNotifications()}>
               Удалить прочитанные
             </Button>
-            {state.user?.role === UserRole.ROLE_ADMIN && (
+            {state?.user?.role === UserRole.ROLE_ADMIN && (
               <Button onClick={() => handleDeleteAllSystemNotifications()}>
                 Удалить системные уведомления
               </Button>

@@ -1,25 +1,22 @@
 'use client';
 import { useRouter } from 'next/navigation';
-import { FC, useEffect, useState } from 'react';
+import { useSession } from 'next-auth/react';
+import { FC, useEffect } from 'react';
 
-import { useAuth } from '@/components/AuthProvider';
 import { Spinner } from '@/components/Spinner';
 
 export const WithAuth = <P extends object>(WrappedComponent: FC<P>) => {
   const Wrapper: FC<P> = (props) => {
     const router = useRouter();
-    const { state } = useAuth();
-    const [isLoading, setIsLoading] = useState(true);
+    const { status } = useSession();
 
     useEffect(() => {
-      if (state.isAuthenticated) {
-        setIsLoading(false);
-      } else {
+      if (status !== 'authenticated') {
         router.push('/sign-in');
       }
-    }, [state, router]);
+    }, [status, router]);
 
-    if (isLoading) {
+    if (status === 'loading') {
       return <Spinner />;
     }
 

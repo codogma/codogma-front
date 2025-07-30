@@ -25,7 +25,7 @@ export type UpdateCompilationDTO = {
 export const getCompilations = async (
   tag?: string,
   content?: string,
-  username?: string,
+  username?: string | null,
   isBookmarked?: boolean,
   page: number = 0,
   size: number = 10,
@@ -67,8 +67,8 @@ export const getCompilationById = async (
 
 export const createCompilation = async (
   requestData: CompilationCreate,
-): Promise<void> => {
-  await axiosInstance.post('/compilations', requestData, {
+): Promise<GetCompilation> => {
+  const response = await axiosInstance.post('/compilations', requestData, {
     headers: {
       'Content-Type': 'multipart/form-data',
     },
@@ -77,6 +77,7 @@ export const createCompilation = async (
     message: 'Compilation created successfully',
     severity: 'success',
   });
+  return response.data;
 };
 
 export const bookmark = async (id: number): Promise<GetArticle> => {

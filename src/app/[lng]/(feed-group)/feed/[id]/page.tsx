@@ -3,10 +3,10 @@ import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import DOMPurify from 'dompurify';
 import Link from 'next/link';
+import { useSession } from 'next-auth/react';
 import React from 'react';
 
 import { useArticle } from '@/components/ArticleProvider';
-import { useAuth } from '@/components/AuthProvider';
 import { AvatarImage } from '@/components/AvatarImage';
 import ButtonAlertDialog from '@/components/ButtonAlertDialog';
 import { useContentImageContext } from '@/components/ContentImageProvider';
@@ -23,7 +23,7 @@ type PageProps = {
 
 export default function Page({ params: { lng } }: PageProps) {
   const { article } = useArticle();
-  const { state } = useAuth();
+  const { data: state, status } = useSession();
   const { processContent } = useContentImageContext();
   const content = processContent(DOMPurify.sanitize(article.content));
 
@@ -33,7 +33,6 @@ export default function Page({ params: { lng } }: PageProps) {
         <div className='card-header'>
           <AvatarImage
             alt={article.username}
-            className='article-user-avatar'
             src={article.authorAvatarUrl}
             variant='rounded'
             size={32}
@@ -88,8 +87,8 @@ export default function Page({ params: { lng } }: PageProps) {
             ))}
           </div>
         </div>
-        {state.user?.username === article.username &&
-          state.user?.role === UserRole.ROLE_AUTHOR && (
+        {state?.user?.name === article.username &&
+          state?.user?.role === UserRole.ROLE_AUTHOR && (
             <ButtonAlertDialog article={article} lang={lng} />
           )}
       </CardContent>

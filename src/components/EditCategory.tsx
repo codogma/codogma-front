@@ -23,6 +23,7 @@ import { styled } from '@mui/material/styles';
 import Typography from '@mui/material/Typography';
 import { useQuery } from '@tanstack/react-query';
 import { Swatch } from '@vibrant/color';
+import { useTranslations } from 'next-intl';
 import { Vibrant } from 'node-vibrant/browser';
 import React, { useCallback, useEffect, useState } from 'react';
 import {
@@ -34,7 +35,6 @@ import {
 } from 'react-hook-form';
 import { z } from 'zod';
 
-import { useT } from '@/app/i18n/client';
 import { AvatarImage } from '@/components/AvatarImage';
 import FormInput from '@/components/FormInput';
 import { languageMenuItems } from '@/constants/i18n';
@@ -43,7 +43,7 @@ import {
   UpdateCategory,
   updateCategory,
 } from '@/helpers/categoryApi';
-import { devConsoleError, devConsoleInfo } from '@/helpers/devConsoleLogs';
+import { devConsoleInfo, devConsoleWarn } from '@/helpers/devConsoleLogs';
 import { GetCategoryToUpdate, Language, PaletteDTO, SwatchDTO } from '@/types';
 
 const VisuallyHiddenInput = styled('input')({
@@ -85,13 +85,16 @@ export const EditCategory = ({
   const [open, setOpen] = useState(false);
   const [palette, setPalette] = useState<PaletteDTO>();
   const [selectedLang, setSelectedLang] = useState<Language>(lang);
-  const { t } = useT('categories');
+  const t = useTranslations('categoriesPage');
 
   const EditCategoryScheme = z.object({
     name: z.optional(
       z.record(
         z.nativeEnum(Language),
-        z.string().min(2, t('minText')).max(50, t('maxText')),
+        z
+          .string()
+          .min(2, t('minText', { lang: t(selectedLang), length: 2 }))
+          .max(50, t('maxText', { lang: t(selectedLang), length: 50 })),
       ),
     ),
     icon: z.optional(z.instanceof(File)),
@@ -204,7 +207,7 @@ export const EditCategory = ({
             trigger('image');
           })
           .catch((error) => {
-            devConsoleError('Palette extraction failed:', error);
+            devConsoleWarn('Palette extraction failed:', error);
           })
           .finally(() => {
             URL.revokeObjectURL(fileURL);
@@ -327,7 +330,7 @@ export const EditCategory = ({
                   )}
                 />
               </FormControl>
-              {palette && (
+              {!!palette && (
                 <Stack
                   key={JSON.stringify(palette)}
                   direction='row'
@@ -435,17 +438,7 @@ export const EditCategory = ({
                 variant='standard'
                 value={nameValues}
                 error={!!errors.name?.ru || !!errors.name?.en}
-                helperText={
-                  (!!errors.name?.[selectedLang] &&
-                    errors.name?.[selectedLang].message?.replace(
-                      '{}',
-                      t(selectedLang.toLowerCase()),
-                    )) ||
-                  (!!errors.name?.ru &&
-                    errors.name?.ru?.message?.replace('{}', t('ru'))) ||
-                  (!!errors.name?.en &&
-                    errors.name?.en?.message?.replace('{}', t('en')))
-                }
+                helperText={errors.name?.[selectedLang]?.message}
               />
               <FormInput
                 key={`description-${selectedLang}`}

@@ -1,0 +1,9 @@
+import { CustomEventDetail } from '@/types/global';
+
+export function dispatchCustomEvent(
+  eventName: string,
+  detail?: CustomEventDetail,
+) {
+  const customEvent = new CustomEvent(eventName, { detail });
+  window.dispatchEvent(customEvent);
+}

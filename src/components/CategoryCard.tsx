@@ -8,14 +8,15 @@ import {
   CardMedia,
   Collapse,
   IconButton,
+  Skeleton,
 } from '@mui/material';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import Link from 'next/link';
+import { useSession } from 'next-auth/react';
+import { useTranslations } from 'next-intl';
 import React, { useRef, useState } from 'react';
 
-import { useT } from '@/app/i18n/client';
-import { useAuth } from '@/components/AuthProvider';
 import { ButtonFavorite } from '@/components/ButtonFavorite';
 import { DefaultImage } from '@/components/DefaultImage';
 import MenuButton from '@/components/MenuButton';
@@ -27,13 +28,13 @@ type CategoryCardProps = {
   readonly refetch?: () => void;
 };
 
-export default function CategoryCard({
+export const CategoryCard = ({
   category,
   lang,
   refetch,
-}: CategoryCardProps) {
-  const { state } = useAuth();
-  const { t } = useT('categories');
+}: CategoryCardProps) => {
+  const { data: state } = useSession();
+  const t = useTranslations('categoriesPage');
   const [expanded, setExpanded] = useState(false);
   const imgRef = useRef<HTMLImageElement>(null);
   const palette = category?.image?.palette;
@@ -43,22 +44,16 @@ export default function CategoryCard({
     r: vibrantR = 0,
     g: vibrantG = 0,
     b: vibrantB = 0,
-    hex: vibrantHex = '#fff',
     titleTextColor: vibrantTextColor = '#fff',
   } = vibrant;
 
   const lightMuted = (palette?.lightMuted || {}) as SwatchDTO;
-  const {
-    r: lightMutedR = 0,
-    g: lightMutedG = 0,
-    b: lightMutedB = 0,
-    hex: lightMutedHex = '#fff',
-  } = lightMuted;
+  const { hex: lightMutedHex = '#fff' } = lightMuted;
 
   const darkMuted = (palette?.darkMuted || {}) as SwatchDTO;
   const { hex: darkMutedHex = '#fff' } = darkMuted;
 
-  return (
+  return category ? (
     <Card variant='outlined' className='card'>
       <Box className='card-media' onMouseLeave={() => setExpanded(false)}>
         <Collapse in={!expanded} timeout={{ enter: 300, exit: 300 }}>
@@ -74,7 +69,7 @@ export default function CategoryCard({
             >
               <CardActions>
                 <Stack direction='row' spacing={1}>
-                  {state.user?.role !== UserRole.ROLE_ADMIN ? (
+                  {state?.user?.role !== UserRole.ROLE_ADMIN ? (
                     <ButtonFavorite
                       isFavoriteValue={category?.isFavorite}
                       id={category.id}
@@ -99,7 +94,6 @@ export default function CategoryCard({
                         color: darkMutedHex,
                         '.dark &': { color: lightMutedHex },
                       }}
-                      user={state.user}
                     />
                   )}
                 </Stack>
@@ -131,7 +125,10 @@ export default function CategoryCard({
                 spacing={1}
                 marginTop={5}
               >
-                <Link href={`/categories/${category.id}`}>
+                <Link
+                  href={`/${lang}/categories/${category.id}`}
+                  scroll={false}
+                >
                   <Typography
                     variant='subtitle1'
                     sx={{
@@ -194,6 +191,7 @@ export default function CategoryCard({
                             pathname: `/${lang}/articles`,
                             query: { type: 'tag', value: tag.name },
                           }}
+                          scroll={false}
                         >
                           <span className='tag-name'>{tag.name}</span>
                         </Link>
@@ -207,5 +205,24 @@ export default function CategoryCard({
         </Collapse>
       </Box>
     </Card>
+  ) : (
+    <Card variant='outlined' className='card'>
+      <CardContent className='card-content'>
+        <div className='card-header'>
+          <Skeleton variant='rounded' width={48} height={48} />
+          <ul>
+            <li>
+              <Skeleton variant='text' width={100} />
+            </li>
+            <li>
+              <Skeleton variant='text' width={150} />
+            </li>
+            <li>
+              <Skeleton variant='text' width={150} />
+            </li>
+          </ul>
+        </div>
+      </CardContent>
+    </Card>
   );
-}
+};

@@ -1,15 +1,14 @@
 'use server';
 import { Metadata } from 'next';
+import { getTranslations } from 'next-intl/server';
 import { ReactNode } from 'react';
-
-import { getT } from '@/app/i18n';
 
 type LayoutProps = {
   readonly children: ReactNode;
 };
 
 export async function generateMetadata(): Promise<Metadata> {
-  const { t } = await getT('compilations');
+  const t = await getTranslations();
   return {
     alternates: {
       canonical: `/compilations/`,
@@ -22,7 +21,7 @@ export async function generateMetadata(): Promise<Metadata> {
       template: '%s | CODOGMA',
       default: t('compilations'),
     },
-    description: t('compilationsDescription'),
+    description: t('compilationsPage.compilationsDescription'),
   };
 }
 

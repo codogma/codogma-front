@@ -1,5 +1,6 @@
 import acceptLanguage from 'accept-language';
 import { NextRequest, NextResponse } from 'next/server';
+import createMiddleware from 'next-intl/middleware';
 
 import {
   fallbackLng,
@@ -8,8 +9,14 @@ import {
   languages,
 } from '@/constants/i18n';
 import { currentUser } from '@/helpers/authApi';
-import { devConsoleError } from '@/helpers/devConsoleLogs';
-import { UserRole } from '@/types';
+import { devConsoleWarn } from '@/helpers/devConsoleLogs';
+import { getLocale } from '@/helpers/getLocale';
+import { routing } from '@/i18n/routing';
+import { Language, UserRole } from '@/types';
+
+import { auth } from '@/lib/auth';
+
+export default createMiddleware(routing);
 
 acceptLanguage.languages(languages);
 
@@ -20,9 +27,21 @@ export const config = {
 
 export async function middleware(req: NextRequest) {
   const { pathname, search } = req.nextUrl;
-  const lng = getLanguage(req);
+  const lng = await getLanguage(req);
 
-  // === 1. Логика локализации ===
+  // === 1. Проверка аутентификационных токенов ===
+  const status = await auth();
+  const accessToken = req.cookies.get('access_token')?.value;
+  const refreshToken = req.cookies.get('refresh_token')?.value;
+
+  // Если есть сессия NextAuth, но нет токенов бэкенда
+  if (!!status && (!accessToken || !refreshToken)) {
+    const response = NextResponse.redirect(new URL('/sign-in', req.url));
+    response.cookies.delete('authjs.session-token');
+    return response;
+  }
+
+  // === 2. Логика локализации ===
   const lngInPath = languages.find((loc) => pathname.startsWith(`/${loc}`));
   const headers = new Headers(req.headers);
   headers.set(headerName, lngInPath ?? lng);
@@ -34,7 +53,7 @@ export async function middleware(req: NextRequest) {
     return response;
   }
 
-  // === 2. Логика защиты маршрутов /admin ===
+  // === 3. Логика защиты маршрутов /admin ===
   if (pathname.startsWith(`/${lng}/admin`)) {
     return handleAdminCheck(req);
   }
@@ -43,9 +62,13 @@ export async function middleware(req: NextRequest) {
 }
 
 // Вспомогательные функции
-const getLanguage = (req: NextRequest) => {
-  let lng = acceptLanguage.get(req.cookies.get(intlCookie)?.value);
-  lng ??= acceptLanguage.get(req.headers.get('Accept-Language')) ?? fallbackLng;
+const getLanguage = async (req: NextRequest) => {
+  let lng =
+    (await getLocale()) ??
+    acceptLanguage.get(req.cookies.get(intlCookie)?.value);
+  lng ??=
+    (acceptLanguage.get(req.headers.get('Accept-Language')) as Language) ??
+    fallbackLng;
   return languages.includes(lng) ? lng : fallbackLng;
 };
 
@@ -58,7 +81,7 @@ const handleAdminCheck = async (req: NextRequest) => {
     }
   } catch (error) {
     // При ошибках аутентификации очищаем куки
-    devConsoleError(error);
+    devConsoleWarn(error);
     const response = redirectTo('/not-found', req);
     response.cookies.delete('user');
     return response;

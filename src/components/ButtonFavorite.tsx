@@ -3,10 +3,10 @@ import FavoriteIcon from '@mui/icons-material/Favorite';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import { SxProps, Theme } from '@mui/material';
 import Checkbox from '@mui/material/Checkbox';
+import { useSession } from 'next-auth/react';
+import { useTranslations } from 'next-intl';
 import React, { useState } from 'react';
 
-import { useT } from '@/app/i18n/client';
-import { useAuth } from '@/components/AuthProvider';
 import { PopoverElement } from '@/components/PopoverElement';
 import { favorite, unfavorite } from '@/helpers/categoryApi';
 
@@ -27,15 +27,15 @@ export const ButtonFavorite: React.FC<CustomFavoriteProps> = ({
 }) => {
   const [anchorEl, setAnchorEl] = React.useState<HTMLElement | null>(null);
   const [isFavorite, setIsFavorite] = useState(isFavoriteValue);
-  const { state } = useAuth();
-  const { t } = useT('categories');
+  const { status } = useSession();
+  const t = useTranslations('categoriesPage');
   const popoverId = 'simple-popover';
 
   const handleChange = async (
     event: React.ChangeEvent<HTMLInputElement>,
     checked: boolean,
   ) => {
-    if (state.isAuthenticated) {
+    if (status === 'authenticated') {
       setIsFavorite(checked);
 
       if (checked) {
@@ -62,7 +62,7 @@ export const ButtonFavorite: React.FC<CustomFavoriteProps> = ({
         slotProps={{ input: { 'aria-label': 'Favorites' } }}
         sx={sx}
       />
-      {!state.isAuthenticated && (
+      {status !== 'authenticated' && (
         <PopoverElement
           popoverId={popoverId}
           btnEl={anchorEl}

@@ -6,6 +6,7 @@ import Compilations from '@/components/Compilations';
 import { CustomPagination } from '@/components/CustomPagination';
 import { Search } from '@/components/Search';
 import { contlCookie } from '@/constants/i18n';
+import { COMPILATIONS_PER_PAGE } from '@/constants/limits';
 import { getCompilations, GetCompilationsDTO } from '@/helpers/compilationApi';
 import { useEventListener } from '@/helpers/useEventListener';
 import { GetCompilation, Language, SearchType } from '@/types';
@@ -18,7 +19,9 @@ type PageProps = {
 
 const Page = ({ params: { lng } }: PageProps) => {
   const [currentPage, setCurrentPage] = useState<number>(0);
-  const [resultsPerPage, setResultsPerPage] = useState<number>(10);
+  const [resultsPerPage, setResultsPerPage] = useState<number>(
+    COMPILATIONS_PER_PAGE,
+  );
   const [searchValue, setSearchValue] = useState<string>();
   const [searchType, setSearchType] = useState<SearchType>(SearchType.CONTENT);
 
@@ -75,6 +78,7 @@ const Page = ({ params: { lng } }: PageProps) => {
         lang={lng}
         loading={isFetching}
         compilations={compilations}
+        compilationsPerPageStart={COMPILATIONS_PER_PAGE}
         refetch={refetch}
       />
       <CustomPagination
@@ -82,6 +86,7 @@ const Page = ({ params: { lng } }: PageProps) => {
         totalElements={totalElements}
         onCurrentPageChange={onPageChange}
         onResultsPerPageChange={onResultsPerPageChange}
+        resultsPerPageStart={COMPILATIONS_PER_PAGE}
       />
     </>
   );

@@ -5,11 +5,11 @@ import IconButton from '@mui/material/IconButton';
 import Paper from '@mui/material/Paper';
 import { useQuery } from '@tanstack/react-query';
 import { useParams } from 'next/navigation';
+import { useSession } from 'next-auth/react';
 import React from 'react';
 
 import { ArticleProgressBar } from '@/components/ArticleProgressBar';
 import { ArticlesDrawer } from '@/components/ArticlesDrawer';
-import { useAuth } from '@/components/AuthProvider';
 import { FullscreenButton } from '@/components/FullscreenButton';
 import MenuButton from '@/components/MenuButton';
 import { useNavigationState } from '@/components/NavigationProvider';
@@ -30,7 +30,7 @@ export const ArticleActions = ({
   isFullscreen,
 }: SearchProps) => {
   const { toc } = useNavigationState();
-  const { state } = useAuth();
+  const { status } = useSession();
 
   const { articleId, compilationId } = useParams<{
     articleId: string;
@@ -57,7 +57,7 @@ export const ArticleActions = ({
     _event: React.ChangeEvent<HTMLInputElement>,
     checked: boolean,
   ) => {
-    if (state.isAuthenticated) {
+    if (status === 'authenticated') {
       if (checked) {
         await like(article.id).then(() => refetch());
       } else {

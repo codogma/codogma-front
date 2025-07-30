@@ -34,11 +34,3 @@ export const generateAvatar = async (
     img.src = url;
   });
 };
-
-export const generateAvatarUrl = async (
-  value: string,
-  size: number,
-): Promise<string> => {
-  const file = await generateAvatar(value, size);
-  return URL.createObjectURL(file);
-};

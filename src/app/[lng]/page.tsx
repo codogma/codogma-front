@@ -2,10 +2,10 @@
 import { Box } from '@mui/material';
 import Typography from '@mui/material/Typography';
 import { useQuery } from '@tanstack/react-query';
+import { useSession } from 'next-auth/react';
+import { useTranslations } from 'next-intl';
 import React from 'react';
 
-import { useT } from '@/app/i18n/client';
-import { useAuth } from '@/components/AuthProvider';
 import Banner from '@/components/Banner';
 import { Carousel } from '@/components/Carousel';
 import { MainTabs } from '@/components/MainTabs';
@@ -17,8 +17,8 @@ type PageProps = {
 };
 
 export default function Page({ params: { lng } }: PageProps) {
-  const { state } = useAuth();
-  const { t } = useT('main');
+  const { data: state, status } = useSession();
+  const t = useTranslations('mainPage');
 
   const { data: recentlyData, isFetching: isFetchingRecently } =
     useQuery<GetArticlesDTO>({
@@ -35,12 +35,12 @@ export default function Page({ params: { lng } }: PageProps) {
       <Banner
         bannerData={{ welcome: t('welcome'), subWelcome: t('subWelcome') }}
       />
-      {state.isAuthenticated && (
+      {status === 'authenticated' && (
         <section className='your-interest'>
           <Typography variant='h3' className='your-interest-h3'>
             {t('yourInterests')}
           </Typography>
-          <MainTabs lang={lng} username={state.user?.username} />
+          <MainTabs lang={lng} username={state?.user?.name} />
         </section>
       )}
       <Box sx={{ width: 'auto', margin: 'auto', padding: '20px 0' }}>

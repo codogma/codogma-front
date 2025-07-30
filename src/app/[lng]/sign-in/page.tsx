@@ -1,10 +1,10 @@
 'use client';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { LoadingButton } from '@mui/lab';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Card from '@mui/material/Card';
 import Checkbox from '@mui/material/Checkbox';
+import CircularProgress from '@mui/material/CircularProgress';
 import Container from '@mui/material/Container';
 import Divider from '@mui/material/Divider';
 import FormControlLabel from '@mui/material/FormControlLabel';
@@ -13,16 +13,17 @@ import Typography from '@mui/material/Typography';
 import { AxiosError } from 'axios';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { signIn, useSession } from 'next-auth/react';
+import { useTranslations } from 'next-intl';
 import React, { useEffect, useState } from 'react';
 import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
 import { z } from 'zod';
 
-import { useT } from '@/app/i18n/client';
-import { useAuth } from '@/components/AuthProvider';
 import { GithubIcon, GitlabIcon } from '@/components/CustomIcons';
 import ForgotPassword from '@/components/ForgotPassword';
 import FormInput from '@/components/FormInput';
-import { signIn } from '@/helpers/authApi';
+import { login } from '@/helpers/authApi';
+import { Language } from '@/types';
 
 const SignInScheme = z.object({
   usernameOrEmail: z.string().min(1, { message: 'Name is required' }),
@@ -33,11 +34,17 @@ const SignInScheme = z.object({
 
 export type OAuthProvider = 'github' | 'gitlab';
 
-export default function Page() {
+type PageProps = {
+  readonly params: {
+    lng: Language;
+  };
+};
+
+export default function Page({ params: { lng } }: PageProps) {
   const router = useRouter();
-  const { dispatch } = useAuth();
+  const t = useTranslations('signInPage');
+  const { status } = useSession();
   const [serverError, setServerError] = useState('');
-  const { t } = useT('signIn');
   const [open, setOpen] = useState(false);
 
   const handleClickOpen = () => {
@@ -57,24 +64,32 @@ export default function Page() {
   });
 
   const {
-    reset,
     handleSubmit,
-    formState: { isSubmitSuccessful, isSubmitting },
+    formState: { isSubmitting },
   } = zodForm;
 
   useEffect(() => {
-    if (isSubmitSuccessful) {
-      reset();
+    if (status === 'authenticated') {
+      router.replace(`/${lng}/`);
     }
-  }, [isSubmitSuccessful, reset]);
+  }, [status, router, lng]);
 
   const onSubmit: SubmitHandler<z.infer<typeof SignInScheme>> = async (
     formData,
   ) => {
     try {
-      const loggedInUser = await signIn(formData);
-      dispatch({ type: 'LOGIN', user: loggedInUser });
-      router.push(`/`);
+      const data = await login(formData);
+      if (data) {
+        const result = await signIn('credentials', {
+          ...data,
+          redirect: false,
+        });
+        if (result?.error) {
+          setServerError('Failed to sign in');
+        } else if (result?.ok) {
+          router.push(`/${lng}/`);
+        }
+      }
     } catch (error) {
       if (error instanceof AxiosError) {
         const message =
@@ -154,15 +169,15 @@ export default function Page() {
                   {serverError}
                 </Typography>
               )}
-              <LoadingButton
+              <Button
                 type='submit'
                 fullWidth
-                loadingIndicator={t('signingInBtn')}
-                loading={isSubmitting}
                 variant='contained'
+                disabled={isSubmitting}
+                startIcon={isSubmitting ? <CircularProgress size={20} /> : null}
               >
-                {t('signInBtn')}
-              </LoadingButton>
+                {isSubmitting ? t('signingInBtn') : t('signInBtn')}
+              </Button>
               <Typography sx={{ textAlign: 'center' }}>
                 {t('haveAccount')}{' '}
                 <span>

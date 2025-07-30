@@ -5,12 +5,12 @@ import {
 } from '@mui/icons-material';
 import { Avatar, AvatarProps, SvgIconOwnProps } from '@mui/material';
 import Image from 'next/image';
-import React, { useEffect, useState } from 'react';
-
-import { generateAvatarUrl } from '@/helpers/generateAvatar';
+import React from 'react';
 
 interface AvatarImageProps extends AvatarProps {
   readonly size: number;
+  readonly priority?: boolean;
+  readonly quality?: number;
   readonly type?: 'avatar' | 'image';
   readonly fontSize?: SvgIconOwnProps['fontSize'];
 }
@@ -18,31 +18,18 @@ interface AvatarImageProps extends AvatarProps {
 export const AvatarImage = React.memo(function AvatarImage({
   src,
   alt = '',
+  priority = false,
+  quality = 70,
   size,
   children,
   type,
   fontSize,
   ...props
 }: AvatarImageProps) {
-  const [imageSrc, setImageSrc] = useState<string>('');
-
-  useEffect(() => {
-    const fetchAvatar = async () => {
-      if (src?.startsWith('blob') || src?.startsWith('http')) {
-        setImageSrc(src);
-      } else if (alt) {
-        const imageUrl = src
-          ? `${process.env.NEXT_PUBLIC_BASE_URL}${src}`
-          : await generateAvatarUrl(alt, size);
-        setImageSrc(imageUrl);
-      } else if (src) {
-        const imageUrl = `${process.env.NEXT_PUBLIC_BASE_URL}${src}`;
-        setImageSrc(imageUrl);
-      }
-    };
-
-    fetchAvatar();
-  }, [src, alt, size]);
+  const makeFullUrl = (urlPath: string) =>
+    urlPath.startsWith('blob')
+      ? urlPath
+      : `${process.env.NEXT_PUBLIC_BASE_URL}${urlPath}`;
 
   return (
     <Avatar
@@ -54,32 +41,41 @@ export const AvatarImage = React.memo(function AvatarImage({
         background: 'white',
       }}
     >
-      {imageSrc && !children && (
+      {!!src && !children && (
         <Image
           alt={alt}
-          src={imageSrc}
-          width={size}
-          height={size}
-          quality={70}
-          priority
+          src={makeFullUrl(src)}
+          priority={priority}
+          fill
+          quality={quality}
+          style={{
+            objectFit: 'cover',
+          }}
+          sizes={`${size}px`}
         />
       )}
       {!src && !children && !alt && type === 'avatar' && (
         <SensorOccupied
           fontSize={fontSize}
-          className='size-6 text-limed-spruce-rgba dark:text-woodsmoke-rgba'
+          className='text-limed-spruce-rgba dark:text-woodsmoke-rgba'
+          width={size}
+          height={size}
         />
       )}
       {!src && !children && !alt && type === 'image' && (
         <ImageIcon
           fontSize={fontSize}
-          className='size-6 text-limed-spruce-rgba dark:text-woodsmoke-rgba'
+          className='text-limed-spruce-rgba dark:text-woodsmoke-rgba'
+          width={size}
+          height={size}
         />
       )}
       {!src && !children && !alt && !type && (
         <BrokenImage
           fontSize={fontSize}
-          className='size-6 text-limed-spruce-rgba dark:text-woodsmoke-rgba'
+          className='text-limed-spruce-rgba dark:text-woodsmoke-rgba'
+          width={size}
+          height={size}
         />
       )}
       {children}

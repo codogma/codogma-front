@@ -5,14 +5,13 @@ import Pagination from '@mui/material/Pagination';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
+import { useTranslations } from 'next-intl';
 import React, { useEffect, useState } from 'react';
-
-import { useT } from '@/app/i18n/client';
 
 type PaginationProps = {
   readonly totalPages: number;
   readonly totalElements: number;
-  readonly resultsPerPageStart?: number;
+  readonly resultsPerPageStart: number;
   readonly onCurrentPageChange: (value: number) => void;
   readonly onResultsPerPageChange: (value: number) => void;
 };
@@ -30,7 +29,7 @@ export const CustomPagination = ({
   const [currentPage, setCurrentPage] = useState<number>(0);
   const [resultsPerPage, setResultsPerPage] =
     useState<number>(resultsPerPageStart);
-  const { t } = useT();
+  const t = useTranslations();
 
   useEffect(() => {
     onCurrentPageChange(currentPage);
