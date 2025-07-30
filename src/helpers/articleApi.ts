@@ -1,6 +1,5 @@
 import { axiosInstance } from '@/helpers/axiosInstance';
 import { dispatchCustomEvent } from '@/helpers/dispatchCustomEvent';
-// import { getT } from '@/helpers/getT';
 import { GetArticle, Language } from '@/types';
 
 export type CreateDraftArticleDTO = {

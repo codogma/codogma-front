@@ -91,7 +91,10 @@ export const EditCategory = ({
     name: z.optional(
       z.record(
         z.nativeEnum(Language),
-        z.string().min(2, t('minText')).max(50, t('maxText')),
+        z
+          .string()
+          .min(2, t('minText', { lang: t(selectedLang), length: 2 }))
+          .max(50, t('maxText', { lang: t(selectedLang), length: 50 })),
       ),
     ),
     icon: z.optional(z.instanceof(File)),
@@ -327,7 +330,7 @@ export const EditCategory = ({
                   )}
                 />
               </FormControl>
-              {palette && (
+              {!!palette && (
                 <Stack
                   key={JSON.stringify(palette)}
                   direction='row'
@@ -435,17 +438,7 @@ export const EditCategory = ({
                 variant='standard'
                 value={nameValues}
                 error={!!errors.name?.ru || !!errors.name?.en}
-                helperText={
-                  (!!errors.name?.[selectedLang] &&
-                    errors.name?.[selectedLang].message?.replace(
-                      '{}',
-                      t(selectedLang.toLowerCase()),
-                    )) ||
-                  (!!errors.name?.ru &&
-                    errors.name?.ru?.message?.replace('{}', t('ru'))) ||
-                  (!!errors.name?.en &&
-                    errors.name?.en?.message?.replace('{}', t('en')))
-                }
+                helperText={errors.name?.[selectedLang]?.message}
               />
               <FormInput
                 key={`description-${selectedLang}`}

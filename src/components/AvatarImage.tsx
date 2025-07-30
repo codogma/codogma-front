@@ -9,6 +9,8 @@ import React from 'react';
 
 interface AvatarImageProps extends AvatarProps {
   readonly size: number;
+  readonly priority?: boolean;
+  readonly quality?: number;
   readonly type?: 'avatar' | 'image';
   readonly fontSize?: SvgIconOwnProps['fontSize'];
 }
@@ -16,6 +18,8 @@ interface AvatarImageProps extends AvatarProps {
 export const AvatarImage = React.memo(function AvatarImage({
   src,
   alt = '',
+  priority = false,
+  quality = 70,
   size,
   children,
   type,
@@ -41,10 +45,13 @@ export const AvatarImage = React.memo(function AvatarImage({
         <Image
           alt={alt}
           src={makeFullUrl(src)}
-          width={size}
-          height={size}
-          quality={70}
-          priority
+          priority={priority}
+          fill
+          quality={quality}
+          style={{
+            objectFit: 'cover',
+          }}
+          sizes={`${size}px`}
         />
       )}
       {!src && !children && !alt && type === 'avatar' && (

@@ -59,11 +59,20 @@ export const EditNotification = ({
   const EditNotificationScheme = z.object({
     title: z.record(
       z.nativeEnum(Language),
-      z.string().min(2, t('minTextTitle')).max(50, t('maxTextTitle')),
+      z
+        .string()
+        .min(2, t('minTextTitle', { lang: t(selectedLang), length: 2 }))
+        .max(50, t('maxTextTitle', { lang: t(selectedLang), length: 50 })),
     ),
     message: z.record(
       z.nativeEnum(Language),
-      z.string().min(10, t('minTextMessage')).max(1000, t('maxTextMessage')),
+      z
+        .string()
+        .min(10, t('minTextMessage', { lang: t(selectedLang), length: 10 }))
+        .max(
+          1000,
+          t('maxTextMessage', { lang: t(selectedLang), length: 1000 }),
+        ),
     ),
   });
 

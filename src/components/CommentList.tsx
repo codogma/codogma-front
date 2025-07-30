@@ -1,6 +1,6 @@
 'use client';
-import { LoadingButton } from '@mui/lab';
 import { Box, Button, Card, CardContent, Typography } from '@mui/material';
+import CircularProgress from '@mui/material/CircularProgress';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import Link from 'next/link';
 import { useSession } from 'next-auth/react';
@@ -29,7 +29,7 @@ export const CommentList: React.FC<CommentListProps> = ({
   const [pageSize, setPageSize] = useState<number>(5);
   const scrollTarget = useRef<string | null>(null);
   const { data: state, status } = useSession();
-  const t = useTranslations();
+  const t = useTranslations('commentList');
 
   const { data, fetchNextPage, isFetchingNextPage, refetch } = useInfiniteQuery(
     {
@@ -259,16 +259,17 @@ export const CommentList: React.FC<CommentListProps> = ({
         {data?.pages.map((page, pageIndex) => (
           <div key={pageIndex}>{renderComments(page.content)}</div>
         ))}
-        <LoadingButton
+        <Button
           onClick={() => fetchNextPage()}
           loadingPosition='start'
           loading={isFetchingNextPage}
           variant='outlined'
           size='small'
-          disabled={!hasMoreComments}
+          startIcon={isFetchingNextPage ? <CircularProgress size={20} /> : null}
+          disabled={!hasMoreComments || isFetchingNextPage}
         >
-          Load More
-        </LoadingButton>
+          {isFetchingNextPage ? t('loading') : t('loadMore')}
+        </Button>
         {!editingComment && replyToCommentId === null && (
           <CommentForm articleId={articleId} onCommentAdded={() => refetch()} />
         )}

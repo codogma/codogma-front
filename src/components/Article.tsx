@@ -7,7 +7,7 @@ import {
 } from '@mui/material';
 import Card from '@mui/material/Card';
 import { useQuery } from '@tanstack/react-query';
-import DOMPurify from 'dompurify';
+import DOMPurify from 'isomorphic-dompurify';
 import Link from 'next/link';
 import { useTranslations } from 'next-intl';
 import React from 'react';
@@ -53,6 +53,7 @@ export default function Article({ lang }: ArticleProps) {
               <AvatarImage
                 alt={article.username}
                 src={article.authorAvatarUrl}
+                priority
                 variant='rounded'
                 size={32}
               />

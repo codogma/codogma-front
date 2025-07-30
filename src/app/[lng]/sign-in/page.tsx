@@ -1,10 +1,10 @@
 'use client';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { LoadingButton } from '@mui/lab';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Card from '@mui/material/Card';
 import Checkbox from '@mui/material/Checkbox';
+import CircularProgress from '@mui/material/CircularProgress';
 import Container from '@mui/material/Container';
 import Divider from '@mui/material/Divider';
 import FormControlLabel from '@mui/material/FormControlLabel';
@@ -169,15 +169,15 @@ export default function Page({ params: { lng } }: PageProps) {
                   {serverError}
                 </Typography>
               )}
-              <LoadingButton
+              <Button
                 type='submit'
                 fullWidth
-                loadingIndicator={t('signingInBtn')}
-                loading={isSubmitting}
                 variant='contained'
+                disabled={isSubmitting}
+                startIcon={isSubmitting ? <CircularProgress size={20} /> : null}
               >
-                {t('signInBtn')}
-              </LoadingButton>
+                {isSubmitting ? t('signingInBtn') : t('signInBtn')}
+              </Button>
               <Typography sx={{ textAlign: 'center' }}>
                 {t('haveAccount')}{' '}
                 <span>

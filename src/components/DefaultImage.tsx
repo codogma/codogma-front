@@ -15,7 +15,7 @@ export const DefaultImage = forwardRef<HTMLImageElement, DefaultImageProps>(
     {
       src,
       alt = '',
-      priority = true,
+      priority = false,
       quality = 80,
       width,
       height,

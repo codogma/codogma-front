@@ -5,13 +5,13 @@ import CardContent from '@mui/material/CardContent';
 import Typography from '@mui/material/Typography';
 import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
+import { useTranslations } from 'next-intl';
 import React, { useEffect } from 'react';
 import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
 import { z } from 'zod';
 
 import FormInput from '@/components/FormInput';
 import { createComment, updateComment } from '@/helpers/commentAPI';
-import { devConsoleWarn } from '@/helpers/devConsoleLogs';
 import { CreateComment, GetComment, UpdateComment } from '@/types';
 
 interface CommentFormProps {
@@ -22,13 +22,6 @@ interface CommentFormProps {
   readonly onCancelEdit?: () => void;
 }
 
-const CommentFormScheme = z.object({
-  content: z
-    .string()
-    .min(10, 'Текст комментариев не может содержать менее 10 символов.')
-    .max(1000, 'Текст комментариев не может содержать более 1000 символов.'),
-});
-
 export const CommentForm: React.FC<CommentFormProps> = ({
   articleId,
   parentCommentId,
@@ -38,6 +31,14 @@ export const CommentForm: React.FC<CommentFormProps> = ({
 }) => {
   const { status } = useSession();
   const router = useRouter();
+  const t = useTranslations('commentForm');
+
+  const CommentFormScheme = z.object({
+    content: z
+      .string()
+      .min(10, t('minText', { length: 10 }))
+      .max(1000, t('maxText', { length: 1000 })),
+  });
 
   const zodForm = useForm<z.infer<typeof CommentFormScheme>>({
     resolver: zodResolver(CommentFormScheme),
@@ -54,7 +55,6 @@ export const CommentForm: React.FC<CommentFormProps> = ({
   } = zodForm;
 
   useEffect(() => {
-    devConsoleWarn(errors);
     if (isSubmitSuccessful) {
       reset({ content: '' });
     }
@@ -113,7 +113,7 @@ export const CommentForm: React.FC<CommentFormProps> = ({
             />
             <Box sx={{ display: 'flex', gap: 1 }}>
               <Button type='submit' variant='outlined' size='small'>
-                {comment ? 'Update Comment' : 'Add Comment'}
+                {comment ? t('saveCommentBtn') : t('addCommentBtn')}
               </Button>
               {onCancelEdit && (
                 <Button
@@ -122,7 +122,7 @@ export const CommentForm: React.FC<CommentFormProps> = ({
                   size='small'
                   onClick={onCancelEdit}
                 >
-                  Cancel
+                  {t('cancelBtn')}
                 </Button>
               )}
             </Box>

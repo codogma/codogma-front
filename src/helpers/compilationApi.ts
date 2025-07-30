@@ -67,8 +67,8 @@ export const getCompilationById = async (
 
 export const createCompilation = async (
   requestData: CompilationCreate,
-): Promise<void> => {
-  await axiosInstance.post('/compilations', requestData, {
+): Promise<GetCompilation> => {
+  const response = await axiosInstance.post('/compilations', requestData, {
     headers: {
       'Content-Type': 'multipart/form-data',
     },
@@ -77,6 +77,7 @@ export const createCompilation = async (
     message: 'Compilation created successfully',
     severity: 'success',
   });
+  return response.data;
 };
 
 export const bookmark = async (id: number): Promise<GetArticle> => {

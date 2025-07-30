@@ -93,7 +93,7 @@ export default function MenuButton({
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const { data: state, status } = useSession();
   const open = Boolean(anchorEl);
-  const t = useTranslations('notificationsPage');
+  const t = useTranslations();
 
   const { data } = useQuery<GetUserDTO>({
     queryKey: [
@@ -119,12 +119,22 @@ export default function MenuButton({
     setAnchorEl(null);
   };
 
-  const handleDelete = (compilationId: number) => {
-    deleteCompilation(compilationId);
+  const handleDeleteCompilation = (compilationId: number) => {
+    deleteCompilation(compilationId).then(() => {
+      handleClose();
+      if (refetch) {
+        refetch();
+      }
+    });
   };
 
   const handleDeleteCategory = (categoryId: number) => {
-    deleteCategory(categoryId);
+    deleteCategory(categoryId).then(() => {
+      handleClose();
+      if (refetch) {
+        refetch();
+      }
+    });
   };
 
   return (
@@ -206,7 +216,7 @@ export default function MenuButton({
           )}
           {state?.user?.name === compilation?.ownerName && compilation && (
             <MenuItem
-              onClick={() => handleDelete(compilation.id)}
+              onClick={() => handleDeleteCompilation(compilation.id)}
               disableRipple
             >
               <Typography textAlign='center'>

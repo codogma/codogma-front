@@ -157,6 +157,7 @@ export const NavBar = ({ lang, session }: NavBarProps) => {
                 <AvatarImage
                   alt={currentSession?.user.name ?? ''}
                   src={currentSession?.user.image ?? ''}
+                  priority
                   variant='rounded'
                   size={40}
                   type='avatar'
@@ -221,6 +222,7 @@ export const NavBar = ({ lang, session }: NavBarProps) => {
                         <CompilationDialog
                           open={compilationDialogOpen}
                           onClose={handleCloseCompilationDialog}
+                          lang={lang}
                         />
                       </>
                     )}

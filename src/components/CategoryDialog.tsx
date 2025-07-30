@@ -23,6 +23,7 @@ import Paper from '@mui/material/Paper';
 import Stack from '@mui/material/Stack';
 import { styled } from '@mui/material/styles';
 import { Swatch } from '@vibrant/color';
+import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { Vibrant } from 'node-vibrant/browser';
 import React, { useCallback, useEffect, useState } from 'react';
@@ -40,7 +41,7 @@ import { AvatarImage } from '@/components/AvatarImage';
 import FormInput from '@/components/FormInput';
 import { languageMenuItems } from '@/constants/i18n';
 import { CreateCategory, createCategory } from '@/helpers/categoryApi';
-import { devConsoleInfo, devConsoleWarn } from '@/helpers/devConsoleLogs';
+import { devConsoleWarn } from '@/helpers/devConsoleLogs';
 import { Language, PaletteDTO, SwatchDTO } from '@/types';
 
 const VisuallyHiddenInput = styled('input')({
@@ -80,14 +81,15 @@ export const CategoryDialog = ({
   const [palette, setPalette] = useState<PaletteDTO>();
   const [selectedLang, setSelectedLang] = useState<Language>(lang);
   const t = useTranslations('categoriesPage');
+  const router = useRouter();
 
   const CategoryDialogScheme = z.object({
     name: z.record(
       z.nativeEnum(Language),
       z
         .string()
-        .min(2, t('minText', { lang: t(selectedLang) }))
-        .max(50, t('maxText', { lang: t(selectedLang) })),
+        .min(2, t('minText', { lang: t(selectedLang), length: 2 }))
+        .max(50, t('maxText', { lang: t(selectedLang), length: 50 })),
     ),
     icon: z.instanceof(File, {
       message: t('iconMessage'),
@@ -126,12 +128,12 @@ export const CategoryDialog = ({
   const nameValues = useWatch({
     name: `name.${selectedLang}`,
     control,
-  }) as Record<string, string>;
+  }) as Record<Language, string>;
 
   const descriptionValues = useWatch({
     name: `description.${selectedLang}`,
     control,
-  }) as Record<string, string>;
+  }) as Record<Language, string>;
 
   useEffect(() => {
     if (isSubmitSuccessful || !open) {
@@ -149,9 +151,10 @@ export const CategoryDialog = ({
       });
       setIconUrl(undefined);
       setImageUrl(undefined);
+      setPalette(undefined);
       setSelectedLang(lang);
     }
-  }, [isSubmitSuccessful, lang, open, reset]);
+  }, [isSubmitSuccessful, lang, open, reset, zodForm]);
 
   const handleIconChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -239,8 +242,10 @@ export const CategoryDialog = ({
     const formDataObject = Object.fromEntries(
       formDataToSend.entries(),
     ) as unknown as CreateCategory;
-    devConsoleInfo(formDataObject);
-    createCategory(formDataObject).then(() => onClose());
+    createCategory(formDataObject).then((category) => {
+      onClose();
+      router.push(`/${lang}/categories/${category.id}`);
+    });
   };
 
   return (
@@ -277,11 +282,12 @@ export const CategoryDialog = ({
             }}
           >
             <FormControl sx={{ mb: 1 }}>
+              <Typography>{t('selectImage')}</Typography>
               <Controller
                 name='image'
                 control={control}
                 render={({ fieldState }) => (
-                  <>
+                  <span>
                     <Badge
                       overlap='circular'
                       anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
@@ -312,7 +318,7 @@ export const CategoryDialog = ({
                     <FormHelperText id='image-text' error={!!fieldState.error}>
                       {fieldState.error?.message}
                     </FormHelperText>
-                  </>
+                  </span>
                 )}
               />
             </FormControl>
@@ -369,6 +375,7 @@ export const CategoryDialog = ({
               </Stack>
             )}
             <FormControl sx={{ mb: 1 }}>
+              <Typography>{t('selectIcon')}</Typography>
               <Controller
                 name='icon'
                 control={control}
@@ -377,7 +384,7 @@ export const CategoryDialog = ({
                 }: {
                   readonly fieldState: ControllerFieldState;
                 }) => (
-                  <>
+                  <span>
                     <Badge
                       overlap='circular'
                       anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
@@ -408,7 +415,7 @@ export const CategoryDialog = ({
                     <FormHelperText id='icon-text' error={!!fieldState.error}>
                       {fieldState.error?.message}
                     </FormHelperText>
-                  </>
+                  </span>
                 )}
               />
             </FormControl>

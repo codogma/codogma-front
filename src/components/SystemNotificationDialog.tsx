@@ -59,15 +59,18 @@ export const SystemNotificationDialog = ({
       z.nativeEnum(Language),
       z
         .string()
-        .min(2, t('minTextTitle', { lang: t(selectedLang) }))
-        .max(50, t('maxTextTitle', { lang: t(selectedLang) })),
+        .min(2, t('minTextTitle', { lang: t(selectedLang), length: 2 }))
+        .max(50, t('maxTextTitle', { lang: t(selectedLang), length: 50 })),
     ),
     message: z.record(
       z.nativeEnum(Language),
       z
         .string()
-        .min(10, t('minTextMessage', { lang: t(selectedLang) }))
-        .max(1000, t('maxTextMessage', { lang: t(selectedLang) })),
+        .min(10, t('minTextMessage', { lang: t(selectedLang), length: 10 }))
+        .max(
+          1000,
+          t('maxTextMessage', { lang: t(selectedLang), length: 1000 }),
+        ),
     ),
   });
 

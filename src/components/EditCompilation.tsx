@@ -28,17 +28,6 @@ import { updateCompilation } from '@/helpers/compilationApi';
 import { devConsoleWarn } from '@/helpers/devConsoleLogs';
 import { GetCompilation } from '@/types';
 
-const EditCompilationScheme = z.object({
-  image: z.optional(z.instanceof(File)),
-  title: z.optional(
-    z
-      .string()
-      .min(2, 'Название подборки не может содержать менее 2 символов.')
-      .max(50, 'Название подборки не может содержать более 50 символов.'),
-  ),
-  description: z.optional(z.string()),
-});
-
 const VisuallyHiddenInput = styled('input')({
   clip: 'rect(0 0 0 0)',
   clipPath: 'inset(50%)',
@@ -77,6 +66,17 @@ export const EditCompilation = ({
     compilationData,
   );
   const t = useTranslations('compilationsPage');
+
+  const EditCompilationScheme = z.object({
+    image: z.optional(z.instanceof(File)),
+    title: z.optional(
+      z
+        .string()
+        .min(2, t('minText', { length: 2 }))
+        .max(50, t('maxText', { length: 50 })),
+    ),
+    description: z.optional(z.string()),
+  });
 
   const zodForm = useForm<z.infer<typeof EditCompilationScheme>>({
     resolver: zodResolver(EditCompilationScheme),

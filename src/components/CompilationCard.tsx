@@ -145,6 +145,7 @@ export const CompilationCard = ({
                         left={0}
                         zIndex={0}
                         className='scale-x-100 transition-transform will-change-transform'
+                        priority={index === 0}
                       />
                     ) : (
                       index == 0 && (
@@ -157,6 +158,7 @@ export const CompilationCard = ({
                           left={0}
                           zIndex={0}
                           className='scale-x-100 transition-transform will-change-transform'
+                          priority={true}
                         />
                       )
                     )}
@@ -196,7 +198,10 @@ export const CompilationCard = ({
                     WebkitBoxOrient: 'vertical',
                   }}
                 >
-                  <Link href={`/compilations/${compilation.id}`}>
+                  <Link
+                    href={`/${lang}/compilations/${compilation.id}`}
+                    scroll={false}
+                  >
                     {compilation.title}
                   </Link>
                 </Typography>

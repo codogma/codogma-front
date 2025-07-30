@@ -1,9 +1,10 @@
-import axios, { AxiosResponse } from 'axios';
+import axios, { AxiosHeaders, AxiosResponse } from 'axios';
 import { redirect } from 'next/navigation';
 import { signOut } from 'next-auth/react';
 
 import { devConsoleWarn } from '@/helpers/devConsoleLogs';
-import { getLocale } from '@/helpers/getLocale';
+
+import { getAllServerHeaders } from '@/helpers/getAllServerHeaders';
 
 export const axiosInstance = axios.create({
   baseURL: `${process.env.NEXT_PUBLIC_BASE_URL}/api`,
@@ -17,10 +18,11 @@ export const axiosInstance = axios.create({
 axiosInstance.interceptors.request.use(
   async (config) => {
     if (typeof window === 'undefined') {
-      const intl = await getLocale();
-      if (intl) {
-        config.headers['Accept-Language'] = intl;
-      }
+      const incoming = await getAllServerHeaders();
+      config.headers = AxiosHeaders.from({
+        ...config.headers,
+        ...incoming,
+      });
     }
     return config;
   },

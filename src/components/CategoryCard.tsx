@@ -125,7 +125,10 @@ export const CategoryCard = ({
                 spacing={1}
                 marginTop={5}
               >
-                <Link href={`/categories/${category.id}`}>
+                <Link
+                  href={`/${lang}/categories/${category.id}`}
+                  scroll={false}
+                >
                   <Typography
                     variant='subtitle1'
                     sx={{
@@ -188,6 +191,7 @@ export const CategoryCard = ({
                             pathname: `/${lang}/articles`,
                             query: { type: 'tag', value: tag.name },
                           }}
+                          scroll={false}
                         >
                           <span className='tag-name'>{tag.name}</span>
                         </Link>
