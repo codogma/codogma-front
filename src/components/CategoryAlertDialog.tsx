@@ -8,24 +8,16 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import MenuItem from '@mui/material/MenuItem';
 import Typography from '@mui/material/Typography';
-import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import React, { useState } from 'react';
 
-import { GetArticle, Language } from '@/types';
-
 type CategoryAlertDialogProps = {
-  readonly lang: Language;
-  readonly article: GetArticle;
   readonly onClose?: () => void;
 };
 export default function CategoryAlertDialog({
-  lang,
-  article,
   onClose,
 }: CategoryAlertDialogProps) {
   const [open, setOpen] = useState(false);
-  const router = useRouter();
   const t = useTranslations('categoriesPage');
 
   const handleClose = () => {
@@ -37,11 +29,6 @@ export default function CategoryAlertDialog({
       onClose();
     }
     setOpen(true);
-  };
-
-  const handleClickEditLinkItem = () => {
-    router.push(`/${lang}/article-editor?id=${article.id}`);
-    handleClose();
   };
 
   return (
@@ -66,15 +53,15 @@ export default function CategoryAlertDialog({
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose}>{t('disagreeBtn')}</Button>
-          <Button onClick={handleClickEditLinkItem}>{t('agreeBtn')}</Button>
+          <Button>{t('agreeBtn')}</Button>
         </DialogActions>
       </Dialog>
-      <MenuItem onClick={handleClickEditLinkItem} disableRipple>
-        <Typography textAlign='center'>
-          <EditOutlinedIcon />
-          {t('editBtn')}
-        </Typography>
-      </MenuItem>
+      {/*<MenuItem onClick={handleClickEditLinkItem} disableRipple>*/}
+      <Typography textAlign='center'>
+        <EditOutlinedIcon />
+        {t('editBtn')}
+      </Typography>
+      {/*</MenuItem>*/}
     </>
   );
 }

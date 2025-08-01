@@ -14,7 +14,6 @@ interface TinyMCEEditorProps {
   readonly id?: string;
   readonly articleId: number;
   readonly language: Language;
-  readonly defaultValue?: string;
   readonly value?: string;
   readonly onChange: (content: string) => void;
   readonly reset?: boolean;
@@ -24,7 +23,6 @@ export const TinyMCEEditor = ({
   id,
   articleId,
   language,
-  defaultValue,
   value,
   onChange,
   reset,
@@ -51,7 +49,6 @@ export const TinyMCEEditor = ({
     <Editor
       id={id}
       tinymceScriptSrc='/tinymce/tinymce.min.js'
-      initialValue={defaultValue}
       value={value}
       licenseKey='gpl'
       ref={editorRef}

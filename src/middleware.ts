@@ -12,9 +12,8 @@ import { currentUser } from '@/helpers/authApi';
 import { devConsoleWarn } from '@/helpers/devConsoleLogs';
 import { getLocale } from '@/helpers/getLocale';
 import { routing } from '@/i18n/routing';
-import { Language, UserRole } from '@/types';
-
 import { auth } from '@/lib/auth';
+import { Language, UserRole } from '@/types';
 
 export default createMiddleware(routing);
 

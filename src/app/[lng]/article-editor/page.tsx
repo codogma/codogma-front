@@ -786,7 +786,6 @@ const Page = ({ params: { lng } }: PageParams) => {
                     language={lng}
                     value={field.value}
                     onChange={field.onChange}
-                    defaultValue={field.value}
                     reset={reset}
                   />
                 )}
@@ -1161,7 +1160,6 @@ const Page = ({ params: { lng } }: PageParams) => {
                     language={lng}
                     value={field.value}
                     onChange={field.onChange}
-                    defaultValue={field.value}
                     reset={reset}
                   />
                 )}
