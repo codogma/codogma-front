@@ -33,7 +33,7 @@ export async function generateMetadata(
     },
     title: article.title,
     description: convertHtmlToText(article.previewContent),
-    keywords: article.tags.map((tag) => tag.name),
+    keywords: article.tags?.map((tag) => tag.name),
     authors: [
       {
         name: article.username,

@@ -36,7 +36,7 @@ export default function CategoryAlertDialog({
       <MenuItem onClick={handleClickOpen} disableRipple>
         <Typography textAlign='center'>
           <EditOutlinedIcon />
-          {t('editBtn')}
+          отписаться
         </Typography>
       </MenuItem>
       <Dialog
@@ -52,16 +52,10 @@ export default function CategoryAlertDialog({
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleClose}>{t('disagreeBtn')}</Button>
-          <Button>{t('agreeBtn')}</Button>
+          <Button onClick={handleClose}>{t('leaveInSelect')}</Button>
+          <Button>{t('unsubscribeAnyway')}</Button>
         </DialogActions>
       </Dialog>
-      {/*<MenuItem onClick={handleClickEditLinkItem} disableRipple>*/}
-      <Typography textAlign='center'>
-        <EditOutlinedIcon />
-        {t('editBtn')}
-      </Typography>
-      {/*</MenuItem>*/}
     </>
   );
 }

@@ -14,7 +14,6 @@ import { useState } from 'react';
 import { AddToCompilations } from '@/components/AddToCompilations';
 import { ArticlesDnD } from '@/components/ArticlesDnD';
 import ButtonAlertDialog from '@/components/ButtonAlertDialog';
-import CategoryAlertDialog from '@/components/CategoryAlertDialog';
 import { EditCategory } from '@/components/EditCategory';
 import { EditCompilation } from '@/components/EditCompilation';
 import { SubscribeMenuItem } from '@/components/SubscribeMenuItem';
@@ -193,9 +192,6 @@ export default function MenuButton({
             )}
           {userDTO && (
             <SubscribeMenuItem user={userDTO} onClose={handleClose} />
-          )}
-          {category && state?.user?.role === UserRole.ROLE_ADMIN && (
-            <CategoryAlertDialog onClose={handleClose} />
           )}
           {category && state?.user?.role === UserRole.ROLE_ADMIN && (
             <EditCategory

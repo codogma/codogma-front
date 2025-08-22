@@ -15,7 +15,6 @@ import { z } from 'zod';
 import { AvatarImage } from '@/components/AvatarImage';
 import FormInput from '@/components/FormInput';
 import { WithAuth } from '@/components/WithAuth';
-import { devConsoleWarn } from '@/helpers/devConsoleLogs';
 import {
   deleteUser,
   getUserByUsername,
@@ -59,7 +58,7 @@ const VisuallyHiddenInput = styled('input')({
 });
 
 function Page() {
-  const { data: state } = useSession();
+  const { data: state, update } = useSession();
   const username: string | undefined = state?.user?.name ?? '';
   const [avatarUrl, setAvatarUrl] = useState<string>();
   const t = useTranslations();
@@ -112,12 +111,24 @@ function Page() {
     }
   };
 
-  const onSubmit: SubmitHandler<z.infer<typeof UserScheme>> = (formData) => {
+  const onSubmit: SubmitHandler<z.infer<typeof UserScheme>> = async (
+    formData,
+  ) => {
     const updatedUserData: UserUpdate = {
       ...formData,
     };
-    devConsoleWarn(updatedUserData);
-    updateUser(updatedUserData);
+    const user = await updateUser(updatedUserData);
+    if (user) {
+      await update({
+        user: {
+          id: user.id,
+          name: user.username,
+          email: user.email,
+          image: user.avatarUrl,
+          role: user.role,
+        },
+      });
+    }
   };
 
   const handleDelete = (event: MouseEvent<HTMLElement>) => {

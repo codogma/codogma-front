@@ -1,6 +1,6 @@
 import { axiosInstance } from '@/helpers/axiosInstance';
 import { devConsoleInfo } from '@/helpers/devConsoleLogs';
-import { AuthDTO, GetUserDTO } from '@/types';
+import { AuthDTO } from '@/types';
 
 export type SignUp = {
   username: string;
@@ -23,10 +23,11 @@ export const signUp = async (requestData: SignUp): Promise<void> => {
   devConsoleInfo('User registered successfully');
 };
 
-export const confirmEmail = async (token: string | null): Promise<void> => {
-  await axiosInstance.post('/auth/confirm-email', null, {
+export const confirmEmail = async (token: string | null): Promise<string> => {
+  const response = await axiosInstance.post('/auth/confirm-email', null, {
     params: { token },
   });
+  return response.data;
 };
 
 export const login = async (requestData: SignIn): Promise<AuthDTO> => {
@@ -39,7 +40,7 @@ export const logout = async (): Promise<void> => {
   devConsoleInfo('User logged out successfully');
 };
 
-export const currentUser = async (): Promise<GetUserDTO> => {
+export const currentUser = async (): Promise<AuthDTO> => {
   const response = await axiosInstance.get('/auth/current-user');
   return response.data;
 };

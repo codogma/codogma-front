@@ -10,19 +10,20 @@ import Divider from '@mui/material/Divider';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
+import { useMutation } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { signIn, useSession } from 'next-auth/react';
 import { useTranslations } from 'next-intl';
 import React, { useEffect, useState } from 'react';
-import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
+import { FormProvider, useForm } from 'react-hook-form';
 import { z } from 'zod';
 
 import { GithubIcon, GitlabIcon } from '@/components/CustomIcons';
 import ForgotPassword from '@/components/ForgotPassword';
 import FormInput from '@/components/FormInput';
-import { login } from '@/helpers/authApi';
+import { currentUser, login } from '@/helpers/authApi';
 import { Language } from '@/types';
 
 const SignInScheme = z.object({
@@ -42,18 +43,21 @@ type PageProps = {
 
 export default function Page({ params: { lng } }: PageProps) {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const t = useTranslations('signInPage');
   const { status } = useSession();
   const [serverError, setServerError] = useState('');
   const [open, setOpen] = useState(false);
 
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
+  const handleClickOpen = () => setOpen(true);
 
-  const handleClose = () => {
-    setOpen(false);
-  };
+  const handleClose = () => setOpen(false);
+
+  useEffect(() => {
+    if (status === 'authenticated') {
+      router.push(`/${lng}/`);
+    }
+  }, [status, router, lng]);
 
   const zodForm = useForm<z.infer<typeof SignInScheme>>({
     resolver: zodResolver(SignInScheme),
@@ -63,45 +67,98 @@ export default function Page({ params: { lng } }: PageProps) {
     },
   });
 
-  const {
-    handleSubmit,
-    formState: { isSubmitting },
-  } = zodForm;
+  const { handleSubmit } = zodForm;
 
-  useEffect(() => {
-    if (status === 'authenticated') {
-      router.replace(`/${lng}/`);
-    }
-  }, [status, router, lng]);
-
-  const onSubmit: SubmitHandler<z.infer<typeof SignInScheme>> = async (
-    formData,
-  ) => {
-    try {
+  const { mutate: signInMutation, isPending: signInIsPending } = useMutation({
+    mutationFn: async (formData: z.infer<typeof SignInScheme>) => {
       const data = await login(formData);
       if (data) {
         const result = await signIn('credentials', {
           ...data,
           redirect: false,
         });
-        if (result?.error) {
-          setServerError('Failed to sign in');
-        } else if (result?.ok) {
-          router.push(`/${lng}/`);
-        }
+        if (result?.error) throw new Error('Failed to sign in');
+        return result;
       }
-    } catch (error) {
+      throw new Error('Empty response');
+    },
+    onSuccess: (result) => {
+      if (result?.ok) {
+        router.push(`/${lng}/`);
+      }
+    },
+    onError: (error) => {
       if (error instanceof AxiosError) {
         const message =
-          error?.response?.data ?? 'An error occurred during sign in.';
+          error?.response?.data ?? 'An error occurred during sign in';
         setServerError(message);
+      } else {
+        setServerError(error?.message || 'An error occurred during sign in');
       }
+    },
+  });
+
+  const { mutate: oauthSignInMutation, isPending: oauthIsPending } =
+    useMutation({
+      mutationFn: async () => {
+        const data = await currentUser();
+        const result = await signIn('credentials', {
+          ...data,
+          redirect: false,
+        });
+        if (!result?.ok || result?.error) throw new Error('Failed to sign in');
+        return result;
+      },
+      onSuccess: () => {
+        router.push(`/${lng}/`);
+      },
+      onError: (error) => {
+        if (error instanceof AxiosError) {
+          const message =
+            error?.response?.data ?? 'An error occurred during sign in';
+          setServerError(message);
+        } else {
+          setServerError(error?.message || 'An error occurred during sign in');
+        }
+      },
+    });
+
+  useEffect(() => {
+    const oauthSuccess = searchParams.get('oauth_success');
+    if (oauthSuccess === 'true') {
+      oauthSignInMutation();
+    } else if (oauthSuccess === 'false') {
+      setServerError('OAuth2 authorization failed');
     }
-  };
+  }, [oauthSignInMutation, searchParams]);
+
+  if (oauthIsPending) {
+    return (
+      <Container
+        sx={{
+          direction: 'column',
+          justifyContent: 'center',
+          alignItems: 'center',
+          minHeight: '100vh',
+        }}
+      >
+        <Stack sx={{ justifyContent: 'center', alignItems: 'center', p: 2 }}>
+          <CircularProgress size={40} />
+          <Typography sx={{ mt: 2 }}>Completing OAuth2 login...</Typography>
+        </Stack>
+      </Container>
+    );
+  }
 
   const handleOAuth2Redirect = (provider: OAuthProvider) => {
-    const redirectSuccessUri = encodeURIComponent(window.location.origin + '/');
-    window.location.href = `${process.env.NEXT_PUBLIC_BASE_URL}/api/oauth2/authorization/${provider}?redirect_success_uri=${redirectSuccessUri}`;
+    const currentUrl = window.location.origin + window.location.pathname;
+    const redirectSuccessUri = encodeURIComponent(
+      `${currentUrl}?oauth_success=true`,
+    );
+    const redirectErrorUri = encodeURIComponent(
+      `${currentUrl}?oauth_success=false`,
+    );
+    window.location.href = `${process.env.NEXT_PUBLIC_BASE_URL}/api/oauth2/authorization/${provider}?redirect_success_uri=${redirectSuccessUri}&redirect_error_uri=${redirectErrorUri}`;
   };
 
   return (
@@ -130,7 +187,7 @@ export default function Page({ params: { lng } }: PageProps) {
           <FormProvider {...zodForm}>
             <Box
               component='form'
-              onSubmit={handleSubmit(onSubmit)}
+              onSubmit={handleSubmit((data) => signInMutation(data))}
               sx={{
                 display: 'flex',
                 flexDirection: 'column',
@@ -173,10 +230,12 @@ export default function Page({ params: { lng } }: PageProps) {
                 type='submit'
                 fullWidth
                 variant='contained'
-                disabled={isSubmitting}
-                startIcon={isSubmitting ? <CircularProgress size={20} /> : null}
+                disabled={signInIsPending}
+                startIcon={
+                  signInIsPending ? <CircularProgress size={20} /> : null
+                }
               >
-                {isSubmitting ? t('signingInBtn') : t('signInBtn')}
+                {signInIsPending ? t('signingInBtn') : t('signInBtn')}
               </Button>
               <Typography sx={{ textAlign: 'center' }}>
                 {t('haveAccount')}{' '}

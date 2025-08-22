@@ -11,7 +11,7 @@ export const WithAuth = <P extends object>(WrappedComponent: FC<P>) => {
     const { status } = useSession();
 
     useEffect(() => {
-      if (status !== 'authenticated') {
+      if (status === 'unauthenticated') {
         router.push('/sign-in');
       }
     }, [status, router]);

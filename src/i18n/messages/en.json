@@ -160,7 +160,10 @@
     "dialogTitle": "Would you like to unsubscribe?",
     "dialogDescription": "Posts will no longer be shown in «Favorite categories»",
     "save": "Save",
-    "language": "Language"
+    "language": "Language",
+    "unsubscribeAnyway": "Unsubscribe anyway",
+    "leaveInSelect": "Leave in select",
+    "editBtn": "Edit"
   },
   "commentForm": {
     "addCommentBtn": "Add comment",

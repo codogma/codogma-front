@@ -30,11 +30,10 @@ export async function middleware(req: NextRequest) {
 
   // === 1. Проверка аутентификационных токенов ===
   const status = await auth();
-  const accessToken = req.cookies.get('access_token')?.value;
   const refreshToken = req.cookies.get('refresh_token')?.value;
 
   // Если есть сессия NextAuth, но нет токенов бэкенда
-  if (!!status && (!accessToken || !refreshToken)) {
+  if (!!status && !refreshToken) {
     const response = NextResponse.redirect(new URL('/sign-in', req.url));
     response.cookies.delete('authjs.session-token');
     return response;
