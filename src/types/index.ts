@@ -39,6 +39,7 @@ export interface GetUserDTO {
   username: string;
   isSubscribed: boolean;
   email: string;
+  bannerUrl?: string;
   firstName?: string;
   lastName?: string;
   shortInfo?: string;

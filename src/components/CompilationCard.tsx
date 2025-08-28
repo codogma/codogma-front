@@ -223,7 +223,7 @@ export const CompilationCard = ({
         <Collapse in={expanded} timeout={{ enter: 300, exit: 300 }}>
           <CardContent component='div' className='card-content aspect-[16/8]'>
             <Scrollbar style={{ height: '100%' }}>
-              <div className='compilation-preview-content'>
+              <div className='preview-content'>
                 <section>
                   <b>{t('description')}:</b>
                   <p>{compilation.description}</p>

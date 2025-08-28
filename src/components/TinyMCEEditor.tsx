@@ -31,11 +31,11 @@ export const TinyMCEEditor = ({
   const generateImageId = () => `content-image-${uuid()}`;
 
   const handleResetEditor = () => {
-    if (editorRef.current) {
-      editorRef.current.editor?.setContent('');
-      editorRef.current.editor?.undoManager?.clear();
-      editorRef.current.editor?.undoManager?.add();
-      editorRef.current.editor?.setDirty(false);
+    if (editorRef.current?.editor) {
+      editorRef.current.editor.setContent('');
+      editorRef.current.editor.undoManager?.clear();
+      editorRef.current.editor.undoManager?.add();
+      editorRef.current.editor.setDirty(false);
     }
   };
 

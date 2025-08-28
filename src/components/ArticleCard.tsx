@@ -115,7 +115,7 @@ export const ArticleCard = ({ article, lang }: ArticleCardProps) => {
         }
         title={
           <Link
-            href={`/users/${article.username}`}
+            href={`/${lang}/users/${article.username}`}
             className='article-user-name'
           >
             {article.username}
@@ -231,13 +231,20 @@ export const ArticleCard = ({ article, lang }: ArticleCardProps) => {
             </Box>
           </CardMedia>
         </Collapse>
-        <Collapse in={expanded} timeout={{ enter: 300, exit: 300 }}>
+        <Collapse
+          in={expanded}
+          timeout={{ enter: 300, exit: 300 }}
+          sx={{
+            background: `rgba(${vibrantR}, ${vibrantG}, ${vibrantB}, 0.1)`,
+          }}
+          className='left-0 top-0 z-0'
+        >
           <CardContent
             component='div'
             className='card-content aspect-[16/8]'
-            sx={{
-              background: `rgba(${vibrantR}, ${vibrantG}, ${vibrantB}, 0.1)`,
-            }}
+            // sx={{
+            //   background: `rgba(${vibrantR}, ${vibrantG}, ${vibrantB}, 0.1)`,
+            // }}
           >
             {(state?.user?.name === article.username ||
               state?.user?.role === UserRole.ROLE_ADMIN) && (
@@ -267,7 +274,7 @@ export const ArticleCard = ({ article, lang }: ArticleCardProps) => {
               trackHoverColor={`rgba(${vibrantR}, ${vibrantG}, ${vibrantB}, 0.5)`}
               trackDarkHoverColor={`rgba(${lightVibrantR}, ${lightVibrantG}, ${lightVibrantB}, 0.5)`}
             >
-              <div className='article-preview-content'>{previewContent}</div>
+              <div className='preview-content'>{previewContent}</div>
             </Scrollbar>
           </CardContent>
         </Collapse>

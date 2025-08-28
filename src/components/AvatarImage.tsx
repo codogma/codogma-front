@@ -8,7 +8,7 @@ import Image from 'next/image';
 import React from 'react';
 
 interface AvatarImageProps extends AvatarProps {
-  readonly size: number;
+  readonly size?: number;
   readonly priority?: boolean;
   readonly quality?: number;
   readonly type?: 'avatar' | 'image';
@@ -24,6 +24,7 @@ export const AvatarImage = React.memo(function AvatarImage({
   children,
   type,
   fontSize,
+  sx,
   ...props
 }: AvatarImageProps) {
   const makeFullUrl = (urlPath: string) =>
@@ -39,6 +40,7 @@ export const AvatarImage = React.memo(function AvatarImage({
         height: size,
         position: 'relative',
         background: 'white',
+        ...sx,
       }}
     >
       {!!src && !children && (
