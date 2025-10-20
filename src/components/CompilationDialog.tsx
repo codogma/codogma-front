@@ -1,20 +1,13 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import {
-  Close as CloseIcon,
-  ModeEditOutlineOutlined,
-} from '@mui/icons-material';
+import { ModeEditOutlineOutlined } from '@mui/icons-material';
 import {
   Badge,
   Box,
   Button,
-  Dialog,
-  DialogContent,
-  DialogTitle,
   FormHelperText,
   IconButton,
   Typography,
 } from '@mui/material';
-import DialogActions from '@mui/material/DialogActions';
 import { styled } from '@mui/material/styles';
 import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
@@ -28,6 +21,7 @@ import {
 import { z } from 'zod';
 
 import { AvatarImage } from '@/components/AvatarImage';
+import { CustomDialog } from '@/components/CustomDialog';
 import FormInput from '@/components/FormInput';
 import { createCompilation } from '@/helpers/compilationApi';
 import { Language } from '@/types';
@@ -43,15 +37,6 @@ const VisuallyHiddenInput = styled('input')({
   whiteSpace: 'nowrap',
   width: 1,
 });
-
-const BootstrapDialog = styled(Dialog)(({ theme }) => ({
-  '& .MuiDialogContent-root': {
-    padding: theme.spacing(2),
-  },
-  '& .MuiDialogActions-root': {
-    padding: theme.spacing(1),
-  },
-}));
 
 type CompilationDialogProps = {
   readonly lang: Language;
@@ -129,94 +114,85 @@ export const CompilationDialog = ({
   };
 
   return (
-    <BootstrapDialog aria-labelledby='customized-dialog-title' open={open}>
-      <DialogTitle sx={{ m: 0, p: 2 }} id='customized-dialog-title'>
-        {t('createCompilation')}
-      </DialogTitle>
-      <IconButton
-        aria-label='close'
-        onClick={onClose}
-        sx={(theme) => ({
-          position: 'absolute',
-          right: 8,
-          top: 8,
-          color: theme.palette.grey[500],
-        })}
-      >
-        <CloseIcon />
-      </IconButton>
-      <DialogContent dividers>
-        <FormProvider {...zodForm}>
-          <Box
-            noValidate
-            component='form'
-            autoComplete='off'
-            onSubmit={handleSubmit(onSubmit)}
-            sx={{
-              display: 'flex',
-              flexDirection: 'column',
-              m: 'auto',
-              minWidth: 420,
-              width: 'fit-content',
-              gap: 2,
-            }}
-          >
-            <Typography>{t('selectImage')}</Typography>
-            <Controller
-              name='image'
-              control={control}
-              render={({ fieldState }) => (
-                <span>
-                  <Badge
-                    overlap='circular'
-                    anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-                    badgeContent={
-                      <IconButton
-                        component='label'
-                        color='inherit'
-                        sx={{ p: 0, m: 0 }}
-                      >
-                        <ModeEditOutlineOutlined color='primary' />
-                        <VisuallyHiddenInput
-                          id='image'
-                          name='image'
-                          type='file'
-                          onChange={handleFileChange}
-                        />
-                      </IconButton>
-                    }
-                  >
-                    <AvatarImage
-                      type='image'
-                      variant='rounded'
-                      src={imageUrl}
-                      size={112}
-                      fontSize='large'
-                    />
-                  </Badge>
-                  <FormHelperText id='image-text' error={!!fieldState.error}>
-                    {fieldState.error?.message}
-                  </FormHelperText>
-                </span>
-              )}
-            />
-            <FormInput
-              name='title'
-              required
-              label={t('name')}
-              variant='standard'
-            />
-            <FormInput
-              name='description'
-              label={t('description')}
-              variant='standard'
-            />
-            <DialogActions>
-              <Button type='submit'>{t('create')}</Button>
-            </DialogActions>
-          </Box>
-        </FormProvider>
-      </DialogContent>
-    </BootstrapDialog>
+    <CustomDialog
+      open={open}
+      title={t('createCompilation')}
+      dividers
+      onClose={onClose}
+      actions={
+        <Button form='compilation-form' type='submit'>
+          {t('create')}
+        </Button>
+      }
+    >
+      <FormProvider {...zodForm}>
+        <Box
+          id='compilation-form'
+          noValidate
+          component='form'
+          autoComplete='off'
+          onSubmit={handleSubmit(onSubmit)}
+          sx={{
+            display: 'flex',
+            flexDirection: 'column',
+            m: 'auto',
+            minWidth: 420,
+            width: 'fit-content',
+            gap: 2,
+          }}
+        >
+          <Typography>{t('selectImage')}</Typography>
+          <Controller
+            name='image'
+            control={control}
+            render={({ fieldState }) => (
+              <span>
+                <Badge
+                  overlap='circular'
+                  anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+                  badgeContent={
+                    <IconButton
+                      component='label'
+                      color='inherit'
+                      sx={{ p: 0, m: 0 }}
+                    >
+                      <ModeEditOutlineOutlined color='primary' />
+                      <VisuallyHiddenInput
+                        id='image'
+                        name='image'
+                        type='file'
+                        onChange={handleFileChange}
+                      />
+                    </IconButton>
+                  }
+                >
+                  <AvatarImage
+                    type='image'
+                    variant='rounded'
+                    src={imageUrl}
+                    size={112}
+                    fontSize='large'
+                  />
+                </Badge>
+                <FormHelperText id='image-text' error={!!fieldState.error}>
+                  {fieldState.error?.message}
+                </FormHelperText>
+              </span>
+            )}
+          />
+          <FormInput
+            name='title'
+            required
+            label={t('name')}
+            variant='standard'
+          />
+          <FormInput
+            name='description'
+            label={t('description')}
+            variant='standard'
+          />
+        </Box>
+      </FormProvider>
+    </CustomDialog>
   );
 };

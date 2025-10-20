@@ -21,7 +21,7 @@ import { FormProvider, useForm } from 'react-hook-form';
 import { z } from 'zod';
 
 import { GithubIcon, GitlabIcon } from '@/components/CustomIcons';
-import ForgotPassword from '@/components/ForgotPassword';
+import { ForgotPasswordDialog } from '@/components/ForgotPasswordDialog';
 import FormInput from '@/components/FormInput';
 import { currentUser, login } from '@/helpers/authApi';
 import { Language } from '@/types';
@@ -220,7 +220,7 @@ export default function Page({ params: { lng } }: PageProps) {
                 control={<Checkbox value='remember' color='primary' />}
                 label={t('rememberMe')}
               />
-              <ForgotPassword open={open} handleClose={handleClose} />
+              <ForgotPasswordDialog open={open} handleClose={handleClose} />
               {serverError && (
                 <Typography sx={{ textAlign: 'center' }} color='error'>
                   {serverError}

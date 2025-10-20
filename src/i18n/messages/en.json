@@ -232,7 +232,9 @@
     "haveAccount": "Don't have an account?",
     "or": "or",
     "githubBtn": "Sign in with GitHub",
-    "gitlabBtn": "Sign in with GitLab"
+    "gitlabBtn": "Sign in with GitLab",
+    "resetPassword": "Reset password",
+    "contentText": "Enter your account's email address, and we'll send you a link to reset your password"
   },
   "signUpPage": {
     "signUp": "Sign up",

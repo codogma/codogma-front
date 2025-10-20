@@ -1,21 +1,9 @@
 'use client';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Close as CloseIcon } from '@mui/icons-material';
 import PlaylistAddIcon from '@mui/icons-material/PlaylistAdd';
 import PlaylistAddCheckIcon from '@mui/icons-material/PlaylistAddCheck';
-import {
-  Autocomplete,
-  Box,
-  Button,
-  Chip,
-  Dialog,
-  DialogTitle,
-  IconButton,
-  TextField,
-} from '@mui/material';
-import DialogContent from '@mui/material/DialogContent';
+import { Autocomplete, Box, Button, Chip, TextField } from '@mui/material';
 import MenuItem from '@mui/material/MenuItem';
-import { styled } from '@mui/material/styles';
 import Typography from '@mui/material/Typography';
 import { keepPreviousData, useQuery } from '@tanstack/react-query';
 import { useTranslations } from 'next-intl';
@@ -36,14 +24,7 @@ import {
 } from '@/helpers/compilationApi';
 import { GetCompilation } from '@/types';
 
-const BootstrapDialog = styled(Dialog)(({ theme }) => ({
-  '& .MuiDialogContent-root': {
-    padding: theme.spacing(2),
-  },
-  '& .MuiDialogActions-root': {
-    padding: theme.spacing(1),
-  },
-}));
+import { CustomDialog } from './CustomDialog';
 
 interface AddToCompilationsProps {
   readonly id: number;
@@ -166,110 +147,98 @@ export const AddToCompilations: React.FC<AddToCompilationsProps> = ({
           {t('addToCompilation')}
         </Typography>
       </MenuItem>
-      <BootstrapDialog aria-labelledby='customized-dialog-title' open={open}>
-        <DialogTitle sx={{ m: 0, p: 2 }} id='customized-dialog-title'>
-          {t('addToCompilation')}
-        </DialogTitle>
-        <IconButton
-          aria-label='close'
-          onClick={handleClose}
-          sx={(theme) => ({
-            position: 'absolute',
-            right: 8,
-            top: 8,
-            color: theme.palette.grey[500],
-          })}
-        >
-          <CloseIcon />
-        </IconButton>
-        <DialogContent dividers>
-          <FormProvider {...zodForm}>
-            <Box
-              noValidate
-              component='form'
-              onSubmit={handleSubmit(onSubmit)}
-              sx={{
-                display: 'flex',
-                flexDirection: 'column',
-                m: 'auto',
-                minWidth: 420,
-                width: 'fit-content',
-                gap: 2,
-              }}
-            >
-              <Controller
-                name='compilationIds'
-                control={control}
-                render={({ field }) => (
-                  <Autocomplete
-                    multiple
-                    id='compilationIds'
-                    options={availableCompilations}
-                    getOptionLabel={(compilation) => compilation?.title}
-                    disableCloseOnSelect
-                    defaultValue={availableCompilations.filter((compilation) =>
-                      field.value?.includes(compilation.id),
-                    )}
-                    isOptionEqualToValue={(option, value) =>
-                      option.id === value.id
-                    }
-                    onChange={(_, newValue) => {
-                      const normalizedValue: GetCompilation[] = (
-                        newValue as GetCompilation[]
-                      ).map((value) => {
-                        const existingCompilation = availableCompilations.find(
-                          (compilation) => compilation.id === value.id,
-                        );
-                        return existingCompilation || value;
-                      });
-                      const uniqueCompilationIds = new Set<number>();
-                      const uniqueSelectedCompilations =
-                        new Set<GetCompilation>();
-                      normalizedValue.forEach((compilation) => {
-                        uniqueCompilationIds.add(compilation.id);
-                        uniqueSelectedCompilations.add(compilation);
-                      });
-                      const arraySelectedCompilations = Array.from(
-                        uniqueSelectedCompilations,
+      <CustomDialog
+        open={open}
+        onClose={handleClose}
+        dividers
+        title={t('addToCompilation')}
+      >
+        <FormProvider {...zodForm}>
+          <Box
+            noValidate
+            component='form'
+            onSubmit={handleSubmit(onSubmit)}
+            sx={{
+              display: 'flex',
+              flexDirection: 'column',
+              m: 'auto',
+              minWidth: 420,
+              width: 'fit-content',
+              gap: 2,
+            }}
+          >
+            <Controller
+              name='compilationIds'
+              control={control}
+              render={({ field }) => (
+                <Autocomplete
+                  multiple
+                  id='compilationIds'
+                  options={availableCompilations}
+                  getOptionLabel={(compilation) => compilation?.title}
+                  disableCloseOnSelect
+                  defaultValue={availableCompilations.filter((compilation) =>
+                    field.value?.includes(compilation.id),
+                  )}
+                  isOptionEqualToValue={(option, value) =>
+                    option.id === value.id
+                  }
+                  onChange={(_, newValue) => {
+                    const normalizedValue: GetCompilation[] = (
+                      newValue as GetCompilation[]
+                    ).map((value) => {
+                      const existingCompilation = availableCompilations.find(
+                        (compilation) => compilation.id === value.id,
                       );
-                      setSelectedCompilations(arraySelectedCompilations);
-                      field.onChange(Array.from(uniqueCompilationIds));
-                    }}
-                    onInputChange={(_, newInputValue) => {
-                      setInputCompilationValue(newInputValue);
-                    }}
-                    renderTags={(value: GetCompilation[], getTagProps) =>
-                      value.map((option: GetCompilation, index: number) => {
-                        const { key, ...tagProps } = getTagProps({ index });
-                        return (
-                          <Chip
-                            {...tagProps}
-                            variant='outlined'
-                            label={option.title}
-                            key={key}
-                          />
-                        );
-                      })
-                    }
-                    inputValue={inputCompilationValue}
-                    renderInput={(params) => (
-                      <TextField
-                        {...params}
-                        label={t('compilations')}
-                        variant='standard'
-                        placeholder={t('selectCompilations')}
-                        error={Boolean(errors.compilationIds?.message)}
-                        helperText={errors.compilationIds?.message}
-                      />
-                    )}
-                  />
-                )}
-              />
-              <Button type='submit'>{t('save')}</Button>
-            </Box>
-          </FormProvider>
-        </DialogContent>
-      </BootstrapDialog>
+                      return existingCompilation || value;
+                    });
+                    const uniqueCompilationIds = new Set<number>();
+                    const uniqueSelectedCompilations =
+                      new Set<GetCompilation>();
+                    normalizedValue.forEach((compilation) => {
+                      uniqueCompilationIds.add(compilation.id);
+                      uniqueSelectedCompilations.add(compilation);
+                    });
+                    const arraySelectedCompilations = Array.from(
+                      uniqueSelectedCompilations,
+                    );
+                    setSelectedCompilations(arraySelectedCompilations);
+                    field.onChange(Array.from(uniqueCompilationIds));
+                  }}
+                  onInputChange={(_, newInputValue) => {
+                    setInputCompilationValue(newInputValue);
+                  }}
+                  renderTags={(value: GetCompilation[], getTagProps) =>
+                    value.map((option: GetCompilation, index: number) => {
+                      const { key, ...tagProps } = getTagProps({ index });
+                      return (
+                        <Chip
+                          {...tagProps}
+                          variant='outlined'
+                          label={option.title}
+                          key={key}
+                        />
+                      );
+                    })
+                  }
+                  inputValue={inputCompilationValue}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      label={t('compilations')}
+                      variant='standard'
+                      placeholder={t('selectCompilations')}
+                      error={Boolean(errors.compilationIds?.message)}
+                      helperText={errors.compilationIds?.message}
+                    />
+                  )}
+                />
+              )}
+            />
+            <Button type='submit'>{t('save')}</Button>
+          </Box>
+        </FormProvider>
+      </CustomDialog>
     </>
   );
 };
