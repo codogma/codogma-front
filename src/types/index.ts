@@ -142,6 +142,9 @@ export type GetArticle = {
   title: string;
   isBookmarked: boolean;
   language: Language;
+  commentsCount: number;
+  likesCount: number;
+  viewsCount: number;
   originalArticleId: number;
   image: GetImageWithPalette;
   previewContent: string;
@@ -154,8 +157,6 @@ export type GetArticle = {
   categories: GetCategory[];
   compilations: GetCompilation[];
   tags: GetTag[];
-  commentsCount: number;
-  likeCount: number;
   isLiked: boolean;
   isCompilated: boolean;
 };

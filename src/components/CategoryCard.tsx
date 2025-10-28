@@ -113,7 +113,7 @@ export const CategoryCard = ({
                 bottom: 0,
                 left: 0,
                 right: 0,
-                background: `linear-gradient(to top, ${`rgba(${vibrantR}, ${vibrantG}, ${vibrantB}, 0.8)` ?? 'rgba(0,0,0,0.8)'} 50%, transparent)`,
+                background: `linear-gradient(to top, rgba(${vibrantR}, ${vibrantG}, ${vibrantB}, 0.8) 50%, transparent)`,
                 color: 'white',
                 p: 1,
               }}

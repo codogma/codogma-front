@@ -30,6 +30,7 @@ import { z } from 'zod';
 
 import { CustomDialog } from '@/components/CustomDialog';
 import { contlCookie, intlCookie, languageMenuItems } from '@/constants/i18n';
+import { getQueryClient } from '@/lib/react-query';
 import { Language } from '@/types';
 
 const icon = <CheckBoxOutlineBlankIcon fontSize='small' />;
@@ -45,6 +46,7 @@ const LocalizationDialogScheme = z.object({
 });
 
 export const LocalizationDialog = ({ lang }: LocalizationDialogProps) => {
+  const queryClient = getQueryClient();
   const [open, setOpen] = useState(false);
   const t = useTranslations();
   const pathname = usePathname();
@@ -53,10 +55,10 @@ export const LocalizationDialog = ({ lang }: LocalizationDialogProps) => {
 
   const defaultCheckedLanguages: string[] = contlCookieVal
     ? contlCookieVal.split(',')
-    : [lang];
+    : [Language.RU, Language.EN];
 
   if (!contlCookieVal) {
-    Cookies.set(contlCookie, lang);
+    Cookies.set(contlCookie, defaultCheckedLanguages.join(','));
   }
 
   const zodForm = useForm<z.infer<typeof LocalizationDialogScheme>>({
@@ -78,11 +80,11 @@ export const LocalizationDialog = ({ lang }: LocalizationDialogProps) => {
     if (isSubmitSuccessful) {
       reset(zodForm.getValues());
     }
-  }, [isSubmitSuccessful, reset, errors, zodForm]);
+  }, [isSubmitSuccessful, reset, errors, zodForm, queryClient]);
 
-  const onSubmit: SubmitHandler<z.infer<typeof LocalizationDialogScheme>> = (
-    formData,
-  ) => {
+  const onSubmit: SubmitHandler<
+    z.infer<typeof LocalizationDialogScheme>
+  > = async (formData) => {
     const { language, checkedLanguages } = formData;
     Cookies.set(intlCookie, language);
     Cookies.set(contlCookie, checkedLanguages.join(','));
@@ -90,6 +92,9 @@ export const LocalizationDialog = ({ lang }: LocalizationDialogProps) => {
     const newPath = pathname.replace(/\/(en|ru)/, `/${language}`);
     router.push(newPath);
     handleClose();
+    await queryClient.invalidateQueries({
+      queryKey: ['recentlyArticles'],
+    });
   };
 
   const handleClickOpen = () => {
@@ -196,7 +201,7 @@ export const LocalizationDialog = ({ lang }: LocalizationDialogProps) => {
                 />
               )}
             />
-            <Button type='submit'>{t('save')}</Button>
+            <Button type='submit'>{t('saveChangesBtn')}</Button>
           </Box>
         </FormProvider>
       </CustomDialog>

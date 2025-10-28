@@ -148,6 +148,11 @@ export default function MenuButton({
         aria-expanded={open ? 'true' : undefined}
         aria-haspopup='true'
         onClick={handleClick}
+        sx={{
+          height: '34px',
+          width: '34px',
+          ...props.sx,
+        }}
         {...props}
       >
         <MoreVertIcon />

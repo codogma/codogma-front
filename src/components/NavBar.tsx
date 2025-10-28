@@ -8,13 +8,14 @@ import LoginIcon from '@mui/icons-material/Login';
 import LogoutIcon from '@mui/icons-material/Logout';
 import PersonIcon from '@mui/icons-material/Person';
 import PersonAddAltRoundedIcon from '@mui/icons-material/PersonAddAltRounded';
-import { ButtonGroup, MenuList } from '@mui/material';
+import { ButtonGroup, Divider, MenuList } from '@mui/material';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
 import IconButton from '@mui/material/IconButton';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
+import { ThemeProviderProps } from '@mui/material/styles/ThemeProvider';
 import Toolbar from '@mui/material/Toolbar';
 import Tooltip from '@mui/material/Tooltip';
 import Typography from '@mui/material/Typography';
@@ -24,28 +25,33 @@ import { Session } from 'next-auth';
 import { signOut, useSession } from 'next-auth/react';
 import { useTranslations } from 'next-intl';
 import * as React from 'react';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 
 import { AvatarImage } from '@/components/AvatarImage';
 import { CategoryDialog } from '@/components/CategoryDialog';
 import { CompilationDialog } from '@/components/CompilationDialog';
 import { LocalizationDialog } from '@/components/LocalizationDialog';
 import { NotificationDialog } from '@/components/NotificationDialog';
+import { SearchButton } from '@/components/SearchButton';
+import { SearchDialog } from '@/components/SearchDialog';
 import { SystemNotificationDialog } from '@/components/SystemNotificationDialog';
-import { ThemeToggleButton } from '@/components/ThemeContext';
+import { ThemeToggleButton } from '@/components/ThemeToggleButton';
 import { logout } from '@/helpers/authApi';
 import { Language, UserRole } from '@/types';
 
 type NavBarProps = {
   readonly lang: Language;
   readonly session: Session | null;
+  readonly theme: ThemeProviderProps['defaultMode'];
 };
 
-export const NavBar = ({ lang, session }: NavBarProps) => {
+export const NavBar = ({ lang, session, theme }: NavBarProps) => {
   const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
   const [compilationDialogOpen, setCompilationDialogOpen] = useState(false);
   const [categoryDialogOpen, setCategoryDialogOpen] = useState(false);
   const [notificationDialogOpen, setNotificationDialogOpen] = useState(false);
+  const [searchDialogOpen, setSearchDialogOpen] = useState(false);
+  const searchInputRef = useRef<HTMLButtonElement>(null);
   const router = useRouter();
   const { data: clientSession, status } = useSession();
   const currentSession = clientSession || session;
@@ -98,6 +104,14 @@ export const NavBar = ({ lang, session }: NavBarProps) => {
     handleCloseUserMenu();
   };
 
+  const handleOpenSearchDialog = () => {
+    setSearchDialogOpen(true);
+  };
+
+  const handleCloseSearchDialog = () => {
+    setSearchDialogOpen(false);
+  };
+
   const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElUser(event.currentTarget);
   };
@@ -134,19 +148,40 @@ export const NavBar = ({ lang, session }: NavBarProps) => {
               CODOGMA
             </Typography>
           </Link>
+          <SearchButton
+            onRef={searchInputRef}
+            onClick={handleOpenSearchDialog}
+            sx={{
+              mr: 1,
+              ml: 'auto',
+            }}
+          />
+          <Divider
+            orientation='vertical'
+            variant='middle'
+            flexItem
+            sx={{
+              display: { xs: 'none', sm: 'inherit' },
+            }}
+          />
           <ButtonGroup
             variant='text'
             sx={{
               display: { xs: 'flex' },
               mr: 1,
-              ml: 'auto',
               color: 'inherit',
+              alignItems: 'center',
             }}
           >
             <LocalizationDialog lang={lang} />
-            <ThemeToggleButton title={t('theme')} />
+            <ThemeToggleButton title={t('theme')} theme={theme} />
             <NotificationDialog lang={lang} />
           </ButtonGroup>
+          <SearchDialog
+            open={searchDialogOpen}
+            onClose={handleCloseSearchDialog}
+            anchorEl={searchInputRef.current}
+          />
           <Box sx={{ flexGrow: 0 }}>
             <Tooltip title={t('settings')}>
               <IconButton
@@ -158,7 +193,7 @@ export const NavBar = ({ lang, session }: NavBarProps) => {
                   alt={currentSession?.user.name ?? ''}
                   src={currentSession?.user.image ?? ''}
                   priority
-                  variant='rounded'
+                  variant='circular'
                   size={40}
                   type='avatar'
                 />

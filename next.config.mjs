@@ -39,6 +39,9 @@ const nextConfig = {
     ],
     formats: ['image/avif', 'image/webp'],
   },
+  // experimental: {
+  //   nextScriptWorkers: true,
+  // },
 };
 
 export default withBundleAnalyzer(withNextIntl(nextConfig));

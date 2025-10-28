@@ -10,7 +10,9 @@ import React, {
   ElementType,
   useCallback,
   useContext,
+  useEffect,
   useMemo,
+  useRef,
   useState,
 } from 'react';
 
@@ -25,6 +27,8 @@ interface CustomOSProps {
   readonly trackDarkColor?: string;
   readonly trackHoverColor?: string;
   readonly trackDarkHoverColor?: string;
+  readonly resetOnRouteChange?: boolean;
+  readonly scrollKey?: string;
 }
 
 const CUSTOM_OS_PROPS: readonly (keyof CustomOSProps)[] = [
@@ -36,13 +40,22 @@ const CUSTOM_OS_PROPS: readonly (keyof CustomOSProps)[] = [
   'trackDarkColor',
   'trackHoverColor',
   'trackDarkHoverColor',
+  'resetOnRouteChange',
+  'scrollKey',
 ];
 
 type ScrollbarProps = OverlayScrollbarsComponentProps<ElementType> &
   CustomOSProps;
 
-type ScrollContextType = { instance?: OverlayScrollbars };
-const ScrollContext = createContext<ScrollContextType>({});
+type ScrollContextType = {
+  instance: OverlayScrollbars | undefined;
+  scrollToTop: () => void;
+};
+
+const ScrollContext = createContext<ScrollContextType>({
+  instance: undefined,
+  scrollToTop: () => {},
+});
 
 const StyledOS = styled(OverlayScrollbarsComponent, {
   shouldForwardProp: (prop) =>
@@ -100,17 +113,39 @@ export const Scrollbar = ({
   trackDarkColor,
   trackHoverColor,
   trackDarkHoverColor,
+  resetOnRouteChange = true,
+  scrollKey,
   ...props
 }: ScrollbarProps) => {
   const [scrollInstance, setScrollInstance] = useState<OverlayScrollbars>();
+  const previousScrollKey = useRef<string | undefined>(scrollKey);
 
   const handleInitialized = useCallback((instance: OverlayScrollbars) => {
     setScrollInstance(instance);
   }, []);
 
+  const scrollToTop = useCallback(() => {
+    scrollInstance
+      ?.elements()
+      .viewport.scrollTo({ top: 0, behavior: 'smooth' });
+  }, [scrollInstance]);
+
+  useEffect(() => {
+    if (
+      resetOnRouteChange &&
+      scrollInstance &&
+      scrollKey &&
+      previousScrollKey.current &&
+      previousScrollKey.current !== scrollKey
+    ) {
+      scrollInstance.elements().viewport.scrollTo({ top: 0 });
+    }
+    previousScrollKey.current = scrollKey;
+  }, [scrollKey, scrollInstance, resetOnRouteChange]);
+
   const scrollContextValue = useMemo(
-    () => ({ instance: scrollInstance }),
-    [scrollInstance],
+    () => ({ instance: scrollInstance, scrollToTop }),
+    [scrollInstance, scrollToTop],
   );
 
   return (

@@ -16,9 +16,11 @@ import { ArticleActions } from '@/components/ArticleActions';
 import { useArticle } from '@/components/ArticleProvider';
 import { Articles } from '@/components/Articles';
 import { AvatarImage } from '@/components/AvatarImage';
+import { CategoryChip } from '@/components/CategoryChip';
 import { CommentList } from '@/components/CommentList';
 import { useContentImageContext } from '@/components/ContentImageProvider';
-import { useNavigationState } from '@/components/NavigationProvider';
+import { useNavigation } from '@/components/NavigationProvider';
+import { TagChip } from '@/components/TagChip';
 import { TimeAgo } from '@/components/TimeAgo';
 import { ARTICLE_RECOMMENDATIONS } from '@/constants/limits';
 import { getRecommendationsArticleById } from '@/helpers/articleApi';
@@ -29,8 +31,8 @@ type ArticleProps = {
 };
 
 export default function Article({ lang }: ArticleProps) {
-  const { article } = useArticle();
-  const { isFullscreen } = useNavigationState();
+  const { article, toc } = useArticle();
+  const { isFullscreen } = useNavigation();
   const { processContent } = useContentImageContext();
   const t = useTranslations('articlesPage');
   const content = processContent(DOMPurify.sanitize(article.content));
@@ -89,13 +91,13 @@ export default function Article({ lang }: ArticleProps) {
                 </span>
                 <ul className='article-pm-list'>
                   {article.categories?.map((category) => (
-                    <li className='category-item' key={category.id}>
+                    <li key={category.id}>
                       <Link
                         className='category-link'
                         scroll={false}
                         href={`/${lang}/categories/${category.id}`}
                       >
-                        {category.name}
+                        <CategoryChip category={category} />
                       </Link>
                     </li>
                   ))}
@@ -105,7 +107,7 @@ export default function Article({ lang }: ArticleProps) {
                 <span className='article-pm-list-title'>{t('tags')}:</span>
                 <ul className='article-pm-list'>
                   {article.tags?.map((tag) => (
-                    <li className='tag-item' key={tag.id}>
+                    <li key={tag.id}>
                       <Link
                         className='tag-link'
                         scroll={false}
@@ -114,7 +116,7 @@ export default function Article({ lang }: ArticleProps) {
                           query: { type: 'tag', value: tag.name },
                         }}
                       >
-                        {tag.name}
+                        <TagChip tag={tag} />
                       </Link>
                     </li>
                   ))}
@@ -127,6 +129,7 @@ export default function Article({ lang }: ArticleProps) {
       <ArticleActions
         lang={lang}
         article={article}
+        toc={toc}
         isFullscreen={isFullscreen}
       />
       {!isFullscreen && <CommentList articleId={article.id} lang={lang} />}

@@ -1,7 +1,8 @@
 'use server';
 import { Metadata, ResolvingMetadata } from 'next';
-import { ReactNode } from 'react';
+import React, { ReactNode } from 'react';
 
+import { ApplyArticleSettings } from '@/components/ApplyArticleSettings';
 import { ArticleProvider } from '@/components/ArticleProvider';
 import { getArticleById } from '@/helpers/articleApi';
 import { convertHtmlToText } from '@/helpers/convertHtmlToText';
@@ -51,6 +52,7 @@ export default async function Layout({
   const toc = await parseToc(article.content);
   return (
     <ArticleProvider article={article} toc={toc}>
+      <ApplyArticleSettings />
       {children}
     </ArticleProvider>
   );

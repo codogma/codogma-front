@@ -1,4 +1,6 @@
-import { Theme, useMediaQuery } from '@mui/material';
+'use client';
+import { useTheme } from '@mui/material/styles';
+import useMediaQuery from '@mui/material/useMediaQuery';
 import {
   Datagrid,
   EmailField,
@@ -9,7 +11,8 @@ import {
 } from 'react-admin';
 
 export const UserList = () => {
-  const isSmall = useMediaQuery<Theme>((theme) => theme.breakpoints.down('sm'));
+  const theme = useTheme();
+  const isSmall = useMediaQuery(theme.breakpoints.down('sm'));
   return (
     <List
       filters={[<TextInput key={0} source='info' label='Search' alwaysOn />]}

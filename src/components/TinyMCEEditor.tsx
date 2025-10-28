@@ -122,7 +122,7 @@ export const TinyMCEEditor = ({
           const processHeadings = () => {
             const body = editor.getBody();
             const slugCounts = new Map<string, number>();
-            Array.from(body.querySelectorAll('h1,h2,h3,h4,h5,h6')).forEach(
+            Array.from(body?.querySelectorAll('h1,h2,h3,h4,h5,h6')).forEach(
               (heading) => {
                 const text = heading.textContent ?? '';
                 const baseSlug = slugify(text, { lower: true, strict: true });

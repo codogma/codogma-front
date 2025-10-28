@@ -20,7 +20,7 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { DefaultImage } from '@/components/DefaultImage';
 import { DrawerHeader } from '@/components/DrawerHeader';
 import MenuButton from '@/components/MenuButton';
-import { useNavigationState } from '@/components/NavigationProvider';
+import { useNavigation } from '@/components/NavigationProvider';
 import { Scrollbar, useScrollContext } from '@/components/Scrollbar';
 import { getArticles } from '@/helpers/articleApi';
 import { Language } from '@/types';
@@ -37,7 +37,7 @@ export const ArticlesDrawer = ({
   compilationId,
 }: ArticlesDrawerProps) => {
   const [openArticles, setOpenArticles] = useState<boolean>(false);
-  const { isFullscreen } = useNavigationState();
+  const { isFullscreen } = useNavigation();
   const { instance } = useScrollContext();
   const router = useRouter();
 

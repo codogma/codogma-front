@@ -1,9 +1,12 @@
 'use client';
+import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
+import { Button, TabOwnProps, Typography } from '@mui/material';
 import Tab from '@mui/material/Tab';
-import { TabOwnProps } from '@mui/material/Tab/Tab';
 import Tabs from '@mui/material/Tabs';
+import Tooltip from '@mui/material/Tooltip';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
+import { useTranslations } from 'next-intl';
 import React, {
   memo,
   useCallback,
@@ -28,6 +31,7 @@ type NavTabsProps = {
 export const NavTabs: React.FC<NavTabsProps> = memo(function NavTabs({ tabs }) {
   const router = useRouter();
   const pathname = usePathname();
+  const t = useTranslations();
   const ref = useRef<HTMLDivElement>(null);
   const [overflow, setOverflow] = useState<boolean>(false);
 
@@ -79,7 +83,32 @@ export const NavTabs: React.FC<NavTabsProps> = memo(function NavTabs({ tabs }) {
             iconPosition='start'
             component={Link}
             href={tab.href}
-            label={tab.label}
+            label={
+              <Typography
+                sx={{
+                  display: 'flex',
+                  gap: '.5rem',
+                }}
+              >
+                {tab.label}
+                {tab.href === pathname && (
+                  <Tooltip title={t('filterOptions')}>
+                    <Button
+                      variant='outlined'
+                      aria-label='menu'
+                      size='small'
+                      sx={{
+                        minWidth: 25,
+                        width: 25,
+                        height: 25,
+                      }}
+                    >
+                      <ArrowDropDownIcon />
+                    </Button>
+                  </Tooltip>
+                )}
+              </Typography>
+            }
             value={tab.href}
             onMouseEnter={() => router.prefetch(tab.href)}
             onClick={() => handleClick(tab.href)}

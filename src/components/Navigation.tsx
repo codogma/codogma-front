@@ -1,5 +1,7 @@
 'use client';
-import { Container, Grid2 as Grid } from '@mui/material';
+import { Grid2 as Grid } from '@mui/material';
+import Container from '@mui/material/Container';
+import { ThemeProviderProps } from '@mui/material/styles/ThemeProvider';
 import { useParams, usePathname } from 'next/navigation';
 import { Session } from 'next-auth';
 import React, { ReactNode } from 'react';
@@ -7,7 +9,7 @@ import React, { ReactNode } from 'react';
 import { CustomBottomNavigation } from '@/components/CustomBottomNavigation';
 import Footer from '@/components/Footer';
 import { NavBar } from '@/components/NavBar';
-import { useNavigationState } from '@/components/NavigationProvider';
+import { useNavigation } from '@/components/NavigationProvider';
 import { NavPanel } from '@/components/NavPanel';
 import { NavSidebar } from '@/components/NavSidebar';
 import { Language } from '@/types';
@@ -16,10 +18,16 @@ type NavigationProps = {
   readonly lang: Language;
   readonly children: ReactNode;
   readonly session: Session | null;
+  readonly theme: ThemeProviderProps['defaultMode'];
 };
 
-export const Navigation = ({ lang, session, children }: NavigationProps) => {
-  const { article, toc, isFullscreen } = useNavigationState();
+export const Navigation = ({
+  lang,
+  session,
+  children,
+  theme,
+}: NavigationProps) => {
+  const { isFullscreen } = useNavigation();
   const pathname = usePathname();
   const { articleId } = useParams();
   const hasAdmin = pathname.startsWith(`/${lang}/admin`);
@@ -30,7 +38,7 @@ export const Navigation = ({ lang, session, children }: NavigationProps) => {
 
   return (
     <>
-      {!isFullscreen && <NavBar lang={lang} session={session} />}
+      {!isFullscreen && <NavBar lang={lang} session={session} theme={theme} />}
       <Container maxWidth='xl'>
         <Grid container spacing={1} direction='row' columns={12}>
           <Grid
@@ -62,7 +70,7 @@ export const Navigation = ({ lang, session, children }: NavigationProps) => {
                 display: { xs: 'none', md: isFullscreen ? 'none' : 'block' },
               }}
             >
-              <NavSidebar lang={lang} article={article} toc={toc} />
+              <NavSidebar lang={lang} />
             </Grid>
           )}
         </Grid>

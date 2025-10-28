@@ -36,7 +36,7 @@ const Page = ({ params: { lng } }: PageProps) => {
 
   const { data, isFetching, refetch } = useQuery<GetCompilationsDTO>({
     queryKey: [
-      'compilations',
+      'bookmarks',
       currentPage,
       resultsPerPage,
       searchType,

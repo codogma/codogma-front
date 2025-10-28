@@ -13,7 +13,7 @@ interface Props {
 }
 
 function ScrollTop({ children }: Props) {
-  const { instance } = useScrollContext();
+  const { instance, scrollToTop } = useScrollContext();
   const viewport = instance?.elements().viewport;
 
   const trigger = useScrollTrigger({
@@ -24,17 +24,7 @@ function ScrollTop({ children }: Props) {
 
   const handleClick = () => {
     if (!instance) return;
-
-    const anchor = instance
-      .elements()
-      .viewport?.querySelector('#back-to-top-anchor');
-
-    if (anchor) {
-      anchor.scrollIntoView({
-        behavior: 'smooth',
-        block: 'center',
-      });
-    }
+    scrollToTop();
   };
 
   return (
@@ -55,7 +45,18 @@ export const ButtonBackToTop = ({ children }: Props) => {
       <div id='back-to-top-anchor' />
       {children}
       <ScrollTop>
-        <Fab size='small' aria-label='scroll back to top'>
+        <Fab
+          size='small'
+          aria-label='scroll back to top'
+          sx={{
+            backgroundColor: 'rgba(255, 255, 255, 0.15)',
+            backdropFilter: 'blur(10px)',
+            transition: 'background-color 0.3s',
+            '&:hover': {
+              backgroundColor: 'rgba(112, 112, 112, 0.15)',
+            },
+          }}
+        >
           <KeyboardArrowUpIcon />
         </Fab>
       </ScrollTop>

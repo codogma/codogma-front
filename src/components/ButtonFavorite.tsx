@@ -3,18 +3,20 @@ import FavoriteIcon from '@mui/icons-material/Favorite';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import { SxProps, Theme } from '@mui/material';
 import Checkbox from '@mui/material/Checkbox';
+import { useMutation } from '@tanstack/react-query';
 import { useSession } from 'next-auth/react';
 import { useTranslations } from 'next-intl';
 import React, { useState } from 'react';
 
 import { PopoverElement } from '@/components/PopoverElement';
 import { favorite, unfavorite } from '@/helpers/categoryApi';
+import { getQueryClient } from '@/lib/react-query';
+
 import CategoryAlertDialog from './CategoryAlertDialog';
 
 interface CustomFavoriteProps {
   readonly id: number;
   readonly isFavoriteValue?: boolean;
-  readonly refetch?: () => void;
   readonly sx?: SxProps<Theme>;
   readonly style?: React.CSSProperties;
 }
@@ -22,7 +24,6 @@ interface CustomFavoriteProps {
 export const ButtonFavorite: React.FC<CustomFavoriteProps> = ({
   id,
   isFavoriteValue,
-  refetch,
   sx,
   style,
 }) => {
@@ -32,6 +33,44 @@ export const ButtonFavorite: React.FC<CustomFavoriteProps> = ({
   const { status } = useSession();
   const t = useTranslations('categoriesPage');
   const popoverId = 'simple-popover';
+  const queryClient = getQueryClient();
+
+  const favoriteMutation = useMutation({
+    mutationFn: () => favorite(id),
+    onSuccess: async () => {
+      // Обновляем данные для категорий и ленты
+      await queryClient.invalidateQueries({
+        queryKey: ['categories'],
+        refetchType: 'inactive',
+      });
+      await queryClient.invalidateQueries({
+        queryKey: ['favorite-categories'],
+        refetchType: 'inactive',
+      });
+      await queryClient.invalidateQueries({
+        queryKey: ['feed'],
+        refetchType: 'inactive',
+      });
+    },
+  });
+
+  const unfavoriteMutation = useMutation({
+    mutationFn: () => unfavorite(id),
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({
+        queryKey: ['categories'],
+        refetchType: 'inactive',
+      });
+      await queryClient.invalidateQueries({
+        queryKey: ['favorite-categories'],
+        refetchType: 'inactive',
+      });
+      await queryClient.invalidateQueries({
+        queryKey: ['feed'],
+        refetchType: 'inactive',
+      });
+    },
+  });
 
   const handleChange = async (
     event: React.ChangeEvent<HTMLInputElement>,
@@ -39,8 +78,8 @@ export const ButtonFavorite: React.FC<CustomFavoriteProps> = ({
   ) => {
     if (status === 'authenticated') {
       if (checked) {
+        await favoriteMutation.mutateAsync();
         setIsFavorite(true);
-        await favorite(id).then(() => refetch && refetch());
       } else {
         setDialogOpen(true);
       }
@@ -52,7 +91,7 @@ export const ButtonFavorite: React.FC<CustomFavoriteProps> = ({
   const handleConfirmUnfavorite = async () => {
     setIsFavorite(false);
     setDialogOpen(false);
-    await unfavorite(id).then(() => refetch && refetch());
+    await unfavoriteMutation.mutateAsync();
   };
 
   const handlePopoverClose = () => {

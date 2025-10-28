@@ -1,5 +1,6 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Box, Button, DialogActions, TextField } from '@mui/material';
+import { Box, Button, TextField } from '@mui/material';
+import DialogActions from '@mui/material/DialogActions';
 import MenuItem from '@mui/material/MenuItem';
 import { useTranslations } from 'next-intl';
 import React, { useEffect, useState } from 'react';
@@ -109,7 +110,7 @@ export const SystemNotificationDialog = ({
       title: formData.title,
       message: formData.message,
     } as NotificationCreate;
-    devConsoleInfo(requestData);
+    devConsoleInfo('System notifications request: ', requestData);
     await createNotification(requestData);
     onClose();
   };

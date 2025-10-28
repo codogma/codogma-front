@@ -13,24 +13,28 @@ import Typography from '@mui/material/Typography';
 import React, { useEffect, useState } from 'react';
 
 import { DrawerHeader } from '@/components/DrawerHeader';
-import { useNavigationState } from '@/components/NavigationProvider';
+import { useNavigation } from '@/components/NavigationProvider';
 import { Scrollbar } from '@/components/Scrollbar';
-import { getNumber } from '@/helpers/localStorage';
+import { getNumber, getString } from '@/helpers/localStorage';
 
 export const SettingsDrawer = () => {
   const [open, setOpen] = useState<boolean>(false);
-  const { isFullscreen } = useNavigationState();
+  const { isFullscreen } = useNavigation();
   const [fontSize, setFontSize] = useState<number>(() =>
     getNumber('fontSize', 1),
   );
   const [contentWidth, setContentWidth] = useState<number>(() =>
     getNumber('contentWidth', 70),
   );
+  const [fontFamily, setFontFamily] = useState<string>(() =>
+    getString('fontFamily', 'var(--font-sans)'),
+  );
 
   useEffect(() => {
     if (open) {
       setFontSize(() => getNumber('fontSize', 1));
       setContentWidth(() => getNumber('contentWidth', 70));
+      setFontFamily(() => getString('fontFamily', 'var(--font-sans)'));
     }
   }, [open]);
 
@@ -39,8 +43,9 @@ export const SettingsDrawer = () => {
     if (articleContent) {
       articleContent.style.fontSize = `${fontSize}rem`;
       articleContent.style.maxWidth = `${contentWidth}ch`;
+      articleContent.style.fontFamily = fontFamily;
     }
-  }, [contentWidth, fontSize]);
+  }, [contentWidth, fontFamily, fontSize]);
 
   const handleFontSizeChange = (
     _: React.MouseEvent<HTMLElement>,
@@ -59,6 +64,16 @@ export const SettingsDrawer = () => {
     if (value !== null) {
       localStorage.setItem('contentWidth', String(value));
       setContentWidth(value);
+    }
+  };
+
+  const handleFontFamilyChange = (
+    _: React.MouseEvent<HTMLElement>,
+    value: string,
+  ) => {
+    if (value !== null) {
+      localStorage.setItem('fontFamily', String(value));
+      setFontFamily(value);
     }
   };
 
@@ -136,7 +151,29 @@ export const SettingsDrawer = () => {
         <ToggleButton value={90}>Large</ToggleButton>
       </ToggleButtonGroup>
       <Divider />
-      {/* TODO написать jsx код из кнопок при нажатии на которые надо менять семейство шрифтов контента у статьи, что расположено внутри обертки с id="article-content" */}
+      <Typography
+        component='div'
+        variant='body2'
+        sx={{
+          mt: 2,
+          mb: 1,
+          textAlign: 'center',
+          textTransform: 'uppercase',
+        }}
+      >
+        Стиль шрифта
+      </Typography>
+      <ToggleButtonGroup
+        value={fontFamily}
+        exclusive
+        onChange={handleFontFamilyChange}
+        fullWidth
+        sx={{ px: 2, mb: 2 }}
+      >
+        <ToggleButton value='var(--font-sans)'>Без засечек</ToggleButton>
+        <ToggleButton value='var(--font-serif)'>С засечками</ToggleButton>
+        <ToggleButton value='var(--font-mono)'>Моноширинный</ToggleButton>
+      </ToggleButtonGroup>
       <Scrollbar style={{ height: '100%' }}></Scrollbar>
     </Drawer>
   );

@@ -1,9 +1,9 @@
 'use client';
 import TelegramIcon from '@mui/icons-material/Telegram';
 import XIcon from '@mui/icons-material/X';
-import { Box, Container, Divider, Link, Typography } from '@mui/material';
+import { Box, Container, Typography } from '@mui/material';
+import Grid from '@mui/material/Grid2';
 import IconButton from '@mui/material/IconButton';
-import Tooltip from '@mui/material/Tooltip';
 import { usePathname } from 'next/navigation';
 import React, { memo } from 'react';
 
@@ -11,45 +11,45 @@ import { Language } from '@/types';
 
 type FooterProps = {
   readonly lang: Language;
-  readonly title?: string;
 };
 
-function Footer({ lang, title }: FooterProps) {
+function Footer({ lang }: FooterProps) {
   const pathname = usePathname();
   const hasAdmin = pathname.startsWith(`/${lang}/admin`);
   if (hasAdmin) {
     return null;
   }
+
   return (
-    <Box className='bg-white py-6 text-white dark:bg-woodsmoke'>
+    <Box className='footer'>
       <Container maxWidth='xl'>
-        <Divider sx={{ my: 3, bgcolor: 'grey.700' }} />
-        <Box
-          sx={{ bgcolor: 'white', color: 'black' }}
+        <Grid
+          container
           display='flex'
           justifyContent='space-between'
           alignItems='center'
+          spacing={2}
         >
-          <Typography variant='body2' color='inherit'>
-            © Codogma
+          <Typography variant='body2' className='text-center md:text-left'>
+            © {new Date().getFullYear()} Codogma
           </Typography>
-          <Box mt={2} display='flex' justifyContent='center'>
-            <Tooltip title={title}>
-              <IconButton color='inherit'>
-                <Link href='#' color='inherit' title='X'>
-                  <XIcon />
-                </Link>
-              </IconButton>
-            </Tooltip>
-            <Tooltip title={title}>
-              <IconButton color='inherit'>
-                <Link href='#' color='inherit' title='Telegram'>
-                  <TelegramIcon />
-                </Link>
-              </IconButton>
-            </Tooltip>
+          <Box display='flex' gap={1}>
+            <IconButton
+              aria-label='X'
+              href='#'
+              className='text-horizon hover:text-curious-blue'
+            >
+              <XIcon />
+            </IconButton>
+            <IconButton
+              aria-label='Telegram'
+              href='#'
+              className='text-horizon hover:text-curious-blue'
+            >
+              <TelegramIcon />
+            </IconButton>
           </Box>
-        </Box>
+        </Grid>
       </Container>
     </Box>
   );

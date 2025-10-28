@@ -1,7 +1,7 @@
 'use client';
 import CircularProgress from '@mui/material/CircularProgress';
 import Stack from '@mui/material/Stack';
-import clsx from 'clsx';
+import { clsx } from 'clsx';
 import * as React from 'react';
 import { FC } from 'react';
 

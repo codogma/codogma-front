@@ -37,13 +37,7 @@ const Page = ({ params: { lng } }: PageProps) => {
   };
 
   const { data, isFetching, refetch } = useQuery<GetArticlesDTO>({
-    queryKey: [
-      'articles',
-      currentPage,
-      resultsPerPage,
-      searchType,
-      searchValue,
-    ],
+    queryKey: ['feed', currentPage, resultsPerPage, searchType, searchValue],
     queryFn: () => {
       const byTag = searchType === SearchType.TAG ? searchValue : undefined;
       const byContent =

@@ -54,13 +54,15 @@
   "unsubscribe": "Отписаться",
   "deleteCompilation": "Удалить подборку",
   "deleteCategory": "Удалить категорию",
+  "filterOptions": "Параметры фильтрации",
   "mainPage": {
     "title": "Главная",
     "description": "Главная страница CODOGMA",
     "welcome": "Добро пожаловать!",
     "subWelcome": "Это приветственное сообщение!",
     "yourInterests": "Ваши интересы",
-    "recentlyAdded": "Недавно добавленные"
+    "recentlyAdded": "Недавно добавленные",
+    "popular": "Популярное"
   },
   "articleEditorPage": {
     "mainContent": "Основное содержание",

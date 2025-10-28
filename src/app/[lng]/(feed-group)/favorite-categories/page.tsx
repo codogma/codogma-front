@@ -34,7 +34,7 @@ export default function Page({ params: { lng } }: PageProps) {
 
   const { data, isFetching, refetch } = useQuery<GetCategoriesDTO>({
     queryKey: [
-      'categories',
+      'favorite-categories',
       currentPage,
       resultsPerPage,
       searchType,

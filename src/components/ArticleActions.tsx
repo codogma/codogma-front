@@ -3,7 +3,7 @@ import ThumbUpOutlinedIcon from '@mui/icons-material/ThumbUpOutlined';
 import Checkbox from '@mui/material/Checkbox';
 import IconButton from '@mui/material/IconButton';
 import Paper from '@mui/material/Paper';
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import { useParams } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import React from 'react';
@@ -12,32 +12,35 @@ import { ArticleProgressBar } from '@/components/ArticleProgressBar';
 import { ArticlesDrawer } from '@/components/ArticlesDrawer';
 import { FullscreenButton } from '@/components/FullscreenButton';
 import MenuButton from '@/components/MenuButton';
-import { useNavigationState } from '@/components/NavigationProvider';
 import { SettingsDrawer } from '@/components/SettingsDrawer';
 import { TOCDrawer } from '@/components/TOCDrawer';
 import { getArticleById, like, unlike } from '@/helpers/articleApi';
+import { TocItem } from '@/helpers/parseToc';
+import { getQueryClient } from '@/lib/react-query';
 import { GetArticle, Language } from '@/types';
 
 type SearchProps = {
   readonly lang: Language;
   readonly article: GetArticle;
+  readonly toc: TocItem[];
   readonly isFullscreen: boolean;
 };
 
 export const ArticleActions = ({
   lang,
   article,
+  toc,
   isFullscreen,
 }: SearchProps) => {
-  const { toc } = useNavigationState();
   const { status } = useSession();
+  const queryClient = getQueryClient();
 
   const { articleId, compilationId } = useParams<{
     articleId: string;
     compilationId: string;
   }>();
 
-  const { data: articleData, refetch } = useQuery({
+  const { data: articleData } = useQuery({
     queryKey: ['article', article.id],
     queryFn: () => getArticleById(article.id),
     initialData: article,
@@ -53,15 +56,59 @@ export const ArticleActions = ({
     }
   };
 
+  const likeMutation = useMutation({
+    mutationFn: () => like(article.id),
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({
+        queryKey: ['article', article.id],
+        refetchType: 'active',
+      });
+      await queryClient.invalidateQueries({
+        queryKey: ['recentlyArticles'],
+        refetchType: 'inactive',
+      });
+      await queryClient.invalidateQueries({
+        queryKey: ['history'],
+        refetchType: 'inactive',
+      });
+      await queryClient.invalidateQueries({
+        queryKey: ['articles'],
+        refetchType: 'inactive',
+      });
+    },
+  });
+
+  const unlikeMutation = useMutation({
+    mutationFn: () => unlike(article.id),
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({
+        queryKey: ['article', article.id],
+        refetchType: 'active',
+      });
+      await queryClient.invalidateQueries({
+        queryKey: ['recentlyArticles'],
+        refetchType: 'inactive',
+      });
+      await queryClient.invalidateQueries({
+        queryKey: ['history'],
+        refetchType: 'inactive',
+      });
+      await queryClient.invalidateQueries({
+        queryKey: ['articles'],
+        refetchType: 'inactive',
+      });
+    },
+  });
+
   const handleChange = async (
     _event: React.ChangeEvent<HTMLInputElement>,
     checked: boolean,
   ) => {
     if (status === 'authenticated') {
       if (checked) {
-        await like(article.id).then(() => refetch());
+        await likeMutation.mutateAsync();
       } else {
-        await unlike(article.id).then(() => refetch());
+        await unlikeMutation.mutateAsync();
       }
     }
   };
@@ -113,7 +160,7 @@ export const ArticleActions = ({
               <>
                 <ThumbUpOutlinedIcon />
                 <div className='ml-1 text-base leading-5'>
-                  {articleData.likeCount}
+                  {articleData.likesCount}
                 </div>
               </>
             }
@@ -121,7 +168,7 @@ export const ArticleActions = ({
               <>
                 <ThumbUpOutlinedIcon color='inherit' />
                 <div className='ml-1 text-base leading-5'>
-                  {articleData.likeCount}
+                  {articleData.likesCount}
                 </div>
               </>
             }

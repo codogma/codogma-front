@@ -4,12 +4,12 @@ import {
   Badge,
   Box,
   Button,
-  DialogActions,
   Divider,
-  FormControl,
   IconButton,
   TextField,
 } from '@mui/material';
+import DialogActions from '@mui/material/DialogActions';
+import FormControl from '@mui/material/FormControl';
 import MenuItem from '@mui/material/MenuItem';
 import Paper from '@mui/material/Paper';
 import Stack from '@mui/material/Stack';
@@ -38,7 +38,7 @@ import {
   UpdateCategory,
   updateCategory,
 } from '@/helpers/categoryApi';
-import { devConsoleInfo, devConsoleWarn } from '@/helpers/devConsoleLogs';
+import { devConsoleWarn } from '@/helpers/devConsoleLogs';
 import { GetCategoryToUpdate, Language, PaletteDTO, SwatchDTO } from '@/types';
 
 const VisuallyHiddenInput = styled('input')({
@@ -222,7 +222,6 @@ export const EditCategory = ({
     const formDataObject = Object.fromEntries(
       formDataToSend.entries(),
     ) as unknown as UpdateCategory;
-    devConsoleInfo(formDataObject);
     updateCategory(id, formDataObject).then(() => {
       if (refetch) {
         refetch();

@@ -1,70 +1,82 @@
-'use client';
-import { Box } from '@mui/material';
-import Typography from '@mui/material/Typography';
-import { useQuery } from '@tanstack/react-query';
-import { useSession } from 'next-auth/react';
-import { useTranslations } from 'next-intl';
-import React from 'react';
+import { dehydrate } from '@tanstack/react-query';
 
-import Banner from '@/components/Banner';
-import { Carousel } from '@/components/Carousel';
-import { MainTabs } from '@/components/MainTabs';
-import { getArticles, GetArticlesDTO } from '@/helpers/articleApi';
+import { MainPage } from '@/components/MainPage';
+import {
+  MAIN_PAGE_BOOKMARKS,
+  MAIN_PAGE_MY_COMPILATIONS,
+} from '@/constants/limits';
+import { getArticles, GetArticlesDTO, getViewed } from '@/helpers/articleApi';
+import { getCompilations } from '@/helpers/compilationApi';
+import { devConsoleInfo } from '@/helpers/devConsoleLogs';
+import { auth } from '@/lib/auth';
+import { getQueryClient } from '@/lib/react-query';
 import { Language } from '@/types';
 
 type PageProps = {
   readonly params: { lng: Language };
 };
 
-export default function Page({ params: { lng } }: PageProps) {
-  const { data: state, status } = useSession();
-  const t = useTranslations('mainPage');
+export default async function Page({ params: { lng } }: PageProps) {
+  const queryClient = getQueryClient();
+  const session = await auth();
 
-  const { data: recentlyData, isFetching: isFetchingRecently } =
-    useQuery<GetArticlesDTO>({
-      queryKey: ['recentlyArticles'],
+  await queryClient.prefetchQuery({
+    queryKey: ['recentlyArticles'],
+    queryFn: () => getArticles(undefined, undefined, 0, 10),
+  });
+
+  const recentlyData = queryClient.getQueryData<GetArticlesDTO>([
+    'recentlyArticles',
+  ]);
+
+  devConsoleInfo('recently articles data: ', recentlyData);
+
+  if (session?.user) {
+    await queryClient.prefetchQuery({
+      queryKey: ['history'],
       queryFn: () => {
-        return getArticles(undefined, undefined, 0, 5);
+        return getViewed();
       },
     });
 
-  const recentlyAdded = recentlyData?.content ?? [];
+    await queryClient.prefetchQuery({
+      queryKey: ['bookmarks'],
+      queryFn: () =>
+        getCompilations(
+          undefined,
+          undefined,
+          undefined,
+          true,
+          0,
+          MAIN_PAGE_BOOKMARKS,
+        ),
+    });
+
+    const username = session.user.name;
+    if (username) {
+      await queryClient.prefetchQuery({
+        queryKey: ['compilations', username],
+        queryFn: () =>
+          getCompilations(
+            undefined,
+            undefined,
+            username,
+            false,
+            0,
+            MAIN_PAGE_MY_COMPILATIONS,
+          ),
+      });
+    }
+  }
+
+  const dehydratedState = dehydrate(queryClient);
 
   return (
-    <section>
-      <Banner
-        bannerData={{ welcome: t('welcome'), subWelcome: t('subWelcome') }}
-      />
-      {status === 'authenticated' && (
-        <section className='your-interest'>
-          <Typography variant='h3' className='your-interest-h3'>
-            {t('yourInterests')}
-          </Typography>
-          <MainTabs lang={lng} username={state?.user?.name} />
-        </section>
-      )}
-      <Box sx={{ width: 'auto', margin: 'auto', padding: '20px 0' }}>
-        <section className='your-interest'>
-          <Typography variant='h3' className='your-interest-h3' gutterBottom>
-            {t('recentlyAdded')}
-          </Typography>
-        </section>
-        <Carousel
-          articles={recentlyAdded}
-          isLoading={isFetchingRecently}
-          lang={lng}
-        />
-      </Box>
-      {/*<Carousel/>*/}
-      {/*<Carousel/>*/}
-      {/*<section className="carousels-section">*/}
-      {/*    <section className="recommended">*/}
-      {/*        <Typography variant="h3">Recommended for you</Typography>*/}
-      {/*    </section>*/}
-      {/*    <section className="popular">*/}
-      {/*        <Typography variant="h3">Most popular</Typography>*/}
-      {/*    </section>*/}
-      {/*</section>*/}
-    </section>
+    <MainPage
+      session={session}
+      dehydratedState={dehydratedState}
+      lng={lng}
+      initialRecentlyAdded={recentlyData}
+    />
   );
 }

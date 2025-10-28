@@ -1,28 +1,11 @@
 @import 'overlayscrollbars/overlayscrollbars.css';
+@import 'swiper/css';
+@import 'swiper/css/navigation';
+@import 'swiper/css/pagination';
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
-@layer utilities {
-  .text-balance {
-    text-wrap: balance;
-  }
-
-  @keyframes pulse {
-    50% {
-      color: lime;
-      opacity: 0.5;
-    }
-  }
-  .animate-pulse {
-    animation: pulse 1s cubic-bezier(0.4, 0, 0.6, 1) 3;
-  }
-
-  .flash-highlight {
-    @apply animate-pulse xs:scroll-m-14 sm:scroll-mt-16;
-  }
-}
 
 @layer base {
   h1,
@@ -36,6 +19,12 @@
   }
 }
 
+@layer components {
+  .os-scrollbar-handle {
+    @apply rounded-lg transition-colors duration-200;
+  }
+}
+
 @layer app {
   html,
   body {
@@ -46,12 +35,16 @@
     @apply bg-seashell dark:bg-cod-gray !important;
   }
 
+  .avatar {
+    @apply border border-solid border-seashell !important;
+  }
+
   .nav-app-bar {
     @apply sticky bg-limed-spruce-rgba shadow-none backdrop-blur-md dark:bg-woodsmoke-rgba !important;
   }
 
   .content {
-    @apply mb-2 max-w-full grow p-0 !important;
+    @apply xs:mb-14 md:mb-2 max-w-full grow p-0 !important;
   }
 
   .card-with-line {
@@ -94,7 +87,7 @@
 
   .your-interest {
     .your-interest-h3 {
-      @apply m-0 mb-2 text-[1.6019rem] font-semibold leading-[1.0925] tracking-[0.005em] text-[#302f2a] !important;
+      @apply m-0 mb-4 text-[1.8rem] font-semibold leading-[1.2] tracking-[0.03em] !important;
     }
   }
 
@@ -111,16 +104,32 @@
     @apply mb-2 bg-white dark:bg-bunker;
   }
 
+  .banner {
+    @apply relative;
+  }
+
+  .banner-wrapper {
+    @apply xs:hidden md:block;
+  }
+
+  .banner-title {
+    @apply text-3xl max-w-2xl leading-10 !important;
+  }
+
+  .banner-wrapper:hover .banner-title {
+    @apply underline;
+  }
+
   .comment-card-link.active {
-    @apply border-green-600 shadow-[0_4px_12px_#548121] !important;
+    @apply border-green-600 shadow-md shadow-green-600 !important;
   }
 
   .card {
-    @apply bg-white text-mine-shaft dark:bg-bunker;
+    @apply overflow-hidden rounded-lg bg-none text-mine-shaft !important;
   }
 
   .card-header {
-    @apply flex flex-nowrap items-start gap-1 p-1.5 !important;
+    @apply flex flex-nowrap items-start gap-1 p-1 !important;
 
     & .MuiCardHeader-title {
       @apply leading-3 !important;
@@ -135,8 +144,22 @@
     }
   }
 
+  .card:hover .info-checkbox svg {
+    animation: box-shadow-pulse 1s ease infinite;
+    border-radius: 50%;
+    animation-delay: 1s;
+  }
+
   .card-media {
     @apply relative aspect-video w-full self-stretch overflow-hidden object-cover;
+  }
+
+  .card-title {
+    @apply xs:text-base sm:text-sm md:text-base max-w-2xl xs:leading-5 sm:leading-3 md:leading-5 !important;
+  }
+
+  .card-media:hover .card-title {
+    @apply underline;
   }
 
   .card-media:hover .card-media-image {
@@ -148,7 +171,11 @@
   }
 
   .card-content {
-    @apply ml-auto mr-auto flex flex-col gap-1 p-1.5 !important;
+    @apply ml-auto mr-auto box-border flex flex-col gap-1 p-1.5 !important;
+  }
+
+  .card-actions {
+    @apply flex flex-row items-center justify-between px-2 py-0.5 !important;
   }
 
   .article-user-name {
@@ -187,6 +214,23 @@
     @apply mb-4 flex flex-grow flex-col gap-3 text-ellipsis whitespace-normal break-words pr-2 text-sm font-medium leading-4 dark:text-alto;
   }
 
+  :root {
+    --font-serif: Georgia, serif;
+    --font-sans: Inter, sans-serif;
+    --font-mono: 'Fira Code', monospace;
+
+    /* Article settings variables */
+    --article-font-size: 1rem;
+    --article-max-width: 70ch;
+    --article-font-family: var(--font-sans);
+  }
+
+  #article-content {
+    font-size: var(--article-font-size);
+    max-width: var(--article-max-width);
+    font-family: var(--article-font-family), sans-serif;
+  }
+
   .article-content {
     @apply mb-4 dark:text-alto;
   }
@@ -204,7 +248,7 @@
   }
 
   .article-pm-list {
-    @apply m-0 inline list-none p-0;
+    @apply flex flex-wrap items-center gap-2;
   }
 
   .category-item {
@@ -248,11 +292,11 @@
   }
 
   .footer {
-    @apply mt-auto bg-shark p-4 text-white shadow !important;
+    @apply bg-white py-6 dark:bg-woodsmoke dark:text-white md:block xs:hidden !important;
   }
 
   .article-btn {
-    @apply inline-flex h-auto max-h-[36px] cursor-pointer items-center rounded-sm border border-solid px-3 py-0 text-[0.8125rem] leading-[1.6875rem] !important;
+    @apply normal-case inline-flex h-auto max-h-[36px] cursor-pointer items-center rounded-lg border border-solid px-3 py-0 text-[0.8125rem] leading-[1.6875rem] !important;
   }
 
   .article-btn:hover {
@@ -296,7 +340,7 @@
   }
 
   .category-img {
-    @apply relative top-0.5 mr-2 block h-12 w-12 flex-none overflow-hidden rounded-[3px] !important;
+    @apply relative top-0.5 mr-2 block h-12 w-12 flex-none overflow-hidden rounded-lg !important;
   }
 
   .category-card-name {
@@ -328,20 +372,153 @@
   }
 }
 
-@layer components {
-  /* Общие стили */
-  .os-scrollbar-handle {
-    @apply rounded-lg transition-colors duration-200;
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  @keyframes color-pulse {
+    50% {
+      color: lime;
+      opacity: 0.5;
+    }
+  }
+
+  .animate-color-pulse {
+    animation: color-pulse 1s cubic-bezier(0.4, 0, 0.6, 1) 3;
+  }
+
+  .flash-highlight {
+    @apply animate-color-pulse xs:scroll-m-14 sm:scroll-mt-16;
+  }
+
+  @keyframes box-shadow-pulse {
+    0% {
+      box-shadow: 0 0 0 0 currentColor;
+    }
+    50% {
+      box-shadow: 0 0 0 7px transparent;
+    }
+    100% {
+      box-shadow: 0 0 0 0 transparent;
+    }
   }
 }
 
-.swiper {
-  --swiper-navigation-size: 44px;
-  --swiper-navigation-top-offset: 90%;
-  --swiper-navigation-sides-offset: 10px;
-  --swiper-navigation-color: #1976d2;
+.carousel-container {
+  @apply flex w-full items-center gap-2 overflow-hidden;
+}
+
+/* Кастомные навигационные кнопки */
+.swiper-button-custom {
+  @apply flex items-center justify-center cursor-pointer transition-all duration-300 ease-in-out shrink-0 z-10 relative;
 }
 
 .swiper-slide {
-  @apply max-w-80;
+  @apply overflow-hidden !important;
+}
+
+.swiper-button-custom svg {
+  @apply size-8;
+}
+
+.swiper-button-custom:not(.swiper-button-disabled):hover {
+  @apply text-red scale-150;
+}
+
+.swiper-button-custom:not(.swiper-button-disabled):active {
+  @apply scale-90;
+}
+
+/* Состояние disabled */
+.swiper-button-custom.swiper-button-disabled {
+  @apply opacity-50 cursor-not-allowed pointer-events-none;
+}
+
+/* Убираем стандартные кнопки Swiper */
+.swiper .swiper-button-prev,
+.swiper .swiper-button-next {
+  @apply hidden !important;
+}
+
+@media (max-width: 899px) {
+  .swiper-button-custom {
+    @apply items-center justify-center transition-all duration-300 ease-in-out shrink-0 z-10 absolute;
+  }
+
+  .swiper-button-custom svg {
+    @apply size-14;
+  }
+
+  .swiper-button-custom:first-child {
+    @apply left-2;
+  }
+
+  .swiper-button-custom:last-child {
+    @apply right-2;
+  }
+}
+
+@media (hover: none) and (pointer: coarse) {
+  .swiper-button-custom:not(.swiper-button-disabled):hover {
+    @apply text-inherit transform-none;
+  }
+
+  .swiper-button-custom:not(.swiper-button-disabled):active {
+    @apply text-red scale-150 bg-black-alpha-10 transition-all ease-in-out duration-100;
+  }
+}
+
+/*!* Расчет позиции слайдов *!*/
+/* Общая ширина = 100% */
+/* Отступы между слайдами = spaceBetween * (количество_слайдов - 1) */
+/* Ширина одного слайда = (100% - общие_отступы) / количество_слайдов */
+/* Десктоп: 3 слайда, spaceBetween = 24px */
+.swiper:not(.swiper-initialized) {
+  --slides-count: 3;
+  --space-between: 24px;
+}
+
+.swiper:not(.swiper-initialized) .swiper-slide {
+  width: calc(
+      (100% - (var(--space-between) * (var(--slides-count) - 1))) /
+      var(--slides-count)
+  ) !important;
+  margin-right: var(--space-between) !important; /* Имитируем spaceBetween */
+}
+
+.first-slide {
+  @apply md:hidden;
+}
+
+.swiper:not(.swiper-initialized) .swiper-slide:last-child {
+  @apply mr-0 !important;
+}
+
+/* Десктоп: 3 слайда, spaceBetween = 20px */
+@media (max-width: 1535px) {
+  .swiper:not(.swiper-initialized) {
+    --slides-count: 3;
+    --space-between: 20px;
+  }
+}
+
+/* Планшет: 2 слайда, spaceBetween = 16px */
+@media (max-width: 1199px) {
+  .swiper:not(.swiper-initialized) {
+    --slides-count: 2;
+    --space-between: 16px;
+  }
+}
+
+/* Мобайл: 1 слайд, spaceBetween = 0px */
+@media (max-width: 899px) {
+  .swiper:not(.swiper-initialized) {
+    --slides-count: 1;
+    --space-between: 16px;
+  }
+
+  .swiper:not(.swiper-initialized) .swiper-slide {
+    @apply mr-0 !important;
+  }
 }

@@ -34,6 +34,7 @@ export const AvatarImage = React.memo(function AvatarImage({
 
   return (
     <Avatar
+      className='avatar'
       {...props}
       sx={{
         width: size,

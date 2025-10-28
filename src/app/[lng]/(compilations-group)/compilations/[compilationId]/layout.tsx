@@ -11,7 +11,7 @@ import { AvatarImage } from '@/components/AvatarImage';
 import { Bookmark } from '@/components/Bookmark';
 import { CompilationProvider } from '@/components/CompilationProvider';
 import MenuButton from '@/components/MenuButton';
-import { useNavigationState } from '@/components/NavigationProvider';
+import { useNavigation } from '@/components/NavigationProvider';
 import { getCompilationById } from '@/helpers/compilationApi';
 import { GetCompilation, Language } from '@/types';
 
@@ -31,7 +31,7 @@ export default function Layout({
 }: PageProps) {
   const { data: state } = useSession();
   const [isRefetch, setIsRefetch] = useState<boolean>(false);
-  const { isFullscreen } = useNavigationState();
+  const { isFullscreen } = useNavigation();
 
   const refetch = () => {
     setIsRefetch(true);

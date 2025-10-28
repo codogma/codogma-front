@@ -7,7 +7,6 @@ import {
   CardContent,
   CardHeader,
   CardMedia,
-  Chip,
   Collapse,
   IconButton,
   Skeleton,
@@ -19,6 +18,7 @@ import { useTranslations } from 'next-intl';
 import React, { useRef, useState } from 'react';
 
 import { AvatarImage } from '@/components/AvatarImage';
+import { CategoryChip } from '@/components/CategoryChip';
 import { DefaultImage } from '@/components/DefaultImage';
 import { GetUserDTO, Language, UserRole } from '@/types';
 
@@ -156,22 +156,8 @@ export const UserCard = ({ user, lang }: UserCardProps) => {
                       <ul>
                         {user.categories?.map((category) => (
                           <li key={category.id} className='tag-item'>
-                            <Link
-                              key={category.id}
-                              href={`/${lang}/categories/${category.id}`}
-                            >
-                              <Chip
-                                variant='outlined'
-                                label={category.name}
-                                avatar={
-                                  <AvatarImage
-                                    alt={category?.name}
-                                    src={category?.icon?.imageUrl}
-                                    variant='circular'
-                                    size={24}
-                                  />
-                                }
-                              />
+                            <Link href={`/${lang}/categories/${category.id}`}>
+                              <CategoryChip category={category} />
                             </Link>
                           </li>
                         ))}

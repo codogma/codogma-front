@@ -1,21 +1,20 @@
+'use client';
 import FullscreenExitOutlinedIcon from '@mui/icons-material/FullscreenExitOutlined';
 import FullscreenOutlinedIcon from '@mui/icons-material/FullscreenOutlined';
-import { useMediaQuery, useTheme } from '@mui/material';
 import IconButton from '@mui/material/IconButton';
+import { useTheme } from '@mui/material/styles';
 import Tooltip from '@mui/material/Tooltip';
+import useMediaQuery from '@mui/material/useMediaQuery';
 import React from 'react';
 
-import {
-  useNavigationActions,
-  useNavigationState,
-} from '@/components/NavigationProvider';
+import { useNavigation } from '@/components/NavigationProvider';
 
 export const FullscreenButton = () => {
-  const { isFullscreen } = useNavigationState();
-  const { setIsFullscreen } = useNavigationActions();
+  const { isFullscreen, setIsFullscreen } = useNavigation();
   const theme = useTheme();
   const isMin = useMediaQuery(theme.breakpoints.down('lg'));
 
+  // TODO переписать через Checkbox
   return (
     <Tooltip
       title={isFullscreen ? 'Показать навигацию' : 'Скрыть навигацию'}

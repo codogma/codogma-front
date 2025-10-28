@@ -35,7 +35,7 @@ export type GetArticlesDTO = {
   totalElements: number;
   totalPages: number;
   number: number;
-  content: GetArticle[];
+  content: GetArticle[] | [];
 };
 
 export const createDraftArticle = async (

@@ -16,7 +16,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import React, { useCallback, useState } from 'react';
 
 import { DrawerHeader } from '@/components/DrawerHeader';
-import { useNavigationState } from '@/components/NavigationProvider';
+import { useNavigation } from '@/components/NavigationProvider';
 import { Scrollbar, useScrollContext } from '@/components/Scrollbar';
 import { TocItem } from '@/helpers/parseToc';
 import { GetArticle } from '@/types';
@@ -28,8 +28,8 @@ type TOCDrawerProps = {
 
 export const TOCDrawer = ({ article, toc }: TOCDrawerProps) => {
   const [openContents, setOpenContents] = useState<boolean>(false);
-  const { instance } = useScrollContext();
-  const { isFullscreen } = useNavigationState();
+  const { instance, scrollToTop } = useScrollContext();
+  const { isFullscreen } = useNavigation();
   const pathname = usePathname();
   const router = useRouter();
 
@@ -49,17 +49,10 @@ export const TOCDrawer = ({ article, toc }: TOCDrawerProps) => {
 
   const handleTopAnchorClick = useCallback(async () => {
     setOpenContents(false);
-    const viewport = instance?.elements().viewport;
     router.push(pathname, { scroll: false });
     await removeFlashHighlight();
-    const anchor = viewport?.querySelector('#back-to-top-anchor');
-    if (anchor) {
-      anchor.scrollIntoView({
-        behavior: 'smooth',
-        block: 'start',
-      });
-    }
-  }, [instance, pathname, removeFlashHighlight, router]);
+    scrollToTop();
+  }, [pathname, removeFlashHighlight, router, scrollToTop]);
 
   const handleAnchorClick = useCallback(
     async (id: string) => {
@@ -79,7 +72,7 @@ export const TOCDrawer = ({ article, toc }: TOCDrawerProps) => {
   );
 
   const isSelectedHeader = useCallback((id: string) => {
-    if (window.location.hash) {
+    if (typeof window !== 'undefined') {
       const headerId = window.location.hash.substring(1);
       return headerId === id;
     }

@@ -1,4 +1,6 @@
 import { Container, StyledEngineProvider } from '@mui/material';
+import InitColorSchemeScript from '@mui/material/InitColorSchemeScript';
+import { defaultConfig } from '@mui/material/InitColorSchemeScript/InitColorSchemeScript';
 import { AppRouterCacheProvider } from '@mui/material-nextjs/v14-appRouter';
 import { Metadata } from 'next';
 import '@/app/globals.css';
@@ -15,6 +17,7 @@ import { Navigation } from '@/components/Navigation';
 import { NavigationProvider } from '@/components/NavigationProvider';
 import { ReactQueryProvider } from '@/components/ReactQueryProvider';
 import { ColorModeProvider } from '@/components/ThemeContext';
+import { getTheme } from '@/helpers/getTheme';
 import { auth } from '@/lib/auth';
 import { Language } from '@/types';
 
@@ -66,9 +69,15 @@ export default async function Layout({
   params: { lng },
 }: LayoutProps) {
   const session = await auth();
+  const theme = (await getTheme()) || defaultConfig.defaultDarkColorScheme;
+
   return (
-    <html lang={lng}>
+    <html lang={lng} suppressHydrationWarning>
       <body className={inter.className}>
+        <InitColorSchemeScript
+          attribute='class'
+          defaultMode={defaultConfig.defaultDarkColorScheme}
+        />
         <StyledEngineProvider injectFirst>
           <AppRouterCacheProvider>
             <ColorModeProvider>
@@ -77,7 +86,7 @@ export default async function Layout({
                   {/*<WebSocketProvider>*/}
                   <NextIntlClientProvider locale={lng}>
                     <NavigationProvider>
-                      <Navigation lang={lng} session={session}>
+                      <Navigation lang={lng} session={session} theme={theme}>
                         <ButtonBackToTop>
                           <Container className='content'>
                             <ContentImageProvider>

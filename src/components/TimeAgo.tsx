@@ -1,7 +1,7 @@
 import { Box, BoxProps } from '@mui/material';
 import { format, formatDistanceToNow } from 'date-fns';
-import { enUS, Locale, ru } from 'date-fns/locale';
-import React, { useEffect, useState } from 'react';
+import { enUS, ru } from 'date-fns/locale';
+import React from 'react';
 
 import { Language } from '@/types';
 
@@ -11,30 +11,13 @@ interface TimeAgoProps extends BoxProps {
 }
 
 export const TimeAgo = ({ datetime, lang, ...props }: TimeAgoProps) => {
-  const [timeAgo, setTimeAgo] = useState<string>('');
-  const [locale, setLocale] = useState<Locale>(enUS);
+  const locale = lang === 'ru' ? ru : enUS;
 
-  useEffect(() => {
-    const updateTime = () => {
-      setTimeAgo(formatDistanceToNow(datetime, { addSuffix: true, locale }));
-    };
-    updateTime();
-    const interval = setInterval(updateTime, 60000);
-    return () => clearInterval(interval);
-  }, [datetime, locale]);
-
-  useEffect(() => {
-    if (lang === 'en') {
-      setLocale(enUS);
-    }
-    if (lang === 'ru') {
-      setLocale(ru);
-    }
-  }, [lang]);
-
-  const formattedDate = format(datetime, 'yyyy-MM-dd, HH:mm', {
+  const staticTimeAgo = formatDistanceToNow(datetime, {
+    addSuffix: true,
     locale,
   });
+  const formattedDate = format(datetime, 'yyyy-MM-dd, HH:mm', { locale });
 
   return (
     <Box
@@ -43,7 +26,7 @@ export const TimeAgo = ({ datetime, lang, ...props }: TimeAgoProps) => {
       title={formattedDate}
       {...props}
     >
-      {timeAgo}
+      {staticTimeAgo}
     </Box>
   );
 };

@@ -39,7 +39,7 @@ export default function Page({ params: { lng } }: PageProps) {
 
   const { data, isFetching, refetch } = useQuery<GetCompilationsDTO>({
     queryKey: [
-      'compilations',
+      'my-compilations',
       username,
       currentPage,
       resultsPerPage,

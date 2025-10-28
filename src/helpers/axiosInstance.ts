@@ -113,18 +113,19 @@ export const axiosInstance = axios.create({
 });
 
 // TODO: возможно надо будет добавить обновление токенов на клиенте или вообще добавить эту логику в lib/auth
+let isSSRTokenRefreshInProgress = false;
+
 axiosInstance.interceptors.request.use(
   async (config: InternalAxiosRequestConfig & { _isRetry?: boolean }) => {
     if (typeof window === 'undefined') {
       const status = await auth();
-      devConsoleInfo(status);
+      devConsoleInfo('Status data: ', status);
+      const incoming = await getAllServerHeaders();
+      config.headers = AxiosHeaders.from({
+        ...config.headers,
+        ...incoming,
+      });
       if (!config._isRetry) {
-        const incoming = await getAllServerHeaders();
-        config.headers = AxiosHeaders.from({
-          ...config.headers,
-          ...incoming,
-        });
-
         // Проверяем срок действия access token
         const cookies = incoming?.cookie;
         const accessToken = cookies
@@ -132,7 +133,9 @@ axiosInstance.interceptors.request.use(
           .find((c) => c.trim().startsWith('access_token='))
           ?.split('=')[1];
 
-        if (isTokenExpiringSoon(accessToken)) {
+        // Добавляем проверку на уже выполняющееся обновление токена
+        if (isTokenExpiringSoon(accessToken) && !isSSRTokenRefreshInProgress) {
+          isSSRTokenRefreshInProgress = true;
           devConsoleWarn('Access token expiring soon - refreshing tokens...');
           try {
             const { cookieString } = await callRefreshProxy();
@@ -141,6 +144,8 @@ axiosInstance.interceptors.request.use(
             }
           } catch (error) {
             devConsoleWarn('Token refresh failed:', error);
+          } finally {
+            isSSRTokenRefreshInProgress = false;
           }
         }
       }
@@ -314,7 +319,7 @@ axiosInstance.interceptors.response.use(
               securityEvent === 'access_token_missing')
           ) {
             try {
-              devConsoleInfo(securityEvent);
+              devConsoleInfo('Security Event: ', securityEvent);
               isRefreshing = true;
               refreshPromise ??= axiosInstance.post('/auth/refresh-token');
               devConsoleWarn('Access token expired - refresh tokens...');
@@ -337,7 +342,7 @@ axiosInstance.interceptors.response.use(
               'refresh_token_revoked',
             ].includes(securityEvent)
           ) {
-            devConsoleInfo(securityEvent);
+            devConsoleInfo('Security Event: ', securityEvent);
             await signOut({ redirect: true, redirectTo: '/sign-in' });
           }
         }

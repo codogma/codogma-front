@@ -29,6 +29,7 @@ const config: Config = {
         loblolly: '#BBCDD6',
         cerulean: '#49ADDF',
         'vida-loca': '#548221',
+        'black-alpha-10': 'rgba(0, 0, 0, 0.1)',
       },
     },
     screens: {

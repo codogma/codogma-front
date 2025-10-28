@@ -71,6 +71,7 @@ export const CustomBottomNavigation = ({
     <Box
       sx={{
         position: 'fixed',
+        top: 'auto',
         bottom: 0,
         left: 0,
         right: 0,

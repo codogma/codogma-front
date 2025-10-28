@@ -1,8 +1,10 @@
+import { defaultConfig } from '@mui/material/InitColorSchemeScript/InitColorSchemeScript';
 import acceptLanguage from 'accept-language';
 import { NextRequest, NextResponse } from 'next/server';
 import createMiddleware from 'next-intl/middleware';
 
 import {
+  contlCookie,
   fallbackLng,
   headerName,
   intlCookie,
@@ -11,6 +13,7 @@ import {
 import { currentUser } from '@/helpers/authApi';
 import { devConsoleWarn } from '@/helpers/devConsoleLogs';
 import { getLocale } from '@/helpers/getLocale';
+import { getTheme } from '@/helpers/getTheme';
 import { routing } from '@/i18n/routing';
 import { auth } from '@/lib/auth';
 import { Language, UserRole } from '@/types';
@@ -28,6 +31,18 @@ export async function middleware(req: NextRequest) {
   const { pathname, search } = req.nextUrl;
   const lng = await getLanguage(req);
 
+  const response = NextResponse.next();
+
+  // === 0. Установка темы ===
+  // Проверяем как cookie, так и системный заголовок
+  const theme = getTheme();
+  if (theme === undefined) {
+    response.cookies.set(
+      defaultConfig.modeStorageKey,
+      defaultConfig.defaultDarkColorScheme,
+    );
+  }
+
   // === 1. Проверка аутентификационных токенов ===
   const status = await auth();
   const refreshToken = req.cookies.get('refresh_token')?.value;
@@ -43,6 +58,18 @@ export async function middleware(req: NextRequest) {
   const lngInPath = languages.find((loc) => pathname.startsWith(`/${loc}`));
   const headers = new Headers(req.headers);
   headers.set(headerName, lngInPath ?? lng);
+
+  const contlCookieValue = req.cookies.get(contlCookie)?.value;
+  if (!contlCookieValue) {
+    const defaultContlValue = encodeURIComponent(
+      [Language.RU, Language.EN].join(','),
+    );
+    const existingCookie = req.headers.get('cookie') || '';
+    const separator = existingCookie ? '; ' : '';
+    const newCookieString = `${existingCookie}${separator}${contlCookie}=${defaultContlValue}`;
+    headers.set('cookie', newCookieString);
+    response.cookies.set(contlCookie, defaultContlValue);
+  }
 
   // Если текущий URL не содержит код языка, делаем редирект на URL с языковым префиксом
   if (!lngInPath && !pathname.startsWith('/_next')) {
@@ -61,13 +88,40 @@ export async function middleware(req: NextRequest) {
 
 // Вспомогательные функции
 const getLanguage = async (req: NextRequest) => {
-  let lng =
-    (await getLocale()) ??
-    acceptLanguage.get(req.cookies.get(intlCookie)?.value);
-  lng ??=
-    (acceptLanguage.get(req.headers.get('Accept-Language')) as Language) ??
-    fallbackLng;
-  return languages.includes(lng) ? lng : fallbackLng;
+  // 1. Пробуем получить язык из getLocale()
+  const lng = await getLocale();
+  if (lng && languages.includes(lng)) return lng;
+
+  // 2. Пробуем получить язык из куки intlCookie
+  const cookieValue = req.cookies.get(intlCookie)?.value;
+  if (cookieValue) {
+    const lngFromCookie = acceptLanguage.get(cookieValue);
+    if (lngFromCookie && languages.includes(lngFromCookie as Language)) {
+      return lngFromCookie;
+    }
+  }
+
+  // 3. Пробуем получить язык из заголовка Accept-Language
+  const acceptLanguageHeader = req.headers.get('Accept-Language');
+  if (acceptLanguageHeader) {
+    // Разбиваем заголовок на части и обрабатываем каждый язык
+    const langs = acceptLanguageHeader
+      .split(',')
+      .map((lang) => {
+        const [code, q] = lang.trim().split(';');
+        const weight = q ? parseFloat(q.split('=')[1]) || 1 : 1;
+        return { code: code.split('-')[0].toLowerCase(), weight };
+      })
+      .filter((lang) => languages.includes(lang.code as Language))
+      .sort((a, b) => b.weight - a.weight);
+
+    if (langs.length > 0) {
+      return langs[0].code;
+    }
+  }
+
+  // 4. Возвращаем язык по умолчанию
+  return fallbackLng;
 };
 
 const handleAdminCheck = async (req: NextRequest) => {

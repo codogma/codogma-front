@@ -1,17 +1,18 @@
 'use client';
 import { redirect } from 'next/navigation';
-import React, { createContext, useContext, useEffect } from 'react';
+import React, { createContext, useContext, useMemo } from 'react';
 
-import { useNavigationActions } from '@/components/NavigationProvider';
 import { TocItem } from '@/helpers/parseToc';
 import { GetArticle } from '@/types';
 
 interface ArticleContextType {
   article: GetArticle;
+  toc: TocItem[];
 }
 
 const ArticleContext = createContext<ArticleContextType>({
   article: {} as GetArticle,
+  toc: [] as TocItem[],
 });
 
 export const useArticle = () => useContext(ArticleContext);
@@ -29,19 +30,10 @@ export const ArticleProvider = ({
     redirect('/not-found');
   }
 
-  const { setArticle, setToc } = useNavigationActions();
-
-  useEffect(() => {
-    setArticle(article);
-    setToc(toc);
-    return () => {
-      setArticle(undefined);
-      setToc([]);
-    };
-  }, [article, setArticle, setToc, toc]);
+  const articleValue = useMemo(() => ({ article, toc }), [article, toc]);
 
   return (
-    <ArticleContext.Provider value={{ article }}>
+    <ArticleContext.Provider value={articleValue}>
       {children}
     </ArticleContext.Provider>
   );

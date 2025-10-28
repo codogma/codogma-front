@@ -33,7 +33,13 @@ const Page = ({ params: { lng } }: PageProps) => {
   };
 
   const { data, isFetching, refetch } = useQuery<GetUsersDTO>({
-    queryKey: ['authors', currentPage, resultsPerPage, searchType, searchValue],
+    queryKey: [
+      'subscriptions',
+      currentPage,
+      resultsPerPage,
+      searchType,
+      searchValue,
+    ],
     queryFn: () => {
       const byTag = searchType === SearchType.TAG ? searchValue : undefined;
       const byInfo = searchType === SearchType.INFO ? searchValue : undefined;

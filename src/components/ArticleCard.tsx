@@ -1,20 +1,24 @@
 'use client';
-import InfoIcon from '@mui/icons-material/Info';
+import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
+import ChatOutlinedIcon from '@mui/icons-material/ChatOutlined';
+import InfoOutlineIcon from '@mui/icons-material/InfoOutlined';
+import ThumbUpOutlinedIcon from '@mui/icons-material/ThumbUpOutlined';
+import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
 import {
   Box,
   Button,
   CardHeader,
   CardMedia,
   Collapse,
+  Divider,
   Skeleton,
+  Typography,
 } from '@mui/material';
 import Card from '@mui/material/Card';
-import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
+import Checkbox from '@mui/material/Checkbox';
 import Chip from '@mui/material/Chip';
-import IconButton from '@mui/material/IconButton';
 import Stack from '@mui/material/Stack';
-import Typography from '@mui/material/Typography';
 import DOMPurify from 'isomorphic-dompurify';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -33,9 +37,10 @@ import { GetArticle, Language, SwatchDTO, UserRole } from '@/types';
 type ArticleCardProps = {
   readonly article: GetArticle;
   readonly lang: Language;
+  readonly isMinimal?: boolean;
 };
 
-export const ArticleCard = ({ article, lang }: ArticleCardProps) => {
+export const ArticleCard = ({ article, lang, isMinimal }: ArticleCardProps) => {
   const { data: state, status } = useSession();
   const pathname = usePathname();
   let urlPrefix = '';
@@ -93,87 +98,147 @@ export const ArticleCard = ({ article, lang }: ArticleCardProps) => {
   const { hex: darkMutedHex = '#fff' } = darkMuted;
 
   return article ? (
-    <Card variant='outlined' className='card'>
-      <CardHeader
-        avatar={
-          <AvatarImage
-            alt={article.username}
-            src={article.authorAvatarUrl}
-            variant='rounded'
-            size={34}
-          />
-        }
-        action={
-          status === 'authenticated' &&
-          state?.user?.role !== UserRole.ROLE_ADMIN && (
-            <MenuButton
-              article={article}
-              lang={lang}
-              sx={{ color: darkMutedHex, '.dark &': { color: lightMutedHex } }}
+    <Card
+      variant='outlined'
+      className='card'
+      sx={{
+        borderWidth: isMinimal ? 0 : '1px',
+      }}
+    >
+      {!isMinimal && (
+        <CardHeader
+          avatar={
+            <AvatarImage
+              alt={article.username}
+              src={article.authorAvatarUrl}
+              variant='rounded'
+              size={34}
+              priority
             />
-          )
-        }
-        title={
-          <Link
-            href={`/${lang}/users/${article.username}`}
-            className='article-user-name'
-          >
-            {article.username}
-          </Link>
-        }
-        subheader={
-          <TimeAgo
-            datetime={article.createdAt}
-            className='article-datetime'
-            lang={lang}
-          />
-        }
-        className='card-header'
-        slotProps={{
-          title: {
-            component: 'span',
-            sx: {
-              a: {
-                fontSize: 'inherit',
-                color: vibrantTextColor,
-                '&:hover': {
+          }
+          action={
+            <Stack direction='row' spacing={1}>
+              {status === 'authenticated' &&
+                state?.user?.role !== UserRole.ROLE_ADMIN && (
+                  <MenuButton
+                    article={article}
+                    lang={lang}
+                    sx={{
+                      color: darkVibrantHex,
+                      '.dark &': { color: lightVibrantHex },
+                    }}
+                  />
+                )}
+              <Checkbox
+                checked={expanded}
+                onChange={() => setExpanded(!expanded)}
+                icon={
+                  <InfoOutlineIcon
+                    sx={{
+                      fontSize: '20px',
+                    }}
+                    viewBox='2 2 20 20'
+                  />
+                }
+                checkedIcon={<CancelOutlinedIcon />}
+                className='info-checkbox'
+                slotProps={{
+                  input: { 'aria-label': `info about ${article.title}` },
+                }}
+                sx={{
                   color: darkVibrantHex,
-                },
-                '.dark &': {
+                  '&.Mui-checked': {
+                    color: darkVibrantHex,
+                  },
+                  '&.Mui-checked svg': {
+                    animation: 'none',
+                  },
+                  ':hover svg': {
+                    animation: 'none',
+                  },
+                  '.dark &': {
+                    color: lightVibrantHex,
+                    '&.Mui-checked': {
+                      animation: 'none',
+                      color: lightVibrantHex,
+                    },
+                  },
+                  width: '34px',
+                  height: '34px',
+                }}
+              />
+            </Stack>
+          }
+          title={
+            <Link
+              href={`/${lang}/users/${article.username}`}
+              className='article-user-name'
+            >
+              {article.username}
+            </Link>
+          }
+          subheader={
+            <TimeAgo
+              datetime={article.createdAt}
+              className='article-datetime'
+              lang={lang}
+            />
+          }
+          className='card-header'
+          slotProps={{
+            title: {
+              component: 'span',
+              sx: {
+                a: {
+                  fontSize: 'inherit',
                   color: vibrantTextColor,
                   '&:hover': {
-                    color: lightVibrantHex,
+                    color: darkVibrantHex,
+                  },
+                  '.dark &': {
+                    color: vibrantTextColor,
+                    '&:hover': {
+                      color: lightVibrantHex,
+                    },
                   },
                 },
               },
             },
-          },
-          subheader: {
-            sx: {
-              time: {
-                color: darkVibrantHex,
-                '.dark &': { color: lightVibrantHex },
+            subheader: {
+              sx: {
+                time: {
+                  color: darkVibrantHex,
+                  '.dark &': { color: lightVibrantHex },
+                },
               },
             },
-          },
-        }}
+          }}
+          sx={{
+            background: `rgba(${vibrantR}, ${vibrantG}, ${vibrantB}, 0.5)`,
+            color: vibrantTextColor,
+          }}
+        />
+      )}
+      <Box
+        className='card-media'
         sx={{
-          background:
-            `rgba(${vibrantR}, ${vibrantG}, ${vibrantB}, 0.5)` ??
-            'rgba(0,0,0,0.8)',
-          color: vibrantTextColor,
+          background: `rgba(${vibrantR}, ${vibrantG}, ${vibrantB}, 0.1)`,
         }}
-      />
-      <Box className='card-media' onMouseLeave={() => setExpanded(false)}>
+      >
         <Collapse in={!expanded} timeout={{ enter: 300, exit: 300 }}>
-          <CardMedia className='card-media'>
+          <CardMedia
+            component={Link}
+            href={`${urlPrefix}/${article.id}`}
+            className='card-media'
+          >
             <DefaultImage
               ref={imgRef}
               src={
-                article.image &&
-                `${process.env.NEXT_PUBLIC_BASE_URL}${article.image.imageUrl}`
+                article?.image &&
+                `${process.env.NEXT_PUBLIC_BASE_URL}${article?.image.imageUrl}`
               }
               className='card-media-image'
+              priority
             />
             <Box
               sx={{
@@ -181,52 +246,58 @@ export const ArticleCard = ({ article, lang }: ArticleCardProps) => {
                 bottom: 0,
                 left: 0,
                 right: 0,
-                background: `linear-gradient(to top, ${`rgba(${vibrantR}, ${vibrantG}, ${vibrantB}, 0.8)` ?? 'rgba(0,0,0,0.8)'} 50%, transparent)`,
+                background: `linear-gradient(to top, rgba(${vibrantR}, ${vibrantG}, ${vibrantB}, 0.8) 50%, transparent)`,
                 color: 'white',
-                p: '0.375rem', // или p-1.5 в tailwind
+                p: '0 12px 12px', // или p-1 в tailwind
               }}
             >
               <Stack
-                direction='row'
+                direction='column'
                 justifyContent='space-between'
-                alignItems='center'
+                alignItems='flex-start'
                 spacing={1}
                 marginTop={5}
               >
-                <Link href={`${urlPrefix}/${article.id}`}>
-                  <Typography
-                    variant='subtitle1'
-                    sx={{
-                      flexGrow: 1,
-                      lineHeight: 1.2,
-                      whiteSpace: 'normal',
-                      wordBreak: 'break-word',
-                      maxHeight: '4.8em',
-                      overflow: 'hidden',
-                      textOverflow: 'ellipsis',
-                      display: '-webkit-box',
-                      WebkitLineClamp: 4,
-                      WebkitBoxOrient: 'vertical',
-                      color: vibrantTextColor,
-                      '&:hover': {
-                        color: lightMutedHex,
-                      },
-                    }}
-                  >
-                    {article.title}
-                  </Typography>
-                </Link>
-                <IconButton
+                <Typography
+                  variant='subtitle1'
                   sx={{
+                    flexGrow: 1,
+                    maxHeight: '4.8em',
+                    overflow: 'hidden',
+                    display: '-webkit-box',
+                    WebkitLineClamp: 4,
+                    WebkitBoxOrient: 'vertical',
                     color: vibrantTextColor,
-                    flexShrink: 0,
                   }}
-                  aria-label={`info about ${article.title}`}
-                  onMouseEnter={() => setExpanded(true)}
-                  onClick={() => setExpanded(true)}
+                  className='card-title'
                 >
-                  <InfoIcon />
-                </IconButton>
+                  {article.title}
+                </Typography>
+                <Stack
+                  direction='row'
+                  justifyContent='space-between'
+                  alignItems='flex-start'
+                  maxWidth={235}
+                  spacing={1}
+                  divider={<Divider orientation='vertical' flexItem />}
+                >
+                  <span className='align-center flex flex-row gap-0.5 text-xs'>
+                    <VisibilityOutlinedIcon
+                      sx={{ width: '16px', height: '16px' }}
+                    />
+                    {article.viewsCount}
+                  </span>
+                  <span className='align-center flex flex-row gap-0.5 text-xs'>
+                    <ChatOutlinedIcon sx={{ width: '16px', height: '16px' }} />
+                    {article.commentsCount}
+                  </span>
+                  <span className='align-center flex flex-row gap-0.5 text-xs'>
+                    <ThumbUpOutlinedIcon
+                      sx={{ width: '16px', height: '16px' }}
+                    />
+                    {article.likesCount}
+                  </span>
+                </Stack>
               </Stack>
             </Box>
           </CardMedia>
@@ -234,17 +305,11 @@ export const ArticleCard = ({ article, lang }: ArticleCardProps) => {
         <Collapse
           in={expanded}
           timeout={{ enter: 300, exit: 300 }}
-          sx={{
-            background: `rgba(${vibrantR}, ${vibrantG}, ${vibrantB}, 0.1)`,
-          }}
           className='left-0 top-0 z-0'
         >
           <CardContent
             component='div'
-            className='card-content aspect-[16/8]'
-            // sx={{
-            //   background: `rgba(${vibrantR}, ${vibrantG}, ${vibrantB}, 0.1)`,
-            // }}
+            className='card-content aspect-video h-full'
           >
             {(state?.user?.name === article.username ||
               state?.user?.role === UserRole.ROLE_ADMIN) && (
@@ -264,7 +329,6 @@ export const ArticleCard = ({ article, lang }: ArticleCardProps) => {
               </Stack>
             )}
             <Scrollbar
-              style={{ height: '100%' }}
               handleColor={mutedHex}
               handleDarkColor={lightMutedHex}
               handleHoverColor={vibrantHex}
@@ -276,44 +340,33 @@ export const ArticleCard = ({ article, lang }: ArticleCardProps) => {
             >
               <div className='preview-content'>{previewContent}</div>
             </Scrollbar>
+            <Link href={`${urlPrefix}/${article.id}`} scroll={false}>
+              <Button
+                className='article-btn'
+                variant='outlined'
+                sx={{
+                  borderColor: darkVibrantHex,
+                  color: darkVibrantHex,
+                  '&:hover': {
+                    backgroundColor: darkVibrantHex,
+                    color: lightMutedHex,
+                  },
+                  '.dark &': {
+                    borderColor: lightVibrantHex,
+                    color: lightVibrantHex,
+                    '&:hover': {
+                      backgroundColor: lightVibrantHex,
+                      color: darkMutedHex,
+                    },
+                  },
+                }}
+              >
+                {t('readMoreBtn')}
+              </Button>
+            </Link>
           </CardContent>
         </Collapse>
       </Box>
-      <CardActions
-        sx={{
-          background:
-            `rgba(${vibrantR}, ${vibrantG}, ${vibrantB}, 0.5)` ??
-            'rgba(0,0,0,0.8)',
-          p: '0.375rem',
-        }}
-      >
-        <Stack direction='row' spacing={2}>
-          <Link href={`${urlPrefix}/${article.id}`}>
-            <Button
-              className='article-btn'
-              variant='outlined'
-              sx={{
-                borderColor: darkVibrantHex,
-                color: darkVibrantHex,
-                '&:hover': {
-                  backgroundColor: darkVibrantHex,
-                  color: lightMutedHex,
-                },
-                '.dark &': {
-                  borderColor: lightVibrantHex,
-                  color: lightVibrantHex,
-                  '&:hover': {
-                    backgroundColor: lightVibrantHex,
-                    color: darkMutedHex,
-                  },
-                },
-              }}
-            >
-              {t('readMoreBtn')}
-            </Button>
-          </Link>
-        </Stack>
-      </CardActions>
     </Card>
   ) : (
     <Card variant='outlined' className='card'>
