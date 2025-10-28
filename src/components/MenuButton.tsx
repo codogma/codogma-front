@@ -154,8 +154,10 @@ export default function MenuButton({
       </IconButton>
       <StyledMenu
         id='demo-customized-menu'
-        MenuListProps={{
-          'aria-labelledby': 'demo-customized-button',
+        slotProps={{
+          list: {
+            'aria-labelledby': 'demo-customized-button',
+          },
         }}
         anchorOrigin={{
           vertical: 'bottom',

@@ -1,80 +1,36 @@
 'use client';
-import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import Button from '@mui/material/Button';
-import Dialog from '@mui/material/Dialog';
-import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
-import DialogContentText from '@mui/material/DialogContentText';
-import DialogTitle from '@mui/material/DialogTitle';
-import MenuItem from '@mui/material/MenuItem';
-import Typography from '@mui/material/Typography';
-import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
-import React, { useState } from 'react';
+import React from 'react';
 
-import { GetArticle, Language } from '@/types';
+import { CustomDialog } from '@/components/CustomDialog';
 
 type CategoryAlertDialogProps = {
-  readonly lang: Language;
-  readonly article: GetArticle;
-  readonly onClose?: () => void;
+  readonly open: boolean;
+  readonly onClose: () => void;
+  readonly onConfirm: () => void;
 };
 export default function CategoryAlertDialog({
-  lang,
-  article,
+  open,
   onClose,
+  onConfirm,
 }: CategoryAlertDialogProps) {
-  const [open, setOpen] = useState(false);
-  const router = useRouter();
   const t = useTranslations('categoriesPage');
 
-  const handleClose = () => {
-    setOpen(false);
-  };
-
-  const handleClickOpen = () => {
-    if (onClose) {
-      onClose();
-    }
-    setOpen(true);
-  };
-
-  const handleClickEditLinkItem = () => {
-    router.push(`/${lang}/article-editor?id=${article.id}`);
-    handleClose();
-  };
-
   return (
-    <>
-      <MenuItem onClick={handleClickOpen} disableRipple>
-        <Typography textAlign='center'>
-          <EditOutlinedIcon />
-          {t('editBtn')}
-        </Typography>
-      </MenuItem>
-      <Dialog
-        open={open}
-        onClose={handleClose}
-        aria-labelledby='alert-dialog-title'
-        aria-describedby='alert-dialog-description'
-      >
-        <DialogTitle id='alert-dialog-title'>{t('dialogTitle')}</DialogTitle>
-        <DialogContent>
-          <DialogContentText id='alert-dialog-description'>
-            {t('dialogDescription')}
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleClose}>{t('disagreeBtn')}</Button>
-          <Button onClick={handleClickEditLinkItem}>{t('agreeBtn')}</Button>
-        </DialogActions>
-      </Dialog>
-      <MenuItem onClick={handleClickEditLinkItem} disableRipple>
-        <Typography textAlign='center'>
-          <EditOutlinedIcon />
-          {t('editBtn')}
-        </Typography>
-      </MenuItem>
-    </>
+    <CustomDialog
+      open={open}
+      title={t('dialogTitle')}
+      contentText={t('dialogDescription')}
+      onClose={onClose}
+      actions={
+        <>
+          <Button onClick={onClose}>{t('leaveInSelect')}</Button>
+          <Button onClick={onConfirm}>{t('unsubscribeAnyway')}</Button>
+        </>
+      }
+      aria-labelledby='alert-dialog-title'
+      aria-describedby='alert-dialog-description'
+    />
   );
 }

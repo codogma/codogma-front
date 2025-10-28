@@ -1,10 +1,12 @@
-import NextAuth, { Session, User } from 'next-auth';
+import NextAuth, { Session } from 'next-auth';
 import { JWT } from 'next-auth/jwt';
 import CredentialsProvider from 'next-auth/providers/credentials';
 
 import { AuthDTO } from '@/types';
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
+  trustHost: true,
+  secret: process.env.AUTH_SECRET,
   providers: [
     CredentialsProvider({
       name: 'Credentials',
@@ -36,19 +38,29 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     maxAge: 7 * 24 * 60 * 60,
   },
   callbacks: {
-    async jwt({ token, user }: { token: JWT; user: User }) {
+    async jwt({ token, user, trigger, session }) {
       if (user) {
         token = {
           ...user,
         };
       }
+
+      if (trigger === 'update') {
+        return {
+          ...token,
+          ...session?.user,
+        };
+      }
+
       return token;
     },
     async session({ session, token }: { session: Session; token: JWT }) {
-      if (session.user && token) {
-        session.user = {
-          ...token,
-        };
+      if (token) {
+        if (session.user) {
+          session.user = {
+            ...token,
+          };
+        }
         session.expires = token.expires;
       }
       return session;

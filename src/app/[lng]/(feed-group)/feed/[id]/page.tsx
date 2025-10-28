@@ -23,7 +23,7 @@ type PageProps = {
 
 export default function Page({ params: { lng } }: PageProps) {
   const { article } = useArticle();
-  const { data: state, status } = useSession();
+  const { data: state } = useSession();
   const { processContent } = useContentImageContext();
   const content = processContent(DOMPurify.sanitize(article.content));
 

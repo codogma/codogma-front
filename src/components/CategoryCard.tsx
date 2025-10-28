@@ -176,7 +176,7 @@ export const CategoryCard = ({
                 pr: 1,
               }}
             >
-              <div className='category-preview-content'>
+              <div className='preview-content'>
                 <section>
                   <b>{t('description')}:</b>
                   <p>{category.description}</p>

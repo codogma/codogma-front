@@ -1,6 +1,5 @@
 'use client';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { LoadingButton } from '@mui/lab';
 import {
   Box,
   Button,
@@ -10,17 +9,20 @@ import {
   Stack,
   Typography,
 } from '@mui/material';
+import CircularProgress from '@mui/material/CircularProgress';
+import { useMutation } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { signIn, useSession } from 'next-auth/react';
 import { useTranslations } from 'next-intl';
 import React, { useEffect, useState } from 'react';
-import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
+import { FormProvider, useForm } from 'react-hook-form';
 import { z } from 'zod';
 
 import { GithubIcon, GitlabIcon } from '@/components/CustomIcons';
 import FormInput from '@/components/FormInput';
-import { signUp } from '@/helpers/authApi';
+import { currentUser, signUp } from '@/helpers/authApi';
 import { generateAvatar } from '@/helpers/generateAvatar';
 import { Language } from '@/types';
 
@@ -42,8 +44,16 @@ type PageProps = {
 
 export default function Page({ params: { lng } }: PageProps) {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const { status } = useSession();
   const [serverError, setServerError] = useState('');
   const t = useTranslations('signUpPage');
+
+  useEffect(() => {
+    if (status === 'authenticated') {
+      router.push(`/${lng}/`);
+    }
+  }, [status, router, lng]);
 
   const zodForm = useForm<z.infer<typeof SignUpScheme>>({
     resolver: zodResolver(SignUpScheme),
@@ -54,41 +64,90 @@ export default function Page({ params: { lng } }: PageProps) {
     },
   });
 
-  const {
-    reset,
-    handleSubmit,
-    formState: { isSubmitSuccessful, isSubmitting },
-  } = zodForm;
+  const { handleSubmit } = zodForm;
 
-  useEffect(() => {
-    if (isSubmitSuccessful) {
-      reset();
-    }
-  }, [isSubmitSuccessful, reset]);
-
-  const onSubmit: SubmitHandler<z.infer<typeof SignUpScheme>> = async (
-    formData,
-  ) => {
-    try {
+  const { mutate: signUpMutation, isPending: signUpIsPending } = useMutation({
+    mutationFn: async (formData: z.infer<typeof SignUpScheme>) => {
       const { username } = formData;
       const file = await generateAvatar(username, 200);
       const requestData = { ...formData, avatar: file };
       await signUp(requestData);
+    },
+    onSuccess: () => {
       router.push(`/${lng}/sign-up/success`);
-    } catch (error) {
+    },
+    onError: (error) => {
       if (error instanceof AxiosError) {
         const message =
-          error?.response?.data ?? 'An error occurred during registration.';
+          error?.response?.data ?? 'An error occurred during sign in';
         setServerError(message);
+      } else {
+        setServerError(error?.message || 'An error occurred during sign in');
       }
+    },
+  });
+
+  const { mutate: oauthSignInMutation, isPending: oauthIsPending } =
+    useMutation({
+      mutationFn: async () => {
+        const data = await currentUser();
+        const result = await signIn('credentials', {
+          ...data,
+          redirect: false,
+        });
+        if (!result?.ok || result?.error) throw new Error('Failed to sign in');
+        return result;
+      },
+      onSuccess: () => {
+        router.push(`/${lng}/profile-update`);
+      },
+      onError: (error) => {
+        if (error instanceof AxiosError) {
+          const message =
+            error?.response?.data ?? 'An error occurred during sign in';
+          setServerError(message);
+        } else {
+          setServerError(error?.message || 'An error occurred during sign in');
+        }
+      },
+    });
+
+  useEffect(() => {
+    const oauthSuccess = searchParams.get('oauth_success');
+    if (oauthSuccess === 'true') {
+      oauthSignInMutation();
+    } else if (oauthSuccess === 'false') {
+      setServerError('OAuth2 authorization failed');
     }
-  };
+  }, [oauthSignInMutation, searchParams]);
+
+  if (oauthIsPending) {
+    return (
+      <Container
+        sx={{
+          direction: 'column',
+          justifyContent: 'center',
+          alignItems: 'center',
+          minHeight: '100vh',
+        }}
+      >
+        <Stack sx={{ justifyContent: 'center', alignItems: 'center', p: 2 }}>
+          <CircularProgress size={40} />
+          <Typography sx={{ mt: 2 }}>Completing OAuth2 login...</Typography>
+        </Stack>
+      </Container>
+    );
+  }
 
   const handleOAuth2Redirect = (provider: OAuthProvider) => {
+    const currentUrl = window.location.origin + window.location.pathname;
     const redirectSuccessUri = encodeURIComponent(
-      window.location.origin + `/${lng}/profile-update`,
+      `${currentUrl}?oauth_success=true`,
     );
-    window.location.href = `${process.env.NEXT_PUBLIC_BASE_URL}/api/oauth2/authorization/${provider}?redirect_success_uri=${redirectSuccessUri}`;
+    const redirectErrorUri = encodeURIComponent(
+      `${currentUrl}?oauth_success=false`,
+    );
+    window.location.href = `${process.env.NEXT_PUBLIC_BASE_URL}/api/oauth2/authorization/${provider}?redirect_success_uri=${redirectSuccessUri}&redirect_error_uri=${redirectErrorUri}`;
   };
 
   return (
@@ -117,7 +176,7 @@ export default function Page({ params: { lng } }: PageProps) {
           <FormProvider {...zodForm}>
             <Box
               component='form'
-              onSubmit={handleSubmit(onSubmit)}
+              onSubmit={handleSubmit((data) => signUpMutation(data))}
               sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}
             >
               <FormInput
@@ -150,16 +209,17 @@ export default function Page({ params: { lng } }: PageProps) {
                   {serverError}
                 </Typography>
               )}
-              <LoadingButton
+              <Button
                 type='submit'
                 fullWidth
-                loadingIndicator={t('signingUpBtn')}
-                loading={isSubmitting}
                 variant='contained'
-                size='small'
+                disabled={signUpIsPending}
+                startIcon={
+                  signUpIsPending ? <CircularProgress size={20} /> : null
+                }
               >
-                {t('signUpBtn')}
-              </LoadingButton>
+                {signUpIsPending ? t('signingUpBtn') : t('signUpBtn')}
+              </Button>
               <Typography sx={{ textAlign: 'center' }}>
                 {t('alreadyAccount')}{' '}
                 <span>

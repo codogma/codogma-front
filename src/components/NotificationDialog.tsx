@@ -1,27 +1,22 @@
-import { Close as CloseIcon } from '@mui/icons-material';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import NotificationsActiveIcon from '@mui/icons-material/NotificationsActive';
 import WarningAmberIcon from '@mui/icons-material/WarningAmber';
 import {
+  Badge,
   Button,
   ButtonGroup,
-  CardActions,
-  Dialog,
-  DialogTitle,
+  Card,
+  CardContent,
+  IconButton,
   List,
   ListItem,
+  Stack,
+  Tooltip,
+  Typography,
 } from '@mui/material';
-import Badge from '@mui/material/Badge';
-import Card from '@mui/material/Card';
-import CardContent from '@mui/material/CardContent';
-import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
+import CardActions from '@mui/material/CardActions';
 import Divider from '@mui/material/Divider';
-import IconButton from '@mui/material/IconButton';
-import Stack from '@mui/material/Stack';
 import { styled } from '@mui/material/styles';
-import Tooltip from '@mui/material/Tooltip';
-import Typography from '@mui/material/Typography';
 import { useQuery } from '@tanstack/react-query';
 import { usePathname, useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
@@ -29,6 +24,7 @@ import { useTranslations } from 'next-intl';
 import * as React from 'react';
 import { Fragment, useState } from 'react';
 
+import { CustomDialog } from '@/components/CustomDialog';
 import { CustomPagination } from '@/components/CustomPagination';
 import { EditNotification } from '@/components/EditNotification';
 import { Scrollbar } from '@/components/Scrollbar';
@@ -46,15 +42,6 @@ import {
 } from '@/helpers/notificationAPI';
 import { useEventListener } from '@/helpers/useEventListener';
 import { GetNotification, Language, NotificationType, UserRole } from '@/types';
-
-const BootstrapDialog = styled(Dialog)(({ theme }) => ({
-  '& .MuiDialogContent-root': {
-    padding: theme.spacing(2),
-  },
-  '& .MuiDialogActions-root': {
-    padding: theme.spacing(1),
-  },
-}));
 
 const BadgeDialog = styled(Badge)(() => ({
   '& .MuiBadge-badge': {
@@ -173,173 +160,12 @@ export const NotificationDialog = ({ lang }: NotificationsDialogProps) => {
           </Badge>
         </IconButton>
       </Tooltip>
-      <BootstrapDialog aria-labelledby='customized-dialog-title' open={open}>
-        <DialogTitle sx={{ m: 0, p: 2 }} id='customized-dialog-title'>
-          {t('notifications')}
-        </DialogTitle>
-        <IconButton
-          aria-label='close'
-          onClick={handleClose}
-          sx={(theme) => ({
-            position: 'absolute',
-            right: 8,
-            top: 8,
-            color: theme.palette.grey[500],
-          })}
-        >
-          <CloseIcon />
-        </IconButton>
-        <DialogContent dividers>
-          <Scrollbar
-            style={{
-              height: '100%',
-              display: 'flex',
-              flexDirection: 'column',
-              margin: 'auto',
-              minWidth: 420,
-              width: 'fit-content',
-              gap: 2,
-            }}
-          >
-            <List>
-              {notifications?.map((notification, id) => (
-                <Fragment key={notification.id}>
-                  <BadgeDialog
-                    invisible={
-                      notification.read ||
-                      notification.type === NotificationType.SYSTEM
-                    }
-                    anchorOrigin={{
-                      vertical: 'top',
-                      horizontal: 'left',
-                    }}
-                    badgeContent={<NotificationsActiveIcon />}
-                  >
-                    <ListItem alignItems='flex-start'>
-                      <Card elevation={0}>
-                        <CardContent>
-                          <Stack
-                            direction='row'
-                            sx={{
-                              justifyContent: 'space-between',
-                              alignItems: 'flex-start',
-                            }}
-                          >
-                            {notification.type === NotificationType.SYSTEM && (
-                              <WarningAmberIcon color='warning' />
-                            )}
-                            <Typography
-                              gutterBottom
-                              variant='h5'
-                              component='div'
-                            >
-                              {notification.title}
-                            </Typography>
-                            {notification.type === NotificationType.SYSTEM && (
-                              <WarningAmberIcon color='warning' />
-                            )}
-                          </Stack>
-                          <Typography
-                            component='span'
-                            variant='body2'
-                            sx={{
-                              color: 'text.secondary',
-                            }}
-                          >
-                            {notification.message}
-                          </Typography>
-                        </CardContent>
-                        <CardActions>
-                          <ButtonGroup size='small'>
-                            {state?.user?.role === UserRole.ROLE_ADMIN &&
-                              notification.type === NotificationType.SYSTEM && (
-                                <Button
-                                  onClick={() =>
-                                    handleDeleteSystemNotification(
-                                      notification.id,
-                                    )
-                                  }
-                                >
-                                  Удалить
-                                </Button>
-                              )}
-                            {state?.user?.role === UserRole.ROLE_ADMIN &&
-                              notification.type === NotificationType.SYSTEM && (
-                                <EditNotification
-                                  id={notification.id}
-                                  refetch={refetch}
-                                  lang={lang}
-                                />
-                              )}
-                            {notification.type ===
-                              NotificationType.ARTICLE_MODERATION && (
-                              <Button
-                                onClick={() =>
-                                  handleClickArticleModeration(
-                                    `/${lang}/articles/${notification.articleId}`,
-                                    notification.id,
-                                  )
-                                }
-                              >
-                                Проверить
-                              </Button>
-                            )}
-                            {notification.type ===
-                              NotificationType.ARTICLE_MODERATION && (
-                              <Button
-                                onClick={() =>
-                                  handleDeleteNotification(notification.id)
-                                }
-                              >
-                                Удалить
-                              </Button>
-                            )}
-                            {(notification.type ===
-                              NotificationType.COMMENT_MODERATION ||
-                              notification.type ===
-                                NotificationType.COMMENT_REPLIED) && (
-                              <Button
-                                onClick={() =>
-                                  handleClickCommentModeration(
-                                    `/${lang}/articles/${notification.articleId}#comment-${notification.commentId}`,
-                                    notification.articleId,
-                                    notification.id,
-                                  )
-                                }
-                              >
-                                Проверить
-                              </Button>
-                            )}
-                            {notification.type !== NotificationType.SYSTEM && (
-                              <Button
-                                onClick={() =>
-                                  handleReadNotification(notification.id)
-                                }
-                              >
-                                Отметить как прочитанное
-                              </Button>
-                            )}
-                          </ButtonGroup>
-                        </CardActions>
-                      </Card>
-                    </ListItem>
-                  </BadgeDialog>
-                  {notifications.length - 1 !== id && (
-                    <Divider component='li' />
-                  )}
-                </Fragment>
-              ))}
-            </List>
-          </Scrollbar>
-          <CustomPagination
-            totalPages={totalPages}
-            totalElements={totalElements}
-            onCurrentPageChange={onPageChange}
-            onResultsPerPageChange={onResultsPerPageChange}
-            resultsPerPageStart={NOTIFICATIONS_PER_PAGE}
-          />
-        </DialogContent>
-        <DialogActions>
+      <CustomDialog
+        open={open}
+        onClose={handleClose}
+        dividers
+        title={t('notifications')}
+        actions={
           <ButtonGroup size='small'>
             <Button onClick={() => handleReadAllNotifications()}>
               Отметить как прочитанные
@@ -353,8 +179,151 @@ export const NotificationDialog = ({ lang }: NotificationsDialogProps) => {
               </Button>
             )}
           </ButtonGroup>
-        </DialogActions>
-      </BootstrapDialog>
+        }
+      >
+        <Scrollbar
+          style={{
+            height: '100%',
+            display: 'flex',
+            flexDirection: 'column',
+            margin: 'auto',
+            minWidth: 420,
+            width: 'fit-content',
+            gap: 2,
+          }}
+        >
+          <List>
+            {notifications?.map((notification, id) => (
+              <Fragment key={notification.id}>
+                <BadgeDialog
+                  invisible={
+                    notification.read ||
+                    notification.type === NotificationType.SYSTEM
+                  }
+                  anchorOrigin={{
+                    vertical: 'top',
+                    horizontal: 'left',
+                  }}
+                  badgeContent={<NotificationsActiveIcon />}
+                >
+                  <ListItem alignItems='flex-start'>
+                    <Card elevation={0}>
+                      <CardContent>
+                        <Stack
+                          direction='row'
+                          sx={{
+                            justifyContent: 'space-between',
+                            alignItems: 'flex-start',
+                          }}
+                        >
+                          {notification.type === NotificationType.SYSTEM && (
+                            <WarningAmberIcon color='warning' />
+                          )}
+                          <Typography gutterBottom variant='h5' component='div'>
+                            {notification.title}
+                          </Typography>
+                          {notification.type === NotificationType.SYSTEM && (
+                            <WarningAmberIcon color='warning' />
+                          )}
+                        </Stack>
+                        <Typography
+                          component='span'
+                          variant='body2'
+                          sx={{
+                            color: 'text.secondary',
+                          }}
+                        >
+                          {notification.message}
+                        </Typography>
+                      </CardContent>
+                      <CardActions>
+                        <ButtonGroup size='small'>
+                          {state?.user?.role === UserRole.ROLE_ADMIN &&
+                            notification.type === NotificationType.SYSTEM && (
+                              <Button
+                                onClick={() =>
+                                  handleDeleteSystemNotification(
+                                    notification.id,
+                                  )
+                                }
+                              >
+                                Удалить
+                              </Button>
+                            )}
+                          {state?.user?.role === UserRole.ROLE_ADMIN &&
+                            notification.type === NotificationType.SYSTEM && (
+                              <EditNotification
+                                id={notification.id}
+                                refetch={refetch}
+                                lang={lang}
+                              />
+                            )}
+                          {notification.type ===
+                            NotificationType.ARTICLE_MODERATION && (
+                            <Button
+                              onClick={() =>
+                                handleClickArticleModeration(
+                                  `/${lang}/articles/${notification.articleId}`,
+                                  notification.id,
+                                )
+                              }
+                            >
+                              Проверить
+                            </Button>
+                          )}
+                          {notification.type ===
+                            NotificationType.ARTICLE_MODERATION && (
+                            <Button
+                              onClick={() =>
+                                handleDeleteNotification(notification.id)
+                              }
+                            >
+                              Удалить
+                            </Button>
+                          )}
+                          {(notification.type ===
+                            NotificationType.COMMENT_MODERATION ||
+                            notification.type ===
+                              NotificationType.COMMENT_REPLIED) && (
+                            <Button
+                              onClick={() =>
+                                handleClickCommentModeration(
+                                  `/${lang}/articles/${notification.articleId}#comment-${notification.commentId}`,
+                                  notification.articleId,
+                                  notification.id,
+                                )
+                              }
+                            >
+                              Проверить
+                            </Button>
+                          )}
+                          {notification.type !== NotificationType.SYSTEM && (
+                            <Button
+                              onClick={() =>
+                                handleReadNotification(notification.id)
+                              }
+                            >
+                              Отметить как прочитанное
+                            </Button>
+                          )}
+                        </ButtonGroup>
+                      </CardActions>
+                    </Card>
+                  </ListItem>
+                </BadgeDialog>
+                {notifications.length - 1 !== id && <Divider component='li' />}
+              </Fragment>
+            ))}
+          </List>
+        </Scrollbar>
+        <CustomPagination
+          totalPages={totalPages}
+          totalElements={totalElements}
+          onCurrentPageChange={onPageChange}
+          onResultsPerPageChange={onResultsPerPageChange}
+          resultsPerPageStart={NOTIFICATIONS_PER_PAGE}
+        />
+      </CustomDialog>
     </>
   );
 };

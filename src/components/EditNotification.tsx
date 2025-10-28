@@ -1,17 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Close as CloseIcon } from '@mui/icons-material';
-import {
-  Box,
-  Button,
-  Dialog,
-  DialogContent,
-  DialogTitle,
-  IconButton,
-  TextField,
-} from '@mui/material';
-import DialogActions from '@mui/material/DialogActions';
-import MenuItem from '@mui/material/MenuItem';
-import { styled } from '@mui/material/styles';
+import { Box, Button, DialogActions, MenuItem, TextField } from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
 import { useTranslations } from 'next-intl';
 import React, { useEffect, useState } from 'react';
@@ -23,6 +11,7 @@ import {
 } from 'react-hook-form';
 import { z } from 'zod';
 
+import { CustomDialog } from '@/components/CustomDialog';
 import FormInput from '@/components/FormInput';
 import { languageMenuItems } from '@/constants/i18n';
 import {
@@ -31,15 +20,6 @@ import {
   updateNotification,
 } from '@/helpers/notificationAPI';
 import { GetNotificationToUpdate, Language } from '@/types';
-
-const BootstrapDialog = styled(Dialog)(({ theme }) => ({
-  '& .MuiDialogContent-root': {
-    padding: theme.spacing(2),
-  },
-  '& .MuiDialogActions-root': {
-    padding: theme.spacing(1),
-  },
-}));
 
 type EditNotificationProps = {
   readonly id: number;
@@ -147,98 +127,86 @@ export const EditNotification = ({
   return (
     <>
       <Button onClick={handleClickOpen}>Редактировать</Button>
-      <BootstrapDialog aria-labelledby='customized-dialog-title' open={open}>
-        <DialogTitle sx={{ m: 0, p: 2 }} id='customized-dialog-title'>
-          {t('updateNotification')}
-        </DialogTitle>
-        <IconButton
-          aria-label='close'
-          onClick={handleClose}
-          sx={(theme) => ({
-            position: 'absolute',
-            right: 8,
-            top: 8,
-            color: theme.palette.grey[500],
-          })}
-        >
-          <CloseIcon />
-        </IconButton>
-        <DialogContent dividers>
-          <FormProvider {...zodForm}>
-            <Box
-              noValidate
-              component='form'
-              autoComplete='off'
-              onSubmit={handleSubmit(onSubmit)}
-              sx={{
-                display: 'flex',
-                flexDirection: 'column',
-                m: 'auto',
-                minWidth: 420,
-                width: 'fit-content',
-                gap: 2,
-              }}
+      <CustomDialog
+        open={open}
+        onClose={handleClose}
+        dividers
+        title={t('updateNotification')}
+      >
+        <FormProvider {...zodForm}>
+          <Box
+            noValidate
+            component='form'
+            autoComplete='off'
+            onSubmit={handleSubmit(onSubmit)}
+            sx={{
+              display: 'flex',
+              flexDirection: 'column',
+              m: 'auto',
+              minWidth: 420,
+              width: 'fit-content',
+              gap: 2,
+            }}
+          >
+            <TextField
+              select
+              label={t('language')}
+              variant='standard'
+              value={selectedLang}
+              onChange={(e) => setSelectedLang(e.target.value as Language)}
             >
-              <TextField
-                select
-                label={t('language')}
-                variant='standard'
-                value={selectedLang}
-                onChange={(e) => setSelectedLang(e.target.value as Language)}
-              >
-                {languageMenuItems.map(({ value, label }) => (
-                  <MenuItem key={value} value={value}>
-                    {label}
-                  </MenuItem>
-                ))}
-              </TextField>
-              <FormInput
-                key={`title-${selectedLang}`}
-                name={`title.${selectedLang}`}
-                required
-                label={t('title')}
-                variant='standard'
-                value={titleValues}
-                error={!!errors.title?.ru || !!errors.title?.en}
-                helperText={
-                  (!!errors.title?.[selectedLang] &&
-                    errors.title?.[selectedLang].message?.replace(
-                      '{}',
-                      t(selectedLang.toLowerCase()),
-                    )) ||
-                  (!!errors.title?.ru &&
-                    errors.title?.ru?.message?.replace('{}', t('ru'))) ||
-                  (!!errors.title?.en &&
-                    errors.title?.en?.message?.replace('{}', t('en')))
-                }
-              />
-              <FormInput
-                key={`message-${selectedLang}`}
-                name={`message.${selectedLang}`}
-                required
-                label={t('message')}
-                variant='standard'
-                value={messageValues}
-                error={!!errors.message?.ru || !!errors.message?.en}
-                helperText={
-                  (!!errors.message?.[selectedLang] &&
-                    errors.message?.[selectedLang].message?.replace(
-                      '{}',
-                      t(selectedLang.toLowerCase()),
-                    )) ||
-                  (!!errors.message?.ru &&
-                    errors.message?.ru?.message?.replace('{}', t('ru'))) ||
-                  (!!errors.message?.en &&
-                    errors.message?.en?.message?.replace('{}', t('en')))
-                }
-              />
-              <DialogActions>
-                <Button type='submit'>{t('save')}</Button>
-              </DialogActions>
-            </Box>
-          </FormProvider>
-        </DialogContent>
-      </BootstrapDialog>
+              {languageMenuItems.map(({ value, label }) => (
+                <MenuItem key={value} value={value}>
+                  {label}
+                </MenuItem>
+              ))}
+            </TextField>
+            <FormInput
+              key={`title-${selectedLang}`}
+              name={`title.${selectedLang}`}
+              required
+              label={t('title')}
+              variant='standard'
+              value={titleValues}
+              error={!!errors.title?.ru || !!errors.title?.en}
+              helperText={
+                (!!errors.title?.[selectedLang] &&
+                  errors.title?.[selectedLang].message?.replace(
+                    '{}',
+                    t(selectedLang.toLowerCase()),
+                  )) ||
+                (!!errors.title?.ru &&
+                  errors.title?.ru?.message?.replace('{}', t('ru'))) ||
+                (!!errors.title?.en &&
+                  errors.title?.en?.message?.replace('{}', t('en')))
+              }
+            />
+            <FormInput
+              key={`message-${selectedLang}`}
+              name={`message.${selectedLang}`}
+              required
+              label={t('message')}
+              variant='standard'
+              value={messageValues}
+              error={!!errors.message?.ru || !!errors.message?.en}
+              helperText={
+                (!!errors.message?.[selectedLang] &&
+                  errors.message?.[selectedLang].message?.replace(
+                    '{}',
+                    t(selectedLang.toLowerCase()),
+                  )) ||
+                (!!errors.message?.ru &&
+                  errors.message?.ru?.message?.replace('{}', t('ru'))) ||
+                (!!errors.message?.en &&
+                  errors.message?.en?.message?.replace('{}', t('en')))
+              }
+            />
+            <DialogActions>
+              <Button type='submit'>{t('save')}</Button>
+            </DialogActions>
+          </Box>
+        </FormProvider>
+      </CustomDialog>
     </>
   );
 };

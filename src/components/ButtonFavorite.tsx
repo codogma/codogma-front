@@ -9,6 +9,7 @@ import React, { useState } from 'react';
 
 import { PopoverElement } from '@/components/PopoverElement';
 import { favorite, unfavorite } from '@/helpers/categoryApi';
+import CategoryAlertDialog from './CategoryAlertDialog';
 
 interface CustomFavoriteProps {
   readonly id: number;
@@ -27,6 +28,7 @@ export const ButtonFavorite: React.FC<CustomFavoriteProps> = ({
 }) => {
   const [anchorEl, setAnchorEl] = React.useState<HTMLElement | null>(null);
   const [isFavorite, setIsFavorite] = useState(isFavoriteValue);
+  const [dialogOpen, setDialogOpen] = useState(false);
   const { status } = useSession();
   const t = useTranslations('categoriesPage');
   const popoverId = 'simple-popover';
@@ -36,16 +38,21 @@ export const ButtonFavorite: React.FC<CustomFavoriteProps> = ({
     checked: boolean,
   ) => {
     if (status === 'authenticated') {
-      setIsFavorite(checked);
-
       if (checked) {
+        setIsFavorite(true);
         await favorite(id).then(() => refetch && refetch());
       } else {
-        await unfavorite(id).then(() => refetch && refetch());
+        setDialogOpen(true);
       }
     } else {
       setAnchorEl(event.currentTarget);
     }
+  };
+
+  const handleConfirmUnfavorite = async () => {
+    setIsFavorite(false);
+    setDialogOpen(false);
+    await unfavorite(id).then(() => refetch && refetch());
   };
 
   const handlePopoverClose = () => {
@@ -70,6 +77,11 @@ export const ButtonFavorite: React.FC<CustomFavoriteProps> = ({
           destination={t('popoverFavorite')}
         />
       )}
+      <CategoryAlertDialog
+        open={dialogOpen}
+        onClose={() => setDialogOpen(false)}
+        onConfirm={handleConfirmUnfavorite}
+      />
     </>
   );
 };

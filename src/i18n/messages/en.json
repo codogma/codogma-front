@@ -14,6 +14,7 @@
   "content": "content",
   "tags": "Tags",
   "tag": "tag",
+  "comments": "Comments",
   "searchContent": "By content",
   "searchTags": "By tag",
   "language": "Language",
@@ -159,7 +160,10 @@
     "dialogTitle": "Would you like to unsubscribe?",
     "dialogDescription": "Posts will no longer be shown in «Favorite categories»",
     "save": "Save",
-    "language": "Language"
+    "language": "Language",
+    "unsubscribeAnyway": "Unsubscribe anyway",
+    "leaveInSelect": "Leave in select",
+    "editBtn": "Edit"
   },
   "commentForm": {
     "addCommentBtn": "Add comment",
@@ -228,7 +232,9 @@
     "haveAccount": "Don't have an account?",
     "or": "or",
     "githubBtn": "Sign in with GitHub",
-    "gitlabBtn": "Sign in with GitLab"
+    "gitlabBtn": "Sign in with GitLab",
+    "resetPassword": "Reset password",
+    "contentText": "Enter your account's email address, and we'll send you a link to reset your password"
   },
   "signUpPage": {
     "signUp": "Sign up",

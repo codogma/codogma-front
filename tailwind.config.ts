@@ -25,7 +25,7 @@ const config: Config = {
         'limed-spruce': '#303B44',
         'limed-spruce-rgba': 'rgba(48,59,68,0.8)',
         woodsmoke: '#0d0d0d',
-        'woodsmoke-rgba': 'rgba(13,13,13,0.80)',
+        'woodsmoke-rgba': 'rgba(13,13,13,0.8)',
         loblolly: '#BBCDD6',
         cerulean: '#49ADDF',
         'vida-loca': '#548221',
