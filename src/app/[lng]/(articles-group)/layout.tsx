@@ -2,17 +2,19 @@ import ArticleIcon from '@mui/icons-material/Article';
 import CategoryIcon from '@mui/icons-material/Category';
 import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
 import { useTranslations } from 'next-intl';
-import React, { ReactNode } from 'react';
+import React, { ReactNode, use } from 'react';
 
 import { NavTabs, TabProps } from '@/components/NavTabs';
 import { Language } from '@/types';
 
 type LayoutProps = {
   readonly children: ReactNode;
-  readonly params: { lng: Language };
+  readonly params: Promise<{ lng: Language }>;
 };
 
-export default function Layout({ params: { lng }, children }: LayoutProps) {
+export default function Layout({ children, params }: LayoutProps) {
+  const { lng } = use(params);
+
   const t = useTranslations();
   const tabs: TabProps[] = [
     {

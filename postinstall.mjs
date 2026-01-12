@@ -1,5 +1,5 @@
 import fse from 'fs-extra';
-import path from 'path';
+import path from 'node:path';
 
 const topDir = import.meta.dirname;
 fse.emptyDirSync(path.join(topDir, 'public', 'tinymce'));

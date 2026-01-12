@@ -19,7 +19,12 @@ import {
 import Cookies from 'js-cookie';
 import { usePathname, useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
-import React, { useEffect, useState } from 'react';
+import React, {
+  DetailedHTMLProps,
+  LiHTMLAttributes,
+  useEffect,
+  useState,
+} from 'react';
 import {
   Controller,
   FormProvider,
@@ -174,7 +179,14 @@ export const LocalizationDialog = ({ lang }: LocalizationDialogProps) => {
                     field.onChange(value.map((v) => v.value))
                   }
                   getOptionLabel={(option) => option.label}
-                  renderOption={(props, option, { selected }) => {
+                  renderOption={(
+                    props: DetailedHTMLProps<
+                      LiHTMLAttributes<HTMLLIElement>,
+                      HTMLLIElement
+                    >,
+                    option,
+                    { selected },
+                  ) => {
                     const { key, ...optionProps } = props;
                     return (
                       <li key={key} {...optionProps}>

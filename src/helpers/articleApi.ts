@@ -15,7 +15,7 @@ export type UpdateDraftArticleDTO = {
   previewContent?: string | null;
   content?: string | null;
   categoryIds?: number[] | null;
-  compilationIds?: number[] | null;
+  compilationIds?: number[];
   tags?: string[];
 };
 
@@ -27,8 +27,8 @@ export type UpdateArticleDTO = {
   previewContent: string;
   content: string;
   categoryIds: number[];
-  compilationIds: number[];
-  tags: string[];
+  compilationIds?: number[];
+  tags?: string[];
 };
 
 export type GetArticlesDTO = {
@@ -41,7 +41,10 @@ export type GetArticlesDTO = {
 export const createDraftArticle = async (
   requestData: CreateDraftArticleDTO,
 ): Promise<GetArticle> => {
-  const response = await axiosInstance.post('/articles/drafts', requestData);
+  const response = await axiosInstance.post<GetArticle>(
+    '/articles/drafts',
+    requestData,
+  );
   dispatchCustomEvent('api', {
     message: 'Article draft created',
     severity: 'info',
@@ -64,7 +67,10 @@ export const updateArticle = async (
   id: number | undefined,
   requestData: UpdateArticleDTO,
 ): Promise<GetArticle> => {
-  const response = await axiosInstance.put(`/articles/${id}`, requestData);
+  const response = await axiosInstance.put<GetArticle>(
+    `/articles/${id}`,
+    requestData,
+  );
   dispatchCustomEvent('api', {
     message: 'Article sent to moderation',
     severity: 'info',
@@ -82,7 +88,7 @@ export const getArticles = async (
   username?: string,
   isFeed?: boolean,
 ): Promise<GetArticlesDTO> => {
-  const response = await axiosInstance.get('/articles', {
+  const response = await axiosInstance.get<GetArticlesDTO>('/articles', {
     params: {
       tag,
       content,
@@ -103,7 +109,7 @@ export const getViewed = async (
   tag?: string,
   content?: string,
 ): Promise<GetArticlesDTO> => {
-  const response = await axiosInstance.get('/articles/viewed', {
+  const response = await axiosInstance.get<GetArticlesDTO>('/articles/viewed', {
     params: {
       page,
       size,
@@ -115,14 +121,14 @@ export const getViewed = async (
 };
 
 export const getDraftArticles = async (): Promise<GetArticle[]> => {
-  const response = await axiosInstance.get('/articles/drafts');
+  const response = await axiosInstance.get<GetArticle[]>('/articles/drafts');
   return response.data;
 };
 
 export const getDraftedArticleById = async (
   id: number | undefined,
 ): Promise<GetArticle> => {
-  const response = await axiosInstance.get(`/articles/${id}/draft`);
+  const response = await axiosInstance.get<GetArticle>(`/articles/${id}/draft`);
   dispatchCustomEvent('api', {
     message: 'Article status changed to “Draft”',
     severity: 'warning',
@@ -133,19 +139,23 @@ export const getDraftedArticleById = async (
 export const getArticleById = async (
   id: number | undefined,
 ): Promise<GetArticle> => {
-  const response = await axiosInstance.get(`/articles/${id}`);
+  const response = await axiosInstance.get<GetArticle>(`/articles/${id}`);
   return response.data;
 };
 
 export const getRecommendationsArticleById = async (
   id: number | undefined,
 ): Promise<GetArticle> => {
-  const response = await axiosInstance.get(`/articles/${id}/recommendations`);
+  const response = await axiosInstance.get<GetArticle>(
+    `/articles/${id}/recommendations`,
+  );
   return response.data;
 };
 
 export const getRecommendationsArticles = async (): Promise<GetArticle[]> => {
-  const response = await axiosInstance.get('/articles/recommendations');
+  const response = await axiosInstance.get<GetArticle[]>(
+    '/articles/recommendations',
+  );
   return response.data;
 };
 
@@ -171,7 +181,7 @@ export const addToCompilations = async (
 };
 
 export const like = async (id: number): Promise<GetArticle> => {
-  const response = await axiosInstance.post(`/articles/${id}/like`);
+  const response = await axiosInstance.post<GetArticle>(`/articles/${id}/like`);
   dispatchCustomEvent('api', {
     message: 'Liked article',
     severity: 'success',
@@ -180,7 +190,9 @@ export const like = async (id: number): Promise<GetArticle> => {
 };
 
 export const unlike = async (id: number): Promise<GetArticle> => {
-  const response = await axiosInstance.delete(`/articles/${id}/unlike`);
+  const response = await axiosInstance.delete<GetArticle>(
+    `/articles/${id}/unlike`,
+  );
   dispatchCustomEvent('api', {
     message: 'Unliked article',
     severity: 'success',

@@ -1,6 +1,6 @@
 'use client';
 import { useQuery } from '@tanstack/react-query';
-import React, { useState } from 'react';
+import React, { use, useState } from 'react';
 
 import Categories from '@/components/Categories';
 import { CustomPagination } from '@/components/CustomPagination';
@@ -12,12 +12,11 @@ import { useEventListener } from '@/helpers/useEventListener';
 import { GetCategory, Language, SearchType } from '@/types';
 
 type PageProps = {
-  readonly params: {
-    lng: Language;
-  };
+  readonly params: Promise<{ lng: Language }>;
 };
 
-export default function Page({ params: { lng } }: PageProps) {
+export default function Page({ params }: PageProps) {
+  const { lng } = use(params);
   const [currentPage, setCurrentPage] = useState<number>(0);
   const [resultsPerPage, setResultsPerPage] = useState<number>(10);
   const [searchValue, setSearchValue] = useState<string>();
@@ -69,7 +68,7 @@ export default function Page({ params: { lng } }: PageProps) {
       <Categories
         lang={lng}
         categories={categories}
-        loading={isFetching}
+        isLoading={isFetching}
         categoriesPerPageStart={CATEGORIES_PER_PAGE}
       />
       <CustomPagination

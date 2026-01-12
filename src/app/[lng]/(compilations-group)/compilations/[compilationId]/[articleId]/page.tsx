@@ -1,17 +1,14 @@
 'use client';
-import React from 'react';
+import React, { use } from 'react';
 
 import Article from '@/components/Article';
 import { Language } from '@/types';
 
-type PageParams = {
-  readonly lang: Language;
-};
-
 type PageProps = {
-  readonly params: PageParams;
+  readonly params: Promise<{ lng: Language }>;
 };
 
-export default function Page({ params: { lang } }: PageProps) {
-  return <Article lang={lang} />;
+export default function Page({ params }: PageProps) {
+  const { lng } = use(params);
+  return <Article lang={lng} />;
 }

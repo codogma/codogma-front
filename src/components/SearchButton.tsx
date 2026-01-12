@@ -1,4 +1,5 @@
 import SearchIcon from '@mui/icons-material/Search';
+import { SxProps, Theme } from '@mui/material';
 import Button, { ButtonProps } from '@mui/material/Button';
 import { alpha } from '@mui/material/styles';
 import { useTranslations } from 'next-intl';
@@ -7,6 +8,14 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 
 interface SearchButtonProps extends ButtonProps {
   readonly onRef?: React.Ref<HTMLButtonElement>;
+  readonly sx?: SxProps<Theme>;
+}
+
+type SxItem = Exclude<SxProps<Theme>, readonly unknown[]>;
+
+function normalizeSx(sx?: SxProps<Theme>): readonly SxItem[] {
+  if (!sx) return [];
+  return Array.isArray(sx) ? (sx as readonly SxItem[]) : [sx as SxItem];
 }
 
 export const SearchButton = ({
@@ -97,6 +106,8 @@ export const SearchButton = ({
     return () => window.removeEventListener('keydown', handler);
   }, []);
 
+  const extraSx = normalizeSx(sx);
+
   return (
     <Button
       ref={setRefs}
@@ -132,7 +143,7 @@ export const SearchButton = ({
             outlineOffset: '2px',
           },
         }),
-        ...(Array.isArray(sx) ? sx : [sx]),
+        ...extraSx,
       ]}
       {...props}
     >

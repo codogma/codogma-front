@@ -1,7 +1,6 @@
 'use client';
-import { Grid2 as Grid } from '@mui/material';
 import Container from '@mui/material/Container';
-import { ThemeProviderProps } from '@mui/material/styles/ThemeProvider';
+import Grid from '@mui/material/Grid';
 import { useParams, usePathname } from 'next/navigation';
 import { Session } from 'next-auth';
 import React, { ReactNode } from 'react';
@@ -12,7 +11,7 @@ import { NavBar } from '@/components/NavBar';
 import { useNavigation } from '@/components/NavigationProvider';
 import { NavPanel } from '@/components/NavPanel';
 import { NavSidebar } from '@/components/NavSidebar';
-import { Language } from '@/types';
+import { Language, ThemeProviderProps } from '@/types';
 
 type NavigationProps = {
   readonly lang: Language;

@@ -10,7 +10,7 @@ import CardContent from '@mui/material/CardContent';
 import IconButton from '@mui/material/IconButton';
 import { useQuery } from '@tanstack/react-query';
 import { useTranslations } from 'next-intl';
-import React from 'react';
+import React, { use } from 'react';
 
 import { AvatarImage } from '@/components/AvatarImage';
 import MenuButton from '@/components/MenuButton';
@@ -18,20 +18,13 @@ import { NavTabs, TabProps } from '@/components/NavTabs';
 import { getUserByUsername } from '@/helpers/userApi';
 import { GetUserDTO, Language } from '@/types';
 
-type PageParams = {
-  username: string;
-  lng: Language;
-};
-
 type PageProps = {
-  readonly params: PageParams;
+  readonly params: Promise<{ username: string; lng: Language }>;
   readonly children: React.ReactNode;
 };
 
-export default function Layout({
-  params: { lng, username },
-  children,
-}: PageProps) {
+export default function Layout({ children, params }: PageProps) {
+  const { lng, username } = use(params);
   const t = useTranslations();
   const tabs: TabProps[] = [
     {

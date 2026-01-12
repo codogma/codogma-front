@@ -5,6 +5,8 @@ import { getLocale } from '@/helpers/getLocale';
 
 import { routing } from './routing';
 
+type Messages = Record<string, unknown>;
+
 export default getRequestConfig(async () => {
   // Typically corresponds to the `[locale]` segment
   const requested = await getLocale();
@@ -12,8 +14,8 @@ export default getRequestConfig(async () => {
     ? requested
     : routing.defaultLocale;
 
-  return {
-    locale,
-    messages: (await import(`./messages/${locale}.json`)).default,
-  };
+  const mod: unknown = await import(`./messages/${locale}.json`);
+  const messages = (mod as { default: Messages }).default;
+
+  return { locale, messages };
 });

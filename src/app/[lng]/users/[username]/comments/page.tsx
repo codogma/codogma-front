@@ -4,7 +4,7 @@ import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import { useQuery } from '@tanstack/react-query';
 import Link from 'next/link';
-import React, { useState } from 'react';
+import React, { use, useState } from 'react';
 
 import { AvatarImage } from '@/components/AvatarImage';
 import { CustomPagination } from '@/components/CustomPagination';
@@ -16,16 +16,12 @@ import { getComments } from '@/helpers/commentAPI';
 import { useEventListener } from '@/helpers/useEventListener';
 import { GetComment, GetCommentsDTO, Language, SearchType } from '@/types';
 
-type PageParams = {
-  username: string;
-  lng: Language;
-};
-
 type PageProps = {
-  readonly params: PageParams;
+  readonly params: Promise<{ username: string; lng: Language }>;
 };
 
-export default function Page({ params: { username, lng } }: PageProps) {
+export default function Page({ params }: PageProps) {
+  const { username, lng } = use(params);
   const [currentPage, setCurrentPage] = useState<number>(0);
   const [resultsPerPage, setResultsPerPage] =
     useState<number>(COMMENTS_PER_PAGE);

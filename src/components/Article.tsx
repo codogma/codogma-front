@@ -139,7 +139,7 @@ export default function Article({ lang }: ArticleProps) {
           <Articles
             lang={lang}
             articles={articles}
-            loading={isFetching}
+            isLoading={isFetching}
             articlesPerPageStart={ARTICLE_RECOMMENDATIONS}
           />
         </>

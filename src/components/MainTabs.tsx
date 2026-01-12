@@ -152,7 +152,7 @@ export const MainTabs: React.FC<MainTabsProps> = ({ lang, username }) => {
         <TabPanel value={1}>
           <Compilations
             compilations={bookmarks}
-            loading={isFetchingBookmarks}
+            isLoading={isFetchingBookmarks}
             lang={lang}
             compilationsPerPageStart={MAIN_PAGE_BOOKMARKS}
           />
@@ -166,7 +166,7 @@ export const MainTabs: React.FC<MainTabsProps> = ({ lang, username }) => {
         <TabPanel value={2}>
           <Compilations
             compilations={myCompilations}
-            loading={isFetchingMyCompilations}
+            isLoading={isFetchingMyCompilations}
             lang={lang}
             compilationsPerPageStart={MAIN_PAGE_MY_COMPILATIONS}
           />

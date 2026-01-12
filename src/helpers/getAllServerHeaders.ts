@@ -7,11 +7,12 @@ import { devConsoleInfo } from '@/helpers/devConsoleLogs';
 export const getAllServerHeaders = async (): Promise<
   Record<string, string>
 > => {
-  const headerList = headers();
+  // headers() в Next возвращает Headers-подобный объект
+  const headerList = await headers();
   const headersObj = Object.fromEntries(headerList.entries());
 
   // Белый список безопасных заголовков для API запросов
-  const allowedHeaders = [
+  const allowedHeaders = new Set([
     'accept',
     'accept-language',
     'accept-encoding',
@@ -19,26 +20,23 @@ export const getAllServerHeaders = async (): Promise<
     'cookie',
     'content-type',
     'referer',
-  ];
+  ]);
 
-  const filteredHeaders = Object.fromEntries(
-    Object.entries(headersObj)
-      .filter(([key, value]) => {
-        // Проверяем, что заголовок в белом списке
-        if (!allowedHeaders.includes(key.toLowerCase())) {
-          return false;
-        }
+  const filteredHeaders: Record<string, string> = {};
 
-        // Проверяем, что значение валидное
-        return !(
-          value.trim().length === 0 || // не пустое после trim
-          value.includes('\n') || // без переносов строк
-          value.includes('\r') || // без возврата каретки
-          value.length > 8192
-        );
-      })
-      .map(([key, value]) => [key, value.trim()]), // убираем лишние пробелы
-  );
+  for (const [key, value] of Object.entries(headersObj)) {
+    const k = key.toLowerCase();
+    if (!allowedHeaders.has(k)) continue;
+
+    if (typeof value !== 'string') continue;
+
+    const v = value.trim();
+    if (v.length === 0) continue;
+    if (v.includes('\n') || v.includes('\r')) continue;
+    if (v.length > 8192) continue;
+
+    filteredHeaders[key] = v;
+  }
 
   devConsoleInfo('getAllServerHeaders result:', filteredHeaders);
   return filteredHeaders;

@@ -35,7 +35,7 @@ import { TimeAgo } from '@/components/TimeAgo';
 import { GetArticle, Language, SwatchDTO, UserRole } from '@/types';
 
 type ArticleCardProps = {
-  readonly article: GetArticle;
+  readonly article: GetArticle | null;
   readonly lang: Language;
   readonly isMinimal?: boolean;
 };
@@ -51,9 +51,8 @@ export const ArticleCard = ({ article, lang, isMinimal }: ArticleCardProps) => {
   }
   const { processContent } = useContentImageContext();
   const t = useTranslations('articlesPage');
-  const previewContent = processContent(
-    DOMPurify.sanitize(article?.previewContent),
-  );
+  const previewRaw = article?.previewContent ?? '';
+  const previewContent = processContent(DOMPurify.sanitize(previewRaw));
   const [expanded, setExpanded] = useState(false);
   const imgRef = useRef<HTMLImageElement>(null);
   const palette = article?.image?.palette;

@@ -8,7 +8,7 @@ import { Language } from '@/types';
 
 type LayoutProps = {
   readonly children: ReactNode;
-  readonly params: { lng: Language };
+  readonly params: Promise<{ lng: Language }>;
 };
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -29,9 +29,7 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
-export default async function Layout({
-  children,
-  params: { lng },
-}: LayoutProps) {
+export default async function Layout({ children, params }: LayoutProps) {
+  const { lng } = await params;
   return <SignIn lang={lng}>{children}</SignIn>;
 }

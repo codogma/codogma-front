@@ -8,22 +8,21 @@ import { useQuery } from '@tanstack/react-query';
 import Link from 'next/link';
 import { useSession } from 'next-auth/react';
 import { useTranslations } from 'next-intl';
-import React, { useState } from 'react';
+import React, { use, useState } from 'react';
 
 import { AvatarImage } from '@/components/AvatarImage';
 import { getUserByUsername } from '@/helpers/userApi';
 import { GetUserDTO, Language } from '@/types';
 
-type PageParams = {
-  username: string;
-  lng: Language;
-};
-
 type PageProps = {
-  readonly params: PageParams;
+  readonly params: Promise<{
+    username: string;
+    lng: Language;
+  }>;
 };
 
-export default function Page({ params: { lng, username } }: PageProps) {
+export default function Page({ params }: PageProps) {
+  const { lng, username } = use(params);
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
   const [currentCategory, setCurrentCategory] = useState<number | null>(null);
   const t = useTranslations('authorsPage');

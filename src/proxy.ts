@@ -1,4 +1,3 @@
-import { defaultConfig } from '@mui/material/InitColorSchemeScript/InitColorSchemeScript';
 import acceptLanguage from 'accept-language';
 import { NextRequest, NextResponse } from 'next/server';
 import createMiddleware from 'next-intl/middleware';
@@ -10,6 +9,7 @@ import {
   intlCookie,
   languages,
 } from '@/constants/i18n';
+import { themeConfig } from '@/constants/theme-config';
 import { currentUser } from '@/helpers/authApi';
 import { devConsoleWarn } from '@/helpers/devConsoleLogs';
 import { getLocale } from '@/helpers/getLocale';
@@ -27,7 +27,7 @@ export const config = {
   matcher: '/((?!api|static|.*\\..*|_next).*)',
 };
 
-export async function middleware(req: NextRequest) {
+export async function proxy(req: NextRequest) {
   const { pathname, search } = req.nextUrl;
   const lng = await getLanguage(req);
 
@@ -38,8 +38,8 @@ export async function middleware(req: NextRequest) {
   const theme = getTheme();
   if (theme === undefined) {
     response.cookies.set(
-      defaultConfig.modeStorageKey,
-      defaultConfig.defaultDarkColorScheme,
+      themeConfig.modeStorageKey,
+      themeConfig.defaultDarkColorScheme,
     );
   }
 

@@ -1,11 +1,11 @@
 'use client';
 import { CssBaseline } from '@mui/material';
-import { defaultConfig } from '@mui/material/InitColorSchemeScript/InitColorSchemeScript';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { usePathname } from 'next/navigation';
 import React, { ReactNode } from 'react';
 
 import { Scrollbar } from '@/components/Scrollbar';
+import { themeConfig } from '@/constants/theme-config';
 
 const theme = createTheme({
   colorSchemes: { light: true, dark: true },
@@ -23,7 +23,7 @@ export const ColorModeProvider = ({ children }: ColorModeProviderProps) => {
   return (
     <ThemeProvider
       theme={theme}
-      defaultMode={defaultConfig.defaultDarkColorScheme}
+      defaultMode={themeConfig.defaultDarkColorScheme}
     >
       <CssBaseline />
       <Scrollbar scrollKey={pathname} resetOnRouteChange={true}>

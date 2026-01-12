@@ -1,5 +1,5 @@
 import { TextField, TextFieldProps } from '@mui/material';
-import { FC } from 'react';
+import { FC, useMemo } from 'react';
 import { Controller, FieldError, useFormContext } from 'react-hook-form';
 
 type IFormInputProps = {
@@ -17,6 +17,11 @@ const FormInput: FC<IFormInputProps> = ({
     formState: { errors },
   } = useFormContext();
 
+  const stableId = useMemo(
+    () => (otherProps.id ?? `field-${name}`).replaceAll('.', '-'),
+    [otherProps.id, name],
+  );
+
   return (
     <Controller
       control={control}
@@ -25,6 +30,7 @@ const FormInput: FC<IFormInputProps> = ({
         <TextField
           {...otherProps}
           {...field}
+          id={stableId}
           error={error || !!errors[name]}
           helperText={
             helperText ||

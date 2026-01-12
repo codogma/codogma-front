@@ -1,5 +1,4 @@
-'use client';
-import Grid from '@mui/material/Grid2';
+import Grid from '@mui/material/Grid';
 import React from 'react';
 
 import { CategoryCard } from '@/components/CategoryCard';
@@ -7,7 +6,7 @@ import { GetCategory, Language } from '@/types';
 
 type CategoriesProps = {
   readonly categories: GetCategory[];
-  readonly loading: boolean;
+  readonly isLoading: boolean;
   readonly categoriesPerPageStart: number;
   readonly lang: Language;
   readonly refetch?: () => void;
@@ -15,17 +14,17 @@ type CategoriesProps = {
 
 export default function Categories({
   categories,
-  loading,
+  isLoading,
   categoriesPerPageStart,
   lang,
   refetch,
 }: CategoriesProps) {
   return (
     <Grid container spacing={2}>
-      {(loading
+      {(isLoading
         ? Array.from(new Array(categoriesPerPageStart))
         : categories
-      )?.map((category, key) => (
+      )?.map((category: GetCategory, key) => (
         <Grid
           key={category ? category.id : `skeleton-${key}`}
           size={{ xs: 12, sm: 6, lg: 4 }}

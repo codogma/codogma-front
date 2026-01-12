@@ -11,12 +11,12 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import { useMutation } from '@tanstack/react-query';
-import { AxiosError } from 'axios';
+import axios, { AxiosError } from 'axios';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { signIn, useSession } from 'next-auth/react';
 import { useTranslations } from 'next-intl';
-import React, { useEffect, useState } from 'react';
+import React, { use, useEffect, useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { z } from 'zod';
 
@@ -24,7 +24,7 @@ import { GithubIcon, GitlabIcon } from '@/components/CustomIcons';
 import { ForgotPasswordDialog } from '@/components/ForgotPasswordDialog';
 import FormInput from '@/components/FormInput';
 import { currentUser, login } from '@/helpers/authApi';
-import { Language } from '@/types';
+import { AuthDTO, Language } from '@/types';
 
 const SignInScheme = z.object({
   usernameOrEmail: z.string().min(1, { message: 'Name is required' }),
@@ -36,12 +36,19 @@ const SignInScheme = z.object({
 export type OAuthProvider = 'github' | 'gitlab';
 
 type PageProps = {
-  readonly params: {
-    lng: Language;
-  };
+  readonly params: Promise<{ lng: Language }>;
 };
 
-export default function Page({ params: { lng } }: PageProps) {
+type ErrorData = string | { message?: string };
+
+function extractAxiosMessage(e: AxiosError<ErrorData>): string {
+  const data = e.response?.data;
+  if (typeof data === 'string') return data;
+  return data?.message ?? 'An error occurred during sign in';
+}
+
+export default function Page({ params }: PageProps) {
+  const { lng } = use(params);
   const router = useRouter();
   const searchParams = useSearchParams();
   const t = useTranslations('signInPage');
@@ -71,7 +78,7 @@ export default function Page({ params: { lng } }: PageProps) {
 
   const { mutate: signInMutation, isPending: signInIsPending } = useMutation({
     mutationFn: async (formData: z.infer<typeof SignInScheme>) => {
-      const data = await login(formData);
+      const data: AuthDTO = await login(formData);
       if (data) {
         const result = await signIn('credentials', {
           ...data,
@@ -87,21 +94,23 @@ export default function Page({ params: { lng } }: PageProps) {
         router.push(`/${lng}/`);
       }
     },
-    onError: (error) => {
-      if (error instanceof AxiosError) {
-        const message =
-          error?.response?.data ?? 'An error occurred during sign in';
-        setServerError(message);
-      } else {
-        setServerError(error?.message || 'An error occurred during sign in');
+    onError: (error: unknown) => {
+      if (axios.isAxiosError<ErrorData>(error)) {
+        setServerError(extractAxiosMessage(error));
+        return;
       }
+      if (error instanceof Error) {
+        setServerError(error.message);
+        return;
+      }
+      setServerError('An error occurred during sign in');
     },
   });
 
   const { mutate: oauthSignInMutation, isPending: oauthIsPending } =
     useMutation({
       mutationFn: async () => {
-        const data = await currentUser();
+        const data: AuthDTO = await currentUser();
         const result = await signIn('credentials', {
           ...data,
           redirect: false,
@@ -112,14 +121,16 @@ export default function Page({ params: { lng } }: PageProps) {
       onSuccess: () => {
         router.push(`/${lng}/`);
       },
-      onError: (error) => {
-        if (error instanceof AxiosError) {
-          const message =
-            error?.response?.data ?? 'An error occurred during sign in';
-          setServerError(message);
-        } else {
-          setServerError(error?.message || 'An error occurred during sign in');
+      onError: (error: unknown) => {
+        if (axios.isAxiosError<ErrorData>(error)) {
+          setServerError(extractAxiosMessage(error));
+          return;
         }
+        if (error instanceof Error) {
+          setServerError(error.message);
+          return;
+        }
+        setServerError('An error occurred during sign in');
       },
     });
 

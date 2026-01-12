@@ -2,17 +2,16 @@
 import { Button, Container, Typography } from '@mui/material';
 import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
-import React from 'react';
+import React, { use } from 'react';
 
 import { Language } from '@/types';
 
 type PageProps = {
-  readonly params: {
-    lng: Language;
-  };
+  readonly params: Promise<{ lng: Language }>;
 };
 
-export default function Page({ params: { lng } }: PageProps) {
+export default function Page({ params }: PageProps) {
+  const { lng } = use(params);
   const router = useRouter();
 
   const handleRedirect = () => {

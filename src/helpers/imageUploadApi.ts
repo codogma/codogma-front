@@ -11,7 +11,7 @@ export const uploadArticleImage = async (
   articleId: number,
   requestData: CreateArticleImage,
 ): Promise<string> => {
-  const response = await axiosInstance.post(
+  const response = await axiosInstance.post<string>(
     `/images/upload/${articleId}`,
     requestData,
     {

@@ -6,7 +6,7 @@ import Paper from '@mui/material/Paper';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { useParams } from 'next/navigation';
 import { useSession } from 'next-auth/react';
-import React from 'react';
+import React, { HTMLAttributes } from 'react';
 
 import { ArticleProgressBar } from '@/components/ArticleProgressBar';
 import { ArticlesDrawer } from '@/components/ArticlesDrawer';
@@ -25,6 +25,25 @@ type SearchProps = {
   readonly toc: TocItem[];
   readonly isFullscreen: boolean;
 };
+
+const CheckboxIconRoot = React.forwardRef<
+  HTMLSpanElement,
+  HTMLAttributes<HTMLSpanElement>
+>(function CheckboxIconRoot(props, ref) {
+  const { className, children, ...rest } = props;
+
+  return (
+    <span
+      ref={ref}
+      {...rest}
+      className={['inline-flex items-center', className]
+        .filter(Boolean)
+        .join(' ')}
+    >
+      {children}
+    </span>
+  );
+});
 
 export const ArticleActions = ({
   lang,
@@ -100,10 +119,7 @@ export const ArticleActions = ({
     },
   });
 
-  const handleChange = async (
-    _event: React.ChangeEvent<HTMLInputElement>,
-    checked: boolean,
-  ) => {
+  const handleChange = async (_event: React.ChangeEvent, checked: boolean) => {
     if (status === 'authenticated') {
       if (checked) {
         await likeMutation.mutateAsync();
@@ -132,7 +148,7 @@ export const ArticleActions = ({
         boxShadow: '0px 4px 6px rgba(0, 0, 0, 0.1)',
         borderRadius: 8,
         p: '6px',
-        m: isFullscreen ? 0 : '8px auto 8px auto',
+        m: isFullscreen ? 0 : '8px auto',
         alignItems: 'center',
         overflow: 'hidden',
       }}
@@ -157,20 +173,20 @@ export const ArticleActions = ({
             checked={articleData.isLiked}
             onChange={handleChange}
             icon={
-              <>
+              <CheckboxIconRoot>
                 <ThumbUpOutlinedIcon />
                 <div className='ml-1 text-base leading-5'>
                   {articleData.likesCount}
                 </div>
-              </>
+              </CheckboxIconRoot>
             }
             checkedIcon={
-              <>
+              <CheckboxIconRoot>
                 <ThumbUpOutlinedIcon color='inherit' />
                 <div className='ml-1 text-base leading-5'>
                   {articleData.likesCount}
                 </div>
-              </>
+              </CheckboxIconRoot>
             }
             slotProps={{ input: { 'aria-label': 'Like' } }}
           />
@@ -191,10 +207,10 @@ export const ArticleActions = ({
             articleId={articleId}
             compilationId={compilationId}
           />
+          <MenuButton article={articleData} lang={lang} />
+          <ArticleProgressBar article={article} />
         </>
       )}
-      <MenuButton article={articleData} lang={lang} />
-      <ArticleProgressBar article={article} />
     </Paper>
   );
 };

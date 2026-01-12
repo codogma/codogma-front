@@ -41,7 +41,7 @@ export const connectPublicWebSocket = (): Client => {
   stompClient.onConnect = (frame) => {
     devConsoleInfo('Public connection established:', frame);
     stompClient.subscribe('/topic/public-notifications', (message) => {
-      const notification = JSON.parse(message.body);
+      const notification: unknown = JSON.parse(message.body);
       devConsoleInfo('Public notification received:', notification);
       dispatchCustomEvent('notification', {
         message: 'Public notification received',
@@ -84,7 +84,7 @@ export const connectPrivateWebSocket = async (): Promise<Client> => {
     privateSubscription = stompClient.subscribe(
       '/user/queue/notifications',
       (message) => {
-        const notification = JSON.parse(message.body);
+        const notification: unknown = JSON.parse(message.body);
         devConsoleInfo('Private notification received:', notification);
         dispatchCustomEvent('notification', {
           message: 'Private notification received',
@@ -136,7 +136,10 @@ export const updateNotification = async (
   id: number,
   requestData: NotificationUpdate,
 ): Promise<GetNotification> => {
-  const response = await axiosInstance.put(`/notifications/${id}`, requestData);
+  const response = await axiosInstance.put<GetNotification>(
+    `/notifications/${id}`,
+    requestData,
+  );
   dispatchCustomEvent('api', {
     message: 'Notification updated successfully',
     severity: 'success',
@@ -151,22 +154,27 @@ export const getNotifications = async (
   sort: string = 'createdAt',
   order: string = 'desc',
 ): Promise<GetNotificationsDTO> => {
-  const response = await axiosInstance.get('/notifications', {
-    params: {
-      isRead,
-      page,
-      size,
-      sort,
-      order,
+  const response = await axiosInstance.get<GetNotificationsDTO>(
+    '/notifications',
+    {
+      params: {
+        isRead,
+        page,
+        size,
+        sort,
+        order,
+      },
     },
-  });
+  );
   return response.data;
 };
 
 export const getNotificationByIdToUpdate = async (
   id: number,
 ): Promise<GetNotificationToUpdate> => {
-  const response = await axiosInstance.get(`/notifications/${id}`);
+  const response = await axiosInstance.get<GetNotificationToUpdate>(
+    `/notifications/${id}`,
+  );
   return response.data;
 };
 

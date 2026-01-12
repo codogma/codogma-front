@@ -3,12 +3,13 @@ import Brightness4Icon from '@mui/icons-material/Brightness4';
 import Brightness7Icon from '@mui/icons-material/Brightness7';
 import { SxProps, Theme } from '@mui/material';
 import Checkbox from '@mui/material/Checkbox';
-import { defaultConfig } from '@mui/material/InitColorSchemeScript/InitColorSchemeScript';
 import { useColorScheme } from '@mui/material/styles';
-import { ThemeProviderProps } from '@mui/material/styles/ThemeProvider';
 import Tooltip from '@mui/material/Tooltip';
 import Cookies from 'js-cookie';
 import React, { FC, useState } from 'react';
+
+import { themeConfig } from '@/constants/theme-config';
+import { ThemeProviderProps } from '@/types';
 
 interface ThemeToggleButtonProps {
   readonly sx?: SxProps<Theme>;
@@ -27,12 +28,12 @@ export const ThemeToggleButton: FC<ThemeToggleButtonProps> = ({
 
   const handleToggleTheme = () => {
     const newMode =
-      mode === defaultConfig.defaultLightColorScheme
-        ? defaultConfig.defaultDarkColorScheme
-        : defaultConfig.defaultLightColorScheme;
+      mode === themeConfig.defaultLightColorScheme
+        ? themeConfig.defaultDarkColorScheme
+        : themeConfig.defaultLightColorScheme;
     setMode(newMode);
     setThemeMode(newMode);
-    Cookies.set(defaultConfig.modeStorageKey, newMode);
+    Cookies.set(themeConfig.modeStorageKey, newMode);
   };
 
   return (

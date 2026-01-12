@@ -34,6 +34,7 @@ export async function POST() {
       },
       withCredentials: true,
       timeout: 10000, // 10 секунд таймаут
+      validateStatus: () => true,
     },
   );
 

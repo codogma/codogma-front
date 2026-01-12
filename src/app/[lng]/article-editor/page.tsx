@@ -29,12 +29,13 @@ import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import { useTranslations } from 'next-intl';
 import { Vibrant } from 'node-vibrant/browser';
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { use, useCallback, useEffect, useMemo, useState } from 'react';
 import {
   Controller,
   FormProvider,
   SubmitHandler,
   useForm,
+  useWatch,
 } from 'react-hook-form';
 import { z } from 'zod';
 
@@ -94,7 +95,7 @@ const VisuallyHiddenInput = styled('input')({
 });
 
 type PageParams = {
-  readonly params: { lng: Language };
+  readonly params: Promise<{ lng: Language }>;
 };
 
 type StepType = {
@@ -103,6 +104,10 @@ type StepType = {
   stepContent: React.ReactNode;
   error?: boolean;
 };
+
+type StepOneType = Pick<UpdateArticleDTO, 'title' | 'content'>;
+
+type StepTwoType = Omit<UpdateArticleDTO, 'title' | 'content'>;
 
 const StepOneScheme = z.object({
   title: z
@@ -113,7 +118,7 @@ const StepOneScheme = z.object({
 });
 
 const StepTwoScheme = z.object({
-  language: z.nativeEnum(Language),
+  language: z.enum(Language),
   originalArticleId: z.number().optional().nullable(),
   imageUrl: z.string().min(1, 'Изображение обязательно для загрузки'),
   previewContent: z.string().min(1, 'Краткое описание не может быть пустым'),
@@ -139,16 +144,6 @@ const CustomStepIcon = (props: StepIconProps) => {
   );
 };
 
-export type StepOneType = Pick<
-  UpdateDraftArticleDTO,
-  'title' | 'content'
-> | null;
-
-export type StepTwoType = Omit<
-  UpdateDraftArticleDTO,
-  'title' | 'content'
-> | null;
-
 function getUniqueCategories(mergedCategories: GetCategory[]) {
   return Array.from(
     mergedCategories
@@ -171,7 +166,8 @@ function getUniqueCompilations(mergedCompilations: GetCompilation[]) {
   );
 }
 
-const Page = ({ params: { lng } }: PageParams) => {
+const Page = ({ params }: PageParams) => {
+  const { lng } = use(params);
   const STEP_ONE_DATA = 'step-one-data';
   const STEP_TWO_DATA = 'step-two-data';
   const SELECTED_CATEGORIES = 'selected-categories';
@@ -185,9 +181,9 @@ const Page = ({ params: { lng } }: PageParams) => {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const id = Number(searchParams.get(PARAM_ID)) || 0;
-  const [stepOneData, setStepOneData] = useState<StepOneType>(null);
+  const [stepOneData, setStepOneData] = useState<StepOneType>();
   const [reset, setReset] = useState<boolean>(false);
-  const [stepTwoData, setStepTwoData] = useState<StepTwoType>(null);
+  const [stepTwoData, setStepTwoData] = useState<StepTwoType>();
   const [activeStep, setActiveStep] = useState<number>(0);
   const [articleId, setArticleId] = useState<number>(0);
   const [draftArticles, setDraftArticles] = useState<GetArticle[]>([]);
@@ -227,7 +223,7 @@ const Page = ({ params: { lng } }: PageParams) => {
     watch: watchStepOne,
   } = zodStepOneForm;
 
-  const zodStepTwoForm = useForm<z.infer<typeof StepTwoScheme>>({
+  const zodStepTwoForm = useForm<StepTwoType>({
     resolver: zodResolver(StepTwoScheme),
     defaultValues: {
       language: lng,
@@ -283,6 +279,15 @@ const Page = ({ params: { lng } }: PageParams) => {
     );
   };
 
+  function lsClean() {
+    localStorage.removeItem(STEP_ONE_DATA);
+    localStorage.removeItem(STEP_TWO_DATA);
+    localStorage.removeItem(SELECTED_CATEGORIES);
+    localStorage.removeItem(SELECTED_COMPILATIONS);
+    localStorage.removeItem(ARTICLE_ID);
+    localStorage.removeItem(PALETTE);
+  }
+
   const { data: article, isFetched } = useQuery<GetArticle>({
     queryKey: ['article', id],
     queryFn: () => {
@@ -314,8 +319,8 @@ const Page = ({ params: { lng } }: PageParams) => {
       setReset(true);
       setPrevData(null);
       setActiveStep(0);
-      setStepOneData(null);
-      setStepTwoData(null);
+      setStepOneData(undefined);
+      setStepTwoData(undefined);
       lsClean();
     });
   }, [refetchDraftArticlesData, resetStepOne, resetStepTwo, lng]);
@@ -469,17 +474,17 @@ const Page = ({ params: { lng } }: PageParams) => {
         setArticleId(lsArticleId);
         const lsStepOneData = localStorage.getItem(STEP_ONE_DATA);
         if (lsStepOneData) {
-          const parsedStepOneData = JSON.parse(lsStepOneData);
+          const parsedStepOneData = JSON.parse(lsStepOneData) as StepOneType;
           resetStepOne(parsedStepOneData);
         }
         const lsStepTwoData = localStorage.getItem(STEP_TWO_DATA);
         if (lsStepTwoData) {
-          const parsedStepTwoData = JSON.parse(lsStepTwoData);
+          const parsedStepTwoData = JSON.parse(lsStepTwoData) as StepTwoType;
           resetStepTwo(parsedStepTwoData);
         }
         const lsPalette = localStorage.getItem(PALETTE);
         if (lsPalette) {
-          const parsedPalette = JSON.parse(lsPalette);
+          const parsedPalette = JSON.parse(lsPalette) as PaletteDTO;
           setPalette(parsedPalette);
         }
       } else {
@@ -521,7 +526,9 @@ const Page = ({ params: { lng } }: PageParams) => {
     const lsSelectedCategoriesData = localStorage.getItem(SELECTED_CATEGORIES);
     let lsSelectedCategories: GetCategory[] = [];
     if (lsSelectedCategoriesData !== null)
-      lsSelectedCategories = JSON.parse(lsSelectedCategoriesData);
+      lsSelectedCategories = JSON.parse(
+        lsSelectedCategoriesData,
+      ) as GetCategory[];
     const mergedCategories = [
       ...(categoriesPages?.content || []),
       ...(categoriesObjects || []),
@@ -553,7 +560,9 @@ const Page = ({ params: { lng } }: PageParams) => {
     );
     let lsSelectedCompilations: GetCompilation[] = [];
     if (lsSelectedCompilationsData !== null)
-      lsSelectedCompilations = JSON.parse(lsSelectedCompilationsData);
+      lsSelectedCompilations = JSON.parse(
+        lsSelectedCompilationsData,
+      ) as GetCompilation[];
     const mergedCompilations = [
       ...(compilationsObjects || []),
       ...(lsSelectedCompilations || []),
@@ -599,27 +608,22 @@ const Page = ({ params: { lng } }: PageParams) => {
     }
   }, [errorsStepTwo, isSubmitSuccessfulStepTwo, resetStepTwo, zodStepTwoForm]);
 
-  useEffect(() => {
-    if (!isSubmitSuccessfulStepTwo) {
-      const subscriptionStepOne = watchStepOne((data) => {
-        if (data.title) {
-          setStepOneData(data as StepOneType);
-          localStorage.setItem(STEP_ONE_DATA, JSON.stringify(data));
-        }
-      });
-      const subscriptionStepTwo = watchStepTwo((data) => {
-        if (data) {
-          setStepTwoData(data as StepTwoType);
-          localStorage.setItem(STEP_TWO_DATA, JSON.stringify(data));
-        }
-      });
+  const stepOneValues = useWatch({ control: controlStepOne });
+  const stepTwoValues = useWatch({ control: controlStepTwo });
 
-      return () => {
-        subscriptionStepOne.unsubscribe();
-        subscriptionStepTwo.unsubscribe();
-      };
+  useEffect(() => {
+    if (isSubmitSuccessfulStepTwo) return;
+
+    if (stepOneValues?.title) {
+      setStepOneData(stepOneValues as StepOneType);
+      localStorage.setItem(STEP_ONE_DATA, JSON.stringify(stepOneValues));
     }
-  }, [isSubmitSuccessfulStepTwo, watchStepOne, watchStepTwo]);
+
+    if (stepTwoValues) {
+      setStepTwoData(stepTwoValues as StepTwoType);
+      localStorage.setItem(STEP_TWO_DATA, JSON.stringify(stepTwoValues));
+    }
+  }, [isSubmitSuccessfulStepTwo, stepOneValues, stepTwoValues]);
 
   const handleNext = () => {
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
@@ -665,12 +669,12 @@ const Page = ({ params: { lng } }: PageParams) => {
 
   useEffect(() => {
     const lsStepOneData = localStorage.getItem(STEP_ONE_DATA);
-    let parsedStepOneData: StepOneType = null;
+    let parsedStepOneData = stepOneData;
     if (lsStepOneData !== null) {
-      parsedStepOneData = JSON.parse(lsStepOneData);
+      parsedStepOneData = JSON.parse(lsStepOneData) as StepOneType;
     }
     if (
-      parsedStepOneData !== null &&
+      parsedStepOneData !== undefined &&
       stepOneData?.title &&
       !isValidId(articleId)
     ) {
@@ -703,39 +707,31 @@ const Page = ({ params: { lng } }: PageParams) => {
     zodStepOneForm,
   ]);
 
-  const onStepOneSubmit: SubmitHandler<z.infer<typeof StepOneScheme>> =
-    useCallback((formData) => {
+  const onStepOneSubmit: SubmitHandler<StepOneType> = useCallback(
+    (formData) => {
       setStepOneData({ ...formData });
       handleNext();
-    }, []);
+    },
+    [],
+  );
 
-  function lsClean() {
-    localStorage.removeItem(STEP_ONE_DATA);
-    localStorage.removeItem(STEP_TWO_DATA);
-    localStorage.removeItem(SELECTED_CATEGORIES);
-    localStorage.removeItem(SELECTED_COMPILATIONS);
-    localStorage.removeItem(ARTICLE_ID);
-    localStorage.removeItem(PALETTE);
-  }
-
-  const onStepTwoSubmit: SubmitHandler<z.infer<typeof StepTwoScheme>> =
-    useCallback(
-      (formData) => {
-        if (stepOneData && formData) {
-          const requestData: UpdateArticleDTO = {
-            ...stepOneData,
-            ...formData,
-          } as UpdateArticleDTO;
-          updateArticleMutate(requestData);
-        }
-        handleNext();
-        setStepOneData(null);
-        setStepTwoData(null);
-        setPrevData({});
-        lsClean();
-      },
-      [stepOneData, updateArticleMutate],
-    );
+  const onStepTwoSubmit: SubmitHandler<StepTwoType> = useCallback(
+    (formData) => {
+      if (stepOneData && formData) {
+        const requestData: UpdateArticleDTO = {
+          ...stepOneData,
+          ...formData,
+        } as UpdateArticleDTO;
+        updateArticleMutate(requestData);
+      }
+      handleNext();
+      setStepOneData(undefined);
+      setStepTwoData(undefined);
+      setPrevData({});
+      lsClean();
+    },
+    [stepOneData, updateArticleMutate],
+  );
 
   const onSubmit = useCallback(() => {
     route.push(`/articles/${articleId}`);
@@ -853,8 +849,8 @@ const Page = ({ params: { lng } }: PageParams) => {
                       noOptionsText={t('noOptionsCategories')}
                       getOptionLabel={(category) => category?.name}
                       disableCloseOnSelect
-                      defaultValue={availableCategories.filter((category) =>
-                        field.value?.includes(category.id),
+                      value={availableCategories.filter((category) =>
+                        (field.value ?? []).includes(category.id),
                       )}
                       isOptionEqualToValue={(option, value) =>
                         option.id === value.id
@@ -884,7 +880,7 @@ const Page = ({ params: { lng } }: PageParams) => {
                       onInputChange={(_, newInputValue) =>
                         setInputCategoryValue(newInputValue)
                       }
-                      renderTags={(value: GetCategory[], getTagProps) =>
+                      renderValue={(value: GetCategory[], getTagProps) =>
                         value.map((option: GetCategory, index: number) => {
                           const { key, ...tagProps } = getTagProps({ index });
                           return (
@@ -924,8 +920,8 @@ const Page = ({ params: { lng } }: PageParams) => {
                       noOptionsText={t('noOptionsCompilations')}
                       getOptionLabel={(compilation) => compilation?.title}
                       disableCloseOnSelect
-                      defaultValue={availableCompilations.filter(
-                        (compilation) => field.value?.includes(compilation.id),
+                      value={availableCompilations.filter((compilation) =>
+                        (field.value ?? []).includes(compilation.id),
                       )}
                       isOptionEqualToValue={(option, value) =>
                         option.id === value.id
@@ -956,7 +952,7 @@ const Page = ({ params: { lng } }: PageParams) => {
                       onInputChange={(_, newInputValue) =>
                         setInputCompilationValue(newInputValue)
                       }
-                      renderTags={(value: GetCompilation[], getTagProps) =>
+                      renderValue={(value: GetCompilation[], getTagProps) =>
                         value.map((option: GetCompilation, index: number) => {
                           const { key, ...tagProps } = getTagProps({ index });
                           return (
@@ -1000,7 +996,7 @@ const Page = ({ params: { lng } }: PageParams) => {
                           ),
                       )}
                       freeSolo
-                      defaultValue={field.value}
+                      value={field.value ?? []}
                       isOptionEqualToValue={(option, value) => option === value}
                       onChange={(_, newValue) => {
                         const normalizedValue: string[] = (
@@ -1021,7 +1017,7 @@ const Page = ({ params: { lng } }: PageParams) => {
                       onInputChange={(_, newInputValue) =>
                         setInputTagValue(newInputValue)
                       }
-                      renderTags={(value: Array<string>, getTagProps) =>
+                      renderValue={(value: Array<string>, getTagProps) =>
                         value.map((option: string, index: number) => {
                           const { key, ...tagProps } = getTagProps({ index });
                           return (

@@ -1,0 +1,21 @@
+{
+  "$schema": "https://unpkg.com/knip@5/schema.json",
+  "project": ["src/**/*.ts", "src/**/*.tsx"],
+  "ignore": [
+    "public/**",
+    "src/components/Banner.tsx",
+    "src/components/BreadcrumbsComponent.tsx",
+    "src/components/WebSocketProvider.tsx",
+    "src/i18n/navigation.ts",
+    "src/i18n/request.ts",
+    "src/constants/i18n.ts",
+    "src/helpers/authApi.ts",
+    "src/lib/auth.ts",
+    "src/helpers/articleApi.ts",
+    "src/components/CustomIcons.tsx",
+    "src/helpers/notificationAPI.ts",
+    "src/types/index.ts",
+    "src/helpers/compilationApi.ts",
+    "src/helpers/tagApi.ts"
+  ]
+}

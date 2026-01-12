@@ -1,7 +1,7 @@
 'use client';
 import { Paper, Typography } from '@mui/material';
 import Box from '@mui/material/Box';
-import Grid from '@mui/material/Grid2';
+import Grid from '@mui/material/Grid';
 import React from 'react';
 
 import { DefaultImage } from '@/components/DefaultImage';

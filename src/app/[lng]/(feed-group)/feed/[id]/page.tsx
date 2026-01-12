@@ -4,7 +4,7 @@ import CardContent from '@mui/material/CardContent';
 import DOMPurify from 'dompurify';
 import Link from 'next/link';
 import { useSession } from 'next-auth/react';
-import React from 'react';
+import React, { use } from 'react';
 
 import { useArticle } from '@/components/ArticleProvider';
 import { AvatarImage } from '@/components/AvatarImage';
@@ -13,15 +13,12 @@ import { useContentImageContext } from '@/components/ContentImageProvider';
 import { TimeAgo } from '@/components/TimeAgo';
 import { Language, UserRole } from '@/types';
 
-type PageParams = {
-  lng: Language;
-};
-
 type PageProps = {
-  readonly params: PageParams;
+  readonly params: Promise<{ lng: Language }>;
 };
 
-export default function Page({ params: { lng } }: PageProps) {
+export default function Page({ params }: PageProps) {
+  const { lng } = use(params);
   const { article } = useArticle();
   const { data: state } = useSession();
   const { processContent } = useContentImageContext();

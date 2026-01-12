@@ -1,39 +1,31 @@
 'use client';
-import { useQuery } from '@tanstack/react-query';
-import React, { useState } from 'react';
+
+import { keepPreviousData, useQuery } from '@tanstack/react-query';
+import React, { use, useState } from 'react';
 
 import { Articles } from '@/components/Articles';
 import { CustomPagination } from '@/components/CustomPagination';
 import { Search } from '@/components/Search';
 import { contlCookie } from '@/constants/i18n';
 import { ARTICLES_PER_PAGE } from '@/constants/limits';
-import { getArticles, GetArticlesDTO } from '@/helpers/articleApi';
+import { getArticles } from '@/helpers/articleApi';
 import { useEventListener } from '@/helpers/useEventListener';
 import { Language, SearchType } from '@/types';
 
 type PageProps = {
-  readonly params: {
-    lng: Language;
-  };
+  readonly params: Promise<{ lng: Language }>;
 };
 
-export default function Page({ params: { lng } }: PageProps) {
-  const [currentPage, setCurrentPage] = useState<number>(0);
+export default function Page({ params }: PageProps) {
+  const { lng } = use(params);
+
+  const [currentPage, setCurrentPage] = useState(0);
   const [resultsPerPage, setResultsPerPage] =
     useState<number>(ARTICLES_PER_PAGE);
-  const [searchValue, setSearchValue] = useState<string>();
+  const [searchValue, setSearchValue] = useState<string | undefined>(undefined);
   const [searchType, setSearchType] = useState<SearchType>(SearchType.CONTENT);
 
-  const onSearchType = (type: SearchType) => {
-    setSearchType(type);
-  };
-
-  const onSearchValue = (value: string) => {
-    setSearchValue(value);
-    setCurrentPage(0);
-  };
-
-  const { data, isFetching, refetch } = useQuery<GetArticlesDTO>({
+  const { data, isPending, refetch } = useQuery({
     queryKey: [
       'articles',
       currentPage,
@@ -45,6 +37,7 @@ export default function Page({ params: { lng } }: PageProps) {
       const byTag = searchType === SearchType.TAG ? searchValue : undefined;
       const byContent =
         searchType === SearchType.CONTENT ? searchValue : undefined;
+
       return getArticles(
         undefined,
         undefined,
@@ -54,37 +47,44 @@ export default function Page({ params: { lng } }: PageProps) {
         byContent,
       );
     },
+    placeholderData: keepPreviousData,
   });
+
+  useEventListener(contlCookie, () => refetch());
 
   const articles = data?.content ?? [];
   const totalPages = data?.totalPages ?? 0;
   const totalElements = data?.totalElements ?? 0;
 
-  useEventListener(contlCookie, () => refetch());
-
-  const onPageChange = (value: number) => {
-    setCurrentPage(value);
-  };
-
-  const onResultsPerPageChange = (value: number) => {
-    setResultsPerPage(value);
-  };
-
   return (
     <>
-      <Search onSearchType={onSearchType} onSearchValue={onSearchValue} />
+      <Search
+        onSearchType={(type) => {
+          setSearchType(type);
+          setCurrentPage(0);
+        }}
+        onSearchValue={(value) => {
+          setSearchValue(value);
+          setCurrentPage(0);
+        }}
+      />
+
       <Articles
         lang={lng}
         articles={articles}
-        articlesPerPageStart={ARTICLES_PER_PAGE}
-        loading={isFetching}
+        articlesPerPageStart={resultsPerPage}
+        isLoading={isPending}
       />
+
       <CustomPagination
         totalPages={totalPages}
         totalElements={totalElements}
-        resultsPerPageStart={ARTICLES_PER_PAGE}
-        onCurrentPageChange={onPageChange}
-        onResultsPerPageChange={onResultsPerPageChange}
+        resultsPerPageStart={resultsPerPage}
+        onCurrentPageChange={(value: number) => setCurrentPage(value)}
+        onResultsPerPageChange={(value: number) => {
+          setResultsPerPage(value);
+          setCurrentPage(0);
+        }}
       />
     </>
   );

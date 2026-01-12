@@ -7,7 +7,7 @@ import Typography from '@mui/material/Typography';
 import { useQuery } from '@tanstack/react-query';
 import { useSession } from 'next-auth/react';
 import { useTranslations } from 'next-intl';
-import React from 'react';
+import React, { use } from 'react';
 
 import { AvatarImage } from '@/components/AvatarImage';
 import { ButtonFavorite } from '@/components/ButtonFavorite';
@@ -16,21 +16,17 @@ import { NavTabs, TabProps } from '@/components/NavTabs';
 import { getCategoryById } from '@/helpers/categoryApi';
 import { GetCategory, Language, UserRole } from '@/types';
 
-type PageParams = {
-  id: number;
-  lng: Language;
-  refetch?: () => void;
-};
-
 type PageProps = {
-  readonly params: PageParams;
+  readonly params: Promise<{
+    id: number;
+    lng: Language;
+    refetch?: () => void;
+  }>;
   readonly children: React.ReactNode;
 };
 
-export default function Layout({
-  params: { id, lng, refetch },
-  children,
-}: PageProps) {
+export default function Layout({ children, params }: PageProps) {
+  const { id, lng, refetch } = use(params);
   const { data: state } = useSession();
   const t = useTranslations();
   const tabs: TabProps[] = [

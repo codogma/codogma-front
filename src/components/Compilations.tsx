@@ -1,5 +1,4 @@
-'use client';
-import Grid from '@mui/material/Grid2';
+import Grid from '@mui/material/Grid';
 import React from 'react';
 
 import { CompilationCard } from '@/components/CompilationCard';
@@ -7,7 +6,7 @@ import { GetCompilation, Language } from '@/types';
 
 type CompilationsProps = {
   readonly compilations: GetCompilation[];
-  readonly loading: boolean;
+  readonly isLoading: boolean;
   readonly compilationsPerPageStart: number;
   readonly lang: Language;
   readonly refetch?: () => void;
@@ -15,17 +14,17 @@ type CompilationsProps = {
 
 export default function Compilations({
   compilations,
-  loading,
+  isLoading,
   compilationsPerPageStart,
   lang,
   refetch,
 }: CompilationsProps) {
   return (
     <Grid container spacing={2}>
-      {(loading
+      {(isLoading
         ? Array.from(new Array(compilationsPerPageStart))
         : compilations
-      )?.map((compilation, key) => (
+      )?.map((compilation: GetCompilation, key) => (
         <Grid
           key={compilation ? compilation.id : `skeleton-${key}`}
           size={{ xs: 12, sm: 6, lg: 4 }}

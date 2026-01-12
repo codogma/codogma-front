@@ -1,6 +1,6 @@
 'use client';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
-import { Button, TabOwnProps, Typography } from '@mui/material';
+import { Button, Menu, MenuItem, TabOwnProps, Typography } from '@mui/material';
 import Tab from '@mui/material/Tab';
 import Tabs from '@mui/material/Tabs';
 import Tooltip from '@mui/material/Tooltip';
@@ -34,6 +34,17 @@ export const NavTabs: React.FC<NavTabsProps> = memo(function NavTabs({ tabs }) {
   const t = useTranslations();
   const ref = useRef<HTMLDivElement>(null);
   const [overflow, setOverflow] = useState<boolean>(false);
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const open = Boolean(anchorEl);
+
+  const handleMenuClick = (event: React.MouseEvent<HTMLElement>) => {
+    event.stopPropagation();
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+  };
 
   useLayoutEffect(() => {
     const observer = new ResizeObserver((entries) => {
@@ -94,9 +105,18 @@ export const NavTabs: React.FC<NavTabsProps> = memo(function NavTabs({ tabs }) {
                 {tab.href === pathname && (
                   <Tooltip title={t('filterOptions')}>
                     <Button
+                      id='basic-button'
+                      aria-controls={open ? 'basic-menu' : undefined}
+                      aria-haspopup='true'
+                      aria-expanded={open ? 'true' : undefined}
                       variant='outlined'
                       aria-label='menu'
                       size='small'
+                      onClick={(event) => {
+                        event.preventDefault();
+                        event.stopPropagation();
+                        handleMenuClick(event);
+                      }}
                       sx={{
                         minWidth: 25,
                         width: 25,
@@ -117,6 +137,18 @@ export const NavTabs: React.FC<NavTabsProps> = memo(function NavTabs({ tabs }) {
           />
         ))}
       </Tabs>
+      <Menu
+        id='basic-menu'
+        anchorEl={anchorEl}
+        open={open}
+        onClose={handleMenuClose}
+        MenuListProps={{
+          'aria-labelledby': 'basic-button',
+        }}
+      >
+        <MenuItem onClick={handleMenuClose}>Filter 1</MenuItem>
+        <MenuItem onClick={handleMenuClose}>Filter 2</MenuItem>
+      </Menu>
     </div>
   );
 });

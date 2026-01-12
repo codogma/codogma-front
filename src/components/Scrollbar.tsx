@@ -7,6 +7,7 @@ import {
 } from 'overlayscrollbars-react';
 import React, {
   createContext,
+  CSSProperties,
   ElementType,
   useCallback,
   useContext,
@@ -45,7 +46,9 @@ const CUSTOM_OS_PROPS: readonly (keyof CustomOSProps)[] = [
 ];
 
 type ScrollbarProps = OverlayScrollbarsComponentProps<ElementType> &
-  CustomOSProps;
+  CustomOSProps & {
+    readonly style?: CSSProperties;
+  };
 
 type ScrollContextType = {
   instance: OverlayScrollbars | undefined;

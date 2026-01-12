@@ -33,11 +33,15 @@ export type GetCategoriesDTO = {
 export const createCategory = async (
   requestData: CreateCategory,
 ): Promise<GetCategory> => {
-  const response = await axiosInstance.post('/categories', requestData, {
-    headers: {
-      'Content-Type': 'multipart/form-data',
+  const response = await axiosInstance.post<GetCategory>(
+    '/categories',
+    requestData,
+    {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
     },
-  });
+  );
   dispatchCustomEvent('api', {
     message: 'Category created successfully',
     severity: 'success',
@@ -48,11 +52,14 @@ export const createCategory = async (
 export const getCategoriesByName = async (
   name: string,
 ): Promise<GetCategory[]> => {
-  const response = await axiosInstance.get('/categories/list-by-name', {
-    params: {
-      name,
+  const response = await axiosInstance.get<GetCategory[]>(
+    '/categories/list-by-name',
+    {
+      params: {
+        name,
+      },
     },
-  });
+  );
   return response.data;
 };
 
@@ -60,11 +67,15 @@ export const updateCategory = async (
   id: number,
   requestData: UpdateCategory,
 ): Promise<GetCategory> => {
-  const response = await axiosInstance.put(`/categories/${id}`, requestData, {
-    headers: {
-      'Content-Type': 'multipart/form-data',
+  const response = await axiosInstance.put<GetCategory>(
+    `/categories/${id}`,
+    requestData,
+    {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
     },
-  });
+  );
   dispatchCustomEvent('api', {
     message: 'Category updated successfully',
     severity: 'success',
@@ -81,7 +92,7 @@ export const getCategories = async (
   sort: string = 'createdAt',
   order: string = 'desc',
 ): Promise<GetCategoriesDTO> => {
-  const response = await axiosInstance.get('/categories', {
+  const response = await axiosInstance.get<GetCategoriesDTO>('/categories', {
     params: {
       tag,
       info,
@@ -96,14 +107,16 @@ export const getCategories = async (
 };
 
 export const getCategoryById = async (id: number): Promise<GetCategory> => {
-  const response = await axiosInstance.get(`/categories/${id}`);
+  const response = await axiosInstance.get<GetCategory>(`/categories/${id}`);
   return response.data;
 };
 
 export const getCategoryByIdToUpdate = async (
   id: number,
 ): Promise<GetCategoryToUpdate> => {
-  const response = await axiosInstance.get(`/categories/${id}/to-update`);
+  const response = await axiosInstance.get<GetCategoryToUpdate>(
+    `/categories/${id}/to-update`,
+  );
   return response.data;
 };
 
@@ -113,7 +126,9 @@ export const deleteCategory = async (id: number): Promise<void> => {
 };
 
 export const unfavorite = async (id: number): Promise<GetCategory> => {
-  const response = await axiosInstance.delete(`/categories/${id}/unfavorite`);
+  const response = await axiosInstance.delete<GetCategory>(
+    `/categories/${id}/unfavorite`,
+  );
   dispatchCustomEvent('api', {
     message: 'You have successfully removed the category from your favorites',
     severity: 'success',
@@ -122,7 +137,7 @@ export const unfavorite = async (id: number): Promise<GetCategory> => {
 };
 
 export const favorite = async (id: number): Promise<GetCategory> => {
-  const response = await axiosInstance.post(
+  const response = await axiosInstance.post<GetCategory>(
     `/categories/${id}/add-to-favorites`,
   );
   dispatchCustomEvent('api', {

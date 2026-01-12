@@ -74,7 +74,7 @@ export const SearchDialog = ({
     const savedHistory = localStorage.getItem('searchHistory');
     if (savedHistory) {
       try {
-        const parsedHistory = JSON.parse(savedHistory);
+        const parsedHistory: unknown = JSON.parse(savedHistory);
         if (Array.isArray(parsedHistory)) {
           setSearchHistory(parsedHistory);
           setFilteredHistory(parsedHistory);
@@ -274,9 +274,9 @@ export const SearchDialog = ({
                       primary={item}
                       onClick={() => {
                         // Автоматически определяем префикс из элемента истории
-                        const prefixMatch = item.match(
+                        const prefixMatch = new RegExp(
                           /^(articles:|categories:|compilations:|authors:)/,
-                        );
+                        ).exec(item);
                         if (prefixMatch) {
                           setSelectedPrefix(prefixMatch[0]);
                         }

@@ -10,6 +10,8 @@ import {
   TextInput,
 } from 'react-admin';
 
+import { GetUserDTO } from '@/types';
+
 export const UserList = () => {
   const theme = useTheme();
   const isSmall = useMediaQuery(theme.breakpoints.down('sm'));
@@ -19,9 +21,11 @@ export const UserList = () => {
     >
       {isSmall ? (
         <SimpleList
-          primaryText={(record) => record.firstName + ' ' + record.lastName}
-          secondaryText={(record) => record.username}
-          tertiaryText={(record) => record.email}
+          primaryText={(record: GetUserDTO) =>
+            record.firstName + ' ' + record.lastName
+          }
+          secondaryText={(record: GetUserDTO) => record.username}
+          tertiaryText={(record: GetUserDTO) => record.email}
         />
       ) : (
         <Datagrid rowClick='edit'>

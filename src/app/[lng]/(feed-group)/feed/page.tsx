@@ -1,7 +1,7 @@
 'use client';
 import { useQuery } from '@tanstack/react-query';
 import DOMPurify from 'dompurify';
-import React, { useState } from 'react';
+import React, { use, useState } from 'react';
 
 import { Articles } from '@/components/Articles';
 import { useContentImageContext } from '@/components/ContentImageProvider';
@@ -14,12 +14,11 @@ import { useEventListener } from '@/helpers/useEventListener';
 import { Language, SearchType } from '@/types';
 
 type PageProps = {
-  readonly params: {
-    lng: Language;
-  };
+  readonly params: Promise<{ lng: Language }>;
 };
 
-const Page = ({ params: { lng } }: PageProps) => {
+const Page = ({ params }: PageProps) => {
+  const { lng } = use(params);
   const [currentPage, setCurrentPage] = useState<number>(0);
   const [resultsPerPage, setResultsPerPage] =
     useState<number>(ARTICLES_PER_PAGE);
@@ -82,7 +81,7 @@ const Page = ({ params: { lng } }: PageProps) => {
       <Articles
         lang={lng}
         articles={articles}
-        loading={isFetching}
+        isLoading={isFetching}
         articlesPerPageStart={ARTICLES_PER_PAGE}
       />
       <CustomPagination

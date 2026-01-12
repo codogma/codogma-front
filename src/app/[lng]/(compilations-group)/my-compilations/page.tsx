@@ -1,7 +1,7 @@
 'use client';
 import { useQuery } from '@tanstack/react-query';
 import { useSession } from 'next-auth/react';
-import React, { useState } from 'react';
+import React, { use, useState } from 'react';
 
 import Compilations from '@/components/Compilations';
 import { CustomPagination } from '@/components/CustomPagination';
@@ -13,12 +13,11 @@ import { useEventListener } from '@/helpers/useEventListener';
 import { GetCompilation, Language, SearchType } from '@/types';
 
 type PageProps = {
-  readonly params: {
-    lng: Language;
-  };
+  readonly params: Promise<{ lng: Language }>;
 };
 
-export default function Page({ params: { lng } }: PageProps) {
+export default function Page({ params }: PageProps) {
+  const { lng } = use(params);
   const [currentPage, setCurrentPage] = useState<number>(0);
   const [resultsPerPage, setResultsPerPage] = useState<number>(
     COMPILATIONS_PER_PAGE,
@@ -80,7 +79,7 @@ export default function Page({ params: { lng } }: PageProps) {
       <Search onSearchType={onSearchType} onSearchValue={onSearchValue} />
       <Compilations
         lang={lng}
-        loading={isFetching}
+        isLoading={isFetching}
         compilations={compilations}
         compilationsPerPageStart={COMPILATIONS_PER_PAGE}
       />

@@ -24,12 +24,12 @@ export type UserUpdate = {
 export const updateUser = async (
   requestData: UserUpdate,
 ): Promise<GetUserDTO> => {
-  const response = await axiosInstance.put(`/users`, requestData, {
+  const response = await axiosInstance.put<GetUserDTO>(`/users`, requestData, {
     headers: {
       'Content-Type': 'multipart/form-data',
     },
   });
-  const user: GetUserDTO = response.data;
+  const user = response.data;
   window.dispatchEvent(new Event('storage'));
   dispatchCustomEvent('api', {
     message: 'User updated successfully',
@@ -51,7 +51,7 @@ export const getUsers = async (
   sort: string = 'username',
   order: string = 'desc',
 ): Promise<GetUsersDTO> => {
-  const response = await axiosInstance.get(`/users`, {
+  const response = await axiosInstance.get<GetUsersDTO>(`/users`, {
     params: {
       categoryId,
       targetUsername,
@@ -72,7 +72,7 @@ export const getUsers = async (
 export const getUserByUsername = async (
   username?: string,
 ): Promise<GetUserDTO> => {
-  const response = await axiosInstance.get(`/users/${username}`);
+  const response = await axiosInstance.get<GetUserDTO>(`/users/${username}`);
   return response.data;
 };
 
@@ -83,7 +83,9 @@ export const deleteUser = async (username: string): Promise<void> => {
 };
 
 export const unsubscribe = async (username: string): Promise<GetUserDTO> => {
-  const response = await axiosInstance.delete(`/users/${username}/unsubscribe`);
+  const response = await axiosInstance.delete<GetUserDTO>(
+    `/users/${username}/unsubscribe`,
+  );
   dispatchCustomEvent('api', {
     message: 'You have successfully unsubscribed from the author',
     severity: 'success',
@@ -92,7 +94,9 @@ export const unsubscribe = async (username: string): Promise<GetUserDTO> => {
 };
 
 export const subscribe = async (username: string): Promise<GetUserDTO> => {
-  const response = await axiosInstance.post(`/users/${username}/subscribe`);
+  const response = await axiosInstance.post<GetUserDTO>(
+    `/users/${username}/subscribe`,
+  );
   dispatchCustomEvent('api', {
     message: 'You have successfully subscribed to the author',
     severity: 'success',

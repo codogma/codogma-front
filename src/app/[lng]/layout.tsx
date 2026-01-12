@@ -1,7 +1,6 @@
 import { Container, StyledEngineProvider } from '@mui/material';
 import InitColorSchemeScript from '@mui/material/InitColorSchemeScript';
-import { defaultConfig } from '@mui/material/InitColorSchemeScript/InitColorSchemeScript';
-import { AppRouterCacheProvider } from '@mui/material-nextjs/v14-appRouter';
+import { AppRouterCacheProvider } from '@mui/material-nextjs/v16-appRouter';
 import { Metadata } from 'next';
 import '@/app/globals.css';
 import { Inter } from 'next/font/google';
@@ -17,6 +16,7 @@ import { Navigation } from '@/components/Navigation';
 import { NavigationProvider } from '@/components/NavigationProvider';
 import { ReactQueryProvider } from '@/components/ReactQueryProvider';
 import { ColorModeProvider } from '@/components/ThemeContext';
+import { themeConfig } from '@/constants/theme-config';
 import { getTheme } from '@/helpers/getTheme';
 import { auth } from '@/lib/auth';
 import { Language } from '@/types';
@@ -25,7 +25,7 @@ const inter = Inter({ subsets: ['latin'] });
 
 type LayoutProps = {
   readonly children: ReactNode;
-  readonly params: { lng: Language };
+  readonly params: Promise<{ lng: Language }>;
 };
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -64,19 +64,21 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
-export default async function Layout({
-  children,
-  params: { lng },
-}: LayoutProps) {
+export default async function Layout({ children, params }: LayoutProps) {
+  const { lng } = await params;
   const session = await auth();
-  const theme = (await getTheme()) || defaultConfig.defaultDarkColorScheme;
+  const theme = (await getTheme()) || themeConfig.defaultDarkColorScheme;
 
   return (
     <html lang={lng} suppressHydrationWarning>
       <body className={inter.className}>
         <InitColorSchemeScript
-          attribute='class'
-          defaultMode={defaultConfig.defaultDarkColorScheme}
+          attribute={themeConfig.attribute}
+          modeStorageKey={themeConfig.modeStorageKey}
+          colorSchemeStorageKey={themeConfig.colorSchemeStorageKey}
+          defaultMode={themeConfig.defaultMode}
+          defaultLightColorScheme={themeConfig.defaultLightColorScheme}
+          defaultDarkColorScheme={themeConfig.defaultDarkColorScheme}
         />
         <StyledEngineProvider injectFirst>
           <AppRouterCacheProvider>

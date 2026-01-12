@@ -16,7 +16,7 @@ export const getComments = async (
   page: number = 0,
   size: number = 10,
 ): Promise<GetCommentsDTO> => {
-  const response = await axiosInstance.get(`/comments`, {
+  const response = await axiosInstance.get<GetCommentsDTO>(`/comments`, {
     params: {
       articleId,
       username,
@@ -32,7 +32,10 @@ export const getComments = async (
 export const createComment = async (
   createComment: CreateComment,
 ): Promise<GetComment> => {
-  const response = await axiosInstance.post('/comments', createComment);
+  const response = await axiosInstance.post<GetComment>(
+    '/comments',
+    createComment,
+  );
   dispatchCustomEvent('api', {
     message: 'Comment created',
     severity: 'success',
@@ -44,7 +47,7 @@ export const updateComment = async (
   commentId: number,
   updateComment: UpdateComment,
 ): Promise<GetComment> => {
-  const response = await axiosInstance.put(
+  const response = await axiosInstance.put<GetComment>(
     `/comments/${commentId}`,
     updateComment,
   );

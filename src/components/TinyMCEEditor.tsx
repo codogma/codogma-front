@@ -104,14 +104,14 @@ export const TinyMCEEditor = ({
               })
               .catch((error) => {
                 devConsoleWarn('Failed to upload image:', error);
-                reject('Failed to upload image');
+                reject(new Error('Failed to upload image'));
               });
           });
         },
         setup: (editor) => {
           editor.on('BeforeSetContent', (event) => {
             const content = event.content;
-            event.content = content.replace(/<img/g, (match) => {
+            event.content = content.replaceAll('<img', (match) => {
               if (match.includes('img')) {
                 return `<img id="${generateImageId()}"`;
               }

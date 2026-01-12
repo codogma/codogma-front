@@ -1,6 +1,6 @@
 'use client';
 import { useQuery } from '@tanstack/react-query';
-import React, { useState } from 'react';
+import React, { use, useState } from 'react';
 
 import { CustomPagination } from '@/components/CustomPagination';
 import { Search } from '@/components/Search';
@@ -12,13 +12,11 @@ import { getUsers, GetUsersDTO } from '@/helpers/userApi';
 import { GetUserDTO, Language, SearchType, UserRole } from '@/types';
 
 type PageProps = {
-  readonly params: {
-    lng: Language;
-    id: number;
-  };
+  readonly params: Promise<{ lng: Language; id: number }>;
 };
 
-export default function Page({ params: { lng, id } }: PageProps) {
+export default function Page({ params }: PageProps) {
+  const { lng, id } = use(params);
   const [currentPage, setCurrentPage] = useState<number>(0);
   const [resultsPerPage, setResultsPerPage] = useState<number>(USERS_PER_PAGE);
   const [searchValue, setSearchValue] = useState<string>();
@@ -79,7 +77,7 @@ export default function Page({ params: { lng, id } }: PageProps) {
       <Users
         lang={lng}
         users={users}
-        loading={isFetching}
+        isLoading={isFetching}
         usersPerPageStart={USERS_PER_PAGE}
       />
       <CustomPagination

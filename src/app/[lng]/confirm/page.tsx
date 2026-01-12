@@ -1,4 +1,5 @@
 'use client';
+
 import {
   Alert,
   Box,
@@ -7,47 +8,68 @@ import {
   Container,
   Typography,
 } from '@mui/material';
+import axios from 'axios';
 import { useRouter, useSearchParams } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 
 import { confirmEmail } from '@/helpers/authApi';
 
+type ErrorData = string | { message?: string };
+
 export default function Page() {
   const searchParams = useSearchParams();
   const token = searchParams?.get('token');
+
   const [confirmationStatus, setConfirmationStatus] = useState<
     'loading' | 'success' | 'error'
   >('loading');
-  const [message, setMessage] = useState<string>('');
+  const [message, setMessage] = useState('');
+
   const router = useRouter();
 
   useEffect(() => {
-    if (token) {
-      confirmEmail(token)
-        .then((response) => {
-          setConfirmationStatus('success');
-          setMessage(response);
-        })
-        .catch((error) => {
-          setConfirmationStatus('error');
-          if (error.response?.status === 400) {
-            setMessage(
-              error.response.data ||
-                'Email has already been confirmed or token has expired.',
-            );
+    if (!token) {
+      setConfirmationStatus('error');
+      setMessage('Token is missing or invalid.');
+      return;
+    }
+
+    const run = async () => {
+      try {
+        const response = await confirmEmail(token); // <- должен быть string
+        setConfirmationStatus('success');
+        setMessage(response);
+      } catch (err: unknown) {
+        setConfirmationStatus('error');
+
+        if (axios.isAxiosError<ErrorData>(err)) {
+          const status = err.response?.status;
+          const data = err.response?.data;
+
+          if (status === 400) {
+            const text =
+              typeof data === 'string'
+                ? data
+                : (data?.message ??
+                  'Email has already been confirmed or token has expired.');
+            setMessage(text);
           } else {
             setMessage('An error occurred while confirming your email.');
           }
-        });
-    } else {
-      setConfirmationStatus('error');
-      setMessage('Token is missing or invalid.');
-    }
-  }, [token]);
+          return;
+        }
 
-  const handleRedirect = () => {
-    router.push(`/sign-in`);
-  };
+        // не axios-ошибка
+        if (err instanceof Error) {
+          setMessage(err.message);
+        } else {
+          setMessage('An error occurred while confirming your email.');
+        }
+      }
+    };
+
+    void run();
+  }, [token]);
 
   return (
     <Container maxWidth='sm' sx={{ textAlign: 'center', mt: 8 }}>
@@ -57,7 +79,7 @@ export default function Page() {
             display: 'flex',
             justifyContent: 'center',
             alignItems: 'center',
-            height: '100%',
+            height: 100,
           }}
         >
           <CircularProgress />
@@ -76,7 +98,7 @@ export default function Page() {
             Thank you for confirming your email. You can now sign in to your
             account.
           </Typography>
-          <Button variant='contained' color='primary' onClick={handleRedirect}>
+          <Button variant='contained' onClick={() => router.push('/sign-in')}>
             Go to Sign In
           </Button>
         </>
@@ -96,7 +118,6 @@ export default function Page() {
           </Typography>
           <Button
             variant='contained'
-            color='primary'
             onClick={() => router.push('/resend-confirmation')}
           >
             Resend Confirmation Email

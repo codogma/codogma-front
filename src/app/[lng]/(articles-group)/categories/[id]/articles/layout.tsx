@@ -7,12 +7,13 @@ import { getCategoryById } from '@/helpers/categoryApi';
 
 type LayoutProps = {
   readonly children: ReactNode;
-  readonly params: { id: number };
+  readonly params: Promise<{ id: number }>;
 };
 
 export async function generateMetadata({
-  params: { id },
+  params,
 }: LayoutProps): Promise<Metadata> {
+  const { id } = await params;
   const category = await getCategoryById(id);
   const t = await getTranslations('categoriesPage');
   return {

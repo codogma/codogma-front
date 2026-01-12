@@ -24,14 +24,21 @@ export const signUp = async (requestData: SignUp): Promise<void> => {
 };
 
 export const confirmEmail = async (token: string | null): Promise<string> => {
-  const response = await axiosInstance.post('/auth/confirm-email', null, {
-    params: { token },
-  });
+  const response = await axiosInstance.post<string>(
+    '/auth/confirm-email',
+    null,
+    {
+      params: { token },
+    },
+  );
   return response.data;
 };
 
 export const login = async (requestData: SignIn): Promise<AuthDTO> => {
-  const response = await axiosInstance.post('/auth/sign-in', requestData);
+  const response = await axiosInstance.post<AuthDTO>(
+    '/auth/sign-in',
+    requestData,
+  );
   return response.data;
 };
 
@@ -41,7 +48,7 @@ export const logout = async (): Promise<void> => {
 };
 
 export const currentUser = async (): Promise<AuthDTO> => {
-  const response = await axiosInstance.get('/auth/current-user');
+  const response = await axiosInstance.get<AuthDTO>('/auth/current-user');
   return response.data;
 };
 

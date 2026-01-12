@@ -44,7 +44,7 @@
   }
 
   .content {
-    @apply xs:mb-14 md:mb-2 max-w-full grow p-0 !important;
+    @apply max-w-full grow p-0 xs:mb-14 md:mb-2 !important;
   }
 
   .card-with-line {
@@ -113,7 +113,7 @@
   }
 
   .banner-title {
-    @apply text-3xl max-w-2xl leading-10 !important;
+    @apply max-w-2xl text-3xl leading-10 !important;
   }
 
   .banner-wrapper:hover .banner-title {
@@ -155,7 +155,7 @@
   }
 
   .card-title {
-    @apply xs:text-base sm:text-sm md:text-base max-w-2xl xs:leading-5 sm:leading-3 md:leading-5 !important;
+    @apply max-w-2xl xs:text-base xs:leading-5 sm:text-sm sm:leading-3 md:text-base md:leading-5 !important;
   }
 
   .card-media:hover .card-title {
@@ -292,11 +292,11 @@
   }
 
   .footer {
-    @apply bg-white py-6 dark:bg-woodsmoke dark:text-white md:block xs:hidden !important;
+    @apply bg-white py-6 dark:bg-woodsmoke dark:text-white xs:hidden md:block !important;
   }
 
   .article-btn {
-    @apply normal-case inline-flex h-auto max-h-[36px] cursor-pointer items-center rounded-lg border border-solid px-3 py-0 text-[0.8125rem] leading-[1.6875rem] !important;
+    @apply inline-flex h-auto max-h-[36px] cursor-pointer items-center rounded-lg border border-solid px-3 py-0 text-[0.8125rem] normal-case leading-[1.6875rem] !important;
   }
 
   .article-btn:hover {
@@ -411,7 +411,7 @@
 
 /* Кастомные навигационные кнопки */
 .swiper-button-custom {
-  @apply flex items-center justify-center cursor-pointer transition-all duration-300 ease-in-out shrink-0 z-10 relative;
+  @apply relative z-10 flex shrink-0 cursor-pointer items-center justify-center transition-all duration-300 ease-in-out;
 }
 
 .swiper-slide {
@@ -423,7 +423,7 @@
 }
 
 .swiper-button-custom:not(.swiper-button-disabled):hover {
-  @apply text-red scale-150;
+  @apply scale-150 text-red;
 }
 
 .swiper-button-custom:not(.swiper-button-disabled):active {
@@ -432,7 +432,7 @@
 
 /* Состояние disabled */
 .swiper-button-custom.swiper-button-disabled {
-  @apply opacity-50 cursor-not-allowed pointer-events-none;
+  @apply pointer-events-none cursor-not-allowed opacity-50;
 }
 
 /* Убираем стандартные кнопки Swiper */
@@ -443,7 +443,7 @@
 
 @media (max-width: 899px) {
   .swiper-button-custom {
-    @apply items-center justify-center transition-all duration-300 ease-in-out shrink-0 z-10 absolute;
+    @apply absolute z-10 shrink-0 items-center justify-center transition-all duration-300 ease-in-out;
   }
 
   .swiper-button-custom svg {
@@ -461,11 +461,11 @@
 
 @media (hover: none) and (pointer: coarse) {
   .swiper-button-custom:not(.swiper-button-disabled):hover {
-    @apply text-inherit transform-none;
+    @apply transform-none text-inherit;
   }
 
   .swiper-button-custom:not(.swiper-button-disabled):active {
-    @apply text-red scale-150 bg-black-alpha-10 transition-all ease-in-out duration-100;
+    @apply scale-150 bg-black-alpha-10 text-red transition-all duration-100 ease-in-out;
   }
 }
 
@@ -481,7 +481,7 @@
 
 .swiper:not(.swiper-initialized) .swiper-slide {
   width: calc(
-      (100% - (var(--space-between) * (var(--slides-count) - 1))) /
+    (100% - (var(--space-between) * (var(--slides-count) - 1))) /
       var(--slides-count)
   ) !important;
   margin-right: var(--space-between) !important; /* Имитируем spaceBetween */

@@ -16,7 +16,7 @@ type CarouselProps = {
 };
 
 const sanitizeId = (raw: string, prefix = 'swiper') => {
-  const id = raw.replace(/[^A-Za-z0-9]/g, '');
+  const id = raw.replaceAll(/[^A-Za-z0-9]/g, '');
   return `${prefix}-${id}`;
 };
 
@@ -91,7 +91,7 @@ export const Carousel = ({
         className='swiper'
       >
         {(isLoading ? Array.from(new Array(minForLoop)) : articles)?.map(
-          (article, index) => (
+          (article: GetArticle, index) => (
             <SwiperSlide
               key={article ? article.id : `skeleton-${index}`}
               className={index === 0 && isMinimalSlides ? 'first-slide' : ''}

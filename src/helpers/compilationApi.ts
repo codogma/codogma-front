@@ -32,47 +32,59 @@ export const getCompilations = async (
   sort: string = 'updatedAt',
   order: string = 'desc',
 ): Promise<GetCompilationsDTO> => {
-  const response = await axiosInstance.get('/compilations', {
-    params: {
-      tag,
-      content,
-      username,
-      isBookmarked,
-      page,
-      size,
-      sort,
-      order,
+  const response = await axiosInstance.get<GetCompilationsDTO>(
+    '/compilations',
+    {
+      params: {
+        tag,
+        content,
+        username,
+        isBookmarked,
+        page,
+        size,
+        sort,
+        order,
+      },
     },
-  });
+  );
   return response.data;
 };
 
 export const getCompilationsByTitle = async (
   title: string,
 ): Promise<GetCompilation[]> => {
-  const response = await axiosInstance.get('/compilations/list-by-title', {
-    params: {
-      title,
+  const response = await axiosInstance.get<GetCompilation[]>(
+    '/compilations/list-by-title',
+    {
+      params: {
+        title,
+      },
     },
-  });
+  );
   return response.data;
 };
 
 export const getCompilationById = async (
   id: number,
 ): Promise<GetCompilation> => {
-  const response = await axiosInstance.get(`/compilations/${id}`);
+  const response = await axiosInstance.get<GetCompilation>(
+    `/compilations/${id}`,
+  );
   return response.data;
 };
 
 export const createCompilation = async (
   requestData: CompilationCreate,
 ): Promise<GetCompilation> => {
-  const response = await axiosInstance.post('/compilations', requestData, {
-    headers: {
-      'Content-Type': 'multipart/form-data',
+  const response = await axiosInstance.post<GetCompilation>(
+    '/compilations',
+    requestData,
+    {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
     },
-  });
+  );
   dispatchCustomEvent('api', {
     message: 'Compilation created successfully',
     severity: 'success',
@@ -81,7 +93,9 @@ export const createCompilation = async (
 };
 
 export const bookmark = async (id: number): Promise<GetArticle> => {
-  const response = await axiosInstance.post(`/compilations/${id}/bookmark`);
+  const response = await axiosInstance.post<GetArticle>(
+    `/compilations/${id}/bookmark`,
+  );
   dispatchCustomEvent('api', {
     message: 'You have successfully added the compilation to your bookmarks',
     severity: 'success',
@@ -90,7 +104,9 @@ export const bookmark = async (id: number): Promise<GetArticle> => {
 };
 
 export const unbookmark = async (id: number): Promise<GetArticle> => {
-  const response = await axiosInstance.delete(`/compilations/${id}/unbookmark`);
+  const response = await axiosInstance.delete<GetArticle>(
+    `/compilations/${id}/unbookmark`,
+  );
   dispatchCustomEvent('api', {
     message:
       'You have successfully removed the compilation from your bookmarks',
@@ -103,11 +119,15 @@ export const updateCompilation = async (
   id: number,
   requestData: UpdateCompilationDTO,
 ): Promise<GetCompilation> => {
-  const response = await axiosInstance.put(`/compilations/${id}`, requestData, {
-    headers: {
-      'Content-Type': 'multipart/form-data',
+  const response = await axiosInstance.put<GetCompilation>(
+    `/compilations/${id}`,
+    requestData,
+    {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
     },
-  });
+  );
   dispatchCustomEvent('api', {
     message: 'Compilation updated successfully',
     severity: 'success',

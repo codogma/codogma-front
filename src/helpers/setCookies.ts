@@ -90,15 +90,17 @@ export const setCookies = async (cookieStr: string): Promise<void> => {
     }
   }
 
+  const cookieStore = await cookies();
+
   try {
     // devConsoleInfo('Setting cookie with options:', { name, value, options });
-    cookies().set(name, value, options);
+    cookieStore.set(name, value, options);
     // devConsoleInfo('Cookie set successfully:', name);
   } catch (error) {
     devConsoleWarn('Error setting cookie:', error);
     // Fallback: setting cookie with name and value
     try {
-      cookies().set(name, value);
+      cookieStore.set(name, value);
       // devConsoleInfo('Cookie set with fallback (name/value only):', name);
     } catch (fallbackError) {
       devConsoleWarn('Error setting cookie with fallback:', fallbackError);

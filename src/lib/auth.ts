@@ -46,10 +46,8 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       }
 
       if (trigger === 'update') {
-        return {
-          ...token,
-          ...session?.user,
-        };
+        const s = session as Session;
+        return { ...token, ...s.user };
       }
 
       return token;

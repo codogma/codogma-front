@@ -34,6 +34,10 @@ export interface AuthDTO extends AdapterUser {
   expires: string;
 }
 
+export interface ThemeProviderProps {
+  defaultMode?: 'light' | 'dark' | 'system';
+}
+
 export interface GetUserDTO {
   id: string;
   username: string;

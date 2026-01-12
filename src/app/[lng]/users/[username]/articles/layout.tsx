@@ -7,12 +7,14 @@ import { getUserByUsername } from '@/helpers/userApi';
 
 type LayoutProps = {
   readonly children: ReactNode;
-  readonly params: { username: string };
+  readonly params: Promise<{ username: string }>;
 };
 
 export async function generateMetadata({
-  params: { username },
+  params,
 }: LayoutProps): Promise<Metadata> {
+  const { username } = await params;
+
   const user = await getUserByUsername(username);
   const t = await getTranslations('authorsPage');
   return {

@@ -1,6 +1,6 @@
 'use client';
 import { useQuery } from '@tanstack/react-query';
-import React, { useState } from 'react';
+import React, { use, useState } from 'react';
 
 import { Articles } from '@/components/Articles';
 import { CustomPagination } from '@/components/CustomPagination';
@@ -9,15 +9,12 @@ import { ARTICLES_PER_PAGE } from '@/constants/limits';
 import { GetArticlesDTO, getViewed } from '@/helpers/articleApi';
 import { Language, SearchType } from '@/types';
 
-type PageParams = {
-  lng: Language;
-};
-
 type PageProps = {
-  readonly params: PageParams;
+  readonly params: Promise<{ lng: Language }>;
 };
 
-export default function Layout({ params: { lng } }: PageProps) {
+export default function Layout({ params }: PageProps) {
+  const { lng } = use(params);
   const [currentPage, setCurrentPage] = useState<number>(0);
   const [resultsPerPage, setResultsPerPage] =
     useState<number>(ARTICLES_PER_PAGE);
@@ -68,7 +65,7 @@ export default function Layout({ params: { lng } }: PageProps) {
       <Articles
         lang={lng}
         articles={history}
-        loading={isFetchingViewed}
+        isLoading={isFetchingViewed}
         articlesPerPageStart={ARTICLES_PER_PAGE}
       />
       <CustomPagination

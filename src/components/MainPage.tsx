@@ -37,38 +37,48 @@ export const MainPage = ({
     initialData: initialRecentlyAdded,
   });
 
+  const recentlyArticles = recentlyAddedData?.content ?? [];
+
   return (
     <HydrationBoundary state={dehydratedState}>
-      <section>
-        <BannerCarousel
-          articles={recentlyAddedData?.content || []}
-          isLoading={isLoading}
-          lang={lng}
-        />
+      <main>
+        <section>
+          <BannerCarousel
+            articles={recentlyArticles}
+            isLoading={isLoading}
+            lang={lng}
+          />
+        </section>
         {session?.user && (
           <section className='your-interest'>
             <Typography variant='h3' className='your-interest-h3'>
               {t('yourInterests')}
             </Typography>
-            <MainTabs lang={lng} username={session?.user?.name} />
+            <MainTabs lang={lng} username={session.user?.name} />
           </section>
         )}
-        <Box sx={{ width: 'auto', margin: 'auto', padding: '20px 0' }}>
-          <section className='your-interest'>
-            <Typography variant='h3' className='your-interest-h3' gutterBottom>
-              <NewReleasesRoundedIcon
-                sx={{ width: 40, height: 40, color: 'blue' }}
-              />
-              {t('recentlyAdded')}
-            </Typography>
-          </section>
-          <Carousel
-            articles={recentlyAddedData?.content || []}
-            isLoading={isLoading}
-            lang={lng}
-          />
-        </Box>
-      </section>
+        <section>
+          <Box sx={{ width: 'auto', margin: 'auto', padding: '20px 0' }}>
+            <section className='your-interest'>
+              <Typography
+                variant='h3'
+                className='your-interest-h3'
+                gutterBottom
+              >
+                <NewReleasesRoundedIcon
+                  sx={{ width: 40, height: 40, color: 'blue' }}
+                />
+                {t('recentlyAdded')}
+              </Typography>
+            </section>
+            <Carousel
+              articles={recentlyArticles}
+              isLoading={isLoading}
+              lang={lng}
+            />
+          </Box>
+        </section>
+      </main>
     </HydrationBoundary>
   );
 };

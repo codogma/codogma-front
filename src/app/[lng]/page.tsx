@@ -13,10 +13,11 @@ import { getQueryClient } from '@/lib/react-query';
 import { Language } from '@/types';
 
 type PageProps = {
-  readonly params: { lng: Language };
+  readonly params: Promise<{ lng: Language }>;
 };
 
-export default async function Page({ params: { lng } }: PageProps) {
+export default async function Page({ params }: PageProps) {
+  const { lng } = await params;
   const queryClient = getQueryClient();
   const session = await auth();
 

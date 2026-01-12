@@ -1,4 +1,5 @@
 import axios, {
+  AxiosError,
   AxiosHeaders,
   AxiosResponse,
   InternalAxiosRequestConfig,
@@ -12,15 +13,82 @@ import { auth } from '@/lib/auth';
 
 const TOKEN_REFRESH_THRESHOLD = 5 * 60 * 1000; // 5 minutes in ms
 
-function decodeJWT(token: string) {
+type JwtPayload = {
+  exp: number;
+  [key: string]: unknown;
+};
+
+type RefreshProxyResult = {
+  status: number;
+  cookieString: string | null;
+  setCookieHeaders: string[];
+};
+
+type RetryableRequestConfig = InternalAxiosRequestConfig & {
+  _isRetry?: boolean;
+};
+
+const isRecord = (v: unknown): v is Record<string, unknown> =>
+  typeof v === 'object' && v !== null;
+
+const toError = (e: unknown, fallbackMessage: string): Error => {
+  if (e instanceof Error) return e;
+  if (typeof e === 'string') return new Error(e);
+  return new Error(fallbackMessage);
+};
+
+const toHeaderRecord = (v: unknown): Record<string, string> => {
+  if (!isRecord(v)) return {};
+  const out: Record<string, string> = {};
+  for (const [k, val] of Object.entries(v)) {
+    if (typeof val === 'string') out[k] = val;
+  }
+  return out;
+};
+
+/**
+ * На случай если где-то исторически getAllServerHeaders возвращал массив,
+ * или если devConsoleInfo/обёртка меняет форму.
+ */
+const normalizeIncomingHeaders = (
+  incoming: unknown,
+): Record<string, string> => {
+  if (Array.isArray(incoming)) return toHeaderRecord(incoming[0]);
+  return toHeaderRecord(incoming);
+};
+
+const base64UrlDecodeUtf8 = (input: string): string => {
+  const base64 = input.replaceAll('-', '+').replaceAll('_', '/');
+  const padLength = (4 - (base64.length % 4)) % 4;
+  const padded = base64 + '='.repeat(padLength);
+
+  // SSR (node)
+  if (typeof window === 'undefined') {
+    return Buffer.from(padded, 'base64').toString('utf8');
+  }
+
+  // Browser
+  const binary = atob(padded);
+  const bytes = Uint8Array.from(binary, (c) => c.charCodeAt(0));
+  return new TextDecoder('utf-8').decode(bytes);
+};
+
+function decodeJWT(token: string): JwtPayload | null {
   try {
     const parts = token.split('.');
     if (parts.length !== 3) return null;
 
     const payload = parts[1];
-    const decoded = Buffer.from(payload, 'base64url').toString('utf8');
-    return JSON.parse(decoded);
-  } catch (error) {
+    if (!payload) return null;
+
+    const decodedText = base64UrlDecodeUtf8(payload);
+    const parsed: unknown = JSON.parse(decodedText);
+
+    if (!isRecord(parsed)) return null;
+    if (typeof parsed.exp !== 'number') return null;
+
+    return parsed as JwtPayload;
+  } catch (error: unknown) {
     devConsoleWarn('JWT decode error:', error);
     return null;
   }
@@ -30,10 +98,14 @@ function isTokenExpiringSoon(
   token: string | undefined,
   thresholdMs: number = TOKEN_REFRESH_THRESHOLD,
 ): boolean {
-  if (token === undefined) return true;
+  // Важно: undefined тут НЕ значит "истекает" — решение принимает вызывающий код
+  if (token === undefined) return false;
+
   const decoded = decodeJWT(token);
   devConsoleInfo('Decoded JWT:', decoded);
+
   if (!decoded) return true;
+
   const expiresAt = decoded.exp * 1000;
   const now = Date.now();
   const timeUntilExpiry = expiresAt - now;
@@ -44,63 +116,124 @@ function isTokenExpiringSoon(
   return timeUntilExpiry < thresholdMs;
 }
 
-async function callRefreshProxy() {
-  // NEXT_PUBLIC_DOMAIN это http://localhost:3000
+const parseCookieHeaderToMap = (
+  cookieHeader: string | undefined,
+): Map<string, string> => {
+  const map = new Map<string, string>();
+  if (!cookieHeader) return map;
+
+  cookieHeader.split(';').forEach((pair) => {
+    const p = pair.trim();
+    if (!p) return;
+    const idx = p.indexOf('=');
+    if (idx <= 0) return;
+    const key = p.slice(0, idx).trim();
+    const value = p.slice(idx + 1).trim();
+    if (!key) return;
+    map.set(key, value);
+  });
+
+  return map;
+};
+
+const parseSetCookieToPairs = (setCookie: string): Array<[string, string]> => {
+  // set-cookie: "key=value; Path=/; HttpOnly; ..."
+  const [cookiePart] = setCookie.split(';');
+  if (!cookiePart) return [];
+  const idx = cookiePart.indexOf('=');
+  if (idx <= 0) return [];
+  const key = cookiePart.slice(0, idx).trim();
+  const value = cookiePart.slice(idx + 1).trim();
+  if (!key) return [];
+  return [[key, value]];
+};
+
+const buildCookieStringFromMap = (map: Map<string, string>): string =>
+  Array.from(map.entries())
+    .map(([k, v]) => `${k}=${v}`)
+    .join('; ');
+
+const readSetCookieHeaders = (hdrs: Headers): string[] => {
+  // 1) Node/undici: getSetCookie() -> string[]
+  const maybeHeaders: unknown = hdrs as unknown;
+  if (isRecord(maybeHeaders)) {
+    const fn = maybeHeaders['getSetCookie'];
+    if (typeof fn === 'function') {
+      const result: unknown = (fn as (this: Headers) => unknown).call(hdrs);
+      if (Array.isArray(result) && result.every((x) => typeof x === 'string')) {
+        return result;
+      }
+    }
+  }
+
+  // 2) Fallback: single combined header (редко, но бывает)
+  const raw = hdrs.get('set-cookie');
+  if (!raw) return [];
+
+  return raw
+    .split(/,(?=\s*[A-Za-z0-9_\\-]+=)/)
+    .map((s) => s.trim())
+    .filter(Boolean);
+};
+
+const mergeCookies = (
+  existingCookieHeader: string | undefined,
+  setCookieHeaders: string[],
+): string => {
+  const map = parseCookieHeaderToMap(existingCookieHeader);
+
+  for (const sc of setCookieHeaders) {
+    for (const [k, v] of parseSetCookieToPairs(sc)) {
+      map.set(k, v);
+    }
+  }
+
+  return buildCookieStringFromMap(map);
+};
+
+const extractCookieValue = (
+  cookieHeader: string | undefined,
+  cookieName: string,
+): string | undefined => {
+  if (!cookieHeader) return undefined;
+  const map = parseCookieHeaderToMap(cookieHeader);
+  return map.get(cookieName);
+};
+
+/**
+ * SSR refresh через Next proxy route.
+ * Возвращает cookieString, в котором сохранены старые cookies + обновлённые пары из Set-Cookie.
+ */
+async function callRefreshProxy(
+  existingCookieHeader: string | undefined,
+): Promise<RefreshProxyResult> {
   const refreshUrl = `${process.env.NEXT_PUBLIC_DOMAIN}/api/proxy/refresh-token`;
 
-  const incoming = await getAllServerHeaders();
+  const incomingRaw = await getAllServerHeaders();
+  const incoming = normalizeIncomingHeaders(incomingRaw);
 
   const resp = await fetch(refreshUrl, {
     method: 'POST',
     headers: {
+      // Важно: для route handler достаточно JSON, а cookie прокинется из incoming
       'Content-Type': 'application/json',
-      ...(incoming || {}),
+      Accept: 'application/json',
+      ...incoming,
     },
     credentials: 'include',
   });
 
   const status = resp.status;
 
-  let bodyJson = null;
-  try {
-    bodyJson = await resp
-      .clone()
-      .json()
-      .catch(() => null);
-  } catch {
-    bodyJson = null;
-  }
+  const setCookieHeaders = readSetCookieHeaders(resp.headers);
 
-  const rawSetCookie = resp.headers.get('set-cookie');
-  let setCookieHeaders: string[] = [];
+  // Собираем НОВУЮ cookie-строку для ретрая SSR запроса
+  const cookieString =
+    setCookieHeaders.length > 0
+      ? mergeCookies(existingCookieHeader ?? incoming.cookie, setCookieHeaders)
+      : null;
 
-  if (Array.isArray((bodyJson && bodyJson.setCookies) ?? null)) {
-    setCookieHeaders = bodyJson.setCookies;
-  } else if (rawSetCookie) {
-    setCookieHeaders = rawSetCookie
-      .split(/,(?=\s*[A-Za-z0-9_\\-]+=)/)
-      .map((s) => s.trim())
-      .filter(Boolean);
-  }
-
-  let cookieString: string | null = null;
-  if (bodyJson?.cookieString) {
-    cookieString = bodyJson.cookieString;
-  } else if (setCookieHeaders.length > 0) {
-    const pairs: string[] = setCookieHeaders
-      .map((hdr) => {
-        const [pair] = hdr.split(';');
-        return pair?.trim();
-      })
-      .filter(Boolean);
-    cookieString = pairs.join('; ');
-  }
-
-  return {
-    status,
-    cookieString,
-    setCookieHeaders,
-  };
+  return { status, cookieString, setCookieHeaders };
 }
 
 export const axiosInstance = axios.create({
@@ -108,255 +241,271 @@ export const axiosInstance = axios.create({
   timeout: 15000,
   headers: {
     'Content-Type': 'application/json',
+    Accept: 'application/json',
   },
   withCredentials: true,
 });
 
-// TODO: возможно надо будет добавить обновление токенов на клиенте или вообще добавить эту логику в lib/auth
+// SSR refresh-lock (чтобы не делать параллельные refresh во время SSR)
 let isSSRTokenRefreshInProgress = false;
 
 axiosInstance.interceptors.request.use(
-  async (config: InternalAxiosRequestConfig & { _isRetry?: boolean }) => {
+  async (config: RetryableRequestConfig) => {
     if (typeof window === 'undefined') {
       const status = await auth();
       devConsoleInfo('Status data: ', status);
-      const incoming = await getAllServerHeaders();
+
+      const incomingRaw = await getAllServerHeaders();
+      const incoming = normalizeIncomingHeaders(incomingRaw);
+
+      // 1) Прокидываем cookies и безопасные заголовки в axios запрос на backend
       config.headers = AxiosHeaders.from({
         ...config.headers,
         ...incoming,
       });
-      if (!config._isRetry) {
-        // Проверяем срок действия access token
-        const cookies = incoming?.cookie;
-        const accessToken = cookies
-          ?.split(';')
-          .find((c) => c.trim().startsWith('access_token='))
-          ?.split('=')[1];
 
-        // Добавляем проверку на уже выполняющееся обновление токена
-        if (isTokenExpiringSoon(accessToken) && !isSSRTokenRefreshInProgress) {
-          isSSRTokenRefreshInProgress = true;
-          devConsoleWarn('Access token expiring soon - refreshing tokens...');
-          try {
-            const { cookieString } = await callRefreshProxy();
-            if (cookieString) {
-              config.headers.set('cookie', cookieString);
+      // 2) Для API-запросов фиксируем Accept, чтобы не улетало "text/html,..."
+      // (это не ломает SSR, но снижает риск неправильного контент-неготиэйшена на backend)
+      config.headers.set('Accept', 'application/json');
+
+      // 3) Proactive refresh (как раньше), но только если есть refresh_token
+      if (!config._isRetry) {
+        const cookieHeader = incoming.cookie;
+
+        const refreshToken = extractCookieValue(cookieHeader, 'refresh_token');
+        if (refreshToken) {
+          const accessToken = extractCookieValue(cookieHeader, 'access_token');
+
+          const shouldRefresh =
+            accessToken === undefined || isTokenExpiringSoon(accessToken);
+
+          if (shouldRefresh && !isSSRTokenRefreshInProgress) {
+            isSSRTokenRefreshInProgress = true;
+            devConsoleWarn(
+              'Access token expiring soon/missing - refreshing tokens...',
+            );
+
+            try {
+              const { cookieString } = await callRefreshProxy(cookieHeader);
+              if (cookieString) {
+                config.headers.set('cookie', cookieString);
+              }
+            } catch (error: unknown) {
+              devConsoleWarn('Token refresh failed:', error);
+            } finally {
+              isSSRTokenRefreshInProgress = false;
             }
-          } catch (error) {
-            devConsoleWarn('Token refresh failed:', error);
-          } finally {
-            isSSRTokenRefreshInProgress = false;
           }
         }
       }
+
       devConsoleInfo('Final request headers:', config.headers);
     }
+
     return config;
   },
-  (error) => {
-    devConsoleWarn('Request error:', error.message);
-    return Promise.reject(error);
+  (error: unknown) => {
+    const err = toError(error, 'Request interceptor error');
+    devConsoleWarn('Request error:', err.message);
+    return Promise.reject(err);
   },
 );
 
 let isRefreshing = false;
 let isSSRRefreshing = false;
-let refreshPromise: Promise<AxiosResponse> | null = null;
+let refreshPromise: Promise<AxiosResponse<unknown>> | null = null;
 
 axiosInstance.interceptors.response.use(
   (response) => {
     devConsoleInfo('Response headers:', response.headers);
     return response;
   },
-  async (error) => {
-    if (error) {
-      const statusCode = error.response?.status;
-      const securityEvent = error.response?.headers['x-security-event'];
-      const serverMessage = error.response?.data ?? 'An unknown error occurred';
-      devConsoleWarn('Axios error status: ' + statusCode);
-      devConsoleWarn('Axios error message: ' + serverMessage);
-      devConsoleWarn('Axios error config:', {
-        method: error.config?.method,
-        url: error.config?.url,
-        baseURL: error.config?.baseURL,
-        headers: error.config?.headers,
-      });
-      if (statusCode === 401) {
-        if (typeof window === 'undefined') {
-          // SSR: предотвращаем бесконечные повторы
-          if (error.config._isRetry || isSSRRefreshing) {
+  async (error: unknown) => {
+    if (!axios.isAxiosError(error)) {
+      throw toError(error, 'Non-Axios error');
+    }
+
+    const axiosError: AxiosError = error;
+    const statusCode = axiosError.response?.status;
+
+    const securityEvent =
+      typeof axiosError.response?.headers?.['x-security-event'] === 'string'
+        ? axiosError.response.headers['x-security-event']
+        : undefined;
+
+    const serverMessage =
+      typeof axiosError.response?.data === 'string'
+        ? axiosError.response.data
+        : 'An unknown error occurred';
+
+    devConsoleWarn('Axios error status: ' + statusCode);
+    devConsoleWarn('Axios error message: ' + serverMessage);
+    devConsoleWarn('Axios error config:', {
+      method: axiosError.config?.method,
+      url: axiosError.config?.url,
+      baseURL: axiosError.config?.baseURL,
+      headers: axiosError.config?.headers,
+    });
+
+    const cfg = axiosError.config as RetryableRequestConfig | undefined;
+    const alreadyRetried = Boolean(cfg?._isRetry);
+
+    if (statusCode === 401) {
+      // =========================
+      // SSR flow
+      // =========================
+      if (typeof window === 'undefined') {
+        if (alreadyRetried || isSSRRefreshing) {
+          devConsoleWarn(
+            'SSR refresh-token failed, giving up after single retry',
+          );
+          throw axiosError;
+        }
+
+        if (
+          securityEvent === 'access_token_expired' ||
+          securityEvent === 'access_token_missing' ||
+          !securityEvent
+        ) {
+          try {
+            isSSRRefreshing = true;
+            devConsoleWarn('Starting SSR refresh-token process');
+
+            const incomingRaw = await getAllServerHeaders();
+            const incoming = normalizeIncomingHeaders(incomingRaw);
+
+            const existingCookieHeader = incoming.cookie;
             devConsoleWarn(
-              'SSR refresh-token failed, giving up after single retry',
+              'Current cookies before refresh:',
+              existingCookieHeader,
             );
-            return Promise.reject(error);
-          }
-          if (
-            securityEvent === 'access_token_expired' ||
-            securityEvent === 'access_token_missing' ||
-            !securityEvent
-          ) {
-            try {
-              isSSRRefreshing = true;
-              devConsoleWarn('Starting SSR refresh-token process');
 
-              // Используем внутренний URL для Route Handler
-              const refreshUrl = `${process.env.NEXT_PUBLIC_DOMAIN}/api/proxy/refresh-token`;
+            // Делаем refresh через proxy и собираем корректный cookieString для ретрая
+            const { status, cookieString } =
+              await callRefreshProxy(existingCookieHeader);
 
-              // Получаем куки для передачи в Route Handler
-              const incoming = await getAllServerHeaders();
-              devConsoleWarn(
-                'Current cookies before refresh:',
-                incoming?.cookie,
-              );
-
-              const resp = await fetch(refreshUrl, {
-                method: 'POST',
-                credentials: 'include',
-                headers: {
-                  'Content-Type': 'application/json',
-                  ...(incoming || {}),
-                },
-              });
-
-              if (!resp.ok) {
-                const errorData = await resp.json().catch(() => null);
-                devConsoleWarn(
-                  'SSR refresh-token failed:',
-                  resp.status,
-                  errorData,
-                );
-                return Promise.reject(error);
-              }
-
-              devConsoleWarn('Backend refresh response status:', resp.status);
-              devConsoleWarn('SSR refresh-token successful');
-
-              // Получаем новые куки из ответа proxy route
-              const setCookieHeaders = resp.headers.get('set-cookie');
-              const cookieArray = resp.headers.getSetCookie?.() || [];
-
-              devConsoleWarn('Set-Cookie headers:', setCookieHeaders);
-              devConsoleWarn('Cookie array:', cookieArray);
-
-              // Парсим новые куки и создаем строку cookie для передачи
-              let newCookieString = incoming?.cookie || '';
-
-              if (setCookieHeaders) {
-                const newCookies = new Map();
-
-                // Сначала добавляем существующие куки
-                if (incoming?.cookie) {
-                  incoming.cookie.split('; ').forEach((cookie) => {
-                    const [key, value] = cookie.split('=');
-                    if (key && value) newCookies.set(key.trim(), value.trim());
-                  });
-                }
-
-                // Парсим новые куки из Set-Cookie заголовков
-                setCookieHeaders.split(', ').forEach((cookieString) => {
-                  // Берем только первую часть до первой точки с запятой
-                  const [cookiePart] = cookieString.split(';');
-                  const [key, value] = cookiePart.split('=');
-                  if (key && value) {
-                    newCookies.set(key.trim(), value.trim());
-                  }
-                });
-
-                // Формируем новую строку куки
-                newCookieString = Array.from(newCookies.entries())
-                  .map(([key, value]) => `${key}=${value}`)
-                  .join('; ');
-
-                devConsoleWarn('Parsed cookie string:', newCookieString);
-              }
-
-              // Retry только один раз для SSR
-              const retryConfig = {
-                ...error.config,
-                _isRetry: true,
-                headers: {
-                  ...error.config.headers,
-                  cookie: newCookieString, // Устанавливаем новые куки
-                },
-              };
-
-              // Принудительно нормализуем метод запроса (исключаем некорректные значения после SSR/fetch ретрая)
-              retryConfig.method =
-                typeof retryConfig.method === 'string' &&
-                [
-                  'get',
-                  'post',
-                  'put',
-                  'patch',
-                  'delete',
-                  'head',
-                  'options',
-                ].includes(retryConfig.method.toLowerCase())
-                  ? retryConfig.method
-                  : 'get';
-
-              if (['get', 'head'].includes(retryConfig.method)) {
-                delete retryConfig.data;
-              }
-
-              devConsoleWarn('Retrying with config:', retryConfig);
-              return axiosInstance(retryConfig);
-            } catch (refreshError) {
-              devConsoleWarn('SSR refresh-token failed: ', refreshError);
-              return Promise.reject(error);
-            } finally {
-              isSSRRefreshing = false;
+            if (!cookieString || status < 200 || status >= 300) {
+              devConsoleWarn('SSR refresh-token failed:', status);
+              throw axiosError;
             }
-          }
-        } else {
-          // Client-side: use single global refresh to avoid duplicate refresh calls
-          devConsoleInfo('Client-side 401 detected:', securityEvent);
-          if (
-            !isRefreshing &&
-            !error.config._isRetry &&
-            securityEvent &&
-            (securityEvent === 'access_token_expired' ||
-              securityEvent === 'access_token_missing')
-          ) {
-            try {
-              devConsoleInfo('Security Event: ', securityEvent);
-              isRefreshing = true;
-              refreshPromise ??= axiosInstance.post('/auth/refresh-token');
-              devConsoleWarn('Access token expired - refresh tokens...');
-              await refreshPromise;
-              error.config._isRetry = true;
-              return axiosInstance(error.config);
-            } catch (refreshError) {
-              devConsoleWarn('Client refresh failed:', refreshError);
-              redirect('/sign-in');
-            } finally {
-              isRefreshing = false;
-              refreshPromise = null;
+
+            if (!cfg) {
+              throw axiosError;
             }
-          }
-          if (
-            [
-              'device_mismatch',
-              'invalid_refresh_token',
-              'refresh_token_expired',
-              'refresh_token_revoked',
-            ].includes(securityEvent)
-          ) {
-            devConsoleInfo('Security Event: ', securityEvent);
-            await signOut({ redirect: true, redirectTo: '/sign-in' });
+
+            const retryConfig: RetryableRequestConfig = {
+              ...cfg,
+              _isRetry: true,
+              headers: AxiosHeaders.from({
+                ...cfg.headers,
+                cookie: cookieString,
+                Accept: 'application/json',
+              }),
+            };
+
+            // Нормализуем method (как и раньше)
+            const method =
+              typeof retryConfig.method === 'string'
+                ? retryConfig.method
+                : 'get';
+            const methodLower = method.toLowerCase();
+            const allowedMethods = [
+              'get',
+              'post',
+              'put',
+              'patch',
+              'delete',
+              'head',
+              'options',
+            ] as const;
+
+            retryConfig.method = (allowedMethods as readonly string[]).includes(
+              methodLower,
+            )
+              ? methodLower
+              : 'get';
+
+            if (retryConfig.method === 'get' || retryConfig.method === 'head') {
+              delete (retryConfig as Partial<RetryableRequestConfig>).data;
+            }
+
+            devConsoleWarn('Retrying with config:', retryConfig);
+            return axiosInstance.request(retryConfig);
+          } catch (refreshError: unknown) {
+            devConsoleWarn('SSR refresh-token failed: ', refreshError);
+            throw axiosError;
+          } finally {
+            isSSRRefreshing = false;
           }
         }
-      } else if (statusCode === 403) {
-        devConsoleWarn(
-          'Access forbidden: You do not have permission to access this resource',
-        );
-        redirect('/forbidden');
-      } else if (statusCode === 404) {
-        redirect('/not-found');
-      } else if (statusCode >= 500) {
-        devConsoleWarn('Server error. Please try again later.');
+
+        throw axiosError;
       }
+
+      // =========================
+      // Client flow
+      // =========================
+      devConsoleInfo('Client-side 401 detected:', securityEvent);
+
+      if (
+        !isRefreshing &&
+        !alreadyRetried &&
+        securityEvent &&
+        (securityEvent === 'access_token_expired' ||
+          securityEvent === 'access_token_missing')
+      ) {
+        try {
+          devConsoleInfo('Security Event: ', securityEvent);
+
+          isRefreshing = true;
+          refreshPromise ??= axiosInstance.post('/auth/refresh-token');
+
+          devConsoleWarn('Access token expired - refresh tokens...');
+          await refreshPromise;
+
+          if (cfg) cfg._isRetry = true;
+          return cfg ? axiosInstance.request(cfg) : Promise.reject(axiosError);
+        } catch (refreshError: unknown) {
+          devConsoleWarn('Client refresh failed:', refreshError);
+          redirect('/sign-in'); // never
+        } finally {
+          isRefreshing = false;
+          refreshPromise = null;
+        }
+      }
+
+      if (
+        securityEvent &&
+        [
+          'device_mismatch',
+          'invalid_refresh_token',
+          'refresh_token_expired',
+          'refresh_token_revoked',
+        ].includes(securityEvent)
+      ) {
+        devConsoleInfo('Security Event: ', securityEvent);
+        await signOut({ redirect: true, redirectTo: '/sign-in' });
+        throw new Error('Signed out');
+      }
+
+      throw axiosError;
     }
-    return Promise.reject(error);
+
+    if (statusCode === 403) {
+      devConsoleWarn(
+        'Access forbidden: You do not have permission to access this resource',
+      );
+      redirect('/forbidden'); // never
+    }
+
+    if (statusCode === 404) {
+      redirect('/not-found'); // never
+    }
+
+    if (typeof statusCode === 'number' && statusCode >= 500) {
+      devConsoleWarn('Server error. Please try again later.');
+    }
+
+    throw axiosError;
   },
 );

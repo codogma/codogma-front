@@ -1,12 +1,13 @@
 'use server';
 
-import { defaultConfig } from '@mui/material/InitColorSchemeScript/InitColorSchemeScript';
-import { ThemeProviderProps } from '@mui/material/styles/ThemeProvider';
 import { cookies } from 'next/headers';
+
+import { themeConfig } from '@/constants/theme-config';
+import { ThemeProviderProps } from '@/types';
 
 export const getTheme = async (): Promise<
   ThemeProviderProps['defaultMode']
 > => {
-  return cookies().get(defaultConfig.modeStorageKey)
+  return (await cookies()).get(themeConfig.modeStorageKey)
     ?.value as ThemeProviderProps['defaultMode'];
 };

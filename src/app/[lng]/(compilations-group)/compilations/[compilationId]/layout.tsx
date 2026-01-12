@@ -5,7 +5,7 @@ import Typography from '@mui/material/Typography';
 import { useQuery } from '@tanstack/react-query';
 import Link from 'next/link';
 import { useSession } from 'next-auth/react';
-import React, { useState } from 'react';
+import React, { use, useState } from 'react';
 
 import { AvatarImage } from '@/components/AvatarImage';
 import { Bookmark } from '@/components/Bookmark';
@@ -15,20 +15,13 @@ import { useNavigation } from '@/components/NavigationProvider';
 import { getCompilationById } from '@/helpers/compilationApi';
 import { GetCompilation, Language } from '@/types';
 
-type PageParams = {
-  compilationId: number;
-  lng: Language;
-};
-
 type PageProps = {
-  readonly params: PageParams;
+  readonly params: Promise<{ compilationId: number; lng: Language }>;
   readonly children: React.ReactNode;
 };
 
-export default function Layout({
-  params: { compilationId, lng },
-  children,
-}: PageProps) {
+export default function Layout({ children, params }: PageProps) {
+  const { compilationId, lng } = use(params);
   const { data: state } = useSession();
   const [isRefetch, setIsRefetch] = useState<boolean>(false);
   const { isFullscreen } = useNavigation();

@@ -6,7 +6,7 @@ export type TagCreate = {
 };
 
 export const getTagsByName = async (name: string): Promise<GetTag[]> => {
-  const response = await axiosInstance.get('/tags', {
+  const response = await axiosInstance.get<GetTag[]>('/tags', {
     params: { name },
   });
   return response.data;
