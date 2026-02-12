@@ -37,7 +37,7 @@ export default function Article({ lang }: ArticleProps) {
   const t = useTranslations('articlesPage');
   const content = processContent(DOMPurify.sanitize(article.content));
 
-  const { data, isFetching } = useQuery<GetArticle>({
+  const { data, isPending } = useQuery<GetArticle>({
     queryKey: ['articles', article?.id],
     queryFn: () => getRecommendationsArticleById(article?.id),
     enabled: !!article?.id,
@@ -139,7 +139,7 @@ export default function Article({ lang }: ArticleProps) {
           <Articles
             lang={lang}
             articles={articles}
-            isLoading={isFetching}
+            isLoading={isPending}
             articlesPerPageStart={ARTICLE_RECOMMENDATIONS}
           />
         </>

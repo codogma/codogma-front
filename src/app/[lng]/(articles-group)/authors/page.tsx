@@ -29,7 +29,7 @@ export default function Page({ params }: PageProps) {
     setCurrentPage(0);
   };
 
-  const { data, isFetching, refetch } = useQuery<GetUsersDTO>({
+  const { data, isPending, refetch } = useQuery<GetUsersDTO>({
     queryKey: ['authors', currentPage, resultsPerPage, searchType, searchValue],
     queryFn: () => {
       const byTag = searchType === SearchType.TAG ? searchValue : undefined;
@@ -68,7 +68,7 @@ export default function Page({ params }: PageProps) {
       <Users
         lang={lng}
         users={users}
-        isLoading={isFetching}
+        isLoading={isPending}
         usersPerPageStart={USERS_PER_PAGE}
       />
       <CustomPagination

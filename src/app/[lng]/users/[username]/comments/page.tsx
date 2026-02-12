@@ -37,7 +37,7 @@ export default function Page({ params }: PageProps) {
     setCurrentPage(0);
   };
 
-  const { data, isFetching, refetch } = useQuery<GetCommentsDTO>({
+  const { data, isPending, refetch } = useQuery<GetCommentsDTO>({
     queryKey: [
       'comments',
       username,
@@ -77,7 +77,7 @@ export default function Page({ params }: PageProps) {
   return (
     <>
       <Search onSearchType={onSearchType} onSearchValue={onSearchValue} />
-      {isFetching ? (
+      {isPending ? (
         <Card variant='outlined' className='card'>
           <CardContent className='card-content'>
             <Skeleton variant='text' width={250} />

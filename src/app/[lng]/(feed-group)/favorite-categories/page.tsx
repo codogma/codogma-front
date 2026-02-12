@@ -32,7 +32,7 @@ function Page({ params }: PageProps) {
     setCurrentPage(0);
   };
 
-  const { data, isFetching, refetch } = useQuery<GetCategoriesDTO>({
+  const { data, isPending, refetch } = useQuery<GetCategoriesDTO>({
     queryKey: [
       'favorite-categories',
       currentPage,
@@ -69,7 +69,7 @@ function Page({ params }: PageProps) {
       <Categories
         lang={lng}
         categories={categories}
-        isLoading={isFetching}
+        isLoading={isPending}
         categoriesPerPageStart={CATEGORIES_PER_PAGE}
       />
       <CustomPagination

@@ -63,7 +63,7 @@ export const MainTabs: React.FC<MainTabsProps> = ({ lang, username }) => {
     return () => observer.disconnect();
   }, []);
 
-  const { data: viewedData, isFetching: isFetchingViewed } =
+  const { data: viewedData, isPending: isPendingViewed } =
     useQuery<GetArticlesDTO>({
       queryKey: ['history'],
       queryFn: () => {
@@ -73,7 +73,7 @@ export const MainTabs: React.FC<MainTabsProps> = ({ lang, username }) => {
 
   const history = viewedData?.content ?? [];
 
-  const { data: bookmarksData, isFetching: isFetchingBookmarks } =
+  const { data: bookmarksData, isPending: isPendingBookmarks } =
     useQuery<GetCompilationsDTO>({
       queryKey: ['bookmarks'],
       queryFn: () => {
@@ -90,7 +90,7 @@ export const MainTabs: React.FC<MainTabsProps> = ({ lang, username }) => {
 
   const bookmarks = bookmarksData?.content ?? [];
 
-  const { data: myCompilationsData, isFetching: isFetchingMyCompilations } =
+  const { data: myCompilationsData, isPending: isPendingMyCompilations } =
     useQuery<GetCompilationsDTO>({
       queryKey: ['compilations', username],
       queryFn: () => {
@@ -139,7 +139,7 @@ export const MainTabs: React.FC<MainTabsProps> = ({ lang, username }) => {
         <TabPanel value={0}>
           <Carousel
             articles={history}
-            isLoading={isFetchingViewed}
+            isLoading={isPendingViewed}
             lang={lang}
           />
           <Link href={`/${lang}/users/${username}/history`}>
@@ -152,7 +152,7 @@ export const MainTabs: React.FC<MainTabsProps> = ({ lang, username }) => {
         <TabPanel value={1}>
           <Compilations
             compilations={bookmarks}
-            isLoading={isFetchingBookmarks}
+            isLoading={isPendingBookmarks}
             lang={lang}
             compilationsPerPageStart={MAIN_PAGE_BOOKMARKS}
           />
@@ -166,7 +166,7 @@ export const MainTabs: React.FC<MainTabsProps> = ({ lang, username }) => {
         <TabPanel value={2}>
           <Compilations
             compilations={myCompilations}
-            isLoading={isFetchingMyCompilations}
+            isLoading={isPendingMyCompilations}
             lang={lang}
             compilationsPerPageStart={MAIN_PAGE_MY_COMPILATIONS}
           />

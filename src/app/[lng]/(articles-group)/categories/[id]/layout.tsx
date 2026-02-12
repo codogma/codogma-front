@@ -42,7 +42,7 @@ export default function Layout({ children, params }: PageProps) {
     },
   ];
 
-  const { data: category, isFetching } = useQuery<GetCategory>({
+  const { data: category, isPending } = useQuery<GetCategory>({
     queryKey: ['category', id],
     queryFn: () => getCategoryById(id),
   });
@@ -50,7 +50,7 @@ export default function Layout({ children, params }: PageProps) {
   return (
     <section>
       <Card variant='outlined' className='card'>
-        {isFetching ? (
+        {isPending ? (
           <div className='card-header'>
             <Skeleton className='category-img' variant='rounded' />
             <div>

@@ -33,7 +33,7 @@ export default function Page({ params }: PageProps) {
     setCurrentPage(0);
   };
 
-  const { data, isFetching, refetch } = useQuery<GetCategoriesDTO>({
+  const { data, isPending, refetch } = useQuery<GetCategoriesDTO>({
     queryKey: [
       'categories',
       currentPage,
@@ -70,7 +70,7 @@ export default function Page({ params }: PageProps) {
         refetch={refetch}
         categories={categories}
         categoriesPerPageStart={CATEGORIES_PER_PAGE}
-        isLoading={isFetching}
+        isLoading={isPending}
       />
       <CustomPagination
         totalPages={totalPages}

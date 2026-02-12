@@ -30,7 +30,7 @@ export default function Layout({ params }: PageProps) {
     setCurrentPage(0);
   };
 
-  const { data: viewedData, isFetching: isFetchingViewed } =
+  const { data: viewedData, isPending: isPendingViewed } =
     useQuery<GetArticlesDTO>({
       queryKey: [
         'history',
@@ -65,7 +65,7 @@ export default function Layout({ params }: PageProps) {
       <Articles
         lang={lng}
         articles={history}
-        isLoading={isFetchingViewed}
+        isLoading={isPendingViewed}
         articlesPerPageStart={ARTICLES_PER_PAGE}
       />
       <CustomPagination

@@ -54,7 +54,7 @@ export default function Layout({ children, params }: PageProps) {
     },
   ];
 
-  const { data, isFetching } = useQuery<GetUserDTO>({
+  const { data, isPending } = useQuery<GetUserDTO>({
     queryKey: ['user', username],
     queryFn: () => getUserByUsername(username),
   });
@@ -65,7 +65,7 @@ export default function Layout({ children, params }: PageProps) {
     <section>
       <Card variant='outlined' className='card'>
         <CardContent className='card-content'>
-          {isFetching ? (
+          {isPending ? (
             <div className='card-header'>
               <Skeleton className='category-img' variant='rounded' />
               <div>

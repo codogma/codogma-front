@@ -34,7 +34,7 @@ export default function Layout({ children, params }: PageProps) {
     setIsRefetch(false);
   };
 
-  const { data: compilation, isFetching } = useQuery<GetCompilation>({
+  const { data: compilation, isPending } = useQuery<GetCompilation>({
     queryKey: ['compilation', compilationId],
     queryFn: () => getCompilationById(compilationId),
   });
@@ -46,7 +46,7 @@ export default function Layout({ children, params }: PageProps) {
         className='card'
         sx={{ display: isFullscreen ? 'none' : 'block' }}
       >
-        {isFetching ? (
+        {isPending ? (
           <div className='card-header'>
             <Skeleton className='category-img' variant='rounded' />
             <div>

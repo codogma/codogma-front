@@ -36,7 +36,7 @@ export default function Page({ params }: PageProps) {
     setCurrentPage(0);
   };
 
-  const { data, isFetching, refetch } = useQuery<GetCompilationsDTO>({
+  const { data, isPending, refetch } = useQuery<GetCompilationsDTO>({
     queryKey: [
       'my-compilations',
       username,
@@ -79,7 +79,7 @@ export default function Page({ params }: PageProps) {
       <Search onSearchType={onSearchType} onSearchValue={onSearchValue} />
       <Compilations
         lang={lng}
-        isLoading={isFetching}
+        isLoading={isPending}
         compilations={compilations}
         compilationsPerPageStart={COMPILATIONS_PER_PAGE}
       />
