@@ -121,7 +121,13 @@
     "hideNavigation": "Hide navigation",
     "readMoreBtn": "Read more",
     "editBtn": "Edit",
-    "save": "Save"
+    "save": "Save",
+    "sort": {
+      "newest": "Newest first",
+      "oldest": "Oldest first",
+      "mostViewed": "By views",
+      "mostLiked": "By likes"
+    }
   },
   "authorsPage": {
     "articlesByUser": "Articles by author",

@@ -87,6 +87,8 @@ export const getArticles = async (
   content?: string,
   username?: string,
   isFeed?: boolean,
+  sort: string = 'updatedAt',
+  order: string = 'desc',
 ): Promise<GetArticlesDTO> => {
   const response = await axiosInstance.get<GetArticlesDTO>('/articles', {
     params: {
@@ -98,6 +100,8 @@ export const getArticles = async (
       size,
       username,
       isFeed,
+      sort,
+      order,
     },
   });
   return response.data;

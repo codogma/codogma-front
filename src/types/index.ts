@@ -18,6 +18,19 @@ export enum SearchType {
   TAG = 'tag',
 }
 
+export enum ArticleSortField {
+  UPDATED_AT = 'updatedAt',
+  CREATED_AT = 'createdAt',
+  VIEWS_COUNT = 'viewsCount',
+  LIKES_COUNT = 'likesCount',
+  COMMENTS_COUNT = 'commentsCount',
+}
+
+export enum SortOrder {
+  ASC = 'asc',
+  DESC = 'desc',
+}
+
 export enum NotificationType {
   SYSTEM = 'SYSTEM',
   ARTICLE_MODERATION = 'ARTICLE_MODERATION',

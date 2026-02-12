@@ -220,7 +220,6 @@ const Page = ({ params }: PageParams) => {
       isSubmitSuccessful: isSubmitSuccessfulStepOne,
       errors: errorsStepOne,
     },
-    watch: watchStepOne,
   } = zodStepOneForm;
 
   const zodStepTwoForm = useForm<StepTwoType>({
@@ -246,7 +245,6 @@ const Page = ({ params }: PageParams) => {
     },
     setValue,
     trigger,
-    watch: watchStepTwo,
   } = zodStepTwoForm;
 
   const { data: categoriesData } = useQuery<GetCategoriesDTO>({

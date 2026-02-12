@@ -121,7 +121,13 @@
     "hideNavigation": "Скрыть навигацию",
     "readMoreBtn": "Читать далее",
     "editBtn": "Редактировать",
-    "save": "Сохранить"
+    "save": "Сохранить",
+    "sort": {
+      "newest": "Сначала новые",
+      "oldest": "Сначала старые",
+      "mostViewed": "По просмотрам",
+      "mostLiked": "По лайкам"
+    }
   },
   "authorsPage": {
     "articlesByUser": "Статьи автора",

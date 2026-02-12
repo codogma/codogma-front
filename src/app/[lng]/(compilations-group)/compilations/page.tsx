@@ -1,5 +1,5 @@
 'use client';
-import { useQuery } from '@tanstack/react-query';
+import { keepPreviousData, useQuery } from '@tanstack/react-query';
 import React, { use, useState } from 'react';
 
 import Compilations from '@/components/Compilations';
@@ -33,7 +33,7 @@ export default function Page({ params }: PageProps) {
     setCurrentPage(0);
   };
 
-  const { data, isFetching, refetch } = useQuery<GetCompilationsDTO>({
+  const { data, isPending, refetch } = useQuery<GetCompilationsDTO>({
     queryKey: [
       'compilations',
       currentPage,
@@ -54,6 +54,7 @@ export default function Page({ params }: PageProps) {
         resultsPerPage,
       );
     },
+    placeholderData: keepPreviousData,
   });
 
   const compilations: GetCompilation[] = data?.content ?? [];
@@ -75,17 +76,17 @@ export default function Page({ params }: PageProps) {
       <Search onSearchType={onSearchType} onSearchValue={onSearchValue} />
       <Compilations
         lang={lng}
-        isLoading={isFetching}
+        isLoading={isPending}
         compilations={compilations}
-        compilationsPerPageStart={COMPILATIONS_PER_PAGE}
+        compilationsPerPageStart={resultsPerPage}
         refetch={refetch}
       />
       <CustomPagination
         totalPages={totalPages}
         totalElements={totalElements}
+        resultsPerPageStart={resultsPerPage}
         onCurrentPageChange={onPageChange}
         onResultsPerPageChange={onResultsPerPageChange}
-        resultsPerPageStart={COMPILATIONS_PER_PAGE}
       />
     </>
   );

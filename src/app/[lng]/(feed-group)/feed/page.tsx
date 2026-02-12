@@ -1,5 +1,5 @@
 'use client';
-import { useQuery } from '@tanstack/react-query';
+import { keepPreviousData, useQuery } from '@tanstack/react-query';
 import DOMPurify from 'dompurify';
 import React, { use, useState } from 'react';
 
@@ -7,6 +7,7 @@ import { Articles } from '@/components/Articles';
 import { useContentImageContext } from '@/components/ContentImageProvider';
 import { CustomPagination } from '@/components/CustomPagination';
 import { Search } from '@/components/Search';
+import { WithAuth } from '@/components/WithAuth';
 import { contlCookie } from '@/constants/i18n';
 import { ARTICLES_PER_PAGE } from '@/constants/limits';
 import { getArticles, GetArticlesDTO } from '@/helpers/articleApi';
@@ -35,7 +36,7 @@ const Page = ({ params }: PageProps) => {
     setCurrentPage(0);
   };
 
-  const { data, isFetching, refetch } = useQuery<GetArticlesDTO>({
+  const { data, isPending, refetch } = useQuery<GetArticlesDTO>({
     queryKey: ['feed', currentPage, resultsPerPage, searchType, searchValue],
     queryFn: () => {
       const byTag = searchType === SearchType.TAG ? searchValue : undefined;
@@ -53,6 +54,7 @@ const Page = ({ params }: PageProps) => {
         isFeed,
       );
     },
+    placeholderData: keepPreviousData,
   });
 
   const content = data?.content ?? [];
@@ -81,13 +83,13 @@ const Page = ({ params }: PageProps) => {
       <Articles
         lang={lng}
         articles={articles}
-        isLoading={isFetching}
-        articlesPerPageStart={ARTICLES_PER_PAGE}
+        articlesPerPageStart={resultsPerPage}
+        isLoading={isPending}
       />
       <CustomPagination
         totalPages={totalPages}
         totalElements={totalElements}
-        resultsPerPageStart={ARTICLES_PER_PAGE}
+        resultsPerPageStart={resultsPerPage}
         onCurrentPageChange={onPageChange}
         onResultsPerPageChange={onResultsPerPageChange}
       />
@@ -95,4 +97,4 @@ const Page = ({ params }: PageProps) => {
   );
 };
 
-export default Page;
+export default WithAuth(Page);

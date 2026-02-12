@@ -5,6 +5,7 @@ import React, { use, useState } from 'react';
 import { Categories } from '@/components/Categories';
 import { CustomPagination } from '@/components/CustomPagination';
 import { Search } from '@/components/Search';
+import { WithAuth } from '@/components/WithAuth';
 import { contlCookie } from '@/constants/i18n';
 import { CATEGORIES_PER_PAGE } from '@/constants/limits';
 import { getCategories, GetCategoriesDTO } from '@/helpers/categoryApi';
@@ -15,7 +16,7 @@ type PageProps = {
   readonly params: Promise<{ lng: Language }>;
 };
 
-export default function Page({ params }: PageProps) {
+function Page({ params }: PageProps) {
   const { lng } = use(params);
   const [currentPage, setCurrentPage] = useState<number>(0);
   const [resultsPerPage, setResultsPerPage] = useState<number>(10);
@@ -81,3 +82,5 @@ export default function Page({ params }: PageProps) {
     </>
   );
 }
+
+export default WithAuth(Page);

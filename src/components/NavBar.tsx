@@ -24,7 +24,7 @@ import type { Session } from 'next-auth';
 import { signOut, useSession } from 'next-auth/react';
 import { useTranslations } from 'next-intl';
 import * as React from 'react';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import { AvatarImage } from '@/components/AvatarImage';
 import { CategoryDialog } from '@/components/CategoryDialog';
@@ -50,13 +50,25 @@ export const NavBar = ({ lang, session, theme }: NavBarProps) => {
   const [categoryDialogOpen, setCategoryDialogOpen] = useState(false);
   const [notificationDialogOpen, setNotificationDialogOpen] = useState(false);
   const [searchDialogOpen, setSearchDialogOpen] = useState(false);
-  const searchInputRef = useRef<HTMLButtonElement | null>(null);
+  const searchButtonRef = useRef<HTMLButtonElement | null>(null);
+  const [searchAnchorEl, setSearchAnchorEl] =
+    useState<HTMLButtonElement | null>(null);
+
   const router = useRouter();
   const { data: clientSession, status } = useSession();
   const currentSession = clientSession || session;
   const isAuthenticated =
     status === 'authenticated' || (status === 'loading' && !!session);
   const t = useTranslations();
+
+  // Синхронизация searchAnchorEl с реальным элементом кнопки
+  useEffect(() => {
+    if (searchDialogOpen && searchButtonRef.current) {
+      setSearchAnchorEl(searchButtonRef.current);
+    } else {
+      setSearchAnchorEl(null);
+    }
+  }, [searchDialogOpen]);
 
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
@@ -119,7 +131,7 @@ export const NavBar = ({ lang, session, theme }: NavBarProps) => {
     setAnchorElUser(event.currentTarget);
   };
 
-  // ВАЖНО: формируем пункты меню массивами, без <>...</>, чтобы в Menu не попадал Fragment
+  // Формируем пункты меню без использования Fragment
   const guestMenuItems: React.ReactElement[] = [
     <MenuItem key='sign-up' onClick={() => handleClickMenuItem('sign-up')}>
       <Typography textAlign='center'>
@@ -147,7 +159,6 @@ export const NavBar = ({ lang, session, theme }: NavBarProps) => {
         {t('profile')}
       </Typography>
     </MenuItem>,
-
     ...(isAuthenticated && currentSession?.user.role !== UserRole.ROLE_ADMIN
       ? [
           <MenuItem
@@ -161,7 +172,6 @@ export const NavBar = ({ lang, session, theme }: NavBarProps) => {
           </MenuItem>,
         ]
       : []),
-
     ...(currentSession?.user.role === UserRole.ROLE_AUTHOR
       ? [
           <MenuItem
@@ -175,7 +185,6 @@ export const NavBar = ({ lang, session, theme }: NavBarProps) => {
           </MenuItem>,
         ]
       : []),
-
     ...(currentSession?.user.role === UserRole.ROLE_ADMIN
       ? [
           <MenuItem key='create-category' onClick={handleOpenCategoryDialog}>
@@ -184,7 +193,6 @@ export const NavBar = ({ lang, session, theme }: NavBarProps) => {
               {t('createCategoryBtn')}
             </Typography>
           </MenuItem>,
-
           <MenuItem
             key='admin-panel'
             onClick={() => handleClickMenuItem('admin', true)}
@@ -194,7 +202,6 @@ export const NavBar = ({ lang, session, theme }: NavBarProps) => {
               {t('adminPanelBtn')}
             </Typography>
           </MenuItem>,
-
           <MenuItem
             key='create-system-notification'
             onClick={handleOpenNotificationDialog}
@@ -206,7 +213,6 @@ export const NavBar = ({ lang, session, theme }: NavBarProps) => {
           </MenuItem>,
         ]
       : []),
-
     <MenuItem key='logout' onClick={handleLogout}>
       <Typography textAlign='center'>
         <LogoutIcon className='mr-2' fontSize='small' />
@@ -245,7 +251,7 @@ export const NavBar = ({ lang, session, theme }: NavBarProps) => {
               </Typography>
             </Link>
             <SearchButton
-              onRef={searchInputRef}
+              ref={searchButtonRef}
               onClick={handleOpenSearchDialog}
               sx={{ mr: 1, ml: 'auto' }}
             />
@@ -271,7 +277,7 @@ export const NavBar = ({ lang, session, theme }: NavBarProps) => {
             <SearchDialog
               open={searchDialogOpen}
               onClose={handleCloseSearchDialog}
-              anchorEl={searchInputRef.current}
+              anchorEl={searchAnchorEl}
             />
             <Box sx={{ flexGrow: 0 }}>
               <Tooltip title={t('settings')}>
@@ -300,7 +306,6 @@ export const NavBar = ({ lang, session, theme }: NavBarProps) => {
                 open={Boolean(anchorElUser)}
                 onClose={handleCloseUserMenu}
               >
-                {/* ВАЖНО: прямой ребёнок Menu — НЕ Fragment, а MenuList */}
                 <MenuList className='menu-list'>
                   {isAuthenticated ? authMenuItems : guestMenuItems}
                 </MenuList>

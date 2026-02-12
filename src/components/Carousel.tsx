@@ -15,10 +15,10 @@ type CarouselProps = {
   readonly isMinimalSlides?: boolean;
 };
 
-const sanitizeId = (raw: string, prefix = 'swiper') => {
-  const id = raw.replaceAll(/[^A-Za-z0-9]/g, '');
-  return `${prefix}-${id}`;
-};
+// const sanitizeId = (raw: string, prefix = 'swiper') => {
+//   const id = raw.replaceAll(/[^A-Za-z0-9]/g, '');
+//   return `${prefix}-${id}`;
+// };
 
 export const Carousel = ({
   lang,

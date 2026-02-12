@@ -1,20 +1,19 @@
-'use client';
 import HowToRegIcon from '@mui/icons-material/HowToReg';
 import InterestsIcon from '@mui/icons-material/Interests';
 import PlaylistAddCheckCircleIcon from '@mui/icons-material/PlaylistAddCheckCircle';
 import { useTranslations } from 'next-intl';
-import React, { ReactNode } from 'react';
+import React, { ReactNode, use } from 'react';
 
 import { NavTabs, TabProps } from '@/components/NavTabs';
-import { WithAuth } from '@/components/WithAuth';
 import { Language } from '@/types';
 
 type LayoutProps = {
   readonly children: ReactNode;
-  readonly params: { lng: Language };
+  readonly params: Promise<{ lng: Language }>;
 };
 
-function Layout({ params: { lng }, children }: LayoutProps) {
+export default function Layout({ params, children }: LayoutProps) {
+  const { lng } = use(params);
   const t = useTranslations();
   const tabs: TabProps[] = [
     {
@@ -40,5 +39,3 @@ function Layout({ params: { lng }, children }: LayoutProps) {
     </>
   );
 }
-
-export default WithAuth(Layout);
