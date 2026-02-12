@@ -1,7 +1,7 @@
 'use client';
 import NavigateBeforeRoundedIcon from '@mui/icons-material/NavigateBeforeRounded';
 import NavigateNextRoundedIcon from '@mui/icons-material/NavigateNextRounded';
-import React, { useEffect, useId, useState } from 'react';
+import { useId } from 'react';
 import { Autoplay, Navigation } from 'swiper/modules';
 import { Swiper, SwiperSlide } from 'swiper/react';
 
@@ -15,11 +15,6 @@ type CarouselProps = {
   readonly isMinimalSlides?: boolean;
 };
 
-// const sanitizeId = (raw: string, prefix = 'swiper') => {
-//   const id = raw.replaceAll(/[^A-Za-z0-9]/g, '');
-//   return `${prefix}-${id}`;
-// };
-
 export const Carousel = ({
   lang,
   articles,
@@ -29,42 +24,34 @@ export const Carousel = ({
   const uniqueId = useId();
   const prevId = `carousel-prev-${uniqueId}`;
   const nextId = `carousel-next-${uniqueId}`;
-  // const rawPrev = useId();
-  // const rawNext = useId();
 
-  // const prevId = useMemo(() => sanitizeId(rawPrev, 'carousel-prev'), [rawPrev]);
-  // const nextId = useMemo(() => sanitizeId(rawNext, 'carousel-next'), [rawNext]);
   const minForLoop = 3;
 
-  const [navigation, setNavigation] = useState<
-    { prevEl: string; nextEl: string } | false
-  >(false);
-
-  const [isClient, setIsClient] = useState(false);
-
-  useEffect(() => {
-    setIsClient(true);
-    const timer = setTimeout(() => {
-      setNavigation({ prevEl: `#${prevId}`, nextEl: `#${nextId}` });
-    }, 0);
-
-    return () => clearTimeout(timer);
-  }, [prevId, nextId]);
-
   return articles?.length !== 0 && !isLoading ? (
-    <div className='carousel-container'>
+    <div
+      id={`carousel-${uniqueId}`}
+      suppressHydrationWarning
+      className='carousel-container'
+    >
       <div
         id={prevId}
-        className={`swiper-button-custom ${!isClient || !navigation ? 'swiper-button-disabled' : ''}`}
+        suppressHydrationWarning
+        className={`swiper-button-custom ${isLoading ? '' : 'swiper-button-disabled'}`}
       >
         <NavigateBeforeRoundedIcon />
       </div>
       <Swiper
+        id={uniqueId}
+        itemID={uniqueId}
+        suppressHydrationWarning
         modules={[Autoplay, Navigation]}
         pagination={{ clickable: true }}
-        navigation={navigation}
+        navigation={{
+          prevEl: `#${prevId}`,
+          nextEl: `#${nextId}`,
+        }}
         autoplay={
-          isClient
+          !isLoading
             ? {
                 delay: 20000,
                 disableOnInteraction: false,
@@ -110,7 +97,8 @@ export const Carousel = ({
       </Swiper>
       <div
         id={nextId}
-        className={`swiper-button-custom ${!isClient || !navigation ? 'swiper-button-disabled' : ''}`}
+        suppressHydrationWarning
+        className={`swiper-button-custom ${isLoading ? '' : 'swiper-button-disabled'}`}
       >
         <NavigateNextRoundedIcon />
       </div>
