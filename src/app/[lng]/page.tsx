@@ -19,7 +19,6 @@ type PageProps = {
 export default async function Page({ params }: PageProps) {
   const { lng } = await params;
   const queryClient = getQueryClient();
-  const session = await auth();
 
   await queryClient.prefetchQuery({
     queryKey: ['recentlyArticles'],
@@ -32,6 +31,7 @@ export default async function Page({ params }: PageProps) {
 
   devConsoleInfo('recently articles data: ', recentlyData);
 
+  const session = await auth();
   if (session?.user) {
     await queryClient.prefetchQuery({
       queryKey: ['history'],
@@ -74,7 +74,6 @@ export default async function Page({ params }: PageProps) {
 
   return (
     <MainPage
-      session={session}
       dehydratedState={dehydratedState}
       lng={lng}
       initialRecentlyAdded={recentlyData}

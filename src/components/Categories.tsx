@@ -12,7 +12,7 @@ type CategoriesProps = {
   readonly refetch?: () => void;
 };
 
-export default function Categories({
+export function Categories({
   categories,
   isLoading,
   categoriesPerPageStart,

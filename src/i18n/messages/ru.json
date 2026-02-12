@@ -62,7 +62,9 @@
     "subWelcome": "Это приветственное сообщение!",
     "yourInterests": "Ваши интересы",
     "recentlyAdded": "Недавно добавленные",
-    "popular": "Популярное"
+    "popular": "Популярное",
+    "popularCategories": "Популярные категории",
+    "recommendedForYou": "Рекомендовано для вас"
   },
   "articleEditorPage": {
     "mainContent": "Основное содержание",

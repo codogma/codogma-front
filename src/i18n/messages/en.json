@@ -62,7 +62,9 @@
     "subWelcome": "This is the sub-welcome message!",
     "yourInterests": "Your interests",
     "recentlyAdded": "Recently Added",
-    "popular": "Popular"
+    "popular": "Popular",
+    "popularCategories": "Popular Categories",
+    "recommendedForYou": "Recommended for You"
   },
   "articleEditorPage": {
     "mainContent": "Main content",

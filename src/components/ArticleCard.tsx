@@ -246,7 +246,7 @@ export const ArticleCard = ({ article, lang, isMinimal }: ArticleCardProps) => {
                 left: 0,
                 right: 0,
                 background: `linear-gradient(to top, rgba(${vibrantR}, ${vibrantG}, ${vibrantB}, 0.8) 50%, transparent)`,
-                color: 'white',
+                color: vibrantTextColor,
                 p: '0 12px 12px', // или p-1 в tailwind
               }}
             >
@@ -278,7 +278,13 @@ export const ArticleCard = ({ article, lang, isMinimal }: ArticleCardProps) => {
                   alignItems='flex-start'
                   maxWidth={235}
                   spacing={1}
-                  divider={<Divider orientation='vertical' flexItem />}
+                  divider={
+                    <Divider
+                      orientation='vertical'
+                      sx={{ borderColor: vibrantTextColor }}
+                      flexItem
+                    />
+                  }
                 >
                   <span className='align-center flex flex-row gap-0.5 text-xs'>
                     <VisibilityOutlinedIcon

@@ -1,7 +1,7 @@
 'use client';
 import NavigateBeforeRoundedIcon from '@mui/icons-material/NavigateBeforeRounded';
 import NavigateNextRoundedIcon from '@mui/icons-material/NavigateNextRounded';
-import React, { useEffect, useId, useMemo, useState } from 'react';
+import React, { useEffect, useId, useState } from 'react';
 import { Autoplay, Navigation } from 'swiper/modules';
 import { Swiper, SwiperSlide } from 'swiper/react';
 
@@ -26,11 +26,14 @@ export const Carousel = ({
   isLoading,
   isMinimalSlides,
 }: CarouselProps) => {
-  const rawPrev = useId();
-  const rawNext = useId();
+  const uniqueId = useId();
+  const prevId = `carousel-prev-${uniqueId}`;
+  const nextId = `carousel-next-${uniqueId}`;
+  // const rawPrev = useId();
+  // const rawNext = useId();
 
-  const prevId = useMemo(() => sanitizeId(rawPrev, 'carousel-prev'), [rawPrev]);
-  const nextId = useMemo(() => sanitizeId(rawNext, 'carousel-next'), [rawNext]);
+  // const prevId = useMemo(() => sanitizeId(rawPrev, 'carousel-prev'), [rawPrev]);
+  // const nextId = useMemo(() => sanitizeId(rawNext, 'carousel-next'), [rawNext]);
   const minForLoop = 3;
 
   const [navigation, setNavigation] = useState<
