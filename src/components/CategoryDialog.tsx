@@ -38,6 +38,11 @@ import { CreateCategory, createCategory } from '@/helpers/categoryApi';
 import { devConsoleWarn } from '@/helpers/devConsoleLogs';
 import { Language, PaletteDTO, SwatchDTO } from '@/types';
 
+// Helper function to convert Record to Map
+const recordToMap = (record: Record<string, string>): Map<Language, string> => {
+  return new Map(Object.entries(record)) as Map<Language, string>;
+};
+
 const VisuallyHiddenInput = styled('input')({
   clip: 'rect(0 0 0 0)',
   clipPath: 'inset(50%)',
@@ -76,12 +81,16 @@ export const CategoryDialog = ({
         .min(2, t('minText', { lang: t(selectedLang), length: 2 }))
         .max(50, t('maxText', { lang: t(selectedLang), length: 50 })),
     ),
-    icon: z.instanceof(File, {
-      message: t('iconMessage'),
-    }),
-    image: z.instanceof(File, {
-      message: t('imageMessage'),
-    }),
+    icon: z
+      .instanceof(File, {
+        message: t('iconMessage'),
+      })
+      .optional(),
+    image: z
+      .instanceof(File, {
+        message: t('imageMessage'),
+      })
+      .optional(),
     description: z.optional(z.record(z.nativeEnum(Language), z.string())),
   });
 
@@ -113,12 +122,12 @@ export const CategoryDialog = ({
   const nameValues = useWatch({
     name: `name.${selectedLang}`,
     control,
-  }) as Record<Language, string>;
+  }) as string | undefined;
 
   const descriptionValues = useWatch({
     name: `description.${selectedLang}`,
     control,
-  }) as Record<Language, string>;
+  }) as string | undefined;
 
   useEffect(() => {
     if (isSubmitSuccessful || !open) {
@@ -205,29 +214,16 @@ export const CategoryDialog = ({
   const onSubmit: SubmitHandler<z.infer<typeof CategoryDialogScheme>> = async (
     formData,
   ) => {
-    const requestData = {
-      name: formData.name,
-      icon: formData.icon,
-      image: formData.image,
-      description: formData.description,
+    const requestData: CreateCategory = {
+      name: recordToMap(formData.name as Record<string, string>),
+      icon: formData.icon as File,
+      image: formData.image as File,
+      palette: palette as PaletteDTO,
+      description: formData.description
+        ? recordToMap(formData.description as Record<string, string>)
+        : undefined,
     };
-    const formDataToSend = new FormData();
-    formDataToSend.append('name', JSON.stringify(requestData.name));
-    if (requestData.icon) formDataToSend.append('icon', requestData.icon);
-    if (requestData.image) formDataToSend.append('image', requestData.image);
-    if (palette) {
-      formDataToSend.append('palette', JSON.stringify(palette));
-    }
-    if (requestData.description) {
-      formDataToSend.append(
-        'description',
-        JSON.stringify(requestData.description),
-      );
-    }
-    const formDataObject = Object.fromEntries(
-      formDataToSend.entries(),
-    ) as unknown as CreateCategory;
-    createCategory(formDataObject).then((category) => {
+    createCategory(requestData).then((category) => {
       onClose();
       router.push(`/${lang}/categories/${category.id}`);
     });

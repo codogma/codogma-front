@@ -21,6 +21,11 @@ import {
 } from '@/helpers/notificationAPI';
 import { GetNotificationToUpdate, Language } from '@/types';
 
+// Helper function to convert Record to Map
+const recordToMap = (record: Record<string, string>): Map<Language, string> => {
+  return new Map(Object.entries(record)) as Map<Language, string>;
+};
+
 type EditNotificationProps = {
   readonly id: number;
   readonly lang: Language;
@@ -88,12 +93,12 @@ export const EditNotification = ({
   const titleValues = useWatch({
     name: `title.${selectedLang}`,
     control,
-  }) as Record<string, string>;
+  }) as string | undefined;
 
   const messageValues = useWatch({
     name: `message.${selectedLang}`,
     control,
-  }) as Record<string, string>;
+  }) as string | undefined;
 
   useEffect(() => {
     if (isSubmitSuccessful) {
@@ -104,10 +109,10 @@ export const EditNotification = ({
   const onSubmit: SubmitHandler<z.infer<typeof EditNotificationScheme>> = (
     formData,
   ) => {
-    const requestData = {
-      title: formData.title,
-      message: formData.message,
-    } as NotificationUpdate;
+    const requestData: NotificationUpdate = {
+      title: recordToMap(formData.title as Record<string, string>),
+      message: recordToMap(formData.message as Record<string, string>),
+    };
     updateNotification(id, requestData).then(() => {
       if (refetch) {
         refetch();

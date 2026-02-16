@@ -41,6 +41,11 @@ import {
 import { devConsoleWarn } from '@/helpers/devConsoleLogs';
 import { GetCategoryToUpdate, Language, PaletteDTO, SwatchDTO } from '@/types';
 
+// Helper function to convert Record to Map
+const recordToMap = (record: Record<string, string>): Map<Language, string> => {
+  return new Map(Object.entries(record)) as Map<Language, string>;
+};
+
 const VisuallyHiddenInput = styled('input')({
   clip: 'rect(0 0 0 0)',
   clipPath: 'inset(50%)',
@@ -129,12 +134,12 @@ export const EditCategory = ({
   const nameValues = useWatch({
     name: `name.${selectedLang}`,
     control,
-  }) as Record<Language, string>;
+  }) as string | undefined;
 
   const descriptionValues = useWatch({
     name: `description.${selectedLang}`,
     control,
-  }) as Record<Language, string>;
+  }) as string | undefined;
 
   useEffect(() => {
     if (isSubmitSuccessful) {
@@ -206,23 +211,18 @@ export const EditCategory = ({
   const onSubmit: SubmitHandler<z.infer<typeof EditCategoryScheme>> = (
     formData,
   ) => {
-    const formDataToSend = new FormData();
-    formDataToSend.append('name', JSON.stringify(formData.name));
-    if (formData.icon) formDataToSend.append('icon', formData.icon);
-    if (formData.image) formDataToSend.append('image', formData.image);
-    if (palette) {
-      formDataToSend.append('palette', JSON.stringify(palette));
-    }
-    if (formData.description) {
-      formDataToSend.append(
-        'description',
-        JSON.stringify(formData.description),
-      );
-    }
-    const formDataObject = Object.fromEntries(
-      formDataToSend.entries(),
-    ) as unknown as UpdateCategory;
-    updateCategory(id, formDataObject).then(() => {
+    const requestData: UpdateCategory = {
+      name: formData.name
+        ? recordToMap(formData.name as Record<string, string>)
+        : undefined,
+      icon: formData.icon,
+      image: formData.image,
+      palette: palette,
+      description: formData.description
+        ? recordToMap(formData.description as Record<string, string>)
+        : undefined,
+    };
+    updateCategory(id, requestData).then(() => {
       if (refetch) {
         refetch();
       }

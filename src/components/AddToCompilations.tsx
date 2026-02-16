@@ -33,8 +33,12 @@ interface AddToCompilationsProps {
   readonly onClose?: () => void;
 }
 
+interface BookmarkFormData {
+  compilationIds: number[];
+}
+
 const BookmarkScheme = z.object({
-  compilationIds: z.array(z.number()).optional().default([]),
+  compilationIds: z.array(z.number()),
 });
 
 export const AddToCompilations: React.FC<AddToCompilationsProps> = ({
@@ -54,7 +58,7 @@ export const AddToCompilations: React.FC<AddToCompilationsProps> = ({
   const [isCompilated, setIsCompilated] = useState(compilations.length > 0);
   const t = useTranslations('compilationsPage');
 
-  const zodForm = useForm<z.infer<typeof BookmarkScheme>>({
+  const zodForm = useForm<BookmarkFormData>({
     resolver: zodResolver(BookmarkScheme),
     defaultValues: {
       compilationIds: [],

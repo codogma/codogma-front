@@ -18,7 +18,7 @@ type WebSocketProviderProps = {
 
 export const WebSocketProvider = ({ children }: WebSocketProviderProps) => {
   const { status } = useSession();
-  const publicClientRef = useRef<Client>();
+  const publicClientRef = useRef<Client | undefined>(undefined);
 
   useEffect(() => {
     publicClientRef.current = connectPublicWebSocket();
@@ -49,7 +49,7 @@ export const WebSocketProvider = ({ children }: WebSocketProviderProps) => {
   }, [status]);
 
   // Handle storage events for WebSocket management
-  useEventListener('storage', async () => {
+  useEventListener('storage', async (_event) => {
     const savedUser = Cookies.get('user');
     if (!savedUser && publicClientRef?.current?.active) {
       await disconnectPrivateWebSocket();

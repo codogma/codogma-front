@@ -22,6 +22,11 @@ import {
 } from '@/helpers/notificationAPI';
 import { Language } from '@/types';
 
+// Helper function to convert Record to Map
+const recordToMap = (record: Record<string, string>): Map<Language, string> => {
+  return new Map(Object.entries(record)) as Map<Language, string>;
+};
+
 type SystemNotificationDialogProps = {
   readonly lang: Language;
   readonly open: boolean;
@@ -80,12 +85,12 @@ export const SystemNotificationDialog = ({
   const titleValues = useWatch({
     name: `title.${selectedLang}`,
     control,
-  }) as Record<string, string>;
+  }) as string | undefined;
 
   const messageValues = useWatch({
     name: `message.${selectedLang}`,
     control,
-  }) as Record<string, string>;
+  }) as string | undefined;
 
   useEffect(() => {
     if (isSubmitSuccessful) {
@@ -106,10 +111,10 @@ export const SystemNotificationDialog = ({
   const onSubmit: SubmitHandler<
     z.infer<typeof SystemNotificationDialogScheme>
   > = async (formData) => {
-    const requestData = {
-      title: formData.title,
-      message: formData.message,
-    } as NotificationCreate;
+    const requestData: NotificationCreate = {
+      title: recordToMap(formData.title as Record<string, string>),
+      message: recordToMap(formData.message as Record<string, string>),
+    };
     devConsoleInfo('System notifications request: ', requestData);
     await createNotification(requestData);
     onClose();
