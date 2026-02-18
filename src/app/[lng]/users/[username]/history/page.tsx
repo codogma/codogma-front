@@ -10,11 +10,12 @@ import { GetArticlesDTO, getViewed } from '@/helpers/articleApi';
 import { Language, SearchType } from '@/types';
 
 type PageProps = {
-  readonly params: Promise<{ lng: Language }>;
+  readonly params: Promise<{ lng: string }>;
 };
 
 export default function Layout({ params }: PageProps) {
   const { lng } = use(params);
+  const lang = lng as Language;
   const [currentPage, setCurrentPage] = useState<number>(0);
   const [resultsPerPage, setResultsPerPage] =
     useState<number>(ARTICLES_PER_PAGE);
@@ -63,7 +64,7 @@ export default function Layout({ params }: PageProps) {
     <>
       <Search onSearchType={onSearchType} onSearchValue={onSearchValue} />
       <Articles
-        lang={lng}
+        lang={lang}
         articles={history}
         isLoading={isPendingViewed}
         articlesPerPageStart={ARTICLES_PER_PAGE}

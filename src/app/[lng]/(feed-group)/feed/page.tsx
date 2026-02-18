@@ -15,11 +15,12 @@ import { useEventListener } from '@/helpers/useEventListener';
 import { Language, SearchType } from '@/types';
 
 type PageProps = {
-  readonly params: Promise<{ lng: Language }>;
+  readonly params: Promise<{ lng: string }>;
 };
 
 const Page = ({ params }: PageProps) => {
   const { lng } = use(params);
+  const lang = lng as Language;
   const [currentPage, setCurrentPage] = useState<number>(0);
   const [resultsPerPage, setResultsPerPage] =
     useState<number>(ARTICLES_PER_PAGE);
@@ -81,7 +82,7 @@ const Page = ({ params }: PageProps) => {
     <>
       <Search onSearchType={onSearchType} onSearchValue={onSearchValue} />
       <Articles
-        lang={lng}
+        lang={lang}
         articles={articles}
         articlesPerPageStart={resultsPerPage}
         isLoading={isPending}

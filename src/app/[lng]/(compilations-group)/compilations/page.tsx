@@ -12,11 +12,12 @@ import { useEventListener } from '@/helpers/useEventListener';
 import { GetCompilation, Language, SearchType } from '@/types';
 
 type PageProps = {
-  readonly params: Promise<{ lng: Language }>;
+  readonly params: Promise<{ lng: string }>;
 };
 
 export default function Page({ params }: PageProps) {
   const { lng } = use(params);
+  const lang = lng as Language;
   const [currentPage, setCurrentPage] = useState<number>(0);
   const [resultsPerPage, setResultsPerPage] = useState<number>(
     COMPILATIONS_PER_PAGE,
@@ -75,7 +76,7 @@ export default function Page({ params }: PageProps) {
     <>
       <Search onSearchType={onSearchType} onSearchValue={onSearchValue} />
       <Compilations
-        lang={lng}
+        lang={lang}
         isLoading={isPending}
         compilations={compilations}
         compilationsPerPageStart={resultsPerPage}

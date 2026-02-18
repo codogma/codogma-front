@@ -7,11 +7,11 @@ import { ArticleProvider } from '@/components/ArticleProvider';
 import { getArticleById } from '@/helpers/articleApi';
 import { convertHtmlToText } from '@/helpers/convertHtmlToText';
 import { parseToc } from '@/helpers/parseToc';
-import { GetArticle, Language } from '@/types';
+import { GetArticle } from '@/types';
 
 type LayoutProps = {
   readonly children: ReactNode;
-  readonly params: Promise<{ articleId: number; lng: Language }>;
+  readonly params: Promise<{ articleId: string }>;
 };
 
 async function fetchArticleById(id: number): Promise<GetArticle> {
@@ -23,7 +23,7 @@ export async function generateMetadata(
   parent: ResolvingMetadata,
 ): Promise<Metadata> {
   const { articleId } = await params;
-  const article = await fetchArticleById(articleId);
+  const article = await fetchArticleById(Number(articleId));
   const metadataBase = (await parent).metadataBase;
   return {
     alternates: {
@@ -52,7 +52,7 @@ export default async function Layout(props: LayoutProps) {
 
   const { children } = props;
 
-  const article = await fetchArticleById(articleId);
+  const article = await fetchArticleById(Number(articleId));
   const toc = await parseToc(article.content);
   return (
     <ArticleProvider article={article} toc={toc}>

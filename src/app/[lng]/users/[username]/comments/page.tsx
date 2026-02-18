@@ -17,11 +17,12 @@ import { useEventListener } from '@/helpers/useEventListener';
 import { GetComment, GetCommentsDTO, Language, SearchType } from '@/types';
 
 type PageProps = {
-  readonly params: Promise<{ username: string; lng: Language }>;
+  readonly params: Promise<{ username: string; lng: string }>;
 };
 
 export default function Page({ params }: PageProps) {
   const { username, lng } = use(params);
+  const lang = lng as Language;
   const [currentPage, setCurrentPage] = useState<number>(0);
   const [resultsPerPage, setResultsPerPage] =
     useState<number>(COMMENTS_PER_PAGE);
@@ -119,7 +120,7 @@ export default function Page({ params }: PageProps) {
                 <TimeAgo
                   datetime={comment.createdAt}
                   className='article-datetime'
-                  lang={lng}
+                  lang={lang}
                 />
               </Box>
               <Typography variant='body1'>{comment.content}</Typography>

@@ -5,10 +5,11 @@ import Article from '@/components/Article';
 import { Language } from '@/types';
 
 type PageProps = {
-  readonly params: Promise<{ lng: Language }>;
+  readonly params: Promise<{ lng: string }>;
 };
 
 export default function Page({ params }: PageProps) {
   const { lng } = use(params);
-  return <Article lang={lng} />;
+  const lang = lng as Language;
+  return <Article lang={lang} />;
 }

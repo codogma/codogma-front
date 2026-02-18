@@ -4,10 +4,8 @@ import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import React, { use } from 'react';
 
-import { Language } from '@/types';
-
 type PageProps = {
-  readonly params: Promise<{ lng: Language }>;
+  readonly params: Promise<{ lng: string }>;
 };
 
 export default function Page({ params }: PageProps) {

@@ -25,7 +25,7 @@ const inter = Inter({ subsets: ['latin'] });
 
 type LayoutProps = {
   readonly children: ReactNode;
-  readonly params: Promise<{ lng: Language }>;
+  readonly params: Promise<{ lng: string }>;
 };
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -66,11 +66,12 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function Layout({ children, params }: LayoutProps) {
   const { lng } = await params;
+  const lang = lng as Language;
   const session = await auth();
   const theme = (await getTheme()) || themeConfig.defaultDarkColorScheme;
 
   return (
-    <html lang={lng} suppressHydrationWarning>
+    <html lang={lang} suppressHydrationWarning>
       <body className={inter.className}>
         <InitColorSchemeScript
           attribute={themeConfig.attribute}
@@ -88,7 +89,7 @@ export default async function Layout({ children, params }: LayoutProps) {
                   {/*<WebSocketProvider>*/}
                   <NextIntlClientProvider locale={lng}>
                     <NavigationProvider>
-                      <Navigation lang={lng} session={session} theme={theme}>
+                      <Navigation lang={lang} session={session} theme={theme}>
                         <ButtonBackToTop>
                           <Container className='content'>
                             <ContentImageProvider>

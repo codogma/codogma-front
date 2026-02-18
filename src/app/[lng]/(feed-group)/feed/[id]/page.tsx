@@ -14,11 +14,12 @@ import { TimeAgo } from '@/components/TimeAgo';
 import { Language, UserRole } from '@/types';
 
 type PageProps = {
-  readonly params: Promise<{ lng: Language }>;
+  readonly params: Promise<{ lng: string }>;
 };
 
 export default function Page({ params }: PageProps) {
   const { lng } = use(params);
+  const lang = lng as Language;
   const { article } = useArticle();
   const { data: state } = useSession();
   const { processContent } = useContentImageContext();
@@ -43,7 +44,7 @@ export default function Page({ params }: PageProps) {
           <TimeAgo
             datetime={article.createdAt}
             className='article-datetime'
-            lang={lng}
+            lang={lang}
           />
         </div>
         <div className='article-category'>
@@ -86,7 +87,7 @@ export default function Page({ params }: PageProps) {
         </div>
         {state?.user?.name === article.username &&
           state?.user?.role === UserRole.ROLE_AUTHOR && (
-            <ButtonAlertDialog article={article} lang={lng} />
+            <ButtonAlertDialog article={article} lang={lang} />
           )}
       </CardContent>
     </Card>

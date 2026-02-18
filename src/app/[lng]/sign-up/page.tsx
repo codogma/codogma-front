@@ -24,7 +24,7 @@ import { GithubIcon, GitlabIcon } from '@/components/CustomIcons';
 import FormInput from '@/components/FormInput';
 import { currentUser, signUp } from '@/helpers/authApi';
 import { generateAvatar } from '@/helpers/generateAvatar';
-import { AuthDTO, Language } from '@/types';
+import { AuthDTO } from '@/types';
 
 const SignUpScheme = z.object({
   username: z.string().min(1, { message: 'Name is required' }),
@@ -37,7 +37,7 @@ const SignUpScheme = z.object({
 export type OAuthProvider = 'github' | 'gitlab';
 
 type PageProps = {
-  readonly params: Promise<{ lng: Language }>;
+  readonly params: Promise<{ lng: string }>;
 };
 
 type ErrorData = string | { message?: string };

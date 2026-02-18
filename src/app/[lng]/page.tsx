@@ -13,11 +13,12 @@ import { getQueryClient } from '@/lib/react-query';
 import { Language } from '@/types';
 
 type PageProps = {
-  readonly params: Promise<{ lng: Language }>;
+  readonly params: Promise<{ lng: string }>;
 };
 
 export default async function Page({ params }: PageProps) {
   const { lng } = await params;
+  const lang = lng as Language;
   const queryClient = getQueryClient();
 
   await queryClient.prefetchQuery({
@@ -75,7 +76,7 @@ export default async function Page({ params }: PageProps) {
   return (
     <MainPage
       dehydratedState={dehydratedState}
-      lng={lng}
+      lng={lang}
       initialRecentlyAdded={recentlyData}
     />
   );

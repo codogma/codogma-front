@@ -7,14 +7,14 @@ import { getCategoryById } from '@/helpers/categoryApi';
 
 type LayoutProps = {
   readonly children: ReactNode;
-  readonly params: Promise<{ id: number }>;
+  readonly params: Promise<{ id: string }>;
 };
 
 export async function generateMetadata({
   params,
 }: LayoutProps): Promise<Metadata> {
   const { id } = await params;
-  const category = await getCategoryById(id);
+  const category = await getCategoryById(Number(id));
   const t = await getTranslations('categoriesPage');
   return {
     alternates: {

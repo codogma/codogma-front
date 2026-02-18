@@ -95,7 +95,7 @@ const VisuallyHiddenInput = styled('input')({
 });
 
 type PageParams = {
-  readonly params: Promise<{ lng: Language }>;
+  readonly params: Promise<{ lng: string }>;
 };
 
 type StepType = {
@@ -168,6 +168,7 @@ function getUniqueCompilations(mergedCompilations: GetCompilation[]) {
 
 const Page = ({ params }: PageParams) => {
   const { lng } = use(params);
+  const lang = lng as Language;
   const STEP_ONE_DATA = 'step-one-data';
   const STEP_TWO_DATA = 'step-two-data';
   const SELECTED_CATEGORIES = 'selected-categories';
@@ -225,7 +226,7 @@ const Page = ({ params }: PageParams) => {
   const zodStepTwoForm = useForm<StepTwoType>({
     resolver: zodResolver(StepTwoScheme),
     defaultValues: {
-      language: lng,
+      language: lang,
       originalArticleId: null,
       imageUrl: '',
       previewContent: '',
@@ -306,7 +307,7 @@ const Page = ({ params }: PageParams) => {
       setArticleId(0);
       resetStepOne({ title: '', content: '' });
       resetStepTwo({
-        language: lng,
+        language: lang,
         originalArticleId: null,
         imageUrl: '',
         previewContent: '',
@@ -321,7 +322,7 @@ const Page = ({ params }: PageParams) => {
       setStepTwoData(undefined);
       lsClean();
     });
-  }, [refetchDraftArticlesData, resetStepOne, resetStepTwo, lng]);
+  }, [refetchDraftArticlesData, resetStepOne, resetStepTwo, lang]);
 
   const handleDeleteArticle = useCallback(
     (id: number) => {
@@ -760,7 +761,7 @@ const Page = ({ params }: PageParams) => {
                     draftArticles={draftArticles}
                     onDeleteArticle={handleDeleteArticle}
                     onSelectArticle={handleSelectArticle}
-                    lang={lng}
+                    lang={lang}
                   />
                 )}
               </Box>
@@ -777,7 +778,7 @@ const Page = ({ params }: PageParams) => {
                   <TinyMCEEditor
                     id='content'
                     articleId={articleId}
-                    language={lng}
+                    language={lang}
                     value={field.value}
                     onChange={field.onChange}
                     reset={reset}
@@ -1151,7 +1152,7 @@ const Page = ({ params }: PageParams) => {
                   <TinyMCEEditor
                     id='previewContent'
                     articleId={articleId}
-                    language={lng}
+                    language={lang}
                     value={field.value}
                     onChange={field.onChange}
                     reset={reset}

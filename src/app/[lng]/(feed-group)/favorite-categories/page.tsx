@@ -13,11 +13,12 @@ import { useEventListener } from '@/helpers/useEventListener';
 import { GetCategory, Language, SearchType } from '@/types';
 
 type PageProps = {
-  readonly params: Promise<{ lng: Language }>;
+  readonly params: Promise<{ lng: string }>;
 };
 
 function Page({ params }: PageProps) {
   const { lng } = use(params);
+  const lang = lng as Language;
   const [currentPage, setCurrentPage] = useState<number>(0);
   const [resultsPerPage, setResultsPerPage] = useState<number>(10);
   const [searchValue, setSearchValue] = useState<string>();
@@ -67,7 +68,7 @@ function Page({ params }: PageProps) {
     <>
       <Search onSearchType={onSearchType} onSearchValue={onSearchValue} />
       <Categories
-        lang={lng}
+        lang={lang}
         categories={categories}
         isLoading={isPending}
         categoriesPerPageStart={CATEGORIES_PER_PAGE}

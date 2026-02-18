@@ -18,15 +18,17 @@ import { GetCategory, Language, UserRole } from '@/types';
 
 type PageProps = {
   readonly params: Promise<{
-    id: number;
-    lng: Language;
+    id: string;
+    lng: string;
     refetch?: () => void;
   }>;
   readonly children: React.ReactNode;
 };
 
 export default function Layout({ children, params }: PageProps) {
-  const { id, lng, refetch } = use(params);
+  const { id: idStr, lng, refetch } = use(params);
+  const id = Number(idStr);
+  const lang = lng as Language;
   const { data: state } = useSession();
   const t = useTranslations();
   const tabs: TabProps[] = [
@@ -80,7 +82,7 @@ export default function Layout({ children, params }: PageProps) {
                   id={id}
                 />
               ) : (
-                <MenuButton category={category} lang={lng} refetch={refetch} />
+                <MenuButton category={category} lang={lang} refetch={refetch} />
               )
             }
             title={

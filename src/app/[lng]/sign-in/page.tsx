@@ -24,7 +24,7 @@ import { GithubIcon, GitlabIcon } from '@/components/CustomIcons';
 import { ForgotPasswordDialog } from '@/components/ForgotPasswordDialog';
 import FormInput from '@/components/FormInput';
 import { currentUser, login } from '@/helpers/authApi';
-import { AuthDTO, Language } from '@/types';
+import { AuthDTO } from '@/types';
 
 const SignInScheme = z.object({
   usernameOrEmail: z.string().min(1, { message: 'Name is required' }),
@@ -36,7 +36,7 @@ const SignInScheme = z.object({
 export type OAuthProvider = 'github' | 'gitlab';
 
 type PageProps = {
-  readonly params: Promise<{ lng: Language }>;
+  readonly params: Promise<{ lng: string }>;
 };
 
 type ErrorData = string | { message?: string };

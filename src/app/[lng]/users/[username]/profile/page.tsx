@@ -12,12 +12,12 @@ import React, { use, useState } from 'react';
 
 import { AvatarImage } from '@/components/AvatarImage';
 import { getUserByUsername } from '@/helpers/userApi';
-import { GetUserDTO, Language } from '@/types';
+import { GetUserDTO } from '@/types';
 
 type PageProps = {
   readonly params: Promise<{
     username: string;
-    lng: Language;
+    lng: string;
   }>;
 };
 

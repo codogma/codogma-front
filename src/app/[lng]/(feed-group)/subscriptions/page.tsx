@@ -13,11 +13,12 @@ import { getUsers, GetUsersDTO } from '@/helpers/userApi';
 import { GetUserDTO, Language, SearchType, UserRole } from '@/types';
 
 type PageProps = {
-  readonly params: Promise<{ lng: Language }>;
+  readonly params: Promise<{ lng: string }>;
 };
 
 const Page = ({ params }: PageProps) => {
   const { lng } = use(params);
+  const lang = lng as Language;
   const [currentPage, setCurrentPage] = useState<number>(0);
   const [resultsPerPage, setResultsPerPage] = useState<number>(USERS_PER_PAGE);
   const [searchValue, setSearchValue] = useState<string>();
@@ -77,7 +78,7 @@ const Page = ({ params }: PageProps) => {
     <>
       <Search onSearchType={onSearchType} onSearchValue={onSearchValue} />
       <Users
-        lang={lng}
+        lang={lang}
         users={users}
         isLoading={isPending}
         usersPerPageStart={USERS_PER_PAGE}

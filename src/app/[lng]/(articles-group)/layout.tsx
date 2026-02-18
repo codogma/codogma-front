@@ -5,11 +5,10 @@ import { useTranslations } from 'next-intl';
 import React, { ReactNode, use } from 'react';
 
 import { NavTabs, TabProps } from '@/components/NavTabs';
-import { Language } from '@/types';
 
 type LayoutProps = {
   readonly children: ReactNode;
-  readonly params: Promise<{ lng: Language }>;
+  readonly params: Promise<{ lng: string }>;
 };
 
 export default function Layout({ children, params }: LayoutProps) {

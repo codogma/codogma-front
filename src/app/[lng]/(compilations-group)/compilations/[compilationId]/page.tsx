@@ -11,11 +11,13 @@ import { getArticles, GetArticlesDTO } from '@/helpers/articleApi';
 import { Language, SearchType } from '@/types';
 
 type PageProps = {
-  readonly params: Promise<{ compilationId: number; lng: Language }>;
+  readonly params: Promise<{ compilationId: string; lng: string }>;
 };
 
 export default function Page({ params }: PageProps) {
   const { compilationId, lng } = use(params);
+  const lang = lng as Language;
+  const compilationIdNum = Number(compilationId);
   const [currentPage, setCurrentPage] = useState<number>(0);
   const [resultsPerPage, setResultsPerPage] =
     useState<number>(ARTICLES_PER_PAGE);
@@ -35,7 +37,7 @@ export default function Page({ params }: PageProps) {
   const { data, isPending, refetch } = useQuery<GetArticlesDTO>({
     queryKey: [
       'articles',
-      compilationId,
+      compilationIdNum,
       currentPage,
       resultsPerPage,
       searchType,
@@ -47,7 +49,7 @@ export default function Page({ params }: PageProps) {
         searchType === SearchType.CONTENT ? searchValue : undefined;
       return getArticles(
         undefined,
-        compilationId,
+        compilationIdNum,
         currentPage,
         resultsPerPage,
         byTag,
@@ -78,7 +80,7 @@ export default function Page({ params }: PageProps) {
     <>
       <Search onSearchType={onSearchType} onSearchValue={onSearchValue} />
       <Articles
-        lang={lng}
+        lang={lang}
         articles={articles}
         isLoading={isPending}
         articlesPerPageStart={ARTICLES_PER_PAGE}

@@ -14,11 +14,12 @@ import { useEventListener } from '@/helpers/useEventListener';
 import { ArticleSortField, Language, SearchType, SortOrder } from '@/types';
 
 type PageProps = {
-  readonly params: Promise<{ lng: Language }>;
+  readonly params: Promise<{ lng: string }>;
 };
 
 export default function Page({ params }: PageProps) {
   const { lng } = use(params);
+  const lang = lng as Language;
   const searchParams = useSearchParams(); // ДОБАВЛЕНО
 
   // Состояние сортировки из URL
@@ -100,7 +101,7 @@ export default function Page({ params }: PageProps) {
     <>
       <Search onSearchType={onSearchType} onSearchValue={onSearchValue} />
       <Articles
-        lang={lng}
+        lang={lang}
         articles={articles}
         articlesPerPageStart={resultsPerPage}
         isLoading={isPending}

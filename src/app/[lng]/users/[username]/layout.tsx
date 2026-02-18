@@ -19,12 +19,13 @@ import { getUserByUsername } from '@/helpers/userApi';
 import { GetUserDTO, Language } from '@/types';
 
 type PageProps = {
-  readonly params: Promise<{ username: string; lng: Language }>;
+  readonly params: Promise<{ username: string; lng: string }>;
   readonly children: React.ReactNode;
 };
 
 export default function Layout({ children, params }: PageProps) {
   const { lng, username } = use(params);
+  const lang = lng as Language;
   const t = useTranslations();
   const tabs: TabProps[] = [
     {
@@ -107,7 +108,7 @@ export default function Layout({ children, params }: PageProps) {
                   <p className='category-card-shortInfo'>{user?.shortInfo}</p>
                 </div>
               </div>
-              <MenuButton user={user} lang={lng} />
+              <MenuButton user={user} lang={lang} />
             </>
           )}
         </CardContent>

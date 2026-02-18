@@ -16,12 +16,14 @@ import { getCompilationById } from '@/helpers/compilationApi';
 import { GetCompilation, Language } from '@/types';
 
 type PageProps = {
-  readonly params: Promise<{ compilationId: number; lng: Language }>;
+  readonly params: Promise<{ compilationId: string; lng: string }>;
   readonly children: React.ReactNode;
 };
 
 export default function Layout({ children, params }: PageProps) {
   const { compilationId, lng } = use(params);
+  const lang = lng as Language;
+  const compilationIdNum = Number(compilationId);
   const { data: state } = useSession();
   const [isRefetch, setIsRefetch] = useState<boolean>(false);
   const { isFullscreen } = useNavigation();
@@ -35,8 +37,8 @@ export default function Layout({ children, params }: PageProps) {
   };
 
   const { data: compilation, isPending } = useQuery<GetCompilation>({
-    queryKey: ['compilation', compilationId],
-    queryFn: () => getCompilationById(compilationId),
+    queryKey: ['compilation', compilationIdNum],
+    queryFn: () => getCompilationById(compilationIdNum),
   });
 
   return (
@@ -53,7 +55,7 @@ export default function Layout({ children, params }: PageProps) {
               <h1 className='category-card-name'>
                 <Skeleton variant='text' width={150} />
               </h1>
-              <p className='category-card-shortInfo'>
+              <p className='category-card-description'>
                 <Skeleton variant='text' width={200} />
               </p>
             </div>
@@ -73,14 +75,14 @@ export default function Layout({ children, params }: PageProps) {
               state?.user?.name !== compilation?.ownerName ? (
                 <Bookmark
                   username={compilation?.ownerName}
-                  id={compilationId}
+                  id={compilationIdNum}
                   isBookmarkedValue={compilation?.isBookmarked}
                   refetch={refetch}
                 />
               ) : (
                 <MenuButton
                   compilation={compilation}
-                  lang={lng}
+                  lang={lang}
                   refetch={refetch}
                 />
               )
