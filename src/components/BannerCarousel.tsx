@@ -377,7 +377,7 @@ export const BannerCarousel = ({
           </Stack>
         </Paper>
       </Box>
-      <Box sx={{ display: { xs: 'block', lg: 'none' } }}>
+      <Box sx={{ display: { xs: 'block', lg: 'none' }, mb: 6 }}>
         <Paper
           component={Link}
           href={`${urlPrefix}/${firstTopArticle?.id}`}

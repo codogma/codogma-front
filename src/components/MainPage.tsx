@@ -1,5 +1,6 @@
 'use client';
 import AutoAwesomeRoundedIcon from '@mui/icons-material/AutoAwesomeRounded';
+import FavoriteRoundedIcon from '@mui/icons-material/FavoriteRounded';
 import NewReleasesRoundedIcon from '@mui/icons-material/NewReleasesRounded';
 import StarsRoundedIcon from '@mui/icons-material/StarsRounded';
 import { Box } from '@mui/material';
@@ -115,6 +116,7 @@ export const MainPage = ({
           <section className='section'>
             <div className='section-head'>
               <Typography component='h2' className='section-title'>
+                <FavoriteRoundedIcon fontSize='small' />
                 {t('yourInterests')}
               </Typography>
             </div>
