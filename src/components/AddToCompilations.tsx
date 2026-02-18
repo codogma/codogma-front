@@ -212,7 +212,7 @@ export const AddToCompilations: React.FC<AddToCompilationsProps> = ({
                   onInputChange={(_, newInputValue) => {
                     setInputCompilationValue(newInputValue);
                   }}
-                  renderTags={(value: GetCompilation[], getTagProps) =>
+                  renderValue={(value: GetCompilation[], getTagProps) =>
                     value.map((option: GetCompilation, index: number) => {
                       const { key, ...tagProps } = getTagProps({ index });
                       return (
