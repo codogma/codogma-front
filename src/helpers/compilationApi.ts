@@ -76,9 +76,21 @@ export const getCompilationById = async (
 export const createCompilation = async (
   requestData: CompilationCreate,
 ): Promise<GetCompilation> => {
+  const formData = new FormData();
+
+  formData.append('title', requestData.title);
+
+  if (requestData.image) {
+    formData.append('image', requestData.image);
+  }
+
+  if (requestData.description) {
+    formData.append('description', requestData.description);
+  }
+
   const response = await axiosInstance.post<GetCompilation>(
     '/compilations',
-    requestData,
+    formData,
     {
       headers: {
         'Content-Type': 'multipart/form-data',
@@ -119,9 +131,29 @@ export const updateCompilation = async (
   id: number,
   requestData: UpdateCompilationDTO,
 ): Promise<GetCompilation> => {
+  const formData = new FormData();
+
+  if (requestData.title) {
+    formData.append('title', requestData.title);
+  }
+
+  if (requestData.image) {
+    formData.append('image', requestData.image);
+  }
+
+  if (requestData.description) {
+    formData.append('description', requestData.description);
+  }
+
+  if (requestData.articleIds) {
+    for (const articleId of requestData.articleIds) {
+      formData.append('articleIds', articleId.toString());
+    }
+  }
+
   const response = await axiosInstance.put<GetCompilation>(
     `/compilations/${id}`,
-    requestData,
+    formData,
     {
       headers: {
         'Content-Type': 'multipart/form-data',

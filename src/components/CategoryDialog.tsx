@@ -215,12 +215,12 @@ export const CategoryDialog = ({
     formData,
   ) => {
     const requestData: CreateCategory = {
-      name: recordToMap(formData.name as Record<string, string>),
-      icon: formData.icon as File,
-      image: formData.image as File,
-      palette: palette as PaletteDTO,
+      name: recordToMap(formData.name),
+      icon: formData.icon!,
+      image: formData.image!,
+      palette: palette!,
       description: formData.description
-        ? recordToMap(formData.description as Record<string, string>)
+        ? recordToMap(formData.description)
         : undefined,
     };
     createCategory(requestData).then((category) => {

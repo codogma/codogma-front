@@ -112,8 +112,8 @@ export const SystemNotificationDialog = ({
     z.infer<typeof SystemNotificationDialogScheme>
   > = async (formData) => {
     const requestData: NotificationCreate = {
-      title: recordToMap(formData.title as Record<string, string>),
-      message: recordToMap(formData.message as Record<string, string>),
+      title: recordToMap(formData.title),
+      message: recordToMap(formData.message),
     };
     devConsoleInfo('System notifications request: ', requestData);
     await createNotification(requestData);

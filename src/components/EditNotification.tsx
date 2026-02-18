@@ -110,8 +110,8 @@ export const EditNotification = ({
     formData,
   ) => {
     const requestData: NotificationUpdate = {
-      title: recordToMap(formData.title as Record<string, string>),
-      message: recordToMap(formData.message as Record<string, string>),
+      title: recordToMap(formData.title),
+      message: recordToMap(formData.message),
     };
     updateNotification(id, requestData).then(() => {
       if (refetch) {

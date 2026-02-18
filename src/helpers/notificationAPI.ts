@@ -125,7 +125,23 @@ export const disconnectPrivateWebSocket = async () => {
 export const createNotification = async (
   requestData: NotificationCreate,
 ): Promise<void> => {
-  await axiosInstance.post('/notifications', requestData);
+  const formData = new FormData();
+
+  // Add title Map entries as title[lang] = value
+  for (const [lang, value] of requestData.title.entries()) {
+    formData.append(`title[${lang}]`, value);
+  }
+
+  // Add message Map entries as message[lang] = value
+  for (const [lang, value] of requestData.message.entries()) {
+    formData.append(`message[${lang}]`, value);
+  }
+
+  await axiosInstance.post('/notifications', formData, {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
+  });
   dispatchCustomEvent('api', {
     message: 'Notification created successfully',
     severity: 'success',
@@ -136,9 +152,26 @@ export const updateNotification = async (
   id: number,
   requestData: NotificationUpdate,
 ): Promise<GetNotification> => {
+  const formData = new FormData();
+
+  // Add title Map entries as title[lang] = value
+  for (const [lang, value] of requestData.title.entries()) {
+    formData.append(`title[${lang}]`, value);
+  }
+
+  // Add message Map entries as message[lang] = value
+  for (const [lang, value] of requestData.message.entries()) {
+    formData.append(`message[${lang}]`, value);
+  }
+
   const response = await axiosInstance.put<GetNotification>(
     `/notifications/${id}`,
-    requestData,
+    formData,
+    {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    },
   );
   dispatchCustomEvent('api', {
     message: 'Notification updated successfully',

@@ -212,14 +212,12 @@ export const EditCategory = ({
     formData,
   ) => {
     const requestData: UpdateCategory = {
-      name: formData.name
-        ? recordToMap(formData.name as Record<string, string>)
-        : undefined,
+      name: formData.name ? recordToMap(formData.name) : undefined,
       icon: formData.icon,
       image: formData.image,
       palette: palette,
       description: formData.description
-        ? recordToMap(formData.description as Record<string, string>)
+        ? recordToMap(formData.description)
         : undefined,
     };
     updateCategory(id, requestData).then(() => {

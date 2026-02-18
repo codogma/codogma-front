@@ -20,7 +20,6 @@ import { AvatarImage } from '@/components/AvatarImage';
 import { CustomDialog } from '@/components/CustomDialog';
 import FormInput from '@/components/FormInput';
 import { updateCompilation } from '@/helpers/compilationApi';
-import { devConsoleWarn } from '@/helpers/devConsoleLogs';
 import { GetCompilation } from '@/types';
 
 const VisuallyHiddenInput = styled('input')({
@@ -107,7 +106,6 @@ export const EditCompilation = ({
     formData,
   ) => {
     const requestData = { ...formData, image: imageFile };
-    devConsoleWarn(requestData);
     updateCompilation(compilationData.id, requestData).then(() => {
       if (refetch) {
         refetch();

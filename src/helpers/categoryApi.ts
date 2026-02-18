@@ -33,9 +33,32 @@ export type GetCategoriesDTO = {
 export const createCategory = async (
   requestData: CreateCategory,
 ): Promise<GetCategory> => {
+  const formData = new FormData();
+
+  // Add name Map entries as name[lang] = value
+  for (const [lang, value] of requestData.name.entries()) {
+    formData.append(`name[${lang}]`, value);
+  }
+
+  // Add files
+  formData.append('icon', requestData.icon);
+  formData.append('image', requestData.image);
+
+  // Add palette as JSON string
+  if (requestData.palette) {
+    formData.append('palette', JSON.stringify(requestData.palette));
+  }
+
+  // Add description Map entries if present
+  if (requestData.description) {
+    for (const [lang, value] of requestData.description.entries()) {
+      formData.append(`description[${lang}]`, value);
+    }
+  }
+
   const response = await axiosInstance.post<GetCategory>(
     '/categories',
-    requestData,
+    formData,
     {
       headers: {
         'Content-Type': 'multipart/form-data',
@@ -67,9 +90,38 @@ export const updateCategory = async (
   id: number,
   requestData: UpdateCategory,
 ): Promise<GetCategory> => {
+  const formData = new FormData();
+
+  // Add name Map entries if present
+  if (requestData.name) {
+    for (const [lang, value] of requestData.name.entries()) {
+      formData.append(`name[${lang}]`, value);
+    }
+  }
+
+  // Add files if present
+  if (requestData.icon) {
+    formData.append('icon', requestData.icon);
+  }
+  if (requestData.image) {
+    formData.append('image', requestData.image);
+  }
+
+  // Add palette as JSON string if present
+  if (requestData.palette) {
+    formData.append('palette', JSON.stringify(requestData.palette));
+  }
+
+  // Add description Map entries if present
+  if (requestData.description) {
+    for (const [lang, value] of requestData.description.entries()) {
+      formData.append(`description[${lang}]`, value);
+    }
+  }
+
   const response = await axiosInstance.put<GetCategory>(
     `/categories/${id}`,
-    requestData,
+    formData,
     {
       headers: {
         'Content-Type': 'multipart/form-data',
