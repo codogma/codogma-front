@@ -180,6 +180,14 @@
 
   .card-media {
     @apply relative aspect-video w-full self-stretch overflow-hidden object-cover;
+    /* Предотвращаем CLS - минимальная высота до загрузки изображения */
+    min-height: 180px;
+  }
+
+  .card-media img {
+    @apply block min-h-full min-w-full;
+    /* Предотвращаем схлопывание изображения до загрузки */
+    aspect-ratio: 16/9;
   }
 
   .card-title {
@@ -467,6 +475,13 @@
   @apply flex w-full items-center gap-2 overflow-hidden;
 }
 
+/* Фиксируем ширину слайдов ДО инициализации Swiper - предотвращаем CLS */
+.swiper:not(.swiper-initialized) .swiper-slide {
+  /* Принудительно сохраняем размеры до инициализации */
+  flex-shrink: 0 !important;
+  box-sizing: border-box !important;
+}
+
 /* Кастомные навигационные кнопки */
 .swiper-button-custom {
   @apply relative z-10 flex shrink-0 cursor-pointer items-center justify-center transition-all duration-300 ease-in-out;
@@ -543,10 +558,25 @@
       var(--slides-count)
   ) !important;
   margin-right: var(--space-between) !important; /* Имитируем spaceBetween */
+  /* Предотвращаем CLS - фиксируем размеры */
+  display: block !important;
+  min-width: 0 !important;
 }
 
 .first-slide {
   @apply md:hidden;
+}
+
+/* Первый слайд должен оставаться скрытым даже до инициализации Swiper */
+.swiper:not(.swiper-initialized) .swiper-slide.first-slide {
+  display: none !important;
+}
+
+@media (max-width: 899px) {
+  /* На мобильных скрываем первый слайд всегда */
+  .swiper:not(.swiper-initialized) .swiper-slide.first-slide {
+    display: none !important;
+  }
 }
 
 .swiper:not(.swiper-initialized) .swiper-slide:last-child {

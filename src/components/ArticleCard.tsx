@@ -43,7 +43,7 @@ type ArticleCardProps = {
 export const ArticleCard = ({ article, lang, isMinimal }: ArticleCardProps) => {
   const { data: state, status } = useSession();
   const pathname = usePathname();
-  let urlPrefix = '';
+  let urlPrefix: string;
   if (pathname.includes('compilations')) {
     urlPrefix = pathname;
   } else {
@@ -375,25 +375,133 @@ export const ArticleCard = ({ article, lang, isMinimal }: ArticleCardProps) => {
     </Card>
   ) : (
     <Card variant='outlined' className='card'>
-      <CardContent>
-        <div style={{ display: 'flex', gap: 16, alignItems: 'center' }}>
-          <Skeleton animation='wave' variant='rounded' width={40} height={40} />
-          <div style={{ flex: 1 }}>
+      {!isMinimal && (
+        <CardHeader
+          avatar={
             <Skeleton
-              animation='wave'
-              height={10}
-              width='80%'
-              style={{ marginBottom: 6 }}
+              animation='pulse'
+              variant='rounded'
+              width={34}
+              height={34}
+              sx={{
+                bgcolor: 'grey.300',
+                '.dark &': { bgcolor: 'grey.700' },
+              }}
             />
-            <Skeleton animation='wave' height={10} width='40%' />
-          </div>
-        </div>
-      </CardContent>
-      <Skeleton sx={{ height: 190 }} animation='wave' variant='rectangular' />
-      <CardContent>
-        <Skeleton animation='wave' height={10} style={{ marginBottom: 6 }} />
-        <Skeleton animation='wave' height={10} width='80%' />
-      </CardContent>
+          }
+          title={
+            <Skeleton
+              animation='pulse'
+              height={16}
+              width={120}
+              sx={{
+                bgcolor: 'grey.300',
+                '.dark &': { bgcolor: 'grey.700' },
+              }}
+            />
+          }
+          subheader={
+            <Skeleton
+              animation='pulse'
+              height={12}
+              width={80}
+              sx={{
+                mt: 0.5,
+                bgcolor: 'grey.300',
+                '.dark &': { bgcolor: 'grey.700' },
+              }}
+            />
+          }
+          className='card-header'
+          sx={{
+            bgcolor: 'grey.200',
+            '.dark &': { bgcolor: 'grey.800' },
+          }}
+        />
+      )}
+      <Box
+        className='card-media'
+        sx={{
+          bgcolor: 'grey.100',
+          '.dark &': { bgcolor: 'grey.900' },
+        }}
+      >
+        <Skeleton
+          animation='pulse'
+          variant='rectangular'
+          sx={{
+            aspectRatio: '16/9',
+            bgcolor: 'grey.300',
+            '.dark &': { bgcolor: 'grey.700' },
+            position: 'relative',
+          }}
+        >
+          <Box
+            sx={{
+              position: 'absolute',
+              bottom: 0,
+              left: 0,
+              right: 0,
+              p: 1.5,
+            }}
+          >
+            <Stack direction='column' spacing={1} marginTop={5}>
+              <Skeleton
+                animation='pulse'
+                height={14}
+                width='90%'
+                sx={{
+                  bgcolor: 'rgba(255, 255, 255, 0.6)',
+                  '.dark &': { bgcolor: 'rgba(255, 255, 255, 0.3)' },
+                }}
+              />
+              <Skeleton
+                animation='pulse'
+                height={14}
+                width='75%'
+                sx={{
+                  bgcolor: 'rgba(255, 255, 255, 0.6)',
+                  '.dark &': { bgcolor: 'rgba(255, 255, 255, 0.3)' },
+                }}
+              />
+              <Stack
+                direction='row'
+                justifyContent='space-between'
+                alignItems='center'
+                spacing={1}
+              >
+                <Skeleton
+                  animation='pulse'
+                  height={12}
+                  width={40}
+                  sx={{
+                    bgcolor: 'rgba(255, 255, 255, 0.6)',
+                    '.dark &': { bgcolor: 'rgba(255, 255, 255, 0.3)' },
+                  }}
+                />
+                <Skeleton
+                  animation='pulse'
+                  height={12}
+                  width={40}
+                  sx={{
+                    bgcolor: 'rgba(255, 255, 255, 0.6)',
+                    '.dark &': { bgcolor: 'rgba(255, 255, 255, 0.3)' },
+                  }}
+                />
+                <Skeleton
+                  animation='pulse'
+                  height={12}
+                  width={40}
+                  sx={{
+                    bgcolor: 'rgba(255, 255, 255, 0.6)',
+                    '.dark &': { bgcolor: 'rgba(255, 255, 255, 0.3)' },
+                  }}
+                />
+              </Stack>
+            </Stack>
+          </Box>
+        </Skeleton>
+      </Box>
     </Card>
   );
 };
