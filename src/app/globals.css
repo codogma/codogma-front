@@ -17,15 +17,24 @@
     font-size: revert;
     font-weight: revert;
   }
-}
 
-@layer components {
-  .os-scrollbar-handle {
-    @apply rounded-lg transition-colors duration-200;
+  :root {
+    --font-serif: Georgia, serif;
+    --font-sans: Inter, sans-serif;
+    --font-mono: 'Fira Code', monospace;
+    --article-font-size: 1rem;
+    --article-max-width: 70ch;
+    --article-font-family: var(--font-sans);
   }
 }
 
-@layer app {
+@layer components {
+  /* Overlay Scrollbar */
+  .os-scrollbar-handle {
+    @apply rounded-lg transition-colors duration-200;
+  }
+
+  /* App Base */
   html,
   body {
     @apply scroll-smooth;
@@ -43,6 +52,7 @@
     @apply sticky bg-limed-spruce-rgba shadow-none backdrop-blur-md dark:bg-woodsmoke-rgba !important;
   }
 
+  /* Page Layout */
   .content {
     @apply max-w-full grow p-0 xs:mb-14 md:mb-2 !important;
   }
@@ -51,6 +61,7 @@
     @apply flex flex-col gap-6 md:gap-8;
   }
 
+  /* Section Components */
   .section {
     @apply w-full;
   }
@@ -75,81 +86,13 @@
     @apply p-3 md:p-4;
   }
 
+  /* Card Components */
   .card-with-line {
     @apply relative !important;
   }
 
   .card-with-line::before {
     @apply absolute -inset-y-px left-0 w-3 bg-vida-loca content-[""] !important;
-  }
-
-  #search-input {
-    @apply scroll-mt-96;
-  }
-
-  .breadcrumb {
-    @apply mb-2 flex h-12 bg-white pl-5 pr-5 text-xl dark:bg-bunker !important;
-  }
-
-  .breadcrumb-item {
-    @apply text-horizon hover:text-deepsky-blue !important;
-  }
-
-  .breadcrumb-last-item {
-    @apply text-xl text-mine-shaft !important;
-  }
-
-  .global-spinner {
-    @apply flex min-h-[50vh] flex-col items-center justify-center;
-  }
-
-  .gradient-circular-progress {
-    .first-stop {
-      stop-color: #f39d0b;
-    }
-
-    .second-stop {
-      stop-color: #ed4444;
-    }
-  }
-
-  .your-interest {
-    .your-interest-h3 {
-      @apply m-0 mb-4 text-[1.8rem] font-semibold leading-[1.2] tracking-[0.03em] !important;
-    }
-  }
-
-  .tox-promotion,
-  .tox-statusbar__branding {
-    @apply hidden !important;
-  }
-
-  .menu-list {
-    @apply p-0 !important;
-  }
-
-  .nav-tabs {
-    @apply mb-2 bg-white dark:bg-bunker;
-  }
-
-  .banner {
-    @apply relative;
-  }
-
-  .banner-wrapper {
-    @apply xs:hidden md:block;
-  }
-
-  .banner-title {
-    @apply max-w-2xl text-3xl leading-10 !important;
-  }
-
-  .banner-wrapper:hover .banner-title {
-    @apply underline;
-  }
-
-  .comment-card-link.active {
-    @apply border-green-600 shadow-md shadow-green-600 !important;
   }
 
   .card {
@@ -172,7 +115,125 @@
     }
   }
 
-  /* Skeleton styles for ArticleCard */
+  .card-media {
+    @apply relative aspect-video w-full self-stretch overflow-hidden object-cover;
+    min-height: 180px;
+  }
+
+  .card-media img {
+    @apply block min-h-full min-w-full;
+    aspect-ratio: 16/9;
+  }
+
+  .card-title {
+    @apply max-w-2xl xs:text-base xs:leading-5 sm:text-sm sm:leading-3 md:text-base md:leading-5 !important;
+  }
+
+  .card-media:hover .card-title {
+    @apply underline;
+  }
+
+  .card-media:hover .card-media-image {
+    @apply scale-110 ease-in-out !important;
+  }
+
+  .card-media-image {
+    @apply left-0 top-0 z-0;
+  }
+
+  .card-content {
+    @apply ml-auto mr-auto box-border flex flex-col gap-1 p-1.5 !important;
+  }
+
+  .card-actions {
+    @apply flex flex-row items-center justify-between px-2 py-0.5 !important;
+  }
+
+  .card:hover .info-checkbox svg {
+    animation: box-shadow-pulse 1s ease infinite;
+    border-radius: 50%;
+    animation-delay: 1s;
+  }
+
+  /* Breadcrumb */
+  .breadcrumb {
+    @apply mb-2 flex h-12 bg-white pl-5 pr-5 text-xl dark:bg-bunker !important;
+  }
+
+  .breadcrumb-item {
+    @apply text-horizon hover:text-deepsky-blue !important;
+  }
+
+  .breadcrumb-last-item {
+    @apply text-xl text-mine-shaft !important;
+  }
+
+  /* Search */
+  #search-input {
+    @apply scroll-mt-96;
+  }
+
+  /* Global Spinner */
+  .global-spinner {
+    @apply flex min-h-[50vh] flex-col items-center justify-center;
+  }
+
+  /* Gradient Circular Progress */
+  .gradient-circular-progress {
+    .first-stop {
+      stop-color: #f39d0b;
+    }
+
+    .second-stop {
+      stop-color: #ed4444;
+    }
+  }
+
+  /* Your Interest */
+  .your-interest {
+    .your-interest-h3 {
+      @apply m-0 mb-4 text-[1.8rem] font-semibold leading-[1.2] tracking-[0.03em] !important;
+    }
+  }
+
+  /* TinyMCE */
+  .tox-promotion,
+  .tox-statusbar__branding {
+    @apply hidden !important;
+  }
+
+  /* Menu & Tabs */
+  .menu-list {
+    @apply p-0 !important;
+  }
+
+  .nav-tabs {
+    @apply mb-2 bg-white dark:bg-bunker;
+  }
+
+  /* Banner */
+  .banner {
+    @apply relative;
+  }
+
+  .banner-wrapper {
+    @apply xs:hidden md:block;
+  }
+
+  .banner-title {
+    @apply max-w-2xl text-3xl leading-10 !important;
+  }
+
+  .banner-wrapper:hover .banner-title {
+    @apply underline;
+  }
+
+  /* Comment Card */
+  .comment-card-link.active {
+    @apply border-green-600 shadow-md shadow-green-600 !important;
+  }
+
+  /* Skeleton Components */
   .skeleton-base {
     @apply animate-pulse rounded bg-gray-300 dark:bg-gray-700;
   }
@@ -232,48 +293,7 @@
     background-color: rgba(255, 255, 255, 0.3) !important;
   }
 
-  .card:hover .info-checkbox svg {
-    animation: box-shadow-pulse 1s ease infinite;
-    border-radius: 50%;
-    animation-delay: 1s;
-  }
-
-  .card-media {
-    @apply relative aspect-video w-full self-stretch overflow-hidden object-cover;
-    /* Предотвращаем CLS - минимальная высота до загрузки изображения */
-    min-height: 180px;
-  }
-
-  .card-media img {
-    @apply block min-h-full min-w-full;
-    /* Предотвращаем схлопывание изображения до загрузки */
-    aspect-ratio: 16/9;
-  }
-
-  .card-title {
-    @apply max-w-2xl xs:text-base xs:leading-5 sm:text-sm sm:leading-3 md:text-base md:leading-5 !important;
-  }
-
-  .card-media:hover .card-title {
-    @apply underline;
-  }
-
-  .card-media:hover .card-media-image {
-    @apply scale-110 ease-in-out !important;
-  }
-
-  .card-media-image {
-    @apply left-0 top-0 z-0;
-  }
-
-  .card-content {
-    @apply ml-auto mr-auto box-border flex flex-col gap-1 p-1.5 !important;
-  }
-
-  .card-actions {
-    @apply flex flex-row items-center justify-between px-2 py-0.5 !important;
-  }
-
+  /* Article Components */
   .article-user-name {
     @apply text-[0.8125rem] font-bold leading-[0.9375rem] no-underline dark:text-alto !important;
   }
@@ -310,17 +330,6 @@
     @apply mb-4 flex flex-grow flex-col gap-3 text-ellipsis whitespace-normal break-words pr-2 text-sm font-medium leading-4 dark:text-alto;
   }
 
-  :root {
-    --font-serif: Georgia, serif;
-    --font-sans: Inter, sans-serif;
-    --font-mono: 'Fira Code', monospace;
-
-    /* Article settings variables */
-    --article-font-size: 1rem;
-    --article-max-width: 70ch;
-    --article-font-family: var(--font-sans);
-  }
-
   #article-content {
     font-size: var(--article-font-size);
     max-width: var(--article-max-width);
@@ -347,12 +356,17 @@
     @apply flex flex-wrap items-center gap-2;
   }
 
-  .category-item {
-    @apply m-0 inline list-none p-0;
+  .article-btn {
+    @apply inline-flex h-auto max-h-[36px] cursor-pointer items-center rounded-lg border border-solid px-3 py-0 text-[0.8125rem] normal-case leading-[1.6875rem] !important;
   }
 
-  .category-link {
-    @apply inline-flex text-base font-medium leading-7 no-underline !important;
+  .article-btn:hover {
+    @apply border border-solid border-transparent !important;
+  }
+
+  /* Category Components */
+  .category-item {
+    @apply m-0 inline list-none p-0;
   }
 
   .category-item::after {
@@ -363,6 +377,27 @@
     content: '';
   }
 
+  .category-link {
+    @apply inline-flex text-base font-medium leading-7 no-underline !important;
+  }
+
+  .category-img {
+    @apply relative top-0.5 mr-2 block h-12 w-12 flex-none overflow-hidden rounded-lg !important;
+  }
+
+  .category-card-name {
+    @apply m-0 text-[1.24375rem] font-bold leading-7 text-mine-shaft no-underline dark:text-alto !important;
+  }
+
+  .category-card-shortInfo {
+    @apply m-0 mt-1 text-sm leading-5 text-mine-shaft dark:text-alto !important;
+  }
+
+  .category-card-description {
+    @apply m-0 mt-1 text-sm leading-5 text-mine-shaft !important;
+  }
+
+  /* Tag Components */
   .tag-item {
     @apply m-0 inline p-0;
   }
@@ -387,26 +422,7 @@
     @apply inline-flex text-base font-medium leading-7 no-underline !important;
   }
 
-  .footer {
-    @apply bg-white py-6 dark:bg-woodsmoke dark:text-white xs:hidden md:block !important;
-  }
-
-  .article-btn {
-    @apply inline-flex h-auto max-h-[36px] cursor-pointer items-center rounded-lg border border-solid px-3 py-0 text-[0.8125rem] normal-case leading-[1.6875rem] !important;
-  }
-
-  .article-btn:hover {
-    @apply border border-solid border-transparent !important;
-  }
-
-  .link {
-    @apply mt-4 flex flex-row items-center justify-start gap-1 text-horizon no-underline dark:text-curious-blue;
-  }
-
-  .link:hover {
-    @apply text-deepsky-blue;
-  }
-
+  /* User Components */
   .user-title {
     @apply text-base font-bold text-mine-shaft dark:text-alto !important;
   }
@@ -435,22 +451,6 @@
     @apply text-[0.8125rem] font-normal leading-4 text-horizon dark:text-deepsky-blue !important;
   }
 
-  .category-img {
-    @apply relative top-0.5 mr-2 block h-12 w-12 flex-none overflow-hidden rounded-lg !important;
-  }
-
-  .category-card-name {
-    @apply m-0 text-[1.24375rem] font-bold leading-7 text-mine-shaft no-underline dark:text-alto !important;
-  }
-
-  .category-card-shortInfo {
-    @apply m-0 mt-1 text-sm leading-5 text-mine-shaft dark:text-alto !important;
-  }
-
-  .category-card-description {
-    @apply m-0 mt-1 text-sm leading-5 text-mine-shaft !important;
-  }
-
   .user-profile-item {
     @apply mx-0 mb-4 mt-0 text-sm font-bold leading-4 text-mine-shaft dark:text-alto !important;
   }
@@ -463,6 +463,21 @@
     @apply p-4 !important;
   }
 
+  /* Link */
+  .link {
+    @apply mt-4 flex flex-row items-center justify-start gap-1 text-horizon no-underline dark:text-curious-blue;
+  }
+
+  .link:hover {
+    @apply text-deepsky-blue;
+  }
+
+  /* Footer */
+  .footer {
+    @apply bg-white py-6 dark:bg-woodsmoke dark:text-white xs:hidden md:block !important;
+  }
+
+  /* Card Media Image */
   .card-media img {
     @apply w-full;
   }
@@ -500,7 +515,7 @@
     }
   }
 
-  /* Улучшенная адаптивность для каруселей */
+  /* Responsive adjustments */
   @media (max-width: 768px) {
     .section-title {
       font-size: 1.25rem !important;
@@ -513,7 +528,6 @@
     }
   }
 
-  /* Оптимизация отступов на мобильных */
   @media (max-width: 480px) {
     .page-stack {
       gap: 1.5rem !important;
@@ -531,18 +545,16 @@
   }
 }
 
+/* Swiper Carousel */
 .carousel-container {
   @apply flex w-full items-center gap-2 overflow-hidden;
 }
 
-/* Фиксируем ширину слайдов ДО инициализации Swiper - предотвращаем CLS */
 .swiper:not(.swiper-initialized) .swiper-slide {
-  /* Принудительно сохраняем размеры до инициализации */
   flex-shrink: 0 !important;
   box-sizing: border-box !important;
 }
 
-/* Кастомные навигационные кнопки */
 .swiper-button-custom {
   @apply relative z-10 flex shrink-0 cursor-pointer items-center justify-center transition-all duration-300 ease-in-out;
 }
@@ -563,12 +575,10 @@
   @apply scale-90;
 }
 
-/* Состояние disabled */
 .swiper-button-custom.swiper-button-disabled {
   @apply pointer-events-none cursor-not-allowed opacity-50;
 }
 
-/* Убираем стандартные кнопки Swiper */
 .swiper .swiper-button-prev,
 .swiper .swiper-button-next {
   @apply hidden !important;
@@ -602,11 +612,6 @@
   }
 }
 
-/*!* Расчет позиции слайдов *!*/
-/* Общая ширина = 100% */
-/* Отступы между слайдами = spaceBetween * (количество_слайдов - 1) */
-/* Ширина одного слайда = (100% - общие_отступы) / количество_слайдов */
-/* Десктоп: 3 слайда, spaceBetween = 24px */
 .swiper:not(.swiper-initialized) {
   --slides-count: 3;
   --space-between: 24px;
@@ -617,8 +622,7 @@
       (100% - (var(--space-between) * (var(--slides-count) - 1))) /
       var(--slides-count)
   ) !important;
-  margin-right: var(--space-between) !important; /* Имитируем spaceBetween */
-  /* Предотвращаем CLS - фиксируем размеры */
+  margin-right: var(--space-between) !important;
   display: block !important;
   min-width: 0 !important;
 }
@@ -627,13 +631,11 @@
   @apply md:hidden;
 }
 
-/* Первый слайд должен оставаться скрытым даже до инициализации Swiper */
 .swiper:not(.swiper-initialized) .swiper-slide.first-slide {
   display: none !important;
 }
 
 @media (max-width: 899px) {
-  /* На мобильных скрываем первый слайд всегда */
   .swiper:not(.swiper-initialized) .swiper-slide.first-slide {
     display: none !important;
   }
@@ -643,7 +645,6 @@
   @apply mr-0 !important;
 }
 
-/* Десктоп: 3 слайда, spaceBetween = 20px */
 @media (max-width: 1535px) {
   .swiper:not(.swiper-initialized) {
     --slides-count: 3;
@@ -651,7 +652,6 @@
   }
 }
 
-/* Планшет: 2 слайда, spaceBetween = 16px */
 @media (max-width: 1199px) {
   .swiper:not(.swiper-initialized) {
     --slides-count: 2;
@@ -659,7 +659,6 @@
   }
 }
 
-/* Мобайл: 1 слайд, spaceBetween = 0px */
 @media (max-width: 899px) {
   .swiper:not(.swiper-initialized) {
     --slides-count: 1;

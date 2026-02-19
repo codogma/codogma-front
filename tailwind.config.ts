@@ -31,13 +31,56 @@ const config: Config = {
         'vida-loca': '#548221',
         'black-alpha-10': 'rgba(0, 0, 0, 0.1)',
       },
-    },
-    screens: {
-      xs: '0px',
-      sm: '600px',
-      md: '900px',
-      lg: '1200px',
-      xl: '1536px',
+      screens: {
+        xs: '0px',
+        sm: '600px',
+        md: '900px',
+        lg: '1200px',
+        xl: '1536px',
+      },
+      animation: {
+        'color-pulse': 'color-pulse 1s cubic-bezier(0.4, 0, 0.6, 1) 3',
+        'box-shadow-pulse': 'box-shadow-pulse 1s ease infinite',
+      },
+      keyframes: {
+        'color-pulse': {
+          '50%': {
+            color: 'lime',
+            opacity: '0.5',
+          },
+        },
+        'box-shadow-pulse': {
+          '0%': {
+            boxShadow: '0 0 0 0 currentColor',
+          },
+          '50%': {
+            boxShadow: '0 0 0 7px transparent',
+          },
+          '100%': {
+            boxShadow: '0 0 0 0 transparent',
+          },
+        },
+      },
+      fontFamily: {
+        serif: ['var(--font-serif)', 'Georgia', 'serif'],
+        sans: ['var(--font-sans)', 'Inter', 'sans-serif'],
+        mono: ['var(--font-mono)', "'Fira Code'", 'monospace'],
+      },
+      spacing: {
+        4.5: '1.125rem',
+      },
+      zIndex: {
+        60: '60',
+        70: '70',
+        80: '80',
+        90: '90',
+      },
+      lineHeight: {
+        18: '4.5rem',
+      },
+      fontSize: {
+        '2xs': '0.625rem',
+      },
     },
   },
   plugins: [],
