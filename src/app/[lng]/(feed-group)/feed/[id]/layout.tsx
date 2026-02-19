@@ -6,7 +6,7 @@ import { ArticleProvider } from '@/components/ArticleProvider';
 import { getArticleById } from '@/helpers/articleApi';
 import { convertHtmlToText } from '@/helpers/convertHtmlToText';
 import { parseToc } from '@/helpers/parseToc';
-import { GetArticle, Language } from '@/types';
+import { GetArticle } from '@/types';
 
 type LayoutProps = {
   readonly children: ReactNode;

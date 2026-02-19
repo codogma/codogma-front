@@ -32,6 +32,5 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function Layout({ children, params }: LayoutProps) {
   const { lng } = await params;
   const lang = lng as Language;
-  const canonical = `/compilations/`;
   return <SignIn lang={lang}>{children}</SignIn>;
 }
