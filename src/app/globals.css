@@ -172,6 +172,66 @@
     }
   }
 
+  /* Skeleton styles for ArticleCard */
+  .skeleton-base {
+    @apply animate-pulse rounded bg-gray-300 dark:bg-gray-700;
+  }
+
+  .skeleton-avatar {
+    @apply skeleton-base !important;
+    width: 34px !important;
+    height: 34px !important;
+  }
+
+  .skeleton-title {
+    @apply skeleton-base !important;
+    height: 12px !important;
+    width: 120px !important;
+    margin: 0 !important;
+  }
+
+  .skeleton-subheader {
+    @apply skeleton-base !important;
+    height: 10px !important;
+    width: 80px !important;
+    margin-top: 4px !important;
+  }
+
+  .skeleton-card-header {
+    @apply bg-gray-200 dark:bg-gray-800 !important;
+  }
+
+  .skeleton-card-media {
+    @apply bg-gray-100 dark:bg-gray-900 !important;
+  }
+
+  .skeleton-rectangular {
+    @apply skeleton-base !important;
+    aspect-ratio: 16/9 !important;
+    position: relative !important;
+  }
+
+  .skeleton-title-line {
+    @apply skeleton-base !important;
+    height: 12px !important;
+    background-color: rgba(255, 255, 255, 0.6) !important;
+  }
+
+  .dark .skeleton-title-line {
+    background-color: rgba(255, 255, 255, 0.3) !important;
+  }
+
+  .skeleton-stat-item {
+    @apply skeleton-base !important;
+    height: 10px !important;
+    width: 40px !important;
+    background-color: rgba(255, 255, 255, 0.6) !important;
+  }
+
+  .dark .skeleton-stat-item {
+    background-color: rgba(255, 255, 255, 0.3) !important;
+  }
+
   .card:hover .info-checkbox svg {
     animation: box-shadow-pulse 1s ease infinite;
     border-radius: 50%;
@@ -554,7 +614,7 @@
 
 .swiper:not(.swiper-initialized) .swiper-slide {
   width: calc(
-    (100% - (var(--space-between) * (var(--slides-count) - 1))) /
+      (100% - (var(--space-between) * (var(--slides-count) - 1))) /
       var(--slides-count)
   ) !important;
   margin-right: var(--space-between) !important; /* Имитируем spaceBetween */

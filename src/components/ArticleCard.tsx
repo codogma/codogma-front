@@ -381,60 +381,21 @@ export const ArticleCard = ({ article, lang, isMinimal }: ArticleCardProps) => {
             <Skeleton
               animation='pulse'
               variant='rounded'
-              width={34}
-              height={34}
-              sx={{
-                bgcolor: 'grey.300',
-                '.dark &': { bgcolor: 'grey.700' },
-              }}
+              className='skeleton-avatar'
             />
           }
-          title={
-            <Skeleton
-              animation='pulse'
-              height={16}
-              width={120}
-              sx={{
-                bgcolor: 'grey.300',
-                '.dark &': { bgcolor: 'grey.700' },
-              }}
-            />
-          }
+          title={<Skeleton animation='pulse' className='skeleton-title' />}
           subheader={
-            <Skeleton
-              animation='pulse'
-              height={12}
-              width={80}
-              sx={{
-                mt: 0.5,
-                bgcolor: 'grey.300',
-                '.dark &': { bgcolor: 'grey.700' },
-              }}
-            />
+            <Skeleton animation='pulse' className='skeleton-subheader' />
           }
-          className='card-header'
-          sx={{
-            bgcolor: 'grey.200',
-            '.dark &': { bgcolor: 'grey.800' },
-          }}
+          className='card-header skeleton-card-header'
         />
       )}
-      <Box
-        className='card-media'
-        sx={{
-          bgcolor: 'grey.100',
-          '.dark &': { bgcolor: 'grey.900' },
-        }}
-      >
+      <Box className='card-media skeleton-card-media'>
         <Skeleton
           animation='pulse'
           variant='rectangular'
-          sx={{
-            aspectRatio: '16/9',
-            bgcolor: 'grey.300',
-            '.dark &': { bgcolor: 'grey.700' },
-            position: 'relative',
-          }}
+          className='skeleton-rectangular'
         >
           <Box
             sx={{
@@ -448,21 +409,13 @@ export const ArticleCard = ({ article, lang, isMinimal }: ArticleCardProps) => {
             <Stack direction='column' spacing={1} marginTop={5}>
               <Skeleton
                 animation='pulse'
-                height={14}
                 width='90%'
-                sx={{
-                  bgcolor: 'rgba(255, 255, 255, 0.6)',
-                  '.dark &': { bgcolor: 'rgba(255, 255, 255, 0.3)' },
-                }}
+                className='skeleton-title-line'
               />
               <Skeleton
                 animation='pulse'
-                height={14}
                 width='75%'
-                sx={{
-                  bgcolor: 'rgba(255, 255, 255, 0.6)',
-                  '.dark &': { bgcolor: 'rgba(255, 255, 255, 0.3)' },
-                }}
+                className='skeleton-title-line'
               />
               <Stack
                 direction='row'
@@ -470,33 +423,9 @@ export const ArticleCard = ({ article, lang, isMinimal }: ArticleCardProps) => {
                 alignItems='center'
                 spacing={1}
               >
-                <Skeleton
-                  animation='pulse'
-                  height={12}
-                  width={40}
-                  sx={{
-                    bgcolor: 'rgba(255, 255, 255, 0.6)',
-                    '.dark &': { bgcolor: 'rgba(255, 255, 255, 0.3)' },
-                  }}
-                />
-                <Skeleton
-                  animation='pulse'
-                  height={12}
-                  width={40}
-                  sx={{
-                    bgcolor: 'rgba(255, 255, 255, 0.6)',
-                    '.dark &': { bgcolor: 'rgba(255, 255, 255, 0.3)' },
-                  }}
-                />
-                <Skeleton
-                  animation='pulse'
-                  height={12}
-                  width={40}
-                  sx={{
-                    bgcolor: 'rgba(255, 255, 255, 0.6)',
-                    '.dark &': { bgcolor: 'rgba(255, 255, 255, 0.3)' },
-                  }}
-                />
+                <Skeleton animation='pulse' className='skeleton-stat-item' />
+                <Skeleton animation='pulse' className='skeleton-stat-item' />
+                <Skeleton animation='pulse' className='skeleton-stat-item' />
               </Stack>
             </Stack>
           </Box>
