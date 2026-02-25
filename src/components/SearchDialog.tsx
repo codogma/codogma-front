@@ -4,6 +4,7 @@ import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 import SearchIcon from '@mui/icons-material/Search';
 import {
+  Autocomplete,
   Backdrop,
   Box,
   Button,
@@ -47,7 +48,7 @@ export const SearchDialog = ({
   const pathname = usePathname();
 
   // Search state
-  const [currentQuery, setCurrentQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState('');
   const [selectedPrefix, setSelectedPrefix] =
     useState<SearchFilterType>('articles');
   const [searchHistory, setSearchHistory] = useState<string[]>([]);
@@ -67,17 +68,57 @@ export const SearchDialog = ({
     { label: 'info:', value: 'info' },
   ];
 
+  // Combined options: filter based on current query
+  const combinedOptions = React.useMemo(() => {
+    const query = searchQuery.trim();
+    
+    // Если запрос пустой - показать все префиксы
+    if (!query) {
+      return prefixOptions.map((p) => ({ ...p, type: 'prefix' as const }));
+    }
+    
+    // Проверка: есть ли уже префикс с двоеточием
+    const hasCompletePrefix = /^[a-z]+:$/i.test(query);
+    
+    // Если уже введён полный префикс с двоеточием (например "articles:") - не показывать подсказки
+    if (hasCompletePrefix) {
+      return [];
+    }
+    
+    // Проверка: есть ли текст после двоеточия
+    if (query.includes(':')) {
+      const afterColon = query.split(':')[1];
+      if (afterColon !== undefined) {
+        // Есть текст после двоеточия - не показывать подсказки
+        return [];
+      }
+    }
+    
+    // Фильтровать префиксы по введённому тексту
+    return prefixOptions
+      .filter((p) => p.label.toLowerCase().startsWith(query.toLowerCase()))
+      .map((p) => ({ ...p, type: 'prefix' as const }));
+  }, [searchQuery]);
+
   // Set prefix when dialog opens based on current route
   useEffect(() => {
     if (open) {
       const path = pathname;
-      if (path.includes('/articles')) setSelectedPrefix('articles');
-      else if (path.includes('/categories')) setSelectedPrefix('categories');
-      else if (path.includes('/compilations'))
-        setSelectedPrefix('compilations');
+      let prefix: SearchFilterType | null = null;
+      if (path.includes('/articles')) prefix = 'articles';
+      else if (path.includes('/categories')) prefix = 'categories';
+      else if (path.includes('/compilations')) prefix = 'compilations';
       else if (path.includes('/authors') || path.includes('/users'))
-        setSelectedPrefix('authors');
-      else setSelectedPrefix('articles');
+        prefix = 'authors';
+
+      if (prefix) {
+        setSelectedPrefix(prefix);
+        // Set initial query with prefix for Autocomplete
+        setSearchQuery(`${prefix}:`);
+      } else {
+        setSelectedPrefix('articles');
+        setSearchQuery('');
+      }
     }
   }, [open, pathname]);
 
@@ -118,10 +159,10 @@ export const SearchDialog = ({
 
   // Hide syntax help when user starts typing
   useEffect(() => {
-    if (currentQuery.trim()) {
+    if (searchQuery.trim()) {
       setShowSyntaxHelp(false);
     }
-  }, [currentQuery]);
+  }, [searchQuery]);
 
   // Format query with prefix if needed
   const formatQuery = (query: string): string => {
@@ -144,6 +185,28 @@ export const SearchDialog = ({
 
     // Simple query - add prefix
     return `${selectedPrefix}:${trimmedQuery}`;
+  };
+
+  // Parse prefix from query string
+  const parsePrefixFromQuery = (query: string): SearchFilterType => {
+    const match = /^([a-z]+):/i.exec(query.trim());
+    if (match) {
+      const prefix = match[1].toLowerCase() as SearchFilterType;
+      if (
+        [
+          'articles',
+          'categories',
+          'compilations',
+          'authors',
+          'tags',
+          'content',
+          'info',
+        ].includes(prefix)
+      ) {
+        return prefix;
+      }
+    }
+    return selectedPrefix;
   };
 
   // Handle search execution
@@ -222,14 +285,20 @@ export const SearchDialog = ({
     }
 
     // Close dialog
-    setCurrentQuery('');
+    setSearchQuery('');
     onClose();
   };
 
-  // Handle query input change
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    setCurrentQuery(value);
+  // Handle search query change
+  const handleSearchQueryChange = (
+    _event: React.SyntheticEvent,
+    value: string,
+  ) => {
+    setSearchQuery(value);
+
+    // Update selected prefix based on current input
+    const prefix = parsePrefixFromQuery(value);
+    setSelectedPrefix(prefix);
 
     // Filter history
     if (value) {
@@ -266,15 +335,12 @@ export const SearchDialog = ({
     return match ? (match[1].toLowerCase() as SearchFilterType) : null;
   };
 
-  // Format query for display with syntax highlighting
-  const _displayQuery = formatSearchQueryForDisplay(currentQuery);
-
   return (
     <>
       <Backdrop
         open={open}
         onClick={() => {
-          setCurrentQuery('');
+          setSearchQuery('');
           onClose();
         }}
         sx={{
@@ -285,7 +351,7 @@ export const SearchDialog = ({
       <Dialog
         open={open}
         onClose={() => {
-          setCurrentQuery('');
+          setSearchQuery('');
           onClose();
         }}
         sx={{
@@ -305,103 +371,88 @@ export const SearchDialog = ({
           },
         }}
       >
-        {/* Search Input */}
-        <TextField
-          inputRef={inputRef}
-          placeholder={t('searchPlaceholder')}
-          variant='outlined'
-          size='small'
-          fullWidth
-          value={currentQuery}
-          onChange={handleInputChange}
+        {/* Search Input with Autocomplete */}
+        <Autocomplete
+          freeSolo
+          inputValue={searchQuery}
+          onInputChange={handleSearchQueryChange}
+          options={combinedOptions}
+          getOptionLabel={(option) =>
+            typeof option === 'string' ? option : option.label
+          }
+          isOptionEqualToValue={(option, value) => {
+            const optionLabel =
+              typeof option === 'string' ? option : option.label;
+            const valueLabel = typeof value === 'string' ? value : value.label;
+            return optionLabel === valueLabel;
+          }}
           onKeyDown={(e) => {
             if (e.key === 'Enter' && !e.shiftKey) {
               e.preventDefault();
               // Prevent search if query is just a prefix with no value
-              if (/^[a-z]+:$/i.test(currentQuery.trim())) {
+              if (/^[a-z]+:$/i.test(searchQuery.trim())) {
                 setValidationErrors(['Value after prefix cannot be empty']);
                 return;
               }
-              handleSearch(currentQuery);
+              handleSearch(searchQuery);
             }
           }}
-          error={validationErrors.length > 0}
-          InputProps={{
-            startAdornment: (
-              <InputAdornment position='start'>
-                <SearchIcon fontSize='small' />
-              </InputAdornment>
-            ),
-            endAdornment: (
-              <InputAdornment position='end'>
-                <IconButton
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    e.preventDefault();
-                    if (inputRef.current) {
-                      inputRef.current.blur();
-                    }
-                    setShowSyntaxHelp((prev) => !prev);
-                  }}
-                  size='small'
-                  title='Search syntax help'
-                  tabIndex={-1}
-                >
-                  <HelpOutlineIcon fontSize='small' />
-                </IconButton>
-                <IconButton
-                  onClick={() => {
-                    setCurrentQuery('');
-                    inputRef.current?.focus();
-                  }}
-                  size='small'
-                >
-                  <CloseIcon fontSize='small' />
-                </IconButton>
-              </InputAdornment>
-            ),
-          }}
+          renderInput={(params) => (
+            <TextField
+              {...params}
+              inputRef={inputRef}
+              placeholder={t('searchPlaceholder')}
+              variant='outlined'
+              size='small'
+              fullWidth
+              error={validationErrors.length > 0}
+              InputProps={{
+                ...params.InputProps,
+                startAdornment: (
+                  <InputAdornment position='start'>
+                    <SearchIcon fontSize='small' />
+                  </InputAdornment>
+                ),
+                endAdornment: (
+                  <>
+                    {params.InputProps.endAdornment}
+                    <InputAdornment position='end'>
+                      <IconButton
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          e.preventDefault();
+                          if (inputRef.current) {
+                            inputRef.current.blur();
+                          }
+                          setShowSyntaxHelp((prev) => !prev);
+                        }}
+                        size='small'
+                        title='Search syntax help'
+                        tabIndex={-1}
+                      >
+                        <HelpOutlineIcon fontSize='small' />
+                      </IconButton>
+                    </InputAdornment>
+                  </>
+                ),
+              }}
+              sx={{
+                '& fieldset': { border: 'none' },
+                borderBottom: '1px solid',
+                borderColor:
+                  validationErrors.length > 0 ? 'error.main' : 'divider',
+              }}
+            />
+          )}
+          renderOption={(props, option) => (
+            <Box component='li' {...props}>
+              <Typography variant='body2'>{option.label}</Typography>
+            </Box>
+          )}
           sx={{
-            '& fieldset': { border: 'none' },
-            borderBottom: '1px solid',
-            borderColor: validationErrors.length > 0 ? 'error.main' : 'divider',
+            '& .MuiAutocomplete-popupIndicator': { display: 'none' },
           }}
         />
-
-        {/* Prefix Selection Buttons */}
-        {!showSyntaxHelp && (
-          <Box
-            sx={{
-              p: 2,
-              borderBottom: 1,
-              borderColor: 'divider',
-              display: 'flex',
-              flexWrap: 'wrap',
-              gap: 1,
-            }}
-          >
-            <Typography
-              variant='caption'
-              color='text.secondary'
-              sx={{ width: '100%', mb: 0.5 }}
-            >
-              Select prefix:
-            </Typography>
-            {prefixOptions.map((option) => (
-              <Chip
-                key={option.value}
-                label={option.label}
-                onClick={() => {
-                  setSelectedPrefix(option.value as SearchFilterType);
-                  inputRef.current?.focus();
-                }}
-                color={selectedPrefix === option.value ? 'primary' : 'default'}
-                size='small'
-                sx={{ cursor: 'pointer' }}
-              />
-            ))}
-          </Box>
-        )}
 
         {/* Validation Errors */}
         {validationErrors.length > 0 && (
