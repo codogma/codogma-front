@@ -11,6 +11,8 @@
   "save": "Save",
   "search": "Search",
   "searchBy": "Search by ",
+  "searchPlaceholder": "Search... (try \"articles:react AND tags:typescript\")",
+  "clearHistory": "Clear history",
   "content": "content",
   "tags": "Tags",
   "tag": "tag",

@@ -40,3 +40,7 @@ next-env.d.ts
 /public/tinymce/
 
 .husky
+
+/src/docs/
+
+*.log

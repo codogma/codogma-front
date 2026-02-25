@@ -11,6 +11,8 @@
   "save": "Сохранить",
   "search": "Поиск",
   "searchBy": "Поиск по ",
+  "searchPlaceholder": "Поиск... (например, \"articles:react AND tags:typescript\")",
+  "clearHistory": "Очистить историю",
   "content": "содержанию",
   "tags": "Теги",
   "tag": "тегу",
