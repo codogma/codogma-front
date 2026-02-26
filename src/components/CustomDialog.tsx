@@ -42,6 +42,16 @@ export const CustomDialog = ({
       onClose={onClose}
       aria-labelledby='dialog-title'
       open={open}
+      slotProps={{
+        paper: {
+          sx: {
+            borderRadius: '16px',
+            border: '1px solid rgba(255, 255, 255, 0.15)',
+            backdropFilter: 'blur(20px)',
+            boxShadow: '0 8px 32px rgba(0, 0, 0, 0.12)',
+          },
+        },
+      }}
     >
       <DialogTitle sx={{ m: 0, p: 2 }}>
         {title}
@@ -53,9 +63,23 @@ export const CustomDialog = ({
             right: 8,
             top: 8,
             color: (theme) => theme.palette.grey[500],
+            borderRadius: '8px',
+            p: 0.5,
+            transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+            '&:hover': {
+              backgroundColor: 'rgba(255, 255, 255, 0.1)',
+              transform: 'scale(1.1)',
+            },
+            '&:active': {
+              transform: 'scale(0.95)',
+            },
           }}
         >
-          <CloseIcon />
+          <CloseIcon
+            sx={{
+              transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+            }}
+          />
         </IconButton>
       </DialogTitle>
       <DialogContent

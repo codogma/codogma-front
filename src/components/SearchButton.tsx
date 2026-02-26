@@ -2,7 +2,6 @@
 import SearchIcon from '@mui/icons-material/Search';
 import { SxProps, Theme } from '@mui/material';
 import Button, { ButtonProps } from '@mui/material/Button';
-import { alpha } from '@mui/material/styles';
 import { useTranslations } from 'next-intl';
 import * as React from 'react';
 import { useEffect } from 'react';
@@ -72,46 +71,85 @@ export const SearchButton = React.forwardRef<HTMLButtonElement, ButtonProps>(
         aria-keyshortcuts={shortcut || undefined}
         sx={[
           (theme) => ({
-            height: 30,
-            width: 160,
+            height: 36,
+            width: 170,
             margin: 0,
-            paddingLeft: theme.spacing(1),
+            paddingLeft: theme.spacing(1.5),
             display: 'flex',
             alignItems: 'center',
-            gap: '6px',
+            gap: '8px',
             position: 'relative',
             color: 'inherit',
             fontSize: theme.typography.pxToRem(14),
-            border: `1px solid ${theme.palette.grey[200]}`,
-            borderRadius: theme.shape.borderRadius,
+            border: '1px solid rgba(255, 255, 255, 0.15)',
+            borderRadius: '12px',
+            background: 'rgba(255, 255, 255, 0.08)',
+            backdropFilter: 'blur(8px)',
+            WebkitBackdropFilter: 'blur(8px)',
+            transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
             '&:hover': {
-              backgroundColor: alpha(theme.palette.grey[100], 0.5),
-              boxShadow: 'none',
-              color:
-                theme.palette.mode === 'dark'
-                  ? theme.palette.grey[900]
-                  : theme.palette.text.secondary,
+              backgroundColor: 'rgba(255, 255, 255, 0.15)',
+              boxShadow: '0 4px 16px rgba(0, 0, 0, 0.15)',
+              transform: 'scale(1.02)',
+            },
+            '&:active': {
+              transform: 'scale(0.98)',
             },
             '&:focus-visible': {
-              outline: `3px solid ${alpha(theme.palette.primary.main, 0.5)}`,
+              outline: `3px solid rgba(102, 126, 234, 0.5)`,
               outlineOffset: '2px',
+            },
+            '& .search-button-label': {
+              marginRight: 'auto',
+              marginBottom: '1px',
+              color: 'inherit',
+              opacity: 0.8,
+              lineHeight: 1,
+              fontWeight: 500,
+              transition: 'opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+            },
+            '&:hover .search-button-label': {
+              opacity: 1,
+            },
+            '& kbd': {
+              fontSize: '0.7rem',
+              fontWeight: 600,
+              lineHeight: '19px',
+              marginLeft: '4px',
+              border: '1px solid rgba(255, 255, 255, 0.3)',
+              backgroundColor: 'rgba(255, 255, 255, 0.1)',
+              padding: '0 5px',
+              borderRadius: 6,
+              color: 'inherit',
+              opacity: 0.7,
+              transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+            },
+            '&:hover kbd': {
+              opacity: 1,
+              backgroundColor: 'rgba(255, 255, 255, 0.15)',
+              borderColor: 'rgba(255, 255, 255, 0.4)',
+            },
+            '& svg': {
+              fontSize: '1.125rem',
+              transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+              color: 'inherit',
+            },
+            '&:hover svg': {
+              transform: 'scale(1.05)',
             },
           }),
           ...extraSx,
         ]}
         {...props}
       >
-        <SearchIcon color='inherit' sx={{ fontSize: '1.125rem' }} />
-        <span
-          id='app-search-label'
-          style={{
-            marginRight: 'auto',
-            marginBottom: '1px',
-            color: 'inherit',
-            opacity: 0.7,
-            lineHeight: 1,
+        <SearchIcon
+          color='inherit'
+          sx={{
+            fontSize: '1.125rem',
+            transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
           }}
-        >
+        />
+        <span id='app-search-label' className='search-button-label'>
           {t('search')}
         </span>
         {shortcut && (
@@ -119,15 +157,16 @@ export const SearchButton = React.forwardRef<HTMLButtonElement, ButtonProps>(
             aria-hidden='true'
             style={{
               all: 'unset',
-              fontSize: '0.75rem',
-              fontWeight: 'bold',
+              fontSize: '0.7rem',
+              fontWeight: 600,
               lineHeight: '19px',
               marginLeft: '4px',
-              border: '1px solid',
-              borderColor: 'inherit',
-              backgroundColor: 'inherit',
-              padding: '0 4px',
-              borderRadius: 7,
+              border: '1px solid rgba(255, 255, 255, 0.3)',
+              backgroundColor: 'rgba(255, 255, 255, 0.1)',
+              padding: '0 5px',
+              borderRadius: 6,
+              color: 'inherit',
+              opacity: 0.7,
             }}
           >
             {shortcut}

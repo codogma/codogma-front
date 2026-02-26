@@ -12,7 +12,6 @@ import { ArticleProgressBar } from '@/components/ArticleProgressBar';
 import { ArticlesDrawer } from '@/components/ArticlesDrawer';
 import { FullscreenButton } from '@/components/FullscreenButton';
 import MenuButton from '@/components/MenuButton';
-import { SettingsDrawer } from '@/components/SettingsDrawer';
 import { TOCDrawer } from '@/components/TOCDrawer';
 import { getArticleById, like, unlike } from '@/helpers/articleApi';
 import { TocItem } from '@/helpers/parseToc';
@@ -158,13 +157,12 @@ export const ArticleActions = ({
       {isFullscreen ? (
         <>
           <FullscreenButton />
-          <SettingsDrawer />
           <ArticlesDrawer
             lang={lang}
             articleId={articleId}
             compilationId={compilationId}
           />
-          <TOCDrawer article={article} toc={toc} />
+          {toc.length !== 0 && <TOCDrawer article={article} toc={toc} />}
         </>
       ) : (
         <>
@@ -200,8 +198,7 @@ export const ArticleActions = ({
               {articleData.commentsCount}
             </div>
           </IconButton>
-          <SettingsDrawer />
-          <TOCDrawer article={article} toc={toc} />
+          {toc.length !== 0 && <TOCDrawer article={article} toc={toc} />}
           <ArticlesDrawer
             lang={lang}
             articleId={articleId}

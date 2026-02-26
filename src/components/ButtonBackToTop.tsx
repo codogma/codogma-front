@@ -51,13 +51,24 @@ export const ButtonBackToTop = ({ children }: Props) => {
           sx={{
             backgroundColor: 'rgba(255, 255, 255, 0.15)',
             backdropFilter: 'blur(10px)',
-            transition: 'background-color 0.3s',
+            WebkitBackdropFilter: 'blur(10px)',
+            border: '1px solid rgba(255, 255, 255, 0.2)',
+            transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
             '&:hover': {
-              backgroundColor: 'rgba(112, 112, 112, 0.15)',
+              backgroundColor: 'rgba(102, 126, 234, 0.2)',
+              transform: 'scale(1.1) translateY(-2px)',
+              boxShadow: '0 8px 20px rgba(102, 126, 234, 0.3)',
+            },
+            '&:active': {
+              transform: 'scale(0.95)',
             },
           }}
         >
-          <KeyboardArrowUpIcon />
+          <KeyboardArrowUpIcon
+            sx={{
+              transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+            }}
+          />
         </Fab>
       </ScrollTop>
     </React.Fragment>

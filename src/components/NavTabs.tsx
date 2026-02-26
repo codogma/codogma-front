@@ -1,6 +1,14 @@
+// src/components/NavTabs.tsx
 'use client';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
-import { Button, Menu, MenuItem, TabOwnProps, Typography } from '@mui/material';
+import {
+  Button,
+  Menu,
+  MenuItem,
+  TabOwnProps,
+  Typography,
+  useTheme,
+} from '@mui/material';
 import Tab from '@mui/material/Tab';
 import Tabs from '@mui/material/Tabs';
 import Tooltip from '@mui/material/Tooltip';
@@ -56,6 +64,7 @@ export const NavTabs: React.FC<NavTabsProps> = memo(function NavTabs({ tabs }) {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const t = useTranslations();
+  const theme = useTheme();
   const ref = useRef<HTMLDivElement>(null);
   const [overflow, setOverflow] = useState<boolean>(false);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -63,7 +72,6 @@ export const NavTabs: React.FC<NavTabsProps> = memo(function NavTabs({ tabs }) {
 
   // Проверка: активна ли страница списка статей (не деталка!)
   const isArticlesListingPage = useMemo(() => {
-    // Проверяем: /ru/articles но не /ru/articles/123
     const segments = pathname.split('/').filter(Boolean);
     return segments.length === 2 && segments[1] === 'articles';
   }, [pathname]);
@@ -102,7 +110,6 @@ export const NavTabs: React.FC<NavTabsProps> = memo(function NavTabs({ tabs }) {
     [router],
   );
 
-  // Обработчики меню сортировки
   const handleMenuClick = (event: React.MouseEvent<HTMLElement>) => {
     event.stopPropagation();
     setAnchorEl(event.currentTarget);
@@ -114,13 +121,9 @@ export const NavTabs: React.FC<NavTabsProps> = memo(function NavTabs({ tabs }) {
 
   const handleSortSelect = (sort: ArticleSortField, order: SortOrder) => {
     handleMenuClose();
-
-    // Формируем новые параметры, сохраняя поиск
     const params = new URLSearchParams(searchParams.toString());
     params.set('sort', sort);
     params.set('order', order);
-
-    // Обновляем URL без перезагрузки
     const newPath = `${pathname}?${params.toString()}`;
     router.push(newPath, { scroll: false });
   };
@@ -135,6 +138,28 @@ export const NavTabs: React.FC<NavTabsProps> = memo(function NavTabs({ tabs }) {
         scrollButtons={overflow ? 'auto' : false}
         allowScrollButtonsMobile={overflow}
         aria-label='scrollable force tabs example'
+        TabIndicatorProps={{
+          sx: {
+            height: 3,
+            background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+            borderRadius: '3px 3px 0 0',
+          },
+        }}
+        sx={{
+          minHeight: 48,
+          '& .MuiTabs-scrollButtons': {
+            transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+            '&:hover': {
+              background:
+                theme.palette.mode === 'dark'
+                  ? 'rgba(255, 255, 255, 0.08)'
+                  : 'rgba(0, 0, 0, 0.04)',
+            },
+            '&.Mui-disabled': {
+              opacity: 0.3,
+            },
+          },
+        }}
       >
         {tabs.map((tab) => (
           <Tab
@@ -148,10 +173,10 @@ export const NavTabs: React.FC<NavTabsProps> = memo(function NavTabs({ tabs }) {
                 sx={{
                   display: 'flex',
                   gap: '.5rem',
+                  alignItems: 'center',
                 }}
               >
                 {tab.label}
-                {/* Условный рендер кнопки фильтра ТОЛЬКО для списка статей */}
                 {tab.href === pathname && isArticlesListingPage && (
                   <Tooltip title={t('filterOptions')}>
                     <Button
@@ -168,19 +193,43 @@ export const NavTabs: React.FC<NavTabsProps> = memo(function NavTabs({ tabs }) {
                         handleMenuClick(event);
                       }}
                       sx={{
-                        minWidth: 25,
-                        width: 25,
-                        height: 25,
+                        minWidth: 28,
+                        width: 28,
+                        height: 28,
                         ml: 0.5,
+                        borderRadius: '8px',
+                        p: 0.5,
+                        borderColor: 'rgba(255, 255, 255, 0.2)',
+                        transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
                         '&:hover': {
-                          backgroundColor: 'action.hover',
+                          backgroundColor:
+                            theme.palette.mode === 'dark'
+                              ? 'rgba(255, 255, 255, 0.1)'
+                              : 'rgba(0, 0, 0, 0.05)',
+                          transform: 'scale(1.1)',
+                          borderColor:
+                            theme.palette.mode === 'dark'
+                              ? 'rgba(255, 255, 255, 0.4)'
+                              : 'rgba(0, 0, 0, 0.2)',
+                        },
+                        '&:active': {
+                          transform: 'scale(0.95)',
+                        },
+                        '& .MuiSvgIcon-root': {
+                          fontSize: 20,
+                          transition:
+                            'transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                        },
+                        '&:hover .MuiSvgIcon-root': {
+                          transform: 'scale(1.15)',
                         },
                       }}
                     >
                       <ArrowDropDownIcon
                         sx={{
                           transform: open ? 'rotate(180deg)' : 'none',
-                          transition: 'transform 0.2s',
+                          transition:
+                            'transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
                         }}
                       />
                     </Button>
@@ -192,12 +241,61 @@ export const NavTabs: React.FC<NavTabsProps> = memo(function NavTabs({ tabs }) {
             onMouseEnter={() => router.prefetch(tab.href)}
             onClick={() => handleClick(tab.href)}
             scroll={false}
-            sx={{ minHeight: '48px', textTransform: 'none' }}
+            sx={(theme) => ({
+              minHeight: 48,
+              textTransform: 'none',
+              borderRadius: '12px 12px 0 0',
+              transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+              position: 'relative',
+              overflow: 'hidden',
+              '&::before': {
+                content: '""',
+                position: 'absolute',
+                left: 0,
+                bottom: 0,
+                width: '100%',
+                height: '3px',
+                opacity: 0,
+                transition: 'opacity 0.3s ease',
+              },
+              '&:hover': {
+                backgroundColor:
+                  theme.palette.mode === 'dark'
+                    ? 'rgba(102, 126, 234, 0.15)'
+                    : 'rgba(102, 126, 234, 0.08)',
+                transform: 'translateY(-2px)',
+                '& .MuiTab-iconWrapper': {
+                  transform: 'scale(1.15) rotate(5deg)',
+                  color: theme.palette.mode === 'dark' ? '#8ab4f8' : '#1a73e8',
+                },
+                color: theme.palette.mode === 'dark' ? '#8ab4f8' : '#1a73e8',
+              },
+              '&.Mui-selected': {
+                color: theme.palette.mode === 'dark' ? '#8ab4f8' : '#1a73e8',
+                fontWeight: 700,
+                '& .MuiTab-iconWrapper': {
+                  color: theme.palette.mode === 'dark' ? '#8ab4f8' : '#1a73e8',
+                },
+                '&::before': {
+                  opacity: 1,
+                },
+              },
+              '&.Mui-focusVisible': {
+                outline: `2px solid ${
+                  theme.palette.mode === 'dark' ? '#8ab4f8' : '#1a73e8'
+                }`,
+                outlineOffset: '2px',
+              },
+              '& .MuiTab-iconWrapper': {
+                transition:
+                  'transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), color 0.3s ease',
+                marginRight: theme.spacing(1),
+              },
+            })}
           />
         ))}
       </Tabs>
 
-      {/* Меню сортировки (рендерится только для списка статей) */}
       {isArticlesListingPage && (
         <Menu
           id='basic-menu'
@@ -214,6 +312,39 @@ export const NavTabs: React.FC<NavTabsProps> = memo(function NavTabs({ tabs }) {
           transformOrigin={{
             vertical: 'top',
             horizontal: 'center',
+          }}
+          slotProps={{
+            paper: {
+              sx: {
+                borderRadius: '16px',
+                border: '1px solid rgba(255, 255, 255, 0.15)',
+                backdropFilter: 'blur(20px)',
+                boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)',
+                mt: 1,
+                '& .MuiMenuItem-root': {
+                  borderRadius: '8px',
+                  mx: 1,
+                  my: 0.5,
+                  transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
+                  '&:hover': {
+                    background:
+                      theme.palette.mode === 'dark'
+                        ? 'rgba(102, 126, 234, 0.15)'
+                        : 'rgba(102, 126, 234, 0.1)',
+                    transform: 'translateX(4px)',
+                  },
+                  '&.Mui-selected': {
+                    background:
+                      theme.palette.mode === 'dark'
+                        ? 'rgba(102, 126, 234, 0.25)'
+                        : 'rgba(102, 126, 234, 0.15)',
+                    fontWeight: 700,
+                    color:
+                      theme.palette.mode === 'dark' ? '#8ab4f8' : '#1a73e8',
+                  },
+                },
+              },
+            },
           }}
         >
           {SORT_OPTIONS.map((option) => (

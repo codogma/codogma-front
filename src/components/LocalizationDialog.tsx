@@ -112,9 +112,28 @@ export const LocalizationDialog = ({ lang }: LocalizationDialogProps) => {
 
   return (
     <>
-      <Tooltip title={t('language')}>
-        <IconButton color='inherit' onClick={handleClickOpen}>
-          <LanguageIcon />
+      <Tooltip title={t('language')} arrow>
+        <IconButton
+          color='inherit'
+          onClick={handleClickOpen}
+          sx={{
+            borderRadius: '10px',
+            p: 0.75,
+            transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+            '&:hover': {
+              backgroundColor: 'rgba(255, 255, 255, 0.1)',
+              transform: 'scale(1.1)',
+            },
+            '&:active': {
+              transform: 'scale(0.95)',
+            },
+          }}
+        >
+          <LanguageIcon
+            sx={{
+              transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+            }}
+          />
         </IconButton>
       </Tooltip>
       <CustomDialog

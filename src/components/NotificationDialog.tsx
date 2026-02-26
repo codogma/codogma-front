@@ -153,10 +153,29 @@ export const NotificationDialog = ({ lang }: NotificationsDialogProps) => {
 
   return (
     <>
-      <Tooltip title={t('notifications')}>
-        <IconButton color='inherit' onClick={handleClickOpen}>
+      <Tooltip title={t('notifications')} arrow>
+        <IconButton
+          color='inherit'
+          onClick={handleClickOpen}
+          sx={{
+            borderRadius: '10px',
+            p: 0.75,
+            transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+            '&:hover': {
+              backgroundColor: 'rgba(255, 255, 255, 0.1)',
+              transform: 'scale(1.1)',
+            },
+            '&:active': {
+              transform: 'scale(0.95)',
+            },
+          }}
+        >
           <Badge badgeContent={totalElements} color='primary'>
-            <NotificationsIcon />
+            <NotificationsIcon
+              sx={{
+                transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+              }}
+            />
           </Badge>
         </IconButton>
       </Tooltip>

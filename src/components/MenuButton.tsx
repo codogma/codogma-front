@@ -44,16 +44,27 @@ const StyledMenu = styled((props: MenuProps) => (
   />
 ))(({ theme }) => ({
   '& .MuiPaper-root': {
-    borderRadius: 6,
+    borderRadius: '16px',
     marginTop: theme.spacing(1),
     minWidth: 180,
-    color: 'rgb(55, 65, 81)',
-    boxShadow:
-      'rgb(255, 255, 255) 0px 0px 0px 0px, rgba(0, 0, 0, 0.05) 0px 0px 0px 1px, rgba(0, 0, 0, 0.1) 0px 10px 15px -3px, rgba(0, 0, 0, 0.05) 0px 4px 6px -2px',
+    color: theme.palette.text.primary,
+    border: '1px solid rgba(255, 255, 255, 0.15)',
+    background: 'rgba(255, 255, 255, 0.95)',
+    backdropFilter: 'blur(20px)',
+    boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)',
     '& .MuiMenu-list': {
       padding: '4px 0',
     },
     '& .MuiMenuItem-root': {
+      borderRadius: '8px',
+      mx: 1,
+      my: 0.5,
+      transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
+      '&:hover': {
+        background:
+          'linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%)',
+        transform: 'translateX(4px)',
+      },
       '& .MuiSvgIcon-root': {
         fontSize: 18,
         color: theme.palette.text.secondary,
@@ -68,6 +79,18 @@ const StyledMenu = styled((props: MenuProps) => (
     },
     ...theme.applyStyles('dark', {
       color: theme.palette.grey[300],
+      border: '1px solid rgba(255, 255, 255, 0.08)',
+      background: 'rgba(25, 25, 25, 0.95)',
+      boxShadow: '0 8px 32px rgba(0, 0, 0, 0.5)',
+      '& .MuiMenuItem-root': {
+        '& .MuiSvgIcon-root': {
+          color: theme.palette.grey[300],
+        },
+        '&:hover': {
+          background:
+            'linear-gradient(135deg, rgba(102, 126, 234, 0.15) 0%, rgba(118, 75, 162, 0.15) 100%)',
+        },
+      },
     }),
   },
 }));
@@ -151,11 +174,28 @@ export default function MenuButton({
         sx={{
           height: '34px',
           width: '34px',
+          borderRadius: '14px',
+          p: 0.5,
+          transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+          border: '2px solid transparent',
+          '&:hover': {
+            backgroundColor: 'rgba(255, 255, 255, 0.1)',
+            transform: 'scale(1.05)',
+            boxShadow: '0 8px 25px rgba(102, 126, 234, 0.4)',
+            border: '2px solid rgba(102, 126, 234, 0.5)',
+          },
+          '&:active': {
+            transform: 'scale(0.95)',
+          },
           ...props.sx,
         }}
         {...props}
       >
-        <MoreVertIcon />
+        <MoreVertIcon
+          sx={{
+            transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+          }}
+        />
       </IconButton>
       <StyledMenu
         id='demo-customized-menu'

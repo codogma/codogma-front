@@ -37,15 +37,40 @@ export const ThemeToggleButton: FC<ThemeToggleButtonProps> = ({
   };
 
   return (
-    <Tooltip title={title}>
+    <Tooltip title={title} arrow>
       <Checkbox
         checked={themeMode === 'dark'}
         onChange={handleToggleTheme}
-        icon={<Brightness7Icon />}
-        checkedIcon={<Brightness4Icon />}
+        icon={
+          <Brightness7Icon
+            sx={{
+              transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+              fontSize: 24,
+            }}
+          />
+        }
+        checkedIcon={
+          <Brightness4Icon
+            sx={{
+              transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+              fontSize: 24,
+              color: '#667eea',
+            }}
+          />
+        }
         slotProps={{ input: { 'aria-label': 'Like' } }}
         sx={{
           color: 'inherit',
+          borderRadius: '10px',
+          p: 0.75,
+          transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+          '&:hover': {
+            backgroundColor: 'rgba(255, 255, 255, 0.1)',
+            transform: 'scale(1.1)',
+          },
+          '&:active': {
+            transform: 'scale(0.95)',
+          },
           '&.Mui-checked': {
             color: 'inherit',
           },

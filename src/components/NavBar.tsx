@@ -223,7 +223,19 @@ export const NavBar = ({ lang, session, theme }: NavBarProps) => {
 
   return (
     <>
-      <AppBar className='nav-app-bar'>
+      <AppBar
+        className='nav-app-bar'
+        position='sticky'
+        elevation={0}
+        sx={{
+          background: 'rgba(255, 255, 255, 0.1)',
+          backdropFilter: 'blur(12px)',
+          WebkitBackdropFilter: 'blur(12px)',
+          borderBottom: '1px solid rgba(255, 255, 255, 0.15)',
+          transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+          boxShadow: '0 4px 30px rgba(0, 0, 0, 0.1)',
+        }}
+      >
         <Container maxWidth='xl'>
           <Toolbar
             disableGutters
@@ -231,9 +243,16 @@ export const NavBar = ({ lang, session, theme }: NavBarProps) => {
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'space-between',
+              minHeight: '64px !important',
+              px: { xs: 2, sm: 3 },
             }}
           >
-            <Link href={`/${lang}`} style={{ textDecoration: 'none' }}>
+            {/* Логотип с градиентом и анимацией */}
+            <Link
+              href={`/${lang}`}
+              style={{ textDecoration: 'none' }}
+              className='group'
+            >
               <Typography
                 variant='h5'
                 noWrap
@@ -241,26 +260,61 @@ export const NavBar = ({ lang, session, theme }: NavBarProps) => {
                 sx={{
                   mr: 2,
                   fontFamily: 'monospace',
-                  fontWeight: 700,
-                  letterSpacing: '.3rem',
-                  color: 'inherit',
+                  fontWeight: 800,
+                  letterSpacing: '.25rem',
+                  background:
+                    'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                  backgroundClip: 'text',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
                   textDecoration: 'none',
+                  transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                  '&:hover': {
+                    transform: 'scale(1.05)',
+                    filter: 'drop-shadow(0 0 20px rgba(102, 126, 234, 0.5))',
+                  },
                 }}
               >
                 CODOGMA
               </Typography>
             </Link>
+
+            {/* Кнопка поиска с улучшенным дизайном */}
             <SearchButton
               ref={searchButtonRef}
               onClick={handleOpenSearchDialog}
-              sx={{ mr: 1, ml: 'auto' }}
+              sx={{
+                mr: 1,
+                ml: 'auto',
+                background: 'rgba(255, 255, 255, 0.08)',
+                borderRadius: '12px',
+                border: '1px solid rgba(255, 255, 255, 0.12)',
+                p: 1.5,
+                transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                '&:hover': {
+                  background: 'rgba(255, 255, 255, 0.15)',
+                  transform: 'scale(1.1)',
+                  boxShadow: '0 8px 25px rgba(0, 0, 0, 0.15)',
+                },
+                '&:active': {
+                  transform: 'scale(0.95)',
+                },
+              }}
             />
+
             <Divider
               orientation='vertical'
               variant='middle'
               flexItem
-              sx={{ display: { xs: 'none', sm: 'inherit' } }}
+              sx={{
+                display: { xs: 'none', sm: 'inherit' },
+                mx: 1.5,
+                background: 'rgba(255, 255, 255, 0.15)',
+                height: '28px',
+              }}
             />
+
+            {/* Группа инструментов */}
             <ButtonGroup
               variant='text'
               sx={{
@@ -268,23 +322,54 @@ export const NavBar = ({ lang, session, theme }: NavBarProps) => {
                 mr: 1,
                 color: 'inherit',
                 alignItems: 'center',
+                gap: 0.5,
+                '& .MuiButton-root': {
+                  minWidth: 'auto',
+                  p: 1,
+                  borderRadius: '10px',
+                  transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                  '&:hover': {
+                    background: 'rgba(255, 255, 255, 0.1)',
+                    transform: 'translateY(-2px)',
+                  },
+                },
               }}
             >
               <LocalizationDialog lang={lang} />
               <ThemeToggleButton title={t('theme')} theme={theme} />
               <NotificationDialog lang={lang} />
             </ButtonGroup>
+
             <SearchDialog
               open={searchDialogOpen}
               onClose={handleCloseSearchDialog}
               anchorEl={searchAnchorEl}
             />
-            <Box sx={{ flexGrow: 0 }}>
-              <Tooltip title={t('settings')}>
+
+            {/* Меню пользователя с улучшенным аватаром */}
+            <Box sx={{ flexGrow: 0, ml: 1 }}>
+              <Tooltip
+                title={t('settings')}
+                arrow
+                TransitionProps={{ timeout: 300 }}
+              >
                 <IconButton
                   onClick={handleOpenUserMenu}
                   color='inherit'
-                  sx={{ p: 0 }}
+                  sx={{
+                    p: 0.5,
+                    borderRadius: '14px',
+                    transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                    border: '2px solid transparent',
+                    '&:hover': {
+                      transform: 'scale(1.05)',
+                      boxShadow: '0 8px 25px rgba(102, 126, 234, 0.4)',
+                      border: '2px solid rgba(102, 126, 234, 0.5)',
+                    },
+                    '&:active': {
+                      transform: 'scale(0.95)',
+                    },
+                  }}
                 >
                   <AvatarImage
                     alt={currentSession?.user?.name ?? ''}
@@ -293,6 +378,9 @@ export const NavBar = ({ lang, session, theme }: NavBarProps) => {
                     variant='circular'
                     size={40}
                     type='avatar'
+                    sx={{
+                      transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                    }}
                   />
                 </IconButton>
               </Tooltip>
@@ -305,6 +393,29 @@ export const NavBar = ({ lang, session, theme }: NavBarProps) => {
                 transformOrigin={{ vertical: 'top', horizontal: 'right' }}
                 open={Boolean(anchorElUser)}
                 onClose={handleCloseUserMenu}
+                slotProps={{
+                  paper: {
+                    elevation: 8,
+                    sx: {
+                      mt: 1.5,
+                      borderRadius: '16px',
+                      border: '1px solid rgba(255, 255, 255, 0.15)',
+                      backdropFilter: 'blur(20px)',
+                      boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)',
+                      '& .MuiMenuItem-root': {
+                        borderRadius: '8px',
+                        mx: 1,
+                        my: 0.5,
+                        transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
+                        '&:hover': {
+                          background:
+                            'linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%)',
+                          transform: 'translateX(4px)',
+                        },
+                      },
+                    },
+                  },
+                }}
               >
                 <MenuList className='menu-list'>
                   {isAuthenticated ? authMenuItems : guestMenuItems}
