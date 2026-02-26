@@ -12,6 +12,9 @@
   "search": "Search",
   "searchBy": "Search by ",
   "searchPlaceholder": "Search... (try \"articles:react AND tags:typescript\")",
+  "searchValidation": {
+    "emptyValue": "Value after prefix cannot be empty"
+  },
   "clearHistory": "Clear history",
   "content": "content",
   "tags": "Tags",

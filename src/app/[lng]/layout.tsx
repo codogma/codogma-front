@@ -71,7 +71,7 @@ export default async function Layout({ children, params }: LayoutProps) {
   const theme = (await getTheme()) || themeConfig.defaultDarkColorScheme;
 
   return (
-    <html lang={lang} suppressHydrationWarning>
+    <html lang={lang} suppressHydrationWarning data-scroll-behavior='smooth'>
       <body className={inter.className}>
         <InitColorSchemeScript
           attribute={themeConfig.attribute}

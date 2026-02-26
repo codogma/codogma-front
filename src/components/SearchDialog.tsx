@@ -1,5 +1,4 @@
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
-import CloseIcon from '@mui/icons-material/Close';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 import SearchIcon from '@mui/icons-material/Search';
@@ -71,20 +70,20 @@ export const SearchDialog = ({
   // Combined options: filter based on current query
   const combinedOptions = React.useMemo(() => {
     const query = searchQuery.trim();
-    
+
     // Если запрос пустой - показать все префиксы
     if (!query) {
       return prefixOptions.map((p) => ({ ...p, type: 'prefix' as const }));
     }
-    
+
     // Проверка: есть ли уже префикс с двоеточием
     const hasCompletePrefix = /^[a-z]+:$/i.test(query);
-    
+
     // Если уже введён полный префикс с двоеточием (например "articles:") - не показывать подсказки
     if (hasCompletePrefix) {
       return [];
     }
-    
+
     // Проверка: есть ли текст после двоеточия
     if (query.includes(':')) {
       const afterColon = query.split(':')[1];
@@ -93,12 +92,12 @@ export const SearchDialog = ({
         return [];
       }
     }
-    
+
     // Фильтровать префиксы по введённому тексту
     return prefixOptions
       .filter((p) => p.label.toLowerCase().startsWith(query.toLowerCase()))
       .map((p) => ({ ...p, type: 'prefix' as const }));
-  }, [searchQuery]);
+  }, [prefixOptions, searchQuery]);
 
   // Set prefix when dialog opens based on current route
   useEffect(() => {
@@ -141,6 +140,8 @@ export const SearchDialog = ({
   // Update filtered history when dialog opens
   useEffect(() => {
     if (open) {
+      setValidationErrors([]);
+      setShowSyntaxHelp(false);
       setFilteredHistory(searchHistory);
     }
   }, [open, searchHistory]);
@@ -219,7 +220,7 @@ export const SearchDialog = ({
     // Validate: query must have non-empty value after prefix
     const prefixMatch = /^([a-z]+):(.*)$/i.exec(formattedQuery);
     if (prefixMatch && !prefixMatch[2].trim()) {
-      setValidationErrors(['Value after prefix cannot be empty']);
+      setValidationErrors([t('searchValidation.emptyValue')]);
       return;
     }
 
@@ -295,7 +296,7 @@ export const SearchDialog = ({
     value: string,
   ) => {
     setSearchQuery(value);
-
+    setValidationErrors([]);
     // Update selected prefix based on current input
     const prefix = parsePrefixFromQuery(value);
     setSelectedPrefix(prefix);
@@ -354,6 +355,8 @@ export const SearchDialog = ({
           setSearchQuery('');
           onClose();
         }}
+        transitionDuration={0}
+        disableRestoreFocus
         sx={{
           '& .MuiPaper-root': {
             width: '80vw',
@@ -391,7 +394,7 @@ export const SearchDialog = ({
               e.preventDefault();
               // Prevent search if query is just a prefix with no value
               if (/^[a-z]+:$/i.test(searchQuery.trim())) {
-                setValidationErrors(['Value after prefix cannot be empty']);
+                setValidationErrors([t('searchValidation.emptyValue')]);
                 return;
               }
               handleSearch(searchQuery);
@@ -444,11 +447,16 @@ export const SearchDialog = ({
               }}
             />
           )}
-          renderOption={(props, option) => (
-            <Box component='li' {...props}>
-              <Typography variant='body2'>{option.label}</Typography>
-            </Box>
-          )}
+          renderOption={(props, option) => {
+            const { key, ...otherProps } = props as {
+              key: React.Key;
+            } & React.HTMLAttributes<HTMLLIElement>;
+            return (
+              <Box component='li' key={key} {...otherProps}>
+                <Typography variant='body2'>{option.label}</Typography>
+              </Box>
+            );
+          }}
           sx={{
             '& .MuiAutocomplete-popupIndicator': { display: 'none' },
           }}

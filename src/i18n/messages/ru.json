@@ -12,6 +12,9 @@
   "search": "Поиск",
   "searchBy": "Поиск по ",
   "searchPlaceholder": "Поиск... (например, \"articles:react AND tags:typescript\")",
+  "searchValidation": {
+    "emptyValue": "Значение после префикса не может быть пустым"
+  },
   "clearHistory": "Очистить историю",
   "content": "содержанию",
   "tags": "Теги",
