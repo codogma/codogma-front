@@ -2,24 +2,28 @@ import { Container, StyledEngineProvider } from '@mui/material';
 import InitColorSchemeScript from '@mui/material/InitColorSchemeScript';
 import { AppRouterCacheProvider } from '@mui/material-nextjs/v16-appRouter';
 import { Metadata } from 'next';
-import '@/app/globals.css';
 import { Inter } from 'next/font/google';
+import { headers } from 'next/headers';
 import { SessionProvider } from 'next-auth/react';
 import { NextIntlClientProvider } from 'next-intl';
 import { getTranslations } from 'next-intl/server';
 import React, { ReactNode } from 'react';
+
+import '@/app/globals.css';
 
 import { ButtonBackToTop } from '@/components/ButtonBackToTop';
 import { ContentImageProvider } from '@/components/ContentImageProvider';
 import { CustomizedSnackbars } from '@/components/CustomizedSnackbars';
 import { Navigation } from '@/components/Navigation';
 import { NavigationProvider } from '@/components/NavigationProvider';
+import { PlatformProvider } from '@/components/PlatformProvider';
 import { ReactQueryProvider } from '@/components/ReactQueryProvider';
 import { ColorModeProvider } from '@/components/ThemeContext';
 import { themeConfig } from '@/constants/theme-config';
 import { getTheme } from '@/helpers/getTheme';
 import { auth } from '@/lib/auth';
 import { Language } from '@/types';
+import { detectPlatform } from '@/utils/platform';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -70,6 +74,11 @@ export default async function Layout({ children, params }: LayoutProps) {
   const session = await auth();
   const theme = (await getTheme()) || themeConfig.defaultDarkColorScheme;
 
+  // Определение платформы на сервере
+  const headersList = await headers();
+  const userAgent = headersList.get('user-agent') || '';
+  const platform = detectPlatform(userAgent);
+
   return (
     <html lang={lang} suppressHydrationWarning data-scroll-behavior='smooth'>
       <body className={inter.className}>
@@ -84,26 +93,28 @@ export default async function Layout({ children, params }: LayoutProps) {
         <StyledEngineProvider injectFirst>
           <AppRouterCacheProvider>
             <ColorModeProvider>
-              <ReactQueryProvider>
-                <SessionProvider session={session}>
-                  {/*<WebSocketProvider>*/}
-                  <NextIntlClientProvider locale={lng}>
-                    <NavigationProvider>
-                      <Navigation lang={lang} session={session} theme={theme}>
-                        <ButtonBackToTop>
-                          <Container className='content'>
-                            <ContentImageProvider>
-                              {children}
-                            </ContentImageProvider>
-                          </Container>
-                        </ButtonBackToTop>
-                        <CustomizedSnackbars />
-                      </Navigation>
-                    </NavigationProvider>
-                  </NextIntlClientProvider>
-                  {/*</WebSocketProvider>*/}
-                </SessionProvider>
-              </ReactQueryProvider>
+              <PlatformProvider platform={platform}>
+                <ReactQueryProvider>
+                  <SessionProvider session={session}>
+                    {/*<WebSocketProvider>*/}
+                    <NextIntlClientProvider locale={lng}>
+                      <NavigationProvider>
+                        <Navigation lang={lang} session={session} theme={theme}>
+                          <ButtonBackToTop>
+                            <Container className='content'>
+                              <ContentImageProvider>
+                                {children}
+                              </ContentImageProvider>
+                            </Container>
+                          </ButtonBackToTop>
+                          <CustomizedSnackbars />
+                        </Navigation>
+                      </NavigationProvider>
+                    </NextIntlClientProvider>
+                    {/*</WebSocketProvider>*/}
+                  </SessionProvider>
+                </ReactQueryProvider>
+              </PlatformProvider>
             </ColorModeProvider>
           </AppRouterCacheProvider>
         </StyledEngineProvider>

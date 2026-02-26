@@ -5,7 +5,9 @@ import Button, { ButtonProps } from '@mui/material/Button';
 import { alpha } from '@mui/material/styles';
 import { useTranslations } from 'next-intl';
 import * as React from 'react';
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect } from 'react';
+
+import { getSearchShortcut, usePlatform } from './PlatformProvider';
 
 type SxItem = Exclude<SxProps<Theme>, readonly unknown[]>;
 
@@ -17,26 +19,8 @@ function normalizeSx(sx?: SxProps<Theme>): readonly SxItem[] {
 export const SearchButton = React.forwardRef<HTMLButtonElement, ButtonProps>(
   ({ onClick, sx, ...props }, ref) => {
     const t = useTranslations();
-    const [shortcut, setShortcut] = useState<string>('Ctrl+/');
-
-    // Определение платформы для отображения правильного сочетания клавиш
-    const isMacPlatform = useCallback(() => {
-      if (typeof navigator === 'undefined') return false;
-      const userAgent = navigator.userAgent.toLowerCase();
-      return (
-        userAgent.includes('macintosh') ||
-        userAgent.includes('mac os') ||
-        /iPad|iPhone|iPod/.test(navigator.userAgent)
-      );
-    }, []);
-
-    useEffect(() => {
-      if (isMacPlatform()) {
-        setShortcut('⌘/');
-      } else {
-        setShortcut('Ctrl+/');
-      }
-    }, [isMacPlatform]);
+    const platform = usePlatform();
+    const shortcut = getSearchShortcut(platform);
 
     // Обработчик нажатия горячих клавиш
     useEffect(() => {

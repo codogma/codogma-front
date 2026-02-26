@@ -17,10 +17,14 @@ import { getTheme } from '@/helpers/getTheme';
 import { routing } from '@/i18n/routing';
 import { auth } from '@/lib/auth';
 import { Language, UserRole } from '@/types';
+import { detectPlatform } from '@/utils/platform';
 
 export default createMiddleware(routing);
 
 acceptLanguage.languages(languages);
+
+const PLATFORM_COOKIE_NAME = 'user-platform';
+const MAX_AGE = 60 * 60 * 24 * 365; // 1 год
 
 export const config = {
   // Этот matcher охватывает все запросы, кроме api, static, _next и файлов
@@ -33,7 +37,19 @@ export async function proxy(req: NextRequest) {
 
   const response = NextResponse.next();
 
-  // === 0. Установка темы ===
+  // === 0. Определение платформы пользователя ===
+  const existingPlatform = req.cookies.get(PLATFORM_COOKIE_NAME)?.value;
+  if (!existingPlatform) {
+    const userAgent = req.headers.get('user-agent') || '';
+    const platform = detectPlatform(userAgent);
+    response.cookies.set(PLATFORM_COOKIE_NAME, platform, {
+      maxAge: MAX_AGE,
+      path: '/',
+      sameSite: 'lax',
+    });
+  }
+
+  // === 1. Установка темы ===
   // Проверяем как cookie, так и системный заголовок
   const theme = getTheme();
   if (theme === undefined) {
@@ -43,7 +59,7 @@ export async function proxy(req: NextRequest) {
     );
   }
 
-  // === 1. Проверка аутентификационных токенов ===
+  // === 2. Проверка аутентификационных токенов ===
   const status = await auth();
   const refreshToken = req.cookies.get('refresh_token')?.value;
 
@@ -54,7 +70,7 @@ export async function proxy(req: NextRequest) {
     return response;
   }
 
-  // === 2. Логика локализации ===
+  // === 3. Логика локализации ===
   const lngInPath = languages.find((loc) => pathname.startsWith(`/${loc}`));
   const headers = new Headers(req.headers);
   headers.set(headerName, lngInPath ?? lng);
@@ -78,7 +94,7 @@ export async function proxy(req: NextRequest) {
     return response;
   }
 
-  // === 3. Логика защиты маршрутов /admin ===
+  // === 4. Логика защиты маршрутов /admin ===
   if (pathname.startsWith(`/${lng}/admin`)) {
     return handleAdminCheck(req);
   }

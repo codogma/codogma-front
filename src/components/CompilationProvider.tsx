@@ -1,5 +1,5 @@
 'use client';
-import React, { createContext, useContext } from 'react';
+import React, { createContext, useContext, useMemo } from 'react';
 
 interface CompilationContextType {
   isRefetch: boolean;
@@ -22,8 +22,13 @@ export const CompilationProvider = ({
   readonly isRefetch: boolean;
   readonly resetRefetch: () => void;
 }) => {
+  const value = useMemo(
+    () => ({ isRefetch, resetRefetch }),
+    [isRefetch, resetRefetch],
+  );
+
   return (
-    <CompilationContext.Provider value={{ isRefetch, resetRefetch }}>
+    <CompilationContext.Provider value={value}>
       {children}
     </CompilationContext.Provider>
   );
