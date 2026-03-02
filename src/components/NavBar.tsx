@@ -15,6 +15,7 @@ import Container from '@mui/material/Container';
 import IconButton from '@mui/material/IconButton';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
+import { useTheme } from '@mui/material/styles';
 import Toolbar from '@mui/material/Toolbar';
 import Tooltip from '@mui/material/Tooltip';
 import Typography from '@mui/material/Typography';
@@ -45,6 +46,7 @@ type NavBarProps = {
 };
 
 export const NavBar = ({ lang, session, theme }: NavBarProps) => {
+  const muiTheme = useTheme();
   const [anchorElUser, setAnchorElUser] = useState<HTMLElement | null>(null);
   const [compilationDialogOpen, setCompilationDialogOpen] = useState(false);
   const [categoryDialogOpen, setCategoryDialogOpen] = useState(false);
@@ -224,16 +226,25 @@ export const NavBar = ({ lang, session, theme }: NavBarProps) => {
   return (
     <>
       <AppBar
-        className='nav-app-bar'
+        className='nav-app-bar paper-texture paper-edge'
         position='sticky'
         elevation={0}
         sx={{
-          background: 'rgba(255, 255, 255, 0.1)',
-          backdropFilter: 'blur(12px)',
-          WebkitBackdropFilter: 'blur(12px)',
-          borderBottom: '1px solid rgba(255, 255, 255, 0.15)',
+          background: (theme) =>
+            theme.palette.mode === 'dark'
+              ? 'rgba(30, 30, 30, 0.85)'
+              : 'rgba(255, 255, 255, 0.85)',
+          backdropFilter: 'blur(20px) saturate(180%)',
+          WebkitBackdropFilter: 'blur(20px) saturate(180%)',
+          borderBottom: (theme) =>
+            theme.palette.mode === 'dark'
+              ? '1px solid rgba(255, 255, 255, 0.08)'
+              : '1px solid rgba(0, 0, 0, 0.06)',
           transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-          boxShadow: '0 4px 30px rgba(0, 0, 0, 0.1)',
+          boxShadow: (theme) =>
+            theme.palette.mode === 'dark'
+              ? '0 2px 8px rgba(0, 0, 0, 0.3), 0 1px 2px rgba(0, 0, 0, 0.2)'
+              : '0 2px 8px rgba(0, 0, 0, 0.08), 0 1px 2px rgba(0, 0, 0, 0.05)',
         }}
       >
         <Container maxWidth='xl'>
@@ -263,15 +274,20 @@ export const NavBar = ({ lang, session, theme }: NavBarProps) => {
                   fontWeight: 800,
                   letterSpacing: '.25rem',
                   background:
-                    'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                    muiTheme.palette.mode === 'dark'
+                      ? 'linear-gradient(135deg, #8ab4f8 0%, #c58af9 100%)'
+                      : 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
                   backgroundClip: 'text',
                   WebkitBackgroundClip: 'text',
                   WebkitTextFillColor: 'transparent',
                   textDecoration: 'none',
                   transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
                   '&:hover': {
-                    transform: 'scale(1.05)',
-                    filter: 'drop-shadow(0 0 20px rgba(102, 126, 234, 0.5))',
+                    transform: 'scale(1.03)',
+                    filter: (theme) =>
+                      theme.palette.mode === 'dark'
+                        ? 'drop-shadow(0 0 20px rgba(138, 180, 248, 0.5))'
+                        : 'drop-shadow(0 0 20px rgba(102, 126, 234, 0.4))',
                   },
                 }}
               >
@@ -287,17 +303,23 @@ export const NavBar = ({ lang, session, theme }: NavBarProps) => {
                 mr: 1,
                 ml: 'auto',
                 background: 'rgba(255, 255, 255, 0.08)',
-                borderRadius: '12px',
-                border: '1px solid rgba(255, 255, 255, 0.12)',
+                borderRadius: '14px',
+                border: (theme) =>
+                  theme.palette.mode === 'dark'
+                    ? '1px solid rgba(255, 255, 255, 0.1)'
+                    : '1px solid rgba(0, 0, 0, 0.08)',
                 p: 1.5,
                 transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
                 '&:hover': {
                   background: 'rgba(255, 255, 255, 0.15)',
-                  transform: 'scale(1.1)',
-                  boxShadow: '0 8px 25px rgba(0, 0, 0, 0.15)',
+                  transform: 'translateY(-1px)',
+                  boxShadow: (theme) =>
+                    theme.palette.mode === 'dark'
+                      ? '0 4px 12px rgba(0, 0, 0, 0.3)'
+                      : '0 4px 12px rgba(0, 0, 0, 0.1)',
                 },
                 '&:active': {
-                  transform: 'scale(0.95)',
+                  transform: 'scale(0.98)',
                 },
               }}
             />
@@ -309,8 +331,10 @@ export const NavBar = ({ lang, session, theme }: NavBarProps) => {
               sx={{
                 display: { xs: 'none', sm: 'inherit' },
                 mx: 1.5,
-                background: 'rgba(255, 255, 255, 0.15)',
-                height: '28px',
+                background: (theme) =>
+                  theme.palette.mode === 'dark'
+                    ? 'rgba(255, 255, 255, 0.1)'
+                    : 'rgba(0, 0, 0, 0.08)',
               }}
             />
 
@@ -326,11 +350,14 @@ export const NavBar = ({ lang, session, theme }: NavBarProps) => {
                 '& .MuiButton-root': {
                   minWidth: 'auto',
                   p: 1,
-                  borderRadius: '10px',
+                  borderRadius: '12px',
                   transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
                   '&:hover': {
-                    background: 'rgba(255, 255, 255, 0.1)',
-                    transform: 'translateY(-2px)',
+                    background: (theme) =>
+                      theme.palette.mode === 'dark'
+                        ? 'rgba(255, 255, 255, 0.08)'
+                        : 'rgba(0, 0, 0, 0.04)',
+                    transform: 'translateY(-1px)',
                   },
                 },
               }}
@@ -351,23 +378,36 @@ export const NavBar = ({ lang, session, theme }: NavBarProps) => {
               <Tooltip
                 title={t('settings')}
                 arrow
-                TransitionProps={{ timeout: 300 }}
+                slotProps={{ transition: { timeout: 300 } }}
               >
                 <IconButton
                   onClick={handleOpenUserMenu}
                   color='inherit'
                   sx={{
-                    p: 0.5,
-                    borderRadius: '14px',
+                    p: 0,
+                    // borderRadius: '16px',
                     transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-                    border: '2px solid transparent',
+                    border: (theme) =>
+                      theme.palette.mode === 'dark'
+                        ? '2px solid rgba(255, 255, 255, 0.15)'
+                        : '2px solid rgba(0, 0, 0, 0.06)',
+                    background: (theme) =>
+                      theme.palette.mode === 'dark'
+                        ? 'rgba(255, 255, 255, 0.05)'
+                        : 'rgba(255, 255, 255, 0.5)',
                     '&:hover': {
-                      transform: 'scale(1.05)',
-                      boxShadow: '0 8px 25px rgba(102, 126, 234, 0.4)',
-                      border: '2px solid rgba(102, 126, 234, 0.5)',
+                      // transform: 'translateY(-1px)',
+                      boxShadow: (theme) =>
+                        theme.palette.mode === 'dark'
+                          ? '0 6px 20px rgba(0, 0, 0, 0.3)'
+                          : '0 6px 20px rgba(0, 0, 0, 0.1)',
+                      border: (theme) =>
+                        theme.palette.mode === 'dark'
+                          ? '2px solid rgba(138, 180, 248, 0.5)'
+                          : '2px solid rgba(102, 126, 234, 0.4)',
                     },
                     '&:active': {
-                      transform: 'scale(0.95)',
+                      transform: 'scale(0.98)',
                     },
                   }}
                 >
@@ -398,19 +438,23 @@ export const NavBar = ({ lang, session, theme }: NavBarProps) => {
                     elevation: 8,
                     sx: {
                       mt: 1.5,
-                      borderRadius: '16px',
-                      border: '1px solid rgba(255, 255, 255, 0.15)',
-                      backdropFilter: 'blur(20px)',
-                      boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)',
+                      borderRadius: '18px',
+                      border: (theme) =>
+                        theme.palette.mode === 'dark'
+                          ? '1px solid rgba(255, 255, 255, 0.1)'
+                          : '1px solid rgba(0, 0, 0, 0.06)',
+                      backdropFilter: 'blur(20px) saturate(180%)',
                       '& .MuiMenuItem-root': {
-                        borderRadius: '8px',
+                        borderRadius: '10px',
                         mx: 1,
                         my: 0.5,
                         transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
                         '&:hover': {
-                          background:
-                            'linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%)',
-                          transform: 'translateX(4px)',
+                          background: (theme) =>
+                            theme.palette.mode === 'dark'
+                              ? 'rgba(138, 180, 248, 0.15)'
+                              : 'rgba(102, 126, 234, 0.1)',
+                          transform: 'translateX(3px)',
                         },
                       },
                     },

@@ -76,9 +76,8 @@ export const NavPanel = ({ lang }: NavPanelProps) => {
             position: 'relative',
             height: { xs: 0, md: '100vh' },
             background: 'var(--mui-palette-background-paper)',
-            backdropFilter: 'blur(10px)',
-            WebkitBackdropFilter: 'blur(10px)',
-            borderRight: '1px solid var(--mui-palette-divider)',
+            backdropFilter: 'blur(20px) saturate(180%)',
+            WebkitBackdropFilter: 'blur(20px) saturate(180%)',
           },
         }}
       >
@@ -95,7 +94,7 @@ export const NavPanel = ({ lang }: NavPanelProps) => {
                 placement='right'
                 sx={{ display: { sm: 'block', xl: 'none' } }}
                 disableHoverListener={!isMin}
-                componentsProps={{
+                slotProps={{
                   popper: {
                     modifiers: [
                       { name: 'offset', options: { offset: [0, -8] } },
@@ -104,12 +103,19 @@ export const NavPanel = ({ lang }: NavPanelProps) => {
                   tooltip: {
                     sx: {
                       backgroundColor: 'rgba(31, 34, 37, 0.95)',
-                      backdropFilter: 'blur(8px)',
-                      borderRadius: '8px',
+                      backdropFilter: 'blur(12px)',
+                      borderRadius: '10px',
                       px: 1.5,
                       py: 0.75,
                       fontSize: '0.875rem',
-                      boxShadow: '0 4px 20px rgba(0, 0, 0, 0.3)',
+                      border: (theme) =>
+                        theme.palette.mode === 'dark'
+                          ? '1px solid rgba(255, 255, 255, 0.1)'
+                          : '1px solid rgba(0, 0, 0, 0.08)',
+                      boxShadow: (theme) =>
+                        theme.palette.mode === 'dark'
+                          ? '0 4px 20px rgba(0, 0, 0, 0.4)'
+                          : '0 4px 20px rgba(0, 0, 0, 0.12)',
                     },
                   },
                 }}
@@ -121,12 +127,18 @@ export const NavPanel = ({ lang }: NavPanelProps) => {
                       display: 'flex',
                       alignItems: { xs: 'center', lg: 'left' },
                       justifyItems: { xs: 'center', lg: 'left' },
-                      borderRadius: '12px',
+                      borderRadius: '14px',
                       mx: 1,
                       py: 1.5,
                       position: 'relative',
                       overflow: 'hidden',
                       transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                      border:
+                        activeIndex === index
+                          ? theme.palette.mode === 'dark'
+                            ? '1px solid rgba(138, 180, 248, 0.3)'
+                            : '1px solid rgba(102, 126, 234, 0.2)'
+                          : '1px solid transparent',
                       '&::before': {
                         content: '""',
                         position: 'absolute',
@@ -142,18 +154,22 @@ export const NavPanel = ({ lang }: NavPanelProps) => {
                       '&:hover': {
                         background:
                           theme.palette.mode === 'dark'
-                            ? 'rgba(102, 126, 234, 0.15)'
+                            ? 'rgba(138, 180, 248, 0.12)'
                             : 'rgba(102, 126, 234, 0.08)',
-                        transform: 'translateX(4px)',
+                        transform: 'translateX(3px)',
+                        border:
+                          theme.palette.mode === 'dark'
+                            ? '1px solid rgba(138, 180, 248, 0.4)'
+                            : '1px solid rgba(102, 126, 234, 0.3)',
                         '&::before': {
                           opacity: 1,
                         },
                         '& .nav-icon': {
-                          transform: 'scale(1.15) rotate(5deg)',
-                          color:
+                          transform: 'scale(1.12) rotate(3deg)',
+                          background:
                             theme.palette.mode === 'dark'
-                              ? '#8ab4f8'
-                              : '#1a73e8',
+                              ? 'rgba(138, 180, 248, 0.2)'
+                              : 'rgba(102, 126, 234, 0.15)',
                         },
                         '& .nav-text': {
                           color:
@@ -166,16 +182,20 @@ export const NavPanel = ({ lang }: NavPanelProps) => {
                       '&.Mui-selected': {
                         background:
                           theme.palette.mode === 'dark'
-                            ? 'rgba(102, 126, 234, 0.25)'
-                            : 'rgba(102, 126, 234, 0.15)',
+                            ? 'rgba(138, 180, 248, 0.18)'
+                            : 'rgba(102, 126, 234, 0.12)',
+                        border:
+                          theme.palette.mode === 'dark'
+                            ? '1px solid rgba(138, 180, 248, 0.4)'
+                            : '1px solid rgba(102, 126, 234, 0.3)',
                         '&::before': {
                           opacity: 1,
                         },
                         '& .nav-icon': {
-                          color:
+                          background:
                             theme.palette.mode === 'dark'
-                              ? '#8ab4f8'
-                              : '#1a73e8',
+                              ? 'rgba(138, 180, 248, 0.25)'
+                              : 'rgba(102, 126, 234, 0.2)',
                         },
                         '& .nav-text': {
                           fontWeight: 700,
@@ -184,6 +204,9 @@ export const NavPanel = ({ lang }: NavPanelProps) => {
                               ? '#8ab4f8'
                               : '#1a73e8',
                         },
+                      },
+                      '&:active': {
+                        transform: 'scale(0.98)',
                       },
                     })}
                     onClick={() => {
@@ -207,19 +230,27 @@ export const NavPanel = ({ lang }: NavPanelProps) => {
                           display: 'flex',
                           alignItems: 'center',
                           justifyContent: 'center',
-                          width: 40,
-                          height: 40,
-                          borderRadius: '10px',
+                          width: 42,
+                          height: 42,
+                          borderRadius: '12px',
                           background:
                             activeIndex === index
                               ? theme.palette.mode === 'dark'
-                                ? 'rgba(102, 126, 234, 0.3)'
-                                : 'rgba(102, 126, 234, 0.2)'
+                                ? 'rgba(138, 180, 248, 0.2)'
+                                : 'rgba(102, 126, 234, 0.15)'
                               : theme.palette.mode === 'dark'
-                                ? 'rgba(255, 255, 255, 0.08)'
-                                : 'rgba(0, 0, 0, 0.05)',
+                                ? 'rgba(255, 255, 255, 0.06)'
+                                : 'rgba(0, 0, 0, 0.04)',
+                          border:
+                            activeIndex === index
+                              ? theme.palette.mode === 'dark'
+                                ? '1px solid rgba(138, 180, 248, 0.2)'
+                                : '1px solid rgba(102, 126, 234, 0.15)'
+                              : '1px solid transparent',
+                          transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
                           '& svg': {
                             fontSize: 22,
+                            transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
                           },
                         })}
                       >

@@ -131,7 +131,7 @@ export const NavTabs: React.FC<NavTabsProps> = memo(function NavTabs({ tabs }) {
   if (!visible) return null;
 
   return (
-    <div ref={ref} className='nav-tabs'>
+    <div ref={ref} className='nav-tabs paper-texture'>
       <Tabs
         value={pathname}
         variant={overflow ? 'scrollable' : 'standard'}
@@ -197,7 +197,7 @@ export const NavTabs: React.FC<NavTabsProps> = memo(function NavTabs({ tabs }) {
                         width: 28,
                         height: 28,
                         ml: 0.5,
-                        borderRadius: '8px',
+                        borderRadius: '10px',
                         p: 0.5,
                         borderColor: 'rgba(255, 255, 255, 0.2)',
                         transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
@@ -206,14 +206,14 @@ export const NavTabs: React.FC<NavTabsProps> = memo(function NavTabs({ tabs }) {
                             theme.palette.mode === 'dark'
                               ? 'rgba(255, 255, 255, 0.1)'
                               : 'rgba(0, 0, 0, 0.05)',
-                          transform: 'scale(1.1)',
+                          transform: 'scale(1.08)',
                           borderColor:
                             theme.palette.mode === 'dark'
-                              ? 'rgba(255, 255, 255, 0.4)'
+                              ? 'rgba(255, 255, 255, 0.35)'
                               : 'rgba(0, 0, 0, 0.2)',
                         },
                         '&:active': {
-                          transform: 'scale(0.95)',
+                          transform: 'scale(0.96)',
                         },
                         '& .MuiSvgIcon-root': {
                           fontSize: 20,
@@ -221,7 +221,7 @@ export const NavTabs: React.FC<NavTabsProps> = memo(function NavTabs({ tabs }) {
                             'transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
                         },
                         '&:hover .MuiSvgIcon-root': {
-                          transform: 'scale(1.15)',
+                          transform: 'scale(1.12)',
                         },
                       }}
                     >
@@ -244,10 +244,11 @@ export const NavTabs: React.FC<NavTabsProps> = memo(function NavTabs({ tabs }) {
             sx={(theme) => ({
               minHeight: 48,
               textTransform: 'none',
-              borderRadius: '12px 12px 0 0',
+              borderRadius: '14px 14px 0 0',
               transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
               position: 'relative',
               overflow: 'hidden',
+              margin: '0 2px',
               '&::before': {
                 content: '""',
                 position: 'absolute',
@@ -261,12 +262,11 @@ export const NavTabs: React.FC<NavTabsProps> = memo(function NavTabs({ tabs }) {
               '&:hover': {
                 backgroundColor:
                   theme.palette.mode === 'dark'
-                    ? 'rgba(102, 126, 234, 0.15)'
+                    ? 'rgba(138, 180, 248, 0.12)'
                     : 'rgba(102, 126, 234, 0.08)',
                 transform: 'translateY(-2px)',
                 '& .MuiTab-iconWrapper': {
-                  transform: 'scale(1.15) rotate(5deg)',
-                  color: theme.palette.mode === 'dark' ? '#8ab4f8' : '#1a73e8',
+                  transform: 'scale(1.12) rotate(2deg)',
                 },
                 color: theme.palette.mode === 'dark' ? '#8ab4f8' : '#1a73e8',
               },
@@ -288,7 +288,7 @@ export const NavTabs: React.FC<NavTabsProps> = memo(function NavTabs({ tabs }) {
               },
               '& .MuiTab-iconWrapper': {
                 transition:
-                  'transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), color 0.3s ease',
+                  'transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), color 0.3s ease, background 0.3s ease',
                 marginRight: theme.spacing(1),
               },
             })}
@@ -316,27 +316,33 @@ export const NavTabs: React.FC<NavTabsProps> = memo(function NavTabs({ tabs }) {
           slotProps={{
             paper: {
               sx: {
-                borderRadius: '16px',
-                border: '1px solid rgba(255, 255, 255, 0.15)',
-                backdropFilter: 'blur(20px)',
-                boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)',
+                borderRadius: '18px',
+                border: (theme) =>
+                  theme.palette.mode === 'dark'
+                    ? '1px solid rgba(255, 255, 255, 0.1)'
+                    : '1px solid rgba(0, 0, 0, 0.06)',
+                backdropFilter: 'blur(20px) saturate(180%)',
+                boxShadow: (theme) =>
+                  theme.palette.mode === 'dark'
+                    ? '0 8px 32px rgba(0, 0, 0, 0.4), 0 2px 8px rgba(0, 0, 0, 0.2)'
+                    : '0 8px 32px rgba(0, 0, 0, 0.12), 0 2px 8px rgba(0, 0, 0, 0.08)',
                 mt: 1,
                 '& .MuiMenuItem-root': {
-                  borderRadius: '8px',
+                  borderRadius: '10px',
                   mx: 1,
                   my: 0.5,
                   transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
                   '&:hover': {
                     background:
                       theme.palette.mode === 'dark'
-                        ? 'rgba(102, 126, 234, 0.15)'
+                        ? 'rgba(138, 180, 248, 0.15)'
                         : 'rgba(102, 126, 234, 0.1)',
-                    transform: 'translateX(4px)',
+                    transform: 'translateX(3px)',
                   },
                   '&.Mui-selected': {
                     background:
                       theme.palette.mode === 'dark'
-                        ? 'rgba(102, 126, 234, 0.25)'
+                        ? 'rgba(138, 180, 248, 0.2)'
                         : 'rgba(102, 126, 234, 0.15)',
                     fontWeight: 700,
                     color:
