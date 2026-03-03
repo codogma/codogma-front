@@ -263,8 +263,8 @@ export const NavPanel = ({ lang }: NavPanelProps) => {
                       sx={{
                         '& .MuiTypography-root': {
                           fontSize: {
-                            xs: '0.75rem',
-                            lg: '0.9rem',
+                            xs: '0.875rem',
+                            lg: '1.1rem',
                           },
                           fontWeight: activeIndex === index ? 700 : 500,
                           transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',

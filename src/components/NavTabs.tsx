@@ -1,4 +1,3 @@
-// src/components/NavTabs.tsx
 'use client';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import {
@@ -138,15 +137,24 @@ export const NavTabs: React.FC<NavTabsProps> = memo(function NavTabs({ tabs }) {
         scrollButtons={overflow ? 'auto' : false}
         allowScrollButtonsMobile={overflow}
         aria-label='scrollable force tabs example'
-        TabIndicatorProps={{
-          sx: {
-            height: 3,
-            background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-            borderRadius: '3px 3px 0 0',
+        slotProps={{
+          indicator: {
+            sx: {
+              height: 3,
+              background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+              borderRadius: '3px 3px 0 0',
+            },
           },
         }}
         sx={{
           minHeight: 48,
+          '& .MuiTab-root': {
+            fontSize: {
+              xs: '0.8125rem',
+              lg: '0.875rem',
+            },
+            fontWeight: 500,
+          },
           '& .MuiTabs-scrollButtons': {
             transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
             '&:hover': {
@@ -302,9 +310,6 @@ export const NavTabs: React.FC<NavTabsProps> = memo(function NavTabs({ tabs }) {
           anchorEl={anchorEl}
           open={open}
           onClose={handleMenuClose}
-          MenuListProps={{
-            'aria-labelledby': 'basic-button',
-          }}
           anchorOrigin={{
             vertical: 'bottom',
             horizontal: 'center',
@@ -314,6 +319,7 @@ export const NavTabs: React.FC<NavTabsProps> = memo(function NavTabs({ tabs }) {
             horizontal: 'center',
           }}
           slotProps={{
+            list: { 'aria-labelledby': 'basic-button' },
             paper: {
               sx: {
                 borderRadius: '18px',
