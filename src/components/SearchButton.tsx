@@ -81,16 +81,24 @@ export const SearchButton = React.forwardRef<HTMLButtonElement, ButtonProps>(
             position: 'relative',
             color: 'inherit',
             fontSize: theme.typography.pxToRem(14),
-            border: '1px solid rgba(255, 255, 255, 0.15)',
-            borderRadius: '12px',
+            borderRadius: '14px',
             background: 'rgba(255, 255, 255, 0.08)',
             backdropFilter: 'blur(8px)',
             WebkitBackdropFilter: 'blur(8px)',
             transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+            border:
+              theme.palette.mode === 'dark'
+                ? '1px solid rgba(255, 255, 255, 0.1)'
+                : '1px solid rgba(0, 0, 0, 0.08)',
             '&:hover': {
-              backgroundColor: 'rgba(255, 255, 255, 0.15)',
-              boxShadow: '0 4px 16px rgba(0, 0, 0, 0.15)',
-              transform: 'scale(1.02)',
+              backgroundColor:
+                theme.palette.mode === 'dark'
+                  ? 'rgba(255, 255, 255, 0.15)'
+                  : 'rgba(0, 0, 0, 0.04)',
+              boxShadow:
+                theme.palette.mode === 'dark'
+                  ? '0 4px 12px rgba(0, 0, 0, 0.3)'
+                  : '0 4px 12px rgba(0, 0, 0, 0.1)',
             },
             '&:active': {
               transform: 'scale(0.98)',
@@ -126,16 +134,19 @@ export const SearchButton = React.forwardRef<HTMLButtonElement, ButtonProps>(
             },
             '&:hover kbd': {
               opacity: 1,
-              backgroundColor: 'rgba(255, 255, 255, 0.15)',
-              borderColor: 'rgba(255, 255, 255, 0.4)',
+              backgroundColor:
+                theme.palette.mode === 'dark'
+                  ? 'rgba(255, 255, 255, 0.15)'
+                  : 'rgba(0, 0, 0, 0.04)',
+              borderColor:
+                theme.palette.mode === 'dark'
+                  ? 'rgba(255, 255, 255, 0.4)'
+                  : 'rgba(0, 0, 0, 0.15)',
             },
             '& svg': {
               fontSize: '1.125rem',
               transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
               color: 'inherit',
-            },
-            '&:hover svg': {
-              transform: 'scale(1.05)',
             },
           }),
           ...extraSx,

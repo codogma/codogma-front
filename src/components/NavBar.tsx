@@ -294,51 +294,6 @@ export const NavBar = ({ lang, session, theme }: NavBarProps) => {
                 CODOGMA
               </Typography>
             </Link>
-
-            {/* Кнопка поиска с улучшенным дизайном */}
-            <SearchButton
-              ref={searchButtonRef}
-              onClick={handleOpenSearchDialog}
-              sx={{
-                mr: 1,
-                ml: 'auto',
-                background: 'rgba(255, 255, 255, 0.08)',
-                borderRadius: '14px',
-                border: (theme) =>
-                  theme.palette.mode === 'dark'
-                    ? '1px solid rgba(255, 255, 255, 0.1)'
-                    : '1px solid rgba(0, 0, 0, 0.08)',
-                p: 1.5,
-                transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-                '&:hover': {
-                  background: 'rgba(255, 255, 255, 0.15)',
-                  transform: 'translateY(-1px)',
-                  boxShadow: (theme) =>
-                    theme.palette.mode === 'dark'
-                      ? '0 4px 12px rgba(0, 0, 0, 0.3)'
-                      : '0 4px 12px rgba(0, 0, 0, 0.1)',
-                },
-                '&:active': {
-                  transform: 'scale(0.98)',
-                },
-              }}
-            />
-
-            <Divider
-              orientation='vertical'
-              variant='middle'
-              flexItem
-              sx={{
-                display: { xs: 'none', sm: 'inherit' },
-                mx: 1.5,
-                background: (theme) =>
-                  theme.palette.mode === 'dark'
-                    ? 'rgba(255, 255, 255, 0.1)'
-                    : 'rgba(0, 0, 0, 0.08)',
-              }}
-            />
-
-            {/* Группа инструментов */}
             <ButtonGroup
               variant='text'
               sx={{
@@ -357,115 +312,126 @@ export const NavBar = ({ lang, session, theme }: NavBarProps) => {
                       theme.palette.mode === 'dark'
                         ? 'rgba(255, 255, 255, 0.08)'
                         : 'rgba(0, 0, 0, 0.04)',
-                    transform: 'translateY(-1px)',
                   },
                 },
               }}
             >
+              <SearchButton
+                ref={searchButtonRef}
+                onClick={handleOpenSearchDialog}
+              />
+              <Divider
+                orientation='vertical'
+                variant='middle'
+                flexItem
+                sx={{
+                  display: { xs: 'none', sm: 'inherit' },
+                  mx: 1.5,
+                  background: (theme) =>
+                    theme.palette.mode === 'dark'
+                      ? 'rgba(255, 255, 255, 0.1)'
+                      : 'rgba(0, 0, 0, 0.08)',
+                }}
+              />
               <LocalizationDialog lang={lang} />
               <ThemeToggleButton title={t('theme')} theme={theme} />
               <NotificationDialog lang={lang} />
+              <Box sx={{ flexGrow: 0, ml: 1 }}>
+                <Tooltip
+                  title={t('settings')}
+                  arrow
+                  slotProps={{ transition: { timeout: 300 } }}
+                >
+                  <IconButton
+                    onClick={handleOpenUserMenu}
+                    color='inherit'
+                    sx={{
+                      p: 0,
+                      transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                      border: (theme) =>
+                        theme.palette.mode === 'dark'
+                          ? '2px solid rgba(255, 255, 255, 0.15)'
+                          : '2px solid rgba(0, 0, 0, 0.06)',
+                      background: (theme) =>
+                        theme.palette.mode === 'dark'
+                          ? 'rgba(255, 255, 255, 0.05)'
+                          : 'rgba(255, 255, 255, 0.5)',
+                      '&:hover': {
+                        boxShadow: (theme) =>
+                          theme.palette.mode === 'dark'
+                            ? '0 6px 20px rgba(0, 0, 0, 0.3)'
+                            : '0 6px 20px rgba(0, 0, 0, 0.1)',
+                        border: (theme) =>
+                          theme.palette.mode === 'dark'
+                            ? '2px solid rgba(138, 180, 248, 0.5)'
+                            : '2px solid rgba(102, 126, 234, 0.4)',
+                      },
+                      '&:active': {
+                        transform: 'scale(0.98)',
+                      },
+                    }}
+                  >
+                    <AvatarImage
+                      alt={currentSession?.user?.name ?? ''}
+                      src={currentSession?.user?.image ?? ''}
+                      priority
+                      variant='circular'
+                      size={40}
+                      type='avatar'
+                      sx={{
+                        transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                      }}
+                    />
+                  </IconButton>
+                </Tooltip>
+                <Menu
+                  sx={{ mt: '45px' }}
+                  id='menu-appbar'
+                  anchorEl={anchorElUser}
+                  anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+                  keepMounted
+                  transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+                  open={Boolean(anchorElUser)}
+                  onClose={handleCloseUserMenu}
+                  slotProps={{
+                    paper: {
+                      elevation: 8,
+                      sx: {
+                        mt: 1.5,
+                        borderRadius: '18px',
+                        border: (theme) =>
+                          theme.palette.mode === 'dark'
+                            ? '1px solid rgba(255, 255, 255, 0.1)'
+                            : '1px solid rgba(0, 0, 0, 0.06)',
+                        backdropFilter: 'blur(20px) saturate(180%)',
+                        '& .MuiMenuItem-root': {
+                          borderRadius: '10px',
+                          mx: 1,
+                          my: 0.5,
+                          transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
+                          '&:hover': {
+                            background: (theme) =>
+                              theme.palette.mode === 'dark'
+                                ? 'rgba(138, 180, 248, 0.15)'
+                                : 'rgba(102, 126, 234, 0.1)',
+                            transform: 'translateX(3px)',
+                          },
+                        },
+                      },
+                    },
+                  }}
+                >
+                  <MenuList className='menu-list'>
+                    {isAuthenticated ? authMenuItems : guestMenuItems}
+                  </MenuList>
+                </Menu>
+              </Box>
             </ButtonGroup>
-
             <SearchDialog
               open={searchDialogOpen}
               onClose={handleCloseSearchDialog}
               anchorEl={searchAnchorEl}
             />
-
-            {/* Меню пользователя с улучшенным аватаром */}
-            <Box sx={{ flexGrow: 0, ml: 1 }}>
-              <Tooltip
-                title={t('settings')}
-                arrow
-                slotProps={{ transition: { timeout: 300 } }}
-              >
-                <IconButton
-                  onClick={handleOpenUserMenu}
-                  color='inherit'
-                  sx={{
-                    p: 0,
-                    // borderRadius: '16px',
-                    transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-                    border: (theme) =>
-                      theme.palette.mode === 'dark'
-                        ? '2px solid rgba(255, 255, 255, 0.15)'
-                        : '2px solid rgba(0, 0, 0, 0.06)',
-                    background: (theme) =>
-                      theme.palette.mode === 'dark'
-                        ? 'rgba(255, 255, 255, 0.05)'
-                        : 'rgba(255, 255, 255, 0.5)',
-                    '&:hover': {
-                      // transform: 'translateY(-1px)',
-                      boxShadow: (theme) =>
-                        theme.palette.mode === 'dark'
-                          ? '0 6px 20px rgba(0, 0, 0, 0.3)'
-                          : '0 6px 20px rgba(0, 0, 0, 0.1)',
-                      border: (theme) =>
-                        theme.palette.mode === 'dark'
-                          ? '2px solid rgba(138, 180, 248, 0.5)'
-                          : '2px solid rgba(102, 126, 234, 0.4)',
-                    },
-                    '&:active': {
-                      transform: 'scale(0.98)',
-                    },
-                  }}
-                >
-                  <AvatarImage
-                    alt={currentSession?.user?.name ?? ''}
-                    src={currentSession?.user?.image ?? ''}
-                    priority
-                    variant='circular'
-                    size={40}
-                    type='avatar'
-                    sx={{
-                      transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-                    }}
-                  />
-                </IconButton>
-              </Tooltip>
-              <Menu
-                sx={{ mt: '45px' }}
-                id='menu-appbar'
-                anchorEl={anchorElUser}
-                anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
-                keepMounted
-                transformOrigin={{ vertical: 'top', horizontal: 'right' }}
-                open={Boolean(anchorElUser)}
-                onClose={handleCloseUserMenu}
-                slotProps={{
-                  paper: {
-                    elevation: 8,
-                    sx: {
-                      mt: 1.5,
-                      borderRadius: '18px',
-                      border: (theme) =>
-                        theme.palette.mode === 'dark'
-                          ? '1px solid rgba(255, 255, 255, 0.1)'
-                          : '1px solid rgba(0, 0, 0, 0.06)',
-                      backdropFilter: 'blur(20px) saturate(180%)',
-                      '& .MuiMenuItem-root': {
-                        borderRadius: '10px',
-                        mx: 1,
-                        my: 0.5,
-                        transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
-                        '&:hover': {
-                          background: (theme) =>
-                            theme.palette.mode === 'dark'
-                              ? 'rgba(138, 180, 248, 0.15)'
-                              : 'rgba(102, 126, 234, 0.1)',
-                          transform: 'translateX(3px)',
-                        },
-                      },
-                    },
-                  },
-                }}
-              >
-                <MenuList className='menu-list'>
-                  {isAuthenticated ? authMenuItems : guestMenuItems}
-                </MenuList>
-              </Menu>
-            </Box>
           </Toolbar>
         </Container>
       </AppBar>
