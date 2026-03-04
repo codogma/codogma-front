@@ -17,7 +17,6 @@ import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import { useTheme } from '@mui/material/styles';
 import Toolbar from '@mui/material/Toolbar';
-import Tooltip from '@mui/material/Tooltip';
 import Typography from '@mui/material/Typography';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -31,6 +30,7 @@ import { AvatarImage } from '@/components/AvatarImage';
 import { CategoryDialog } from '@/components/CategoryDialog';
 import { CompilationDialog } from '@/components/CompilationDialog';
 import { LocalizationDialog } from '@/components/LocalizationDialog';
+import { NavTooltip } from '@/components/NavTooltip';
 import { NotificationDialog } from '@/components/NotificationDialog';
 import { SearchButton } from '@/components/SearchButton';
 import { SearchDialog } from '@/components/SearchDialog';
@@ -337,7 +337,7 @@ export const NavBar = ({ lang, session, theme }: NavBarProps) => {
               <ThemeToggleButton title={t('theme')} theme={theme} />
               <NotificationDialog lang={lang} />
               <Box sx={{ flexGrow: 0, ml: 1 }}>
-                <Tooltip
+                <NavTooltip
                   title={t('settings')}
                   arrow
                   slotProps={{ transition: { timeout: 300 } }}
@@ -383,7 +383,7 @@ export const NavBar = ({ lang, session, theme }: NavBarProps) => {
                       }}
                     />
                   </IconButton>
-                </Tooltip>
+                </NavTooltip>
                 <Menu
                   sx={{ mt: '45px' }}
                   id='menu-appbar'

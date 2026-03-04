@@ -10,7 +10,6 @@ import Footer from '@/components/Footer';
 import { NavBar } from '@/components/NavBar';
 import { useNavigation } from '@/components/NavigationProvider';
 import { NavPanel } from '@/components/NavPanel';
-import { NavSidebar } from '@/components/NavSidebar';
 import { Language, ThemeProviderProps } from '@/types';
 
 type NavigationProps = {
@@ -59,19 +58,19 @@ export const Navigation = ({
             {children}
             {!isFullscreen && <Footer lang={lang} />}
           </Grid>
-          {!!articleId && (
-            <Grid
-              sx={{
-                position: 'sticky',
-                top: 64,
-                height: { xs: 'auto', md: 'calc(100vh - 64px)' },
-                overflow: 'hidden',
-                display: { xs: 'none', md: isFullscreen ? 'none' : 'block' },
-              }}
-            >
-              <NavSidebar lang={lang} />
-            </Grid>
-          )}
+          {/*{!!articleId && (*/}
+          {/*  <Grid*/}
+          {/*    sx={{*/}
+          {/*      position: 'sticky',*/}
+          {/*      top: 64,*/}
+          {/*      height: { xs: 'auto', md: 'calc(100vh - 64px)' },*/}
+          {/*      overflow: 'hidden',*/}
+          {/*      display: { xs: 'none', md: isFullscreen ? 'none' : 'block' },*/}
+          {/*    }}*/}
+          {/*  >*/}
+          {/*    <NavSidebar lang={lang} />*/}
+          {/*  </Grid>*/}
+          {/*)}*/}
         </Grid>
       </Container>
       {!isFullscreen && <CustomBottomNavigation lang={lang} />}

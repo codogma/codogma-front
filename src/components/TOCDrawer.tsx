@@ -10,13 +10,13 @@ import {
 } from '@mui/material';
 import IconButton from '@mui/material/IconButton';
 import Stack from '@mui/material/Stack';
-import Tooltip from '@mui/material/Tooltip';
 import Typography from '@mui/material/Typography';
 import { usePathname, useRouter } from 'next/navigation';
 import React, { useCallback, useState } from 'react';
 
 import { DrawerHeader } from '@/components/DrawerHeader';
 import { useNavigation } from '@/components/NavigationProvider';
+import { NavTooltip } from '@/components/NavTooltip';
 import { Scrollbar, useScrollContext } from '@/components/Scrollbar';
 import { TocItem } from '@/helpers/parseToc';
 import { GetArticle } from '@/types';
@@ -159,10 +159,10 @@ export const TOCDrawer = ({ article, toc }: TOCDrawerProps) => {
 
   return toc.length !== 0 ? (
     <>
-      <Tooltip
+      <NavTooltip
         title='Оглавление'
         arrow
-        placement={isFullscreen ? 'top' : 'left'}
+        placement='top'
         sx={{ display: 'block' }}
       >
         <IconButton
@@ -175,7 +175,7 @@ export const TOCDrawer = ({ article, toc }: TOCDrawerProps) => {
         >
           <ListAltOutlinedIcon />
         </IconButton>
-      </Tooltip>
+      </NavTooltip>
       {TOCDrawer}
     </>
   ) : null;

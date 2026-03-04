@@ -8,18 +8,16 @@ import {
 } from '@mui/material';
 import IconButton from '@mui/material/IconButton';
 import Stack from '@mui/material/Stack';
-import Tooltip from '@mui/material/Tooltip';
 import Typography from '@mui/material/Typography';
 import React, { useEffect, useState } from 'react';
 
 import { DrawerHeader } from '@/components/DrawerHeader';
-import { useNavigation } from '@/components/NavigationProvider';
+import { NavTooltip } from '@/components/NavTooltip';
 import { Scrollbar } from '@/components/Scrollbar';
 import { getNumber, getString } from '@/helpers/localStorage';
 
 export const SettingsDrawer = () => {
   const [open, setOpen] = useState<boolean>(false);
-  const { isFullscreen } = useNavigation();
   const [fontSize, setFontSize] = useState<number>(() =>
     getNumber('fontSize', 1),
   );
@@ -180,10 +178,10 @@ export const SettingsDrawer = () => {
 
   return (
     <>
-      <Tooltip
+      <NavTooltip
         title='Настройки'
         arrow
-        placement={isFullscreen ? 'top' : 'left'}
+        placement='top'
         sx={{ display: 'block' }}
       >
         <IconButton
@@ -196,7 +194,7 @@ export const SettingsDrawer = () => {
         >
           <SettingsApplicationsOutlinedIcon />
         </IconButton>
-      </Tooltip>
+      </NavTooltip>
       {SettingsDrawer}
     </>
   );

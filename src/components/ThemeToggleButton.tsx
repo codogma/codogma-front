@@ -4,10 +4,10 @@ import Brightness7Icon from '@mui/icons-material/Brightness7';
 import { SxProps, Theme } from '@mui/material';
 import Checkbox from '@mui/material/Checkbox';
 import { useColorScheme } from '@mui/material/styles';
-import Tooltip from '@mui/material/Tooltip';
 import Cookies from 'js-cookie';
 import React, { FC, useState } from 'react';
 
+import { NavTooltip } from '@/components/NavTooltip';
 import { themeConfig } from '@/constants/theme-config';
 import { ThemeProviderProps } from '@/types';
 
@@ -37,7 +37,7 @@ export const ThemeToggleButton: FC<ThemeToggleButtonProps> = ({
   };
 
   return (
-    <Tooltip title={title} arrow>
+    <NavTooltip title={title} arrow>
       <Checkbox
         checked={themeMode === 'dark'}
         onChange={handleToggleTheme}
@@ -77,6 +77,6 @@ export const ThemeToggleButton: FC<ThemeToggleButtonProps> = ({
           ...sx,
         }}
       />
-    </Tooltip>
+    </NavTooltip>
   );
 };

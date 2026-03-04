@@ -11,7 +11,6 @@ import {
   List,
   ListItem,
   Stack,
-  Tooltip,
   Typography,
 } from '@mui/material';
 import CardActions from '@mui/material/CardActions';
@@ -27,6 +26,7 @@ import { Fragment, useState } from 'react';
 import { CustomDialog } from '@/components/CustomDialog';
 import { CustomPagination } from '@/components/CustomPagination';
 import { EditNotification } from '@/components/EditNotification';
+import { NavTooltip } from '@/components/NavTooltip';
 import { Scrollbar } from '@/components/Scrollbar';
 import { NOTIFICATIONS_PER_PAGE } from '@/constants/limits';
 import { dispatchCustomEvent } from '@/helpers/dispatchCustomEvent';
@@ -153,7 +153,7 @@ export const NotificationDialog = ({ lang }: NotificationsDialogProps) => {
 
   return (
     <>
-      <Tooltip title={t('notifications')} arrow>
+      <NavTooltip title={t('notifications')} arrow>
         <IconButton
           color='inherit'
           onClick={handleClickOpen}
@@ -178,7 +178,7 @@ export const NotificationDialog = ({ lang }: NotificationsDialogProps) => {
             />
           </Badge>
         </IconButton>
-      </Tooltip>
+      </NavTooltip>
       <CustomDialog
         open={open}
         onClose={handleClose}

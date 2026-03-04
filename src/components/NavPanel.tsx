@@ -12,13 +12,13 @@ import {
   ListItemText,
 } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
-import Tooltip from '@mui/material/Tooltip';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { useEffect, useState } from 'react';
 
+import { NavTooltip } from '@/components/NavTooltip';
 import { replaceUrlAndDispatchEvent } from '@/helpers/replaceUrlAndDispatchEvent';
 import { Language } from '@/types';
 
@@ -88,7 +88,7 @@ export const NavPanel = ({ lang }: NavPanelProps) => {
               disablePadding
               sx={{ display: 'block', mb: 1 }}
             >
-              <Tooltip
+              <NavTooltip
                 title={text}
                 arrow
                 placement='right'
@@ -280,7 +280,7 @@ export const NavPanel = ({ lang }: NavPanelProps) => {
                     />
                   </ListItemButton>
                 </Link>
-              </Tooltip>
+              </NavTooltip>
             </ListItem>
           ))}
         </List>

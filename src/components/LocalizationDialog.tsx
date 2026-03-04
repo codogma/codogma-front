@@ -14,7 +14,6 @@ import {
   IconButton,
   MenuItem,
   TextField,
-  Tooltip,
 } from '@mui/material';
 import Cookies from 'js-cookie';
 import { usePathname, useRouter } from 'next/navigation';
@@ -34,6 +33,7 @@ import {
 import { z } from 'zod';
 
 import { CustomDialog } from '@/components/CustomDialog';
+import { NavTooltip } from '@/components/NavTooltip';
 import { contlCookie, intlCookie, languageMenuItems } from '@/constants/i18n';
 import { getQueryClient } from '@/lib/react-query';
 import { Language } from '@/types';
@@ -112,7 +112,7 @@ export const LocalizationDialog = ({ lang }: LocalizationDialogProps) => {
 
   return (
     <>
-      <Tooltip title={t('language')} arrow>
+      <NavTooltip title={t('language')} arrow>
         <IconButton
           color='inherit'
           onClick={handleClickOpen}
@@ -135,7 +135,7 @@ export const LocalizationDialog = ({ lang }: LocalizationDialogProps) => {
             }}
           />
         </IconButton>
-      </Tooltip>
+      </NavTooltip>
       <CustomDialog
         open={open}
         onClose={handleClose}
