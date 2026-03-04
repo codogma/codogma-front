@@ -12,13 +12,13 @@ type CompilationsProps = {
   readonly refetch?: () => void;
 };
 
-export default function Compilations({
+export const Compilations = ({
   compilations,
   isLoading,
   compilationsPerPageStart,
   lang,
   refetch,
-}: CompilationsProps) {
+}: CompilationsProps) => {
   return (
     <Grid container spacing={2}>
       {(isLoading
@@ -38,4 +38,4 @@ export default function Compilations({
       ))}
     </Grid>
   );
-}
+};

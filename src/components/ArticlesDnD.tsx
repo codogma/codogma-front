@@ -16,13 +16,13 @@ import {
   Paper,
 } from '@mui/material';
 import MenuItem from '@mui/material/MenuItem';
-import Tooltip from '@mui/material/Tooltip';
 import Typography from '@mui/material/Typography';
 import { useMutation } from '@tanstack/react-query';
 import { useTranslations } from 'next-intl';
 import React, { useState } from 'react';
 
 import { DefaultImage } from '@/components/DefaultImage';
+import { NavTooltip } from '@/components/NavTooltip';
 import {
   updateCompilation,
   UpdateCompilationDTO,
@@ -140,7 +140,7 @@ const SortableItem = ({ article, index, onDelete }: SortableItemProp) => {
       <ListItem
         alignItems='center'
         secondaryAction={
-          <Tooltip title='Delete'>
+          <NavTooltip title='Delete'>
             <IconButton
               edge='end'
               aria-label='delete'
@@ -148,7 +148,7 @@ const SortableItem = ({ article, index, onDelete }: SortableItemProp) => {
             >
               <DeleteIcon />
             </IconButton>
-          </Tooltip>
+          </NavTooltip>
         }
       >
         <ListItemIcon>

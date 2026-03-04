@@ -4,7 +4,7 @@ import React, { use, useState } from 'react';
 
 import { CustomPagination } from '@/components/CustomPagination';
 import { Search } from '@/components/Search';
-import Users from '@/components/Users';
+import { Users } from '@/components/Users';
 import { contlCookie } from '@/constants/i18n';
 import { USERS_PER_PAGE } from '@/constants/limits';
 import { useEventListener } from '@/helpers/useEventListener';

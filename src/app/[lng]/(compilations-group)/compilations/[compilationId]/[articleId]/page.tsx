@@ -1,7 +1,7 @@
 'use client';
 import React, { use } from 'react';
 
-import Article from '@/components/Article';
+import { Article } from '@/components/Article';
 import { Language } from '@/types';
 
 type PageProps = {

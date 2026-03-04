@@ -10,7 +10,6 @@ import {
 } from '@mui/material';
 import Tab from '@mui/material/Tab';
 import Tabs from '@mui/material/Tabs';
-import Tooltip from '@mui/material/Tooltip';
 import Link from 'next/link';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useTranslations } from 'next-intl';
@@ -23,6 +22,7 @@ import React, {
   useState,
 } from 'react';
 
+import { NavTooltip } from '@/components/NavTooltip';
 import { ArticleSortField, SortOrder } from '@/types';
 
 export interface TabProps {
@@ -58,7 +58,7 @@ const SORT_OPTIONS = [
   },
 ];
 
-export const NavTabs: React.FC<NavTabsProps> = memo(function NavTabs({ tabs }) {
+const NavTabsComponent = ({ tabs }: NavTabsProps) => {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -186,7 +186,7 @@ export const NavTabs: React.FC<NavTabsProps> = memo(function NavTabs({ tabs }) {
               >
                 {tab.label}
                 {tab.href === pathname && isArticlesListingPage && (
-                  <Tooltip title={t('filterOptions')}>
+                  <NavTooltip title={t('filterOptions')}>
                     <Button
                       id='basic-button'
                       aria-controls={open ? 'basic-menu' : undefined}
@@ -241,7 +241,7 @@ export const NavTabs: React.FC<NavTabsProps> = memo(function NavTabs({ tabs }) {
                         }}
                       />
                     </Button>
-                  </Tooltip>
+                  </NavTooltip>
                 )}
               </Typography>
             }
@@ -384,4 +384,6 @@ export const NavTabs: React.FC<NavTabsProps> = memo(function NavTabs({ tabs }) {
       )}
     </div>
   );
-});
+};
+
+export const NavTabs = memo(NavTabsComponent);

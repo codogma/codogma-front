@@ -154,8 +154,7 @@ export const CustomBottomNavigation = ({
                   opacity: 1,
                 },
                 '& .MuiBottomNavigationAction-label': {
-                  color:
-                    theme.palette.mode === 'dark' ? '#8ab4f8' : '#1a73e8',
+                  color: theme.palette.mode === 'dark' ? '#8ab4f8' : '#1a73e8',
                   fontWeight: 600,
                 },
                 '& .nav-icon-wrapper': {
@@ -183,8 +182,7 @@ export const CustomBottomNavigation = ({
                       : '0 4px 12px rgba(102, 126, 234, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.3)',
                 },
                 '& .MuiBottomNavigationAction-label': {
-                  color:
-                    theme.palette.mode === 'dark' ? '#8ab4f8' : '#1a73e8',
+                  color: theme.palette.mode === 'dark' ? '#8ab4f8' : '#1a73e8',
                   fontWeight: 700,
                 },
               },

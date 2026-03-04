@@ -1,12 +1,12 @@
 'use client';
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
-import { useParams, usePathname } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 import { Session } from 'next-auth';
 import React, { ReactNode } from 'react';
 
 import { CustomBottomNavigation } from '@/components/CustomBottomNavigation';
-import Footer from '@/components/Footer';
+import { Footer } from '@/components/Footer';
 import { NavBar } from '@/components/NavBar';
 import { useNavigation } from '@/components/NavigationProvider';
 import { NavPanel } from '@/components/NavPanel';
@@ -27,7 +27,7 @@ export const Navigation = ({
 }: NavigationProps) => {
   const { isFullscreen } = useNavigation();
   const pathname = usePathname();
-  const { articleId } = useParams();
+  // const { articleId } = useParams();
   const hasAdmin = pathname.startsWith(`/${lang}/admin`);
 
   if (hasAdmin) {

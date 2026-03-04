@@ -16,11 +16,12 @@ type ButtonAlertDialogProps = {
   readonly article: GetArticle;
   readonly onClose?: () => void;
 };
-export default function ButtonAlertDialog({
+
+export const ButtonAlertDialog = ({
   lang,
   article,
   onClose,
-}: ButtonAlertDialogProps) {
+}: ButtonAlertDialogProps) => {
   const [open, setOpen] = useState(false);
   const router = useRouter();
   const t = useTranslations('articlesPage');
@@ -76,4 +77,4 @@ export default function ButtonAlertDialog({
       )}
     </>
   );
-}
+};

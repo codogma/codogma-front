@@ -13,7 +13,7 @@ import { useState } from 'react';
 
 import { AddToCompilations } from '@/components/AddToCompilations';
 import { ArticlesDnD } from '@/components/ArticlesDnD';
-import ButtonAlertDialog from '@/components/ButtonAlertDialog';
+import { ButtonAlertDialog } from '@/components/ButtonAlertDialog';
 import { EditCategory } from '@/components/EditCategory';
 import { EditCompilation } from '@/components/EditCompilation';
 import { SubscribeMenuItem } from '@/components/SubscribeMenuItem';
@@ -104,7 +104,7 @@ interface MenuButtonProps extends IconButtonOwnProps {
   readonly refetch?: () => void;
 }
 
-export default function MenuButton({
+export const MenuButton = ({
   article,
   lang,
   compilation,
@@ -112,7 +112,7 @@ export default function MenuButton({
   category,
   refetch,
   ...props
-}: MenuButtonProps) {
+}: MenuButtonProps) => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const { data: state, status } = useSession();
   const open = Boolean(anchorEl);
@@ -283,4 +283,4 @@ export default function MenuButton({
       </StyledMenu>
     </>
   );
-}
+};

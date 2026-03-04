@@ -21,7 +21,7 @@ import { FormProvider, useForm } from 'react-hook-form';
 import { z } from 'zod';
 
 import { GithubIcon, GitlabIcon } from '@/components/CustomIcons';
-import FormInput from '@/components/FormInput';
+import { FormInput } from '@/components/FormInput';
 import { currentUser, signUp } from '@/helpers/authApi';
 import { generateAvatar } from '@/helpers/generateAvatar';
 import { AuthDTO } from '@/types';

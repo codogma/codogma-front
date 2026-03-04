@@ -8,7 +8,7 @@ import React, { use } from 'react';
 
 import { useArticle } from '@/components/ArticleProvider';
 import { AvatarImage } from '@/components/AvatarImage';
-import ButtonAlertDialog from '@/components/ButtonAlertDialog';
+import { ButtonAlertDialog } from '@/components/ButtonAlertDialog';
 import { useContentImageContext } from '@/components/ContentImageProvider';
 import { TimeAgo } from '@/components/TimeAgo';
 import { Language, UserRole } from '@/types';

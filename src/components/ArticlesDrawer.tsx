@@ -11,7 +11,6 @@ import {
 } from '@mui/material';
 import IconButton from '@mui/material/IconButton';
 import Stack from '@mui/material/Stack';
-import Tooltip from '@mui/material/Tooltip';
 import Typography from '@mui/material/Typography';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
@@ -19,8 +18,9 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 
 import { DefaultImage } from '@/components/DefaultImage';
 import { DrawerHeader } from '@/components/DrawerHeader';
-import MenuButton from '@/components/MenuButton';
+import { MenuButton } from '@/components/MenuButton';
 import { useNavigation } from '@/components/NavigationProvider';
+import { NavTooltip } from '@/components/NavTooltip';
 import { Scrollbar, useScrollContext } from '@/components/Scrollbar';
 import { getArticles } from '@/helpers/articleApi';
 import { Language } from '@/types';
@@ -167,7 +167,7 @@ export const ArticlesDrawer = ({
 
   return compilationId ? (
     <>
-      <Tooltip
+      <NavTooltip
         title='Список статей'
         arrow
         placement={isFullscreen ? 'top' : 'left'}
@@ -183,7 +183,7 @@ export const ArticlesDrawer = ({
         >
           <BallotOutlinedIcon />
         </IconButton>
-      </Tooltip>
+      </NavTooltip>
       {ArticlesDrawer}
     </>
   ) : null;

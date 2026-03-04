@@ -12,7 +12,7 @@ import {
 import { z } from 'zod';
 
 import { CustomDialog } from '@/components/CustomDialog';
-import FormInput from '@/components/FormInput';
+import { FormInput } from '@/components/FormInput';
 import { languageMenuItems } from '@/constants/i18n';
 import {
   getNotificationByIdToUpdate,

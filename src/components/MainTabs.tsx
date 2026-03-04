@@ -11,7 +11,7 @@ import { useTranslations } from 'next-intl';
 import React, { useCallback, useLayoutEffect, useRef, useState } from 'react';
 
 import { Carousel } from '@/components/Carousel';
-import Compilations from '@/components/Compilations';
+import { Compilations } from '@/components/Compilations';
 import { MyCompilationsBadge } from '@/components/MyCompilationsBadge';
 import {
   MAIN_PAGE_BOOKMARKS,

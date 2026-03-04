@@ -11,7 +11,7 @@ import React, { HTMLAttributes } from 'react';
 import { ArticleProgressBar } from '@/components/ArticleProgressBar';
 import { ArticlesDrawer } from '@/components/ArticlesDrawer';
 import { FullscreenButton } from '@/components/FullscreenButton';
-import MenuButton from '@/components/MenuButton';
+import { MenuButton } from '@/components/MenuButton';
 import { SettingsDrawer } from '@/components/SettingsDrawer';
 import { TOCDrawer } from '@/components/TOCDrawer';
 import { getArticleById, like, unlike } from '@/helpers/articleApi';

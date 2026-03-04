@@ -15,7 +15,6 @@ import { usePathname, useRouter } from 'next/navigation';
 import React, { useCallback, useState } from 'react';
 
 import { DrawerHeader } from '@/components/DrawerHeader';
-import { useNavigation } from '@/components/NavigationProvider';
 import { NavTooltip } from '@/components/NavTooltip';
 import { Scrollbar, useScrollContext } from '@/components/Scrollbar';
 import { TocItem } from '@/helpers/parseToc';
@@ -29,7 +28,6 @@ type TOCDrawerProps = {
 export const TOCDrawer = ({ article, toc }: TOCDrawerProps) => {
   const [openContents, setOpenContents] = useState<boolean>(false);
   const { instance, scrollToTop } = useScrollContext();
-  const { isFullscreen } = useNavigation();
   const pathname = usePathname();
   const router = useRouter();
 

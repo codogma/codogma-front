@@ -12,12 +12,12 @@ type AuthorsProps = {
   readonly lang: Language;
 };
 
-export default function Users({
+export const Users = ({
   users,
   isLoading,
   usersPerPageStart,
   lang,
-}: AuthorsProps) {
+}: AuthorsProps) => {
   return (
     <Grid container spacing={2}>
       {(isLoading ? Array.from(new Array(usersPerPageStart)) : users)?.map(
@@ -32,4 +32,4 @@ export default function Users({
       )}
     </Grid>
   );
-}
+};

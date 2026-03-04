@@ -13,7 +13,7 @@ import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
 import { z } from 'zod';
 
 import { AvatarImage } from '@/components/AvatarImage';
-import FormInput from '@/components/FormInput';
+import { FormInput } from '@/components/FormInput';
 import { WithAuth } from '@/components/WithAuth';
 import {
   deleteUser,

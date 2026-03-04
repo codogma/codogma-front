@@ -29,7 +29,7 @@ import React, { useRef, useState } from 'react';
 import { AvatarImage } from '@/components/AvatarImage';
 import { useContentImageContext } from '@/components/ContentImageProvider';
 import { DefaultImage } from '@/components/DefaultImage';
-import MenuButton from '@/components/MenuButton';
+import { MenuButton } from '@/components/MenuButton';
 import { Scrollbar } from '@/components/Scrollbar';
 import { TimeAgo } from '@/components/TimeAgo';
 import { GetArticle, Language, SwatchDTO, UserRole } from '@/types';

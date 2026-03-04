@@ -56,19 +56,19 @@ export const SearchDialog = ({
   const [validationErrors, setValidationErrors] = useState<string[]>([]);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  // Available prefixes for autocomplete
-  const prefixOptions = [
-    { label: 'articles:', value: 'articles' },
-    { label: 'categories:', value: 'categories' },
-    { label: 'compilations:', value: 'compilations' },
-    { label: 'authors:', value: 'authors' },
-    { label: 'tags:', value: 'tags' },
-    { label: 'content:', value: 'content' },
-    { label: 'info:', value: 'info' },
-  ];
-
   // Combined options: filter based on current query
   const combinedOptions = React.useMemo(() => {
+    // Available prefixes for autocomplete
+    const prefixOptions = [
+      { label: 'articles:', value: 'articles' },
+      { label: 'categories:', value: 'categories' },
+      { label: 'compilations:', value: 'compilations' },
+      { label: 'authors:', value: 'authors' },
+      { label: 'tags:', value: 'tags' },
+      { label: 'content:', value: 'content' },
+      { label: 'info:', value: 'info' },
+    ];
+
     const query = searchQuery.trim();
 
     // Если запрос пустой - показать все префиксы
@@ -97,7 +97,7 @@ export const SearchDialog = ({
     return prefixOptions
       .filter((p) => p.label.toLowerCase().startsWith(query.toLowerCase()))
       .map((p) => ({ ...p, type: 'prefix' as const }));
-  }, [prefixOptions, searchQuery]);
+  }, [searchQuery]);
 
   // Set prefix when dialog opens based on current route
   useEffect(() => {

@@ -12,7 +12,7 @@ import { PopoverElement } from '@/components/PopoverElement';
 import { favorite, unfavorite } from '@/helpers/categoryApi';
 import { getQueryClient } from '@/lib/react-query';
 
-import CategoryAlertDialog from './CategoryAlertDialog';
+import { CategoryAlertDialog } from './CategoryAlertDialog';
 
 interface CustomFavoriteProps {
   readonly id: number;

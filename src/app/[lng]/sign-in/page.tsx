@@ -22,7 +22,7 @@ import { z } from 'zod';
 
 import { GithubIcon, GitlabIcon } from '@/components/CustomIcons';
 import { ForgotPasswordDialog } from '@/components/ForgotPasswordDialog';
-import FormInput from '@/components/FormInput';
+import { FormInput } from '@/components/FormInput';
 import { currentUser, login } from '@/helpers/authApi';
 import { AuthDTO } from '@/types';
 

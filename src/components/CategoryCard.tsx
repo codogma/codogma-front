@@ -19,7 +19,7 @@ import React, { useRef, useState } from 'react';
 
 import { ButtonFavorite } from '@/components/ButtonFavorite';
 import { DefaultImage } from '@/components/DefaultImage';
-import MenuButton from '@/components/MenuButton';
+import { MenuButton } from '@/components/MenuButton';
 import { GetCategory, Language, SwatchDTO, UserRole } from '@/types';
 
 type CategoryCardProps = {

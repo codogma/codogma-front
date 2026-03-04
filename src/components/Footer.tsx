@@ -13,7 +13,7 @@ type FooterProps = {
   readonly lang: Language;
 };
 
-function Footer({ lang }: FooterProps) {
+const FooterComponent = ({ lang }: FooterProps) => {
   const pathname = usePathname();
   const hasAdmin = pathname.startsWith(`/${lang}/admin`);
   if (hasAdmin) {
@@ -53,6 +53,6 @@ function Footer({ lang }: FooterProps) {
       </Container>
     </Box>
   );
-}
+};
 
-export default memo(Footer);
+export const Footer = memo(FooterComponent);

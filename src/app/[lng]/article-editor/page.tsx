@@ -40,7 +40,7 @@ import {
 import { z } from 'zod';
 
 import { AvatarImage } from '@/components/AvatarImage';
-import FormInput from '@/components/FormInput';
+import { FormInput } from '@/components/FormInput';
 import { LinkWithPopover } from '@/components/LinkWithPopover';
 import { TinyMCEEditor } from '@/components/TinyMCEEditor';
 import { WithAuth } from '@/components/WithAuth';

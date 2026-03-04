@@ -10,7 +10,7 @@ import React, { useEffect } from 'react';
 import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
 import { z } from 'zod';
 
-import FormInput from '@/components/FormInput';
+import { FormInput } from '@/components/FormInput';
 import { createComment, updateComment } from '@/helpers/commentAPI';
 import { CreateComment, GetComment, UpdateComment } from '@/types';
 

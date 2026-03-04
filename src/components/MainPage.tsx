@@ -14,7 +14,7 @@ import { useSession } from 'next-auth/react';
 import { useTranslations } from 'next-intl';
 import { useEffect, useState } from 'react';
 
-import { BannerCarousel } from '@/components/BannerCarousel';
+import { Banner } from '@/components/Banner';
 import { Carousel } from '@/components/Carousel';
 import { Categories } from '@/components/Categories';
 import { MainTabs } from '@/components/MainTabs';
@@ -84,7 +84,7 @@ export const MainPage = ({
       <Box className='page-stack'>
         {/* Баннер */}
         <section className='section'>
-          <BannerCarousel
+          <Banner
             articles={recentlyArticles}
             lang={lng}
             isLoading={isRecentlyLoading}

@@ -1,17 +1,17 @@
 import { TextField, TextFieldProps } from '@mui/material';
-import { FC, useMemo } from 'react';
+import { useMemo } from 'react';
 import { Controller, FieldError, useFormContext } from 'react-hook-form';
 
 type IFormInputProps = {
   readonly name: string;
 } & TextFieldProps;
 
-const FormInput: FC<IFormInputProps> = ({
+export const FormInput = ({
   name,
   error,
   helperText,
   ...otherProps
-}) => {
+}: IFormInputProps) => {
   const {
     control,
     formState: { errors },
@@ -41,5 +41,3 @@ const FormInput: FC<IFormInputProps> = ({
     />
   );
 };
-
-export default FormInput;

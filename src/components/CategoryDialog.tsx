@@ -32,7 +32,7 @@ import { z } from 'zod';
 
 import { AvatarImage } from '@/components/AvatarImage';
 import { CustomDialog } from '@/components/CustomDialog';
-import FormInput from '@/components/FormInput';
+import { FormInput } from '@/components/FormInput';
 import { languageMenuItems } from '@/constants/i18n';
 import { CreateCategory, createCategory } from '@/helpers/categoryApi';
 import { devConsoleWarn } from '@/helpers/devConsoleLogs';

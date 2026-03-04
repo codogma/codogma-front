@@ -10,7 +10,7 @@ import React, { use, useState } from 'react';
 import { AvatarImage } from '@/components/AvatarImage';
 import { Bookmark } from '@/components/Bookmark';
 import { CompilationProvider } from '@/components/CompilationProvider';
-import MenuButton from '@/components/MenuButton';
+import { MenuButton } from '@/components/MenuButton';
 import { useNavigation } from '@/components/NavigationProvider';
 import { getCompilationById } from '@/helpers/compilationApi';
 import { GetCompilation, Language } from '@/types';

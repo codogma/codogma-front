@@ -13,7 +13,7 @@ import { useTranslations } from 'next-intl';
 import React, { use } from 'react';
 
 import { AvatarImage } from '@/components/AvatarImage';
-import MenuButton from '@/components/MenuButton';
+import { MenuButton } from '@/components/MenuButton';
 import { NavTabs, TabProps } from '@/components/NavTabs';
 import { getUserByUsername } from '@/helpers/userApi';
 import { GetUserDTO, Language } from '@/types';

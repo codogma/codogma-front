@@ -30,7 +30,7 @@ type ArticleProps = {
   readonly lang: Language;
 };
 
-export default function Article({ lang }: ArticleProps) {
+export const Article = ({ lang }: ArticleProps) => {
   const { article, toc } = useArticle();
   const { isFullscreen } = useNavigation();
   const { processContent } = useContentImageContext();
@@ -146,4 +146,4 @@ export default function Article({ lang }: ArticleProps) {
       )}
     </>
   );
-}
+};

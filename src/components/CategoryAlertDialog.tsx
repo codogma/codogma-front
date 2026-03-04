@@ -10,11 +10,12 @@ type CategoryAlertDialogProps = {
   readonly onClose: () => void;
   readonly onConfirm: () => void;
 };
-export default function CategoryAlertDialog({
+
+export const CategoryAlertDialog = ({
   open,
   onClose,
   onConfirm,
-}: CategoryAlertDialogProps) {
+}: CategoryAlertDialogProps) => {
   const t = useTranslations('categoriesPage');
 
   return (
@@ -33,4 +34,4 @@ export default function CategoryAlertDialog({
       aria-describedby='alert-dialog-description'
     />
   );
-}
+};

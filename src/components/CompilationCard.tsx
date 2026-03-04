@@ -21,7 +21,7 @@ import React, { useState } from 'react';
 import { AvatarImage } from '@/components/AvatarImage';
 import { Bookmark } from '@/components/Bookmark';
 import { DefaultImage } from '@/components/DefaultImage';
-import MenuButton from '@/components/MenuButton';
+import { MenuButton } from '@/components/MenuButton';
 import { Scrollbar } from '@/components/Scrollbar';
 import { TimeAgo } from '@/components/TimeAgo';
 import { GetCompilation, Language } from '@/types';

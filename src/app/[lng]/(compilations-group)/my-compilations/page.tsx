@@ -3,7 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 import { useSession } from 'next-auth/react';
 import React, { use, useState } from 'react';
 
-import Compilations from '@/components/Compilations';
+import { Compilations } from '@/components/Compilations';
 import { CustomPagination } from '@/components/CustomPagination';
 import { Search } from '@/components/Search';
 import { contlCookie } from '@/constants/i18n';
