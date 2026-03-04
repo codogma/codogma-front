@@ -26,7 +26,7 @@ export type SearchFilterType =
   | 'content'
   | 'info';
 
-export interface SearchFilter {
+interface SearchFilter {
   /** Filter type (prefix) */
   type: SearchFilterType;
   /** Filter value */
@@ -35,7 +35,7 @@ export interface SearchFilter {
   negated: boolean;
 }
 
-export type BooleanOperator = 'AND' | 'OR';
+type BooleanOperator = 'AND' | 'OR';
 
 /**
  * Parsed search query result
@@ -334,7 +334,7 @@ export function parseSearchQuery(
  * @param parsed - Parsed search query
  * @returns API parameters object
  */
-export function parsedQueryToApiParams(
+function parsedQueryToApiParams(
   parsed: ParsedSearchQuery,
 ): Record<string, string | undefined> {
   const params: Record<string, string | undefined> = {};

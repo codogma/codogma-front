@@ -3,8 +3,8 @@
   "project": ["src/**/*.ts", "src/**/*.tsx"],
   "ignore": [
     "public/**",
-    "src/components/Banner.tsx",
     "src/components/BreadcrumbsComponent.tsx",
+    "src/components/NavSidebar.tsx",
     "src/components/WebSocketProvider.tsx",
     "src/i18n/navigation.ts",
     "src/i18n/request.ts",
