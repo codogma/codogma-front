@@ -172,43 +172,17 @@ function Page() {
               size={112}
             />
           </Badge>
-          <FormInput
-            name='username'
-            label='Username'
-            variant='standard'
-            defaultValue={user?.username}
-          />
+          <FormInput name='username' label='Username' variant='standard' />
           <FormInput
             name='newEmail'
             label='Email'
             type='email'
             variant='standard'
-            defaultValue={user?.email}
           />
-          <FormInput
-            name='firstName'
-            label='First name'
-            variant='standard'
-            defaultValue={user?.firstName}
-          />
-          <FormInput
-            name='lastName'
-            label='Last name'
-            variant='standard'
-            defaultValue={user?.lastName}
-          />
-          <FormInput
-            name='bio'
-            label='Bio'
-            variant='standard'
-            defaultValue={user?.bio}
-          />
-          <FormInput
-            name='shortInfo'
-            label='ShortInfo'
-            variant='standard'
-            defaultValue={user?.shortInfo}
-          />
+          <FormInput name='firstName' label='First name' variant='standard' />
+          <FormInput name='lastName' label='Last name' variant='standard' />
+          <FormInput name='bio' label='Bio' variant='standard' />
+          <FormInput name='shortInfo' label='ShortInfo' variant='standard' />
           <FormInput
             name='currentPassword'
             label='Current password'

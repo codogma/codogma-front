@@ -10,6 +10,7 @@ export const FormInput = ({
   name,
   error,
   helperText,
+  defaultValue: _defaultValue,
   ...otherProps
 }: IFormInputProps) => {
   const {
