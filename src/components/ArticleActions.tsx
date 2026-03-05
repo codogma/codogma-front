@@ -170,7 +170,7 @@ export const ArticleActions = ({
         <>
           <FullscreenButton />
           <Checkbox
-            checked={articleData.isLiked}
+            checked={articleData?.isLiked ?? false}
             onChange={handleChange}
             icon={
               <CheckboxIconRoot>
